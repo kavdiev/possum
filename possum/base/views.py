@@ -234,7 +234,21 @@ def categories_alcool(request, cat_id):
 def categories_change(request, cat_id):
     data = get_user(request)
     name = request.POST.get('name', '').strip()
+    color = request.POST.get('color', '').strip()
     cat = get_object_or_404(Categorie, pk=cat_id)
+    if not cat.couleur or color != cat.couleur.web():
+        logging.info("[%s] new categorie color [%s]" % (data['user'].username, cat.nom))
+        c = Couleur()
+        if c.set_from_rgb(color):
+            try:
+                old_color = Couleur.objects.get(red=c.red, green=c.green, blue=c.blue)
+                c = old_color
+            except Couleur.DoesNotExist:
+                c.save()
+            cat.couleur = c
+        else:
+            logging.warning("[%s] invalid color [%s]" % (data['user'].username, color))
+            messages.add_message(request, messages.ERROR, "La nouvelle couleur n'a pu être enregistrée.")
     if name != cat.nom:
         logging.info("[%s] new categorie name: [%s] > [%s]" % (data['user'].username, cat.nom, name))
         cat.nom = name

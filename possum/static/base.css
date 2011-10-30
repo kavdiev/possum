@@ -4,34 +4,34 @@
 *********************************/
 body
 {
-	margin: 0;
-	padding: 0;
-	background: #F5F5F5;
-	text-align: justify;
-	font-family: Vectora, Utopia, Arial, Times, serif;
+    margin: 0;
+    padding: 0;
+    background: #F5F5F5;
+    text-align: justify;
+    font-family: Vectora, Utopia, Arial, Times, serif;
 }
-a, a:link, a:visited, a:active 
-{ 
-	text-decoration: none;
-	color: #003882;/*#C1C1C1;*/
+a, a:link, a:visited, a:active
+{
+    text-decoration: none;
+    color: #003882;/*#C1C1C1;*/
 }
 img
 {
-	border-style: none;
+    border-style: none;
 }
 
 a:hover
 {
-	text-decoration: none;/*underline; doesn't work well*/
-	color: #003882;	/*#C2C2C2;*/
+    text-decoration: none;/*underline; doesn't work well*/
+    color: #003882; /*#C2C2C2;*/
 }
 h1
 {
-	
+
 }
 p
 {
-	
+
 }
 
 .buttontable
@@ -42,96 +42,96 @@ border-spacing: 0;
 
 table, thead, tbody, tfoot
 {
-	border: none;
+    border: none;
         border-collapse: collapse;
-	margin: 0 auto;
-	padding: 0;
-	width: 95%;
+    margin: 0 auto;
+    padding: 0;
+    width: 95%;
 }
 tr
 {
-	border: none;
-	margin: 0;
-	padding: 0;
+    border: none;
+    margin: 0;
+    padding: 0;
 }
 th
 {
-	border: 1px ridge #94CBD6;
-	background-color: #E1DBFF;
-	margin: 0;
-	padding: 3px;
+    border: 1px ridge #94CBD6;
+    background-color: #E1DBFF;
+    margin: 0;
+    padding: 3px;
 }
 td
 {
-	border: 1px ridge #94CBD6;
-	margin: 0;
-	padding: 3px;
+    border: 1px ridge #94CBD6;
+    margin: 0;
+    padding: 3px;
 }
 
 input[type=radio]
 {
-	width: 15px;
-	margin: 5px;
+    width: 15px;
+    margin: 5px;
 }
 
 input
 {
-	width: 95%;
-	margin: 5px;
+    width: 95%;
+    margin: 5px;
 }
 .prize
 {
-	width: 50px;
+    width: 50px;
 }
-/* 
-** header section 
+/*
+** header section
 */
 #header #headerMain
 {
-	margin: 0 ;
-	padding: 0;
-	width: 100%;
-/*	height: 107px; */
-	background-color: #FFFFFF;
-	border-bottom: 1px solid #DDDDDD;
+    margin: 0 ;
+    padding: 0;
+    width: 100%;
+/*  height: 107px; */
+    background-color: #FFFFFF;
+    border-bottom: 1px solid #DDDDDD;
 }
 
 #header #headerMain #headerTitreGeneral
 {
-	margin: 0 auto;
-	padding: 0;
-	padding-top: 20px;
-	padding-bottom: 2px;
-	max-width:600px;
-	text-align: center;
-	color: #003882;
-	font-family: Vectora, Utopia, Dax, Arial, Times, serif;
-	/*position: relative;*/
+    margin: 0 auto;
+    padding: 0;
+    padding-top: 20px;
+    padding-bottom: 2px;
+    max-width:600px;
+    text-align: center;
+    color: #003882;
+    font-family: Vectora, Utopia, Dax, Arial, Times, serif;
+    /*position: relative;*/
 }
 
 #header #headerMain #headerTitrePage
 {
 
-	margin: 0 auto;
-	padding: 0;
-	padding-top: 2px;
-	padding-bottom: 0px;
-	max-width:600px;
-	text-align: center;
-	color: #2A2A2A;
-	font-family: Arial, Times, serif;
+    margin: 0 auto;
+    padding: 0;
+    padding-top: 2px;
+    padding-bottom: 0px;
+    max-width:600px;
+    text-align: center;
+    color: #2A2A2A;
+    font-family: Arial, Times, serif;
 }
 #headerTab
 {
     margin-top: 5px;
-	margin-right: 10px;
+    margin-right: 10px;
     float: right;
 }
 #headerTab ul
 {
     list-style: none;
     padding: 0px;
-	margin: 0px;
+    margin: 0px;
 }
 .headerTabNoOver
 {
@@ -144,33 +144,33 @@ input
     border-bottom: 1px solid #DDDDDD;
 }
 
-/* 
-** footer section 
+/*
+** footer section
 */
 #footer
 {
-	position: absolute;
-	clear: both;
-	background-color: #FFFFFF;
-	width: 100%;
-	border-top: 1px solid #DDDDDD;
-	margin: 0 auto;
-	bottom: 0px;
+    position: absolute;
+    clear: both;
+    background-color: #FFFFFF;
+    width: 100%;
+    border-top: 1px solid #DDDDDD;
+    margin: 0 auto;
+    bottom: 0px;
    /* height: 30px;*/
 }
 .footerLinkElement
 {
-	display: inline;
- 
+    display: inline;
+
 }
 .footerLinkElement:after
 {
-	content:"   ";
+    content:"   ";
 }
 div.left
 {
     position: relative;
-    float: left; 
+    float: left;
     left: 0.50%;
     width: 31%;
     text-align: left;
@@ -178,7 +178,7 @@ div.left
 div.center
 {
     position: relative;
-    float: left; 
+    float: left;
     left: 1.50%;
     width: 33%;
     text-align: center;
@@ -186,7 +186,7 @@ div.center
 div.right
 {
     position: relative;
-    float: right; 
+    float: right;
     right: 2.50%;
     width: 33%;
     text-align: right;
@@ -196,35 +196,35 @@ div.right
 */
 #main
 {
-	clear: both;
-	display: block;
-	position: absolute;
-	padding: 0;
+    clear: both;
+    display: block;
+    position: absolute;
+    padding: 0;
     margin: 0;
-	
-	top: 27px;
-	bottom: 20px;
-	left: 10px;
-	right: 10px;
+
+    top: 27px;
+    bottom: 20px;
+    left: 10px;
+    right: 10px;
 }
 
 #login
 {
-	position: absolute;
-	clear: both;
-	display: block;
-	padding: 0;
+    position: absolute;
+    clear: both;
+    display: block;
+    padding: 0;
     margin: 0;
     width: 500px;
-	border: 1px solid #DDDDDD;
-	top: 30%;
-	left: 40%;
+    border: 1px solid #DDDDDD;
+    top: 30%;
+    left: 40%;
 }
 #login ul
 {
     list-style: none;
     padding: 0px;
-	margin: 0px;
+    margin: 0px;
 }
 #login p input
 {
@@ -232,77 +232,79 @@ div.right
 }
 #login p
 {
-	text-align: right;
+    text-align: right;
 }
-/* 
+/*
 ** menu
 */
-
+.color {
+    width: 70px;
+}
 #clock
 {
-	text-align: center;
+    text-align: center;
     top: 90%;
     width: 11%;
     position: absolute;
-	overflow: auto;
-	background-color: #FFFFFF;
-	border: 1px solid #DDDDDD;
+    overflow: auto;
+    background-color: #FFFFFF;
+    border: 1px solid #DDDDDD;
 }
 #menu
 {
     float: left;
-	margin: 0;
+    margin: 0;
     padding: 0;
-	margin-right: 5px;
-	text-align: left;
+    margin-right: 5px;
+    text-align: left;
     width: 11%;
-	overflow: auto;
-	background-color: #FFFFFF;
-	border: 1px solid #DDDDDD;
+    overflow: auto;
+    background-color: #FFFFFF;
+    border: 1px solid #DDDDDD;
     border-bottom: none;
 }
-#menu  a, a:link, a:visited, a:active 
-{ 
-	text-decoration: none;
-	color: #003882;/*#202020;*/
+#menu  a, a:link, a:visited, a:active
+{
+    text-decoration: none;
+    color: #003882;/*#202020;*/
 }
 #menu  ul
 {
     list-style: none;
     padding: 0px;
-	margin: 0px;
+    margin: 0px;
 }
 .menuElement,
 .menuElementNoPadding,
 .headerTabNoOver,
 .menuSelected
 {
-	padding: 5px 15px;
-	margin: 0;
-	background-color: #FFFFFF;
-	border-bottom: 1px solid #DDDDDD;
+    padding: 5px 15px;
+    margin: 0;
+    background-color: #FFFFFF;
+    border-bottom: 1px solid #DDDDDD;
 }
 .submenu
 {
- 	padding: 2px 15%;
-	border-bottom: 1px solid #DDDDDD;
+    padding: 2px 15%;
+    border-bottom: 1px solid #DDDDDD;
 }
 .menuElementNoPadding
 {
-	padding: 0px;
-	border: 0px;
+    padding: 0px;
+    border: 0px;
 }
 .menuElement:hover,
 .menuElement a:hover,
 {
-	background-color: #DEE5F0/*#CCCCCC*/;
-	color: #003882;/*#FFFFFF;*/
+    background-color: #DEE5F0/*#CCCCCC*/;
+    color: #003882;/*#FFFFFF;*/
 }
 .menuSelected a,
 .menuSelected
 {
-	background-color: #DEE5F0;
-	/*color: #000000;*/
+    background-color: #DEE5F0;
+    /*color: #000000;*/
 
 }
 
@@ -312,11 +314,11 @@ div.right
 #content
 {
     position: absolute;
-	display: block;
-	padding: 10px;
-	overflow: auto;
-	background-color: #FFFFFF;
-	border: 1px solid #DDDDDD;
+    display: block;
+    padding: 10px;
+    overflow: auto;
+    background-color: #FFFFFF;
+    border: 1px solid #DDDDDD;
     bottom: 0;
     left: 12%;
     right: 0;
@@ -327,80 +329,80 @@ div.right
     list-style: none;
 }
 .info {
-	padding: 1em 1em 1em 1em;
-	border: 1px solid #000000;
-	margin: 1em 5em 1em 5em;
-	text-align: center; 
-	background-color: #00FF00;
+    padding: 1em 1em 1em 1em;
+    border: 1px solid #000000;
+    margin: 1em 5em 1em 5em;
+    text-align: center;
+    background-color: #00FF00;
 }
 .success {
-	padding: 1em 1em 1em 1em;
-	border: 1px solid #000000;
-	margin: 1em 5em 1em 5em;
-	text-align: center; 
-	background-color: #00FF00;
+    padding: 1em 1em 1em 1em;
+    border: 1px solid #000000;
+    margin: 1em 5em 1em 5em;
+    text-align: center;
+    background-color: #00FF00;
 }
 .warning {
-	padding: 1em 1em 1em 1em;
-	border: 1px solid #000000;
-	margin: 1em 5em 1em 5em;
-	text-align: center; 
-	background-color: #f8bd30;
+    padding: 1em 1em 1em 1em;
+    border: 1px solid #000000;
+    margin: 1em 5em 1em 5em;
+    text-align: center;
+    background-color: #f8bd30;
 }
 .error {
-	padding: 1em 1em 1em 1em;
-	border: 1px solid #000000;
-	margin: 1em 5em 1em 5em;
-	text-align: center; 
-	background-color: #FF0000;
+    padding: 1em 1em 1em 1em;
+    border: 1px solid #000000;
+    margin: 1em 5em 1em 5em;
+    text-align: center;
+    background-color: #FF0000;
 }
 
-#content a, a:link, a:visited, a:active 
+#content a, a:link, a:visited, a:active
 {
-	/*text-decoration: underline;
-	color: #101010;*/
-	width: 100%;
+    /*text-decoration: underline;
+    color: #101010;*/
+    width: 100%;
 }
 .ligne1
 {
-	background-color: #94FFF8;
+    background-color: #94FFF8;
 }
 .ligne2
 {
-	background-color: #E8FDFF;
+    background-color: #E8FDFF;
 }
 .ligne1:hover, .ligne2:hover
 {
-	background-color: #74DFD8;
-	cursor:pointer ; 
+    background-color: #74DFD8;
+    cursor:pointer ;
 }
 .liste
 {
-	max-height: 75%;
-	overflow: auto;
+    max-height: 75%;
+    overflow: auto;
 }
 /* Formulaire d'envoi de données etudiant / entreprise */
 .formulaireTable
 {
-	width: 75%;
-	border: none;
-	margin: 0 auto;
-	padding: 0;
-	margin-top: 10px;
+    width: 75%;
+    border: none;
+    margin: 0 auto;
+    padding: 0;
+    margin-top: 10px;
 }
 .formulaireTable th
 {
-	text-align: right;
-	width: 40%;
+    text-align: right;
+    width: 40%;
 }
 /*.formulaireTable td
 {
-	width: 60%;
-	text-align: left;
+    width: 60%;
+    text-align: left;
 }*/
 .formulaireTable caption
 {
-	font-size: large;
+    font-size: large;
 }
 .recherche label
 {
@@ -412,14 +414,14 @@ div.right
 }
 .submitbutton
 {
-	/*background-color: #FFFFFF;	*/
-	/*width: 40%*/
+    /*background-color: #FFFFFF;    */
+    /*width: 40%*/
 }
 .submitbutton:hover
 {
-	/*background-color: #CCCCCC;*/
+    /*background-color: #CCCCCC;*/
     font-weight:bold;
-	color: #003882;
+    color: #003882;
 }
 div.button
 {
@@ -467,5 +469,5 @@ li
   color: black;
   font: 120% Arial,Verdana,Lucida,Helvetica,sans-serif;
 }*/
- 
- 
+
+

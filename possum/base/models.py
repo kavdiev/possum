@@ -98,6 +98,17 @@ class Couleur(Nom):
                 logging.warning("valeur trop grande")
         return result
 
+    def set_from_rgb(self, color):
+        """Set a color from a color like: #123454"""
+        try:
+            self.red = int(color[1:3], 16)
+            self.green = int(color[3:5], 16)
+            self.blue = int(color[5:7], 16)
+            return True
+        except:
+            return False
+
+int("ff", 16)
 class Cuisson(Nom, Priorite):
     """Cuisson d'un produit"""
     couleur = models.ForeignKey('Couleur', null=True, blank=True, related_name="cuisson-couleur")
@@ -558,7 +569,7 @@ class Facture(models.Model):
             ("p8", "can change music"),
             ("p9", "can modify music"),
         )
-        
+
     def __unicode__(self):
         if self.id:
             id = self.id
@@ -704,7 +715,7 @@ class Facture(models.Model):
 
     def del_produit(self, vendu):
         """On enleve un produit à la facture.
-        
+
         Si le montant est négatif après le retrait d'un élèment,
         c'est qu'il reste certainement une remise, dans
         ce cas on enlève tous les produits.

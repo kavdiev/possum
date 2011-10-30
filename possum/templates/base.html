@@ -1,62 +1,65 @@
 {% extends "template.html" %}
 {% block page %}
-	<div id="header">
-		<div id="headerTab"><ul>
-	{% if user.is_authenticated %}
-			<li class="headerTabNoOver">Bonjour {% if user.get_full_name %}{{ user.get_full_name }}{%else%}{{user.username}}{%endif%} (dernière connexion le {{ user.last_login|date:"Y-m-d H:i:s" }})</li>
-			<li class="headerTabNoOver"><a href="/accounts/logout/">Déconnexion</a></li>
-	{% else %}
-			<li class="headerTabNoOver"><a href="/accounts/login/">Connexion</a></li>
-	{% endif %}
-		</ul></div>
-	</div>
-	<div id="main">
-		<div id="menu"><ul>
-			<li class="menuElement"><a href="/"><img src="/static/images/bandeau-128.png" alt="logo"/></a></li>
-			<li class="{% if menu_carte %}menuSelected{% else %}menuElement{% endif %}" onclick="window.location='/carte/categories/'">
+    <div id="header">
+        <div id="headerTab"><ul>
+    {% if user.is_authenticated %}
+            <li class="headerTabNoOver">Bonjour {% if user.get_full_name %}{{ user.get_full_name }}{%else%}{{user.username}}{%endif%} (dernière connexion le {{ user.last_login|date:"Y-m-d H:i:s" }})</li>
+            <li class="headerTabNoOver"><a href="/accounts/logout/">Déconnexion</a></li>
+    {% else %}
+            <li class="headerTabNoOver"><a href="/accounts/login/">Connexion</a></li>
+    {% endif %}
+        </ul></div>
+    </div>
+    <div id="main">
+        <div id="menu"><ul>
+            <li class="menuElement"><a href="/"><img src="/static/images/bandeau-128.png" alt="logo"/></a></li>
+            <li class="{% if menu_carte %}menuSelected{% else %}menuElement{% endif %}" onclick="window.location='/carte/categories/'">
                 <a href="/carte/categories/">Carte</a>
             </li>
-<!--			
+<!--
             {% if menu_carte or menu_categories or menu_products %}
-				<li class="{% if menu_categories %}menuSelected{% else %}submenu{% endif %}" onclick="window.location='/carte/categories/'">
+                <li class="{% if menu_categories %}menuSelected{% else %}submenu{% endif %}" onclick="window.location='/carte/categories/'">
                     <a href="/carte/categories/">> catégories</a>
                 </li>
-				<li class="{% if menu_products %}menuSelected{% else %}submenu{% endif %}" onclick="window.location='/carte/products/'">
+                <li class="{% if menu_products %}menuSelected{% else %}submenu{% endif %}" onclick="window.location='/carte/products/'">
                     <a href="/carte/products/">> produits</a>
                 </li>
-			{% endif %}
+            {% endif %}
 -->
-			<li class="{% if menu_pos %}menuSelected{% else %}menuElement{% endif %}" onclick="window.location='/pos/'">
+            <li class="{% if menu_pos %}menuSelected{% else %}menuElement{% endif %}" onclick="window.location='/pos/'">
                 <a href="/pos/">Caisse</a>
             </li>
-			<li class="{% if menu_bills %}menuSelected{% else %}menuElement{% endif %}" onclick="window.location='/bills/'">
+            <li class="{% if menu_kitchen %}menuSelected{% else %}menuElement{% endif %}" onclick="window.location='/kitchen/'">
+                <a href="/kitchen/">Cuisine</a>
+            </li>
+            <li class="{% if menu_bills %}menuSelected{% else %}menuElement{% endif %}" onclick="window.location='/bills/'">
                 <a href="/bills/">Registre</a>
             </li>
-			<li class="{% block menuGame %}menuElement{% endblock %}" onclick="window.location='/games/'">
+            <li class="{% block menuGame %}menuElement{% endblock %}" onclick="window.location='/games/'">
                 <a href="/games/">Jeux</a>
             </li>
-			<li class="{% if menu_jukebox %}menuSelected{% else %}menuElement{% endif %}" onclick="window.location='/jukebox/'">
+            <li class="{% if menu_jukebox %}menuSelected{% else %}menuElement{% endif %}" onclick="window.location='/jukebox/'">
                 <a href="/jukebox/">Jukebox</a>
             </li>
-			<li class="{% if menu_profile %}menuSelected{% else %}menuElement{% endif %}" onclick="window.location='/profile/'">
+            <li class="{% if menu_profile %}menuSelected{% else %}menuElement{% endif %}" onclick="window.location='/profile/'">
                 <a href="/profile/">Mes informations</a>
             </li>
-			<li class="{% block menuWeather %}menuElement{% endblock %}" onclick="window.location='/weather/'">
+            <li class="{% block menuWeather %}menuElement{% endblock %}" onclick="window.location='/weather/'">
                 <a href="/weather/">Météo</a>
             </li>
-			<li class="{% if menu_stats %}menuSelected{% else %}menuElement{% endif %}" onclick="window.location='/stats/'">
+            <li class="{% if menu_stats %}menuSelected{% else %}menuElement{% endif %}" onclick="window.location='/stats/'">
                 <a href="/stats/">Résultats</a>
             </li>
-			<li class="{% if menu_users %}menuSelected{% else %}menuElement{% endif %}" onclick="window.location='/users/'">
+            <li class="{% if menu_users %}menuSelected{% else %}menuElement{% endif %}" onclick="window.location='/users/'">
                 <a href="/users/">Utilisateurs</a>
             </li>
-		</ul></div>
-		
-		<div id="clock">
-			<script type="text/javascript">window.onload = date_heure('clock');</script>
-		</div>
+        </ul></div>
 
-		<div id="content">
+        <div id="clock">
+            <script type="text/javascript">window.onload = date_heure('clock');</script>
+        </div>
+
+        <div id="content">
             {% if messages %}
             <ul class="messages">
                 {% for message in messages %}
@@ -64,8 +67,8 @@
                 {% endfor %}
             </ul>
             {% endif %}
-            
-			{% block content %}<p>Contenu de la page (Vide!).</p>{% endblock %}
-		</div>
-	</div>
+
+            {% block content %}<p>Contenu de la page (Vide!).</p>{% endblock %}
+        </div>
+    </div>
 {% endblock %}
