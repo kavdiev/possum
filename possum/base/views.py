@@ -21,7 +21,8 @@
 import logging
 from possum.base.models import Accompagnement, Sauce, Etat, \
     Categorie, Couleur, Cuisson, Facture, Log, LogType, Paiement, \
-    PaiementType, Produit, ProduitVendu, Suivi, Table, Zone
+    PaiementType, Produit, ProduitVendu, Suivi, Table, Zone, StatsJourProduit, \
+    StatsJourCategorie
 from django.contrib.auth import authenticate, login, logout
 from django.shortcuts import render_to_response, get_object_or_404
 from django.contrib.auth.decorators import login_required, permission_required
@@ -167,7 +168,46 @@ def categories(request):
 @permission_required('base.p6')
 def categories_delete(request, cat_id):
     data = get_user(request)
-    cat = get_object_or_404(Categorie, pk=cat_id)
+    data['current_cat'] = get_object_or_404(Categorie, pk=cat_id)
+    data['categories'] = Categorie.objects.order_by('priorite', 'nom').exclude(id=cat_id)
+    cat_report_id = request.POST.get('cat_report', '').strip()
+    action = request.POST.get('valide', '').strip()
+    if action == "Supprimer":
+        # we have to report stats and products ?
+        if cat_report_id:
+            try:
+                report = Categorie.objects.get(id=cat_report_id)
+                # we transfert all statistics
+                for stat in StatsJourCategorie.objects.filter(categorie__id=cat_id):
+                    try:
+                        new = StatsJourCategorie.objects.get(date=stat.date, categorie=report)
+                        new.nb += stat.nb
+                        new.valeur += stat.valeur
+                        new.save()
+                        stat.delete()
+                    except StatsJourCategorie.DoesNotExist:
+                        stat.categorie = report
+                        stat.save()
+                # we transfert all products
+                for product in Produit.objects.filter(categorie__id=cat_id):
+                    product.categorie = report
+                    product.save()
+            except Categorie.DoesNotExist:
+                logging.warning("[%s] categorie [%s] doesn't exist" % (data['user'].username, cat_report_id))
+                messages.add_message(request, messages.ERROR, "La catégorie n'existe pas.")
+                return HttpResponseRedirect('/carte/categories/%s/delete/' % cat_id)
+        # now, we have to delete the categorie and remove all products remains
+        for product in Produit.objects.filter(categorie__id=cat_id):
+            for stat in StatsJourProduit.objects.filter(produit=product):
+                stat.delete()
+            product.delete()
+        for stat in StatsJourCategorie.objects.filter(categorie__id=cat_id):
+            stat.delete()
+        logging.info("[%s] categorie [%s] deleted" % (data['user'].username, data['current_cat'].nom))
+        data['current_cat'].delete()
+        return HttpResponseRedirect('/carte/categories/')
+    elif action == "Annuler":
+        return HttpResponseRedirect('/carte/categories/')
     return render_to_response('base/categories_delete.html',
                                 data,
                                 context_instance=RequestContext(request))

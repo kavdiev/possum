@@ -1,11 +1,39 @@
 {% extends "base.html" %}
 {% block content %}
 
-<p>Confirmer la suppression de la categorie ?</p>
-<p>Toutes les statistiques sur cette catégorie seront perdu ?
-(transférer vers une autre categorie ?)</p>
-<p>S'il y a des produits, que faire ? : suppression (stats comprises), déplacement vers une autre catégorie ?)</p>
+<h1>Catégorie: {{current_cat.nom}}</h1>
 
+<p>Lors de la suppression de la catégorie, toutes les statistiques sur
+cette catégorie seront effacées. Si vous voulez reporter les statistiques
+sur une autre catégorie, vous devez sélectionner une catégorie ci-dessous.</p>
+
+<p>D'autre part, les produits seront également supprimés. Pour ne pas
+les supprimer, il suffit de choisir une catégorie de report ci-dessous.</p>
+
+<p>Il est fortement conseillé de ne pas supprimer des produits qui ont
+été utilisés.</p>
+
+<form method='post' action='/carte/categories/{{current_cat.id}}/delete/'>{% csrf_token %}
+<p>Catégorie pour le report :
+<SELECT name="cat_report">
+    <OPTION VALUE="">pas de report</OPTION>
+    {% for cat in categories %}
+        <OPTION VALUE="{{ cat.id }}">{{ cat.nom }}</OPTION>
+    {% endfor %}
+</SELECT>
+</p>
+
+<p>Dernière avertissement: si des produits sont supprimés cela peut
+fausser l'historique des factures.</p>
+
+<p>Vous confirmez la suppression de cette categorie (et le report éventuel) ?</p>
+<table>
+<tr>
+    <td><input type='submit' name="valide" value='Supprimer'></td>
+    <td><input type='submit' name="valide" value='Annuler'></td>
+</tr>
+</table>
+</form>
 
 {% endblock %}
 

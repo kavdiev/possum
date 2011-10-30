@@ -108,7 +108,6 @@ class Couleur(Nom):
         except:
             return False
 
-int("ff", 16)
 class Cuisson(Nom, Priorite):
     """Cuisson d'un produit"""
     couleur = models.ForeignKey('Couleur', null=True, blank=True, related_name="cuisson-couleur")
