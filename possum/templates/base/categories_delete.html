@@ -13,21 +13,23 @@ les supprimer, il suffit de choisir une catégorie de report ci-dessous.</p>
 <p>Il est fortement conseillé de ne pas supprimer des produits qui ont
 été utilisés.</p>
 
+
+<p>Dernière avertissement: si des produits sont supprimés cela peut
+fausser l'historique des factures.</p>
+
+<p>Vous confirmez la suppression de cette categorie (et le report éventuel) ?</p>
 <form method='post' action='/carte/categories/{{current_cat.id}}/delete/'>{% csrf_token %}
-<p>Catégorie pour le report :
+<table>
+<tr>
+    <td colspan="2" align="center">Catégorie pour le report :
 <SELECT name="cat_report">
     <OPTION VALUE="">pas de report</OPTION>
     {% for cat in categories %}
         <OPTION VALUE="{{ cat.id }}">{{ cat.nom }}</OPTION>
     {% endfor %}
 </SELECT>
-</p>
-
-<p>Dernière avertissement: si des produits sont supprimés cela peut
-fausser l'historique des factures.</p>
-
-<p>Vous confirmez la suppression de cette categorie (et le report éventuel) ?</p>
-<table>
+    </td>
+</tr>
 <tr>
     <td><input type='submit' name="valide" value='Supprimer'></td>
     <td><input type='submit' name="valide" value='Annuler'></td>

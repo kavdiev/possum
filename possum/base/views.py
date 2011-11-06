@@ -67,13 +67,18 @@ def carte(request):
                                 context_instance=RequestContext(request))
 
 @permission_required('base.p6')
-def products(request, cat_id):
+def products(request, cat_id, only_enable=False):
     data = get_user(request)
     cat = get_object_or_404(Categorie, pk=cat_id)
     data['menu_carte'] = True
     data['categories'] = Categorie.objects.order_by('priorite', 'nom')
     data['cat_current'] = cat
-    data['products'] = Produit.objects.filter(categorie=cat)
+    products = Produit.objects.filter(categorie=cat)
+    if only_enable:
+        data['products'] = products.filter(actif=True)
+        data['only_enable'] = True
+    else:
+        data['products'] = products
     return render_to_response('base/products.html',
                                 data,
                                 context_instance=RequestContext(request))

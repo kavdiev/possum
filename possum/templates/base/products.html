@@ -16,10 +16,12 @@
     </SELECT>
     </td>
     <td colspan="2">Afficher seulement les produits actifs</td>
-    <td align="center" onclick="window.location='/carte/products/cat/{{cat_current.id}}/enable/'">
-        {% if enable %}
+    <td align="center"
+        {% if only_enable %}
+        onclick="window.location='/carte/products/cat/{{cat_current.id}}/'">
         <input type="checkbox" checked="True"/>
         {% else %}
+        onclick="window.location='/carte/products/cat/{{cat_current.id}}/enable/'">
         <input type="checkbox"/>
         {% endif %}
     </td>
