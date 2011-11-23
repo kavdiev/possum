@@ -73,3 +73,8 @@ Twitter
 Vous pouvez suivre les annonces des nouvelles versions ainsi que les
 éventuels correctifs de sécurité sur `twitter <http://twitter.com/possum_software>`_.
 
+Google+
+=======
+
+La page G+ du projet: `POSSUM <https://plus.google.com/113982636103042531268/>`_.
+

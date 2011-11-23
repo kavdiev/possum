@@ -113,6 +113,15 @@ def products_new(request, cat_id):
     return HttpResponseRedirect('/carte/products/cat/%s/' % cat_id)
 
 @permission_required('base.p6')
+def products_details(request, product_id):
+    data = get_user(request)
+    product = get_object_or_404(Produit, pk=product_id)
+    data['product'] = product
+    return render_to_response('base/a_product.html',
+                                data,
+                                context_instance=RequestContext(request))
+
+@permission_required('base.p6')
 def products_change(request, product_id):
     data = get_user(request)
     name = request.POST.get('name', '').strip()

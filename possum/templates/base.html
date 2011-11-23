@@ -4,9 +4,9 @@
         <div id="headerTab"><ul>
     {% if user.is_authenticated %}
             <li class="headerTabNoOver">Bonjour {% if user.get_full_name %}{{ user.get_full_name }}{%else%}{{user.username}}{%endif%} (dernière connexion le {{ user.last_login|date:"Y-m-d H:i:s" }})</li>
-            <li class="headerTabNoOver"><a href="/accounts/logout/">Déconnexion</a></li>
+            <li class="headerTabNoOver"><a href="/users/logout/">Déconnexion</a></li>
     {% else %}
-            <li class="headerTabNoOver"><a href="/accounts/login/">Connexion</a></li>
+            <li class="headerTabNoOver"><a href="/users/login/">Connexion</a></li>
     {% endif %}
         </ul></div>
     </div>

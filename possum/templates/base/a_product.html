@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h1>Édition d'un produit</h1>
+
+cuisson
+categorie
+accompagnement
+sauce
+categories_ok
+produits_ok
+
+https://docs.djangoproject.com/en/dev/topics/forms/
+https://docs.djangoproject.com/en/dev/ref/forms/api/
+http://djangobook.zindep.com/1.0/chapitre07/
+
+<table>
+<tr>
+    <td>Catégorie affichée: </td>
+    <td align="center">
+    <SELECT name="categorie">
+    {% for cat in categories %}
+        <OPTION {% if cat == cat_current %}selected{% endif %}
+                onclick="window.location='/carte/products/cat/{{cat.id}}/'"
+                VALUE="{{ cat.id }}">{{ cat.nom }}</OPTION>
+    {% endfor %}
+    </SELECT>
+    </td>
+    <td colspan="2">Afficher seulement les produits actifs</td>
+    <td align="center"
+        {% if only_enable %}
+        onclick="window.location='/carte/products/cat/{{cat_current.id}}/'">
+        <input type="checkbox" checked="True"/>
+        {% else %}
+        onclick="window.location='/carte/products/cat/{{cat_current.id}}/enable/'">
+        <input type="checkbox"/>
+        {% endif %}
+    </td>
+</tr>
+<tr>
+    <td><b>Nom</b></td>
+    <td><b>Nom facture</b></td>
+    <td><b>Pric TTC</b></td>
+    <td></td>
+    <td><b>Actif</b></td>
+    <td></td>
+</tr>
+{% for p in products %}
+<tr><form method='post' action='/carte/products/{{p.id}}/change/'>{% csrf_token %}
+    <td><input name='name' value="{{p.nom}}"></td>
+    <td><input name='billname' value="{{p.nom_facture}}"></td>
+    <td><input name='prize' value="{{p.prix}}" class="prize"></td>
+    <td><input type='submit' value='Modifier'></td>
+    </form>
+    <td align="center" onclick="window.location='/carte/products/{{p.id}}/active/'"
+        {% if p.actif %}bgcolor="#00FF00">
+        <input type="checkbox" checked="True"/>
+        {% else %}bgcolor="#FF0000">
+        <input type="checkbox"/>
+        {% endif %}
+    </td>
+    <td align="center">
+        <a href="/carte/products/{{p.id}}/details/">détails</a>
+    </td>
+</tr>
+{% endfor %}
+<tr><form method='post' action='/carte/products/cat/{{cat_current.id}}/new/'>{% csrf_token %}
+    <td><input name='name'></td>
+    <td><input name='billname'></td>
+    <td><input name='prize' class="prize"></td>
+    <td><input type='submit' value='Créer'></td>
+    </form>
+</tr>
+</table>
+
+{% endblock %}
+

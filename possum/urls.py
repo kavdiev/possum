@@ -22,6 +22,7 @@ urlpatterns = patterns('possum.base.views',
     (r'^carte/products/cat/(?P<cat_id>\d+)/$', 'products'),
     (r'^carte/products/cat/(?P<cat_id>\d+)/enable/$', 'products', {'only_enable': True}),
     (r'^carte/products/(?P<product_id>\d+)/change/$', 'products_change'),
+    (r'^carte/products/(?P<product_id>\d+)/details/$', 'products_details'),
     (r'^carte/products/cat/(?P<cat_id>\d+)/new/$', 'products_new'),
 
     (r'^pos/$', 'pos'),
@@ -42,8 +43,8 @@ urlpatterns = patterns('possum.base.views',
 )
 
 urlpatterns += patterns('',
-    (r'^accounts/login/$', 'django.contrib.auth.views.login', {'template_name': 'login.html'}),
-    (r'^accounts/logout/$', 'django.contrib.auth.views.logout_then_login'),
+    (r'^users/login/$', 'django.contrib.auth.views.login', {'template_name': 'login.html'}),
+    (r'^users/logout/$', 'django.contrib.auth.views.logout_then_login'),
 )
 
 if settings.DEBUG:
