@@ -1,5 +1,29 @@
-POSSUM (Point Of Sales System for Untamed Managers):
+POSSUM is a software for point of sales (POS) type restaurant / bar / brasserie.
 
-http://possum-software.github.com/possum/
+It is advisable to use at least a ticket printer and a touch screen.
+
+POSSUM can be used to provide billing and presents different statistical (Sales, VAT amount, total payments by payment type, settings, average ticket per table, ...). These statistics are calculated per day and per month and help the manager to know the trade trend sales.
+
+It is also possible to manage playlists, this will allow you to use Possum as a jukebox to play music in the restaurant.
+
+POSSUM is a french project, nevertheless we try to write up in English.
+
+All source code are under GPLv3 and documentation in FDL. GUI use EFL and all the backend is developped with Python / Django.
+
+Some important links:
+
+* Documentation: http://possum-software.github.com/possum/
+* Issues:        https://github.com/possum-software/possum/issues
+* FAQ:           https://github.com/possum-software/possum/wiki/FAQ
+* Forum:         https://groups.google.com/forum/?hl=en#!forum/possum-software
+* Freecode:      http://freecode.com/projects/possum
+* Mailing list:  possum-software__REPLACE_THIS_TEXT_BY_@_AND_REMOVE_ALL_UNDERSCORE__googlegroups.com
+* Roadmap:       https://github.com/possum-software/possum/wiki/Roadmap
+
+And, to be social (especially for versions and security announcements): Twitter and Google+
+
+The key word: try to keep it simple for the final user.
+
+
 
 
