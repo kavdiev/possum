@@ -103,7 +103,7 @@ MIDDLEWARE_CLASSES = (
 )
 
 LOGIN_URL = 'users/login/'
-#LOGIN_REDIRECT_URL = '/'
+LOGIN_REDIRECT_URL = '/'
 
 ROOT_URLCONF = 'possum.urls'
 
