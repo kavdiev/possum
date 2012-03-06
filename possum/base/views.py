@@ -19,17 +19,23 @@
 #
 
 import logging
-from possum.base.models import Accompagnement, Sauce, Etat, \
-    Categorie, Couleur, Cuisson, Facture, Log, LogType, Paiement, \
-    PaiementType, Produit, ProduitVendu, Suivi, Table, Zone, StatsJourProduit, \
-    StatsJourCategorie
+
+from possum.base.stats import StatsJourProduit, StatsJourCategorie
+from possum.base.bill import Facture
+from possum.base.product import Produit, ProduitVendu
+from possum.base.payment import PaiementType, Paiement
+from possum.base.color import Couleur
+from possum.base.category import Categorie
+from possum.base.options import Cuisson, Sauce, Accompagnement
+from possum.base.location import Zone, Table
+
 from django.contrib.auth import authenticate, login, logout
 from django.shortcuts import render_to_response, get_object_or_404
-from django.contrib.auth.decorators import login_required, permission_required
+from django.contrib.auth.decorators import login_required
 #from django.views.decorators.csrf import csrf_protect
 from django.core.context_processors import csrf
 from django.template import RequestContext
-from django.http import HttpResponseForbidden, HttpResponseRedirect, HttpResponse
+from django.http import HttpResponseForbidden, HttpResponseRedirect
 from django.core.context_processors import PermWrapper
 from django.contrib.auth.models import User, UserManager, Permission
 from django.conf import settings
@@ -42,15 +48,32 @@ def get_user(request):
 #    data.update(csrf(request))
     return data
 
+"""
+parametre:
+    user
+    perm
+
+si l'utilisateur n'a pas la permission alors il est redirige vers l'index avec
+un message d'erreur
+"""
+from django.utils.functional import wraps
+def permission_required(perm, **kwargs):
+    def decorator(view_func):
+        def _wrapped_view(request, *args, **kwargs):
+            if request.user.has_perm(perm):
+                return view_func(request, *args, **kwargs)
+            else:
+                messages.add_message(request, messages.ERROR, "Vous n'avez pas"
+                        " les droits nécessaires (%s)." % perm.split('.')[1])
+                return HttpResponseRedirect('/')
+
+        return wraps(view_func)(_wrapped_view)
+    return decorator
+
 @login_required
 def accueil(request):
 #    today = datetime.date.today()
     data = get_user(request)
-#    data['user'] = request.user
-#    declaration = Declaration.objects.filter(user=request.user).filter(greve__validation__isnull=False)
-#    data['current'] = declaration.filter(greve__date_fin__gt=today).order_by('-greve__date_greve')
-#    data['others'] = declaration.filter(greve__date_fin__lte=today).order_by('-greve__date_greve')
-#   data['revision'] = get_svn_revision(".")
 
     return render_to_response('base/accueil.html',
                                 data,
@@ -170,14 +193,15 @@ def products_change(request, product_id):
         logging.warning("[%s] save failed for product [%s]" % (data['user'].username, product.nom))
     return HttpResponseRedirect('/carte/products/cat/%s/' % product.categorie.id)
 
+
 @permission_required('base.p6')
 def categories(request):
     data = get_user(request)
     data['menu_carte'] = True
     data['categories'] = Categorie.objects.order_by('priorite', 'nom')
     return render_to_response('base/categories.html',
-                                data,
-                                context_instance=RequestContext(request))
+                    data,
+                    context_instance=RequestContext(request))
 
 @permission_required('base.p6')
 def categories_delete(request, cat_id):
@@ -352,11 +376,11 @@ def stats(request):
 def profile(request):
     data = get_user(request)
     data['menu_profile'] = True
+    data['perms_list'] = settings.PERMS
     old = request.POST.get('old', '').strip()
     new1 = request.POST.get('new1', '').strip()
     new2 = request.POST.get('new2', '').strip()
     if old:
-        error = False
         if data['user'].check_password(old):
             if new1 and new1 == new2:
                 data['user'].set_password(new1)
@@ -380,7 +404,7 @@ def users(request):
     data['perms_list'] = settings.PERMS
     data['users'] = User.objects.all()
     for user in data['users']:
-         user.permissions = [p.codename for p in user.user_permissions.all()]
+        user.permissions = [p.codename for p in user.user_permissions.all()]
     return render_to_response('base/users.html',
                                 data,
                                 context_instance=RequestContext(request))

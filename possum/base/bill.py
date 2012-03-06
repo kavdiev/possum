@@ -19,15 +19,50 @@
 #
 
 from django.db import models
+import logging
 import datetime
 from decimal import Decimal
+from django.db.models import Sum
+from possum.base.payment import Paiement
+from possum.base.payment import PaiementType
+from django.contrib.auth.models import User
+import os
+from possum.base.stats import StatsJourGeneral, StatsJourPaiement, \
+        StatsJourProduit, StatsJourCategorie
+from possum.base.category import Categorie
+from possum.base.log import LogType
+from django.contrib.auth import authenticate
+
+
+def remplissage(nb,  caractere,  largeur):
+    """caractere est le caractere de remplissage"""
+    milieu = caractere
+    # on ajoute len(milieu) a nb
+    nb += 1
+    while nb < largeur:
+        milieu += caractere
+        nb += 1
+    return milieu
+
+
+class Suivi(models.Model):
+    """Suivi des etats"""
+    facture = models.ForeignKey('base.Facture', related_name="suivi-facture")
+    etat = models.ForeignKey('Etat', related_name="suivi-etat")
+    date = models.DateTimeField('depuis le', auto_now_add=True)
+
+    def __unicode__(self):
+        return "Facture %s : etat %s" % (self.facture, self.etat.nom)
+
 
 class Facture(models.Model):
     date_creation = models.DateTimeField('creer le', auto_now_add=True)
-    table = models.ForeignKey('Table', null=True, blank=True, related_name="facture-table")
+    table = models.ForeignKey('Table', \
+            null=True, blank=True, \
+            related_name="facture-table")
     couverts = models.PositiveIntegerField("nombre de couverts", default=0)
-    produits = models.ManyToManyField('ProduitVendu',
-        related_name="les produits facturés",
+    produits = models.ManyToManyField('ProduitVendu', \
+        related_name="les produits facturés", \
         limit_choices_to = {'date__gt': datetime.datetime.today()})
     montant_normal = models.DecimalField(max_digits=9, decimal_places=2, default=0)
     montant_alcool = models.DecimalField(max_digits=9, decimal_places=2, default=0)
@@ -63,7 +98,6 @@ class Facture(models.Model):
             date = self.date_creation.strftime("%H:%M %d/%m")
         else:
             date = "--:-- --/--"
-        total = self.total()
         return u"%s F%06d" % (date, id)
 
     def __cmp__(self, other):
@@ -71,7 +105,7 @@ class Facture(models.Model):
             Les factures sont triees par date_creation.
             D'abord les plus récentes, puis les plus vielles.
         """
-        return cmp(self.date_creation,other.date_creation)
+        return cmp(self.date_creation, other.date_creation)
 
     def guest_couverts(self):
         """Essaye de deviner le nombre de couverts"""
@@ -316,7 +350,7 @@ class Facture(models.Model):
         if self.restant_a_payer <= Decimal("0"):
             logging.info("[%s] nouveau paiement ignore car restant"\
                             " a payer <= 0 (%5.2f)"
-                            % (self,self.restant_a_payer))
+                            % (self, self.restant_a_payer))
             return False
 
         paiement = Paiement()

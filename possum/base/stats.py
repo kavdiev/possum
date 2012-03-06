@@ -19,6 +19,12 @@
 #
 
 from django.db import models
+from possum.base.log import LogType
+from possum.base.category import Categorie
+from possum.base.product import Produit
+from possum.base.payment import PaiementType
+from decimal import Decimal
+import logging
 
 class StatsJour(models.Model):
     """Modele pour les classes de statistiques."""
