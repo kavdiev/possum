@@ -35,14 +35,11 @@
             <li class="{% if menu_bills %}menuSelected{% else %}menuElement{% endif %}" onclick="window.location='/bills/'">
                 <a href="/bills/">Registre</a>
             </li>
-            <li class="{% block menuGame %}menuElement{% endblock %}" onclick="window.location='/games/'">
-                <a href="/games/">Jeux</a>
-            </li>
             <li class="{% if menu_jukebox %}menuSelected{% else %}menuElement{% endif %}" onclick="window.location='/jukebox/'">
                 <a href="/jukebox/">Jukebox</a>
             </li>
             <li class="{% if menu_profile %}menuSelected{% else %}menuElement{% endif %}" onclick="window.location='/profile/'">
-                <a href="/profile/">Mes informations</a>
+                <a href="/profile/">Mon profil</a>
             </li>
             <li class="{% block menuWeather %}menuElement{% endblock %}" onclick="window.location='/weather/'">
                 <a href="/weather/">Météo</a>
