@@ -77,6 +77,18 @@ Création de la base pour l'application:
   Superuser created successfully.
 
 
+Il faut ensuite donner les droits minimums à cet utilisateur:
+
+::
+
+  cd
+  cd possum-software/possum
+  ./manage.py shell_plus
+  u = User.objects.get(pk=1)
+  u.user_permissions.add(Permission.objects.get(codename="p1"))
+  u.save()
+  quit()
+
 Apache
 ------
 

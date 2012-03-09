@@ -5,7 +5,6 @@ urlpatterns = patterns('possum.base.views',
     (r'^$', 'accueil'),
 #    (r'^accueil$', 'accueil'),
 
-#    (r'^carte/$', 'carte'),
     (r'^carte/categories/$', 'categories'),
     (r'^carte/categories/new/$', 'categories_new'),
     (r'^carte/categories/(?P<cat_id>\d+)/less/$', 'categories_less_priority'),
@@ -29,6 +28,7 @@ urlpatterns = patterns('possum.base.views',
     (r'^bills/$', 'factures'),
     (r'^jukebox/$', 'jukebox'),
     (r'^stats/$', 'stats'),
+    (r'^kitchen/$', 'accueil'),
 
     (r'^profile/$', 'profile'),
 

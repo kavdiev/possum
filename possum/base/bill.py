@@ -64,12 +64,15 @@ class Facture(models.Model):
     produits = models.ManyToManyField('ProduitVendu', \
         related_name="les produits facturés", \
         limit_choices_to = {'date__gt': datetime.datetime.today()})
-    montant_normal = models.DecimalField(max_digits=9, decimal_places=2, default=0)
-    montant_alcool = models.DecimalField(max_digits=9, decimal_places=2, default=0)
+    montant_normal = models.DecimalField(max_digits=9, decimal_places=2, 
+            default=0)
+    montant_alcool = models.DecimalField(max_digits=9, decimal_places=2, 
+            default=0)
     paiements = models.ManyToManyField('Paiement',
         related_name="les paiements",
         limit_choices_to = {'date__gt': datetime.datetime.today()})
-    restant_a_payer = models.DecimalField(max_digits=9, decimal_places=2, default=0)
+    restant_a_payer = models.DecimalField(max_digits=9, decimal_places=2, 
+            default=0)
     etats = models.ManyToManyField('Suivi', related_name="le suivi")
     saved_in_stats = models.BooleanField(default=False)
 

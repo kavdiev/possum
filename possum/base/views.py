@@ -40,6 +40,8 @@ from django.core.context_processors import PermWrapper
 from django.contrib.auth.models import User, UserManager, Permission
 from django.conf import settings
 from django.contrib import messages
+from django.utils.functional import wraps
+
 
 def get_user(request):
     data = {}
@@ -48,16 +50,10 @@ def get_user(request):
 #    data.update(csrf(request))
     return data
 
-"""
-parametre:
-    user
-    perm
-
-si l'utilisateur n'a pas la permission alors il est redirige vers l'index avec
-un message d'erreur
-"""
-from django.utils.functional import wraps
 def permission_required(perm, **kwargs):
+    """This decorator redirect the user to '/'
+    if he hasn't the permission.
+    """
     def decorator(view_func):
         def _wrapped_view(request, *args, **kwargs):
             if request.user.has_perm(perm):
@@ -66,7 +62,6 @@ def permission_required(perm, **kwargs):
                 messages.add_message(request, messages.ERROR, "Vous n'avez pas"
                         " les droits nécessaires (%s)." % perm.split('.')[1])
                 return HttpResponseRedirect('/')
-
         return wraps(view_func)(_wrapped_view)
     return decorator
 
@@ -76,8 +71,8 @@ def accueil(request):
     data = get_user(request)
 
     return render_to_response('base/accueil.html',
-                                data,
-                                context_instance=RequestContext(request))
+            data,
+            context_instance=RequestContext(request))
 
 @permission_required('base.p6')
 def carte(request):
