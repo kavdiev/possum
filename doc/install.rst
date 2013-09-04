@@ -1,27 +1,36 @@
 Installation
 ============
 
-Cette documentation est écrite pour une distribution GNU/Linux Ubuntu 11.04.
+Cette documentation est écrite pour GNU/Linux, et devrait fonctionner avec toutes les distributions (Ubuntu, Gentoo, ...).
 
-Utilisateur
------------
+Vous devez avoir python et virtualenv installés sur votre système.
 
-Tout d'abord, nous allons créer un utilisateur ''pos'' qui aura comme ''home'' : /home/pos:
-
-::
-
-  sudo adduser pos
-
-Django
-------
-
-Installation de Django:
+Création de l'utilisateur POS
+-----------------------------
 
 ::
 
-  sudo apt-get install python-django python-werkzeug
+  adduser pos
 
-Il est conseillé de prendre au minimum une version 1.3.
+Création de l'environnement virtuel
+-----------------------------------
+
+Dans notre exemple, nous allons installer Possum dans le répertoire ''/home/pos''. Vous
+pouvez évidemment choisir un autre répertoire si vous le souhaitez.
+
+:: 
+
+  su - pos
+  virtualenv --prompt=='possum ' --python=python2 /home/pos
+
+On va maintenant préparer cet environnement:
+
+
+::
+
+  source /home/pos/bin/activate 
+  pip install Django south wsgiref sphinx django_extensions Werkzeug
+  deactivate
 
 
 Possum
@@ -32,10 +41,7 @@ stable de POSSUM ici: `GitHub <https://github.com/possum-software/possum/archive
 
 ::
 
-  su - pos
-  cd
   tar xzf possum-software-possum-*.tar.gz
-  ln -sf /home/pos/possum-software-possum-??????? possum-software
 
 L'autre possibilité est de récupérer la version en développement. Attention,
 il est déconseillé de se servir de cette version dans un environnement
@@ -43,20 +49,19 @@ de production:
 
 ::
 
-  sudo apt-get install git
-  su - pos
-  cd
-  git clone git://github.com/possum-software/possum.git possum-software
+  git clone https://github.com/possum-software/possum.git possum-software
 
 Maintenant, nous devons configurer POSSUM.
 
 ::
 
-  cd
-  cd possum-software/possum
+  cd /home/pos/possum-software/possum
   cp settings.py-sample settings.py
 
-La base de données configurée par défaut est Sqlite, pour plus d'informations
+La base de données configurée par défaut est Sqlite3. À vous d'adapter le fichier
+de configuration a vos besoins. Il faudrat au minimum modifier la variable ''SECRET_KEY''.
+
+Pour plus d'informations
 reportez vous à la documentation de Django:
 `Installation de Django <http://docs.django-fr.org/intro/install.html>`_
 
@@ -64,8 +69,7 @@ Création de la base pour l'application:
 
 ::
 
-  cd
-  cd possum-software/possum
+  cd /home/pos/possum-software
   ./manage.py syncdb
 
   You just installed Django's auth system, which means you don't have any superusers defined.
@@ -76,67 +80,105 @@ Création de la base pour l'application:
   Password (again):
   Superuser created successfully.
 
+On mets à jour le schéma de la base de données:
+
+::
+
+  cd /home/pos/possum-software
+  ./manage.py migrate
 
 Il faut ensuite donner les droits minimums à cet utilisateur:
 
 ::
 
-  cd
-  cd possum-software/possum
+  cd /home/pos/possum-software
   ./manage.py shell_plus
   u = User.objects.get(pk=1)
   u.user_permissions.add(Permission.objects.get(codename="p1"))
   u.save()
   quit()
 
-Apache
-------
-
-Nous allons maintenant configurer le serveur web:
+Avant d'aller plus loin, vous pouvez tester le bon fonctionnement de l'ensemble en utilisant
+le serveur de développement:
 
 ::
 
-  sudo apt-get install apache2 libapache2-mod-python
-  sudo a2enmod python
+  cd /home/pos/possum-software
+  ./manage.py runserver_plus 0.0.0.0:8000
+
+Vous devez pouvoir accèder à l'interface web. 
+
+À ce stade, vous pouvez également générer la documentation au format HTML dans le 
+répertoire ''/home/pos/possum-software/doc/_build/html/'':
+
+::
+
+  cd /home/pos/possum-software/doc
+  make html
+
+
+Installation d'Apache
+---------------------
+
+Nous devons tout d'abord installer le serveur web Apache et le module mod_wsgi.
+
+Gentoo
+^^^^^^
+
+::
+
+  emerge -av www-servers/apache www-apache/mod_wsgi
+
+Ubuntu
+^^^^^^
+
+::
+
+  sudo apt-get install apache2 libapache2-mod-wsgi
+  sudo a2enmod wsgi
+
 
 Il faut éditer le fichier de configuration du serveur web pour activer
 POSSUM. Le fichier par défaut doit être /etc/apache2/sites-enabled/default.
+
+Configuration d'Apache
+----------------------
+
+Nous allons maintenant configurer le serveur web.
+Vous trouverez la documentation officiel de Django 
+`ici <https://docs.djangoproject.com/en/1.5/howto/deployment/wsgi/modwsgi/>`_
 
 Voici un exemple avec possum accessible à l'adresse: '/'
 
 ::
 
-  <Location "/">
-        SetHandler python-program
-        PythonHandler django.core.handlers.modpython
-        SetEnv DJANGO_SETTINGS_MODULE possum.settings
-        PythonAutoReload On
-        PythonOption django.root /
-        PythonDebug Off
-        PythonPath "['/home/pos/possum-software/'] + sys.path"
-  </Location>
+  Alias /robots.txt /home/pos/possum-software/possum/static/robots.txt
+  Alias /favicon.ico /home/pos/possum-software/possum/static/favicon.ico
+  Alias /media/ /home/pos/possum-software/possum/media/
   Alias /static/ /home/pos/possum-software/possum/static/
-  <Location "/static/">
-        SetHandler None
-  </Location>
 
-Voici un autre exemple avec possum accessible à l'adresse: '/possum'
+  <Directory /home/pos/possum-software/possum/static>
+      Order deny,allow
+      Allow from all
+  </Directory>
 
-::
+  <Directory /home/pos/possum-software/possum/media>
+      Order deny,allow
+      Allow from all
+  </Directory>
 
-  <Location "/possum/">
-        SetHandler python-program
-        PythonHandler django.core.handlers.modpython
-        SetEnv DJANGO_SETTINGS_MODULE possum.settings
-        PythonAutoReload On
-        PythonOption django.root /possum/
-        PythonDebug Off
-        PythonPath "['/home/pos/possum-software/'] + sys.path"
-  </Location>
-  Alias /possum/static/ /home/pos/possum-software/possum/static/
-  <Location "/possum/static/">
-        SetHandler None
-  </Location>
+  WSGIScriptAlias / /home/pos/possum-software/possum/wsgi.py
+  WSGIPythonPath /home/pos/possum-software:/home/pos/lib/python2.7/site-packages
+  #WSGIDaemonProcess possum python-path=/home/pos/possum-software:/home/pos/lib/python2.7/site-packages
+  #WSGIProcessGroup possum
+
+  <Directory /home/pos/possum-software/possum>
+      <Files wsgi.py>
+          Order deny,allow
+          Require all granted
+      </Files>
+  </Directory>
+
 
 Ensuite il faut redémarrer le serveur web:
 

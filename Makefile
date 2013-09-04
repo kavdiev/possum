@@ -5,7 +5,6 @@ help:
 	@echo ""
 	@echo "Usage: make [commande]"
 	@echo " - run:		runserver_plus"
-	@echo " - ihm:		IHM EFL"
 	@echo " - doc:		sphinx"
 	@echo " - www:		publie la documentation"
 	@echo " - lint :	django-lint / pylint"
@@ -18,10 +17,10 @@ help:
 	@echo ""
 
 tests:
-	@cd possum; ./manage.py test
+	@./manage.py test
 
 run:
-	@cd possum; python manage.py runserver_plus
+	@python manage.py runserver_plus
 
 doc:
 	cd doc && make html
@@ -32,9 +31,6 @@ www:
 
 uml:
 	tools/uml.py
-
-ihm:
-	cd possum; python gui/efl.py
 
 lint:
 	-@pylint --rcfile=tools/pylint.rc possum/gui/efl.py possum/base/models.py > doc/qualite.html
@@ -47,13 +43,13 @@ lint:
 #	-@django-lint -r
 
 model:
-	cd possum; ./manage.py graph_models --output=../doc/images/models-base.png -g base
+	./manage.py graph_models --output=../doc/images/models-base.png -g base
 
 sync:
-	cd possum; ./manage.py syncdb
+	./manage.py syncdb
 
 sh:
-	cd possum; ./manage.py shell_plus
+	./manage.py shell_plus
 
 newdb:
 	utils/convert_sqlite3-to-django.py

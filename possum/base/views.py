@@ -36,7 +36,7 @@ from django.contrib.auth.decorators import login_required
 from django.core.context_processors import csrf
 from django.template import RequestContext
 from django.http import HttpResponseForbidden, HttpResponseRedirect
-from django.core.context_processors import PermWrapper
+from django.contrib.auth.context_processors import PermWrapper
 from django.contrib.auth.models import User, UserManager, Permission
 from django.conf import settings
 from django.contrib import messages

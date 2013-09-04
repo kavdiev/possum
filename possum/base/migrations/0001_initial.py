@@ -381,7 +381,7 @@ class Migration(SchemaMigration):
             'montant_alcool': ('django.db.models.fields.DecimalField', [], {'default': '0', 'max_digits': '9', 'decimal_places': '2'}),
             'montant_normal': ('django.db.models.fields.DecimalField', [], {'default': '0', 'max_digits': '9', 'decimal_places': '2'}),
             'paiements': ('django.db.models.fields.related.ManyToManyField', [], {'related_name': "'les paiements'", 'symmetrical': 'False', 'to': "orm['base.Paiement']"}),
-            'produits': ('django.db.models.fields.related.ManyToManyField', [], {'related_name': "'les produits factur\\xc3\\xa9s'", 'symmetrical': 'False', 'to': "orm['base.ProduitVendu']"}),
+            'produits': ('django.db.models.fields.related.ManyToManyField', [], {'related_name': "'les produits factures'", 'symmetrical': 'False', 'to': "orm['base.ProduitVendu']"}),
             'restant_a_payer': ('django.db.models.fields.DecimalField', [], {'default': '0', 'max_digits': '9', 'decimal_places': '2'}),
             'saved_in_stats': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
             'table': ('django.db.models.fields.related.ForeignKey', [], {'blank': 'True', 'related_name': "'facture-table'", 'null': 'True', 'to': "orm['base.Table']"})
