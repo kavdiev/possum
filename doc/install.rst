@@ -10,13 +10,16 @@ Création de l'utilisateur POS
 
 ::
 
-  adduser pos
+ sudo adduser pos
 
 Création de l'environnement virtuel
 -----------------------------------
 
 Dans notre exemple, nous allons installer Possum dans le répertoire ''/home/pos''. Vous
 pouvez évidemment choisir un autre répertoire si vous le souhaitez.
+
+Il faut dans un premier temps installer l'outil virtualenv de python si ce n'est déjà fait. 
+Voir https://pypi.python.org/pypi/virtualenv
 
 :: 
 
