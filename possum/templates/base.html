@@ -26,24 +26,24 @@
                 </li>
             {% endif %}
 -->
-            <li class="{% if menu_pos %}menuSelected{% else %}menuElement{% endif %}" onclick="window.location='/pos/'">
+            <!--li class="{% if menu_pos %}menuSelected{% else %}menuElement{% endif %}" onclick="window.location='/pos/'">
                 <a href="/pos/">Caisse</a>
+            </li-->
+            <li class="{% if menu_bills %}menuSelected{% else %}menuElement{% endif %}" onclick="window.location='/bills/'">
+                <a href="/bills/">Commandes</a>
             </li>
             <li class="{% if menu_kitchen %}menuSelected{% else %}menuElement{% endif %}" onclick="window.location='/kitchen/'">
                 <a href="/kitchen/">Cuisine</a>
             </li>
-            <li class="{% if menu_bills %}menuSelected{% else %}menuElement{% endif %}" onclick="window.location='/bills/'">
-                <a href="/bills/">Registre</a>
-            </li>
-            <li class="{% if menu_jukebox %}menuSelected{% else %}menuElement{% endif %}" onclick="window.location='/jukebox/'">
+            <!--li class="{% if menu_jukebox %}menuSelected{% else %}menuElement{% endif %}" onclick="window.location='/jukebox/'">
                 <a href="/jukebox/">Jukebox</a>
-            </li>
+            </li-->
             <li class="{% if menu_profile %}menuSelected{% else %}menuElement{% endif %}" onclick="window.location='/profile/'">
                 <a href="/profile/">Mon profil</a>
             </li>
-            <li class="{% block menuWeather %}menuElement{% endblock %}" onclick="window.location='/weather/'">
+            <!--li class="{% block menuWeather %}menuElement{% endblock %}" onclick="window.location='/weather/'">
                 <a href="/weather/">Météo</a>
-            </li>
+            </li-->
             <li class="{% if menu_stats %}menuSelected{% else %}menuElement{% endif %}" onclick="window.location='/stats/'">
                 <a href="/stats/">Résultats</a>
             </li>
@@ -55,7 +55,7 @@
         <div id="clock">
             <script type="text/javascript">window.onload = date_heure('clock');</script>
         </div>
-
+        
         <div id="content">
             {% if messages %}
             <ul class="messages">

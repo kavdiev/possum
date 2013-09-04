@@ -1,21 +1,20 @@
 {% extends "base.html" %}
 {% block content %}
 
-<h1>Les factures</h1>
-
-<p>table avec la liste du jour par défaut et sinon une box pour choisir une date</p>
-<center>
-        {% if factures %}
-        <table border="1">
-            <tr><td>Id</td><td>date</td><td>couverts</td><td>montant</td></tr>
-                {% for facture in factures %}
-                <tr><td><a href="facture/{{facture.id}}">{{facture.id}}</a></td><td>{{facture.date_creation}}</td><td>{{facture.couverts}}</td><td>{{facture.total}}</td></tr>
-                {% endfor %}
-        </table>
-        {% else %}
-                <p>Il n'y a pas encore eu de facture.</p>
-        {% endif %}
-        </center>
+<ul id="bills">
+    <li onclick="window.location='/bill/new/'">
+        <a href="/bill/new/">Nouvelle commande</a>
+    </li>
+    {% if factures %}
+        {% for facture in factures %}
+        <li onclick="window.location='/bill/{{facture.id}}/'">
+        {{facture}}</br>
+        Couverts: {{facture.couverts}}</br>
+        Table: {{facture.table}}</br>
+        </li>
+        {% endfor %}
+    {% endif %}
+</ul>
 
 {% endblock %}
 

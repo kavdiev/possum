@@ -507,19 +507,52 @@ def users_change_perm(request, user_id, codename):
         logging.warning("[%s] wrong perm info : [%s]" % (data['user'].username, codename))
     return HttpResponseRedirect('/users/')
 
+@permission_required('base.p5')
+def bill_new(request):
+    """Create a new bill"""
+    data = get_user(request)
+    data['menu_bills'] = True
+    bill = Facture()
+    bill.save()
+    return HttpResponseRedirect('/bill/%s/table/select/' % bill.id)
+
+@permission_required('base.p5')
+def table_select(request, bill_id):
+    """Select/modify table of a bill"""
+    data = get_user(request)
+    data['menu_bills'] = True
+    data['zones'] = Zone.objects.all()
+    data['bill_id'] = bill_id
+    return render_to_response('base/tables.html',
+                                data,
+                                context_instance=RequestContext(request))
+
+@permission_required('base.p5')
+def table_set(request, bill_id, table_id):
+    """Select/modify table of a bill"""
+    data = get_user(request)
+    bill = get_object_or_404(Facture, pk=bill_id)
+    table = get_object_or_404(Table, pk=table_id)
+    bill.set_table(table)
+    data['facture'] = bill
+    return render_to_response('base/facture.html',
+                                data,
+                                context_instance=RequestContext(request))
+
 @permission_required('base.p3')
 def factures(request):
     data = get_user(request)
     data['menu_bills'] = True
 #    data['factures'] = Facture.objects.all()
+    data['factures'] = Facture().non_soldees()
     return render_to_response('base/factures.html',
                                 data,
                                 context_instance=RequestContext(request))
 
 @permission_required('base.p3')
-def facture(request, id_facture):
+def bill_view(request, bill_id):
     data = get_user(request)
-    data['facture'] = get_object_or_404(Facture, pk=id_facture)
+    data['facture'] = get_object_or_404(Facture, pk=bill_id)
     return render_to_response('base/facture.html',
                                 data,
                                 context_instance=RequestContext(request))

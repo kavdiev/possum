@@ -29,6 +29,10 @@ class Zone(Nom):
 #       logging.debug("surtaxe de %d centimes sur la zone %s" % (self.surtaxe))
         return self.surtaxe
 
+    def tables(self):
+        """Return list of tables for this zone."""
+        return Table.objects.filter(zone=self)
+
 class Table(Nom):
     zone = models.ForeignKey('Zone', related_name="table-zone")
 

@@ -443,23 +443,34 @@ li
     text-align:left;
 }
 
-/* partie trombinoscope */
-#trombi {
+/* list of bills */
+#bills {
     list-style:none; /* inutile pour safari et firefox, mais pas pour IE */
 }
-#trombi li {
+#bills li {
     float:left; /* c'est cette balise qui fait l'effet tableau*/
-    width:90px;
-    height:160px;
+    width:140px;
+    height:70px;
     background:#eee;
     margin:5px;
     overflow:hidden; /* permet de limiter l'affichage du contenu au dimension du contenant */
     padding:5px;
 }
-#trombi li img {
-    width:80px;
-    height:107px;
+
+/* list of tables */
+#tables {
+    list-style:none; /* inutile pour safari et firefox, mais pas pour IE */
 }
+#tables li {
+    float:left; /* c'est cette balise qui fait l'effet tableau*/
+    width:30px;
+    height:30px;
+    background:#eee;
+    margin:5px;
+    overflow:hidden; /* permet de limiter l'affichage du contenu au dimension du contenant */
+    padding:5px;
+}
+
 .affichage_sans_float {
     clear: both;
 }

@@ -31,6 +31,10 @@ urlpatterns = patterns('possum.base.views',
 
     url(r'^pos/$', 'pos'),
     url(r'^bills/$', 'factures'),
+    url(r'^bill/new/$', 'bill_new'),
+    url(r'^bill/(?P<bill_id>\d+)/table/select/$', 'table_select'),
+    url(r'^bill/(?P<bill_id>\d+)/table/set/(?P<table_id>\d+)/$', 'table_set'),
+    url(r'^bill/(?P<bill_id>\d+)/$', 'bill_view'),
     url(r'^jukebox/$', 'jukebox'),
     url(r'^stats/$', 'stats'),
     url(r'^kitchen/$', 'accueil'),
@@ -44,7 +48,6 @@ urlpatterns = patterns('possum.base.views',
     url(r'^users/(?P<user_id>\d+)/change/$', 'users_change'),
     url(r'^users/(?P<user_id>\d+)/perm/(?P<codename>p\d+)/$', 'users_change_perm'),
 
-    url(r'^facture/(?P<id_facture>\d+)/$', 'facture'),
 )
 
 urlpatterns += patterns('',

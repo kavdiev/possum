@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h1>Sélection de la table</h1>
+
+<ul id="tables">
+    {% if zones %}
+        {% for zone in zones %}
+            </br></br><h2>{{zone.nom}}</h2>
+            {% for table in zone.tables %}
+                <li onclick="window.location='/bill/{{bill_id}}/table/set/{{table.id}}/'">
+                <a href="/bill/{{bill_id}}/table/set/{{table.id}}/">{{table.nom}}</a>
+                </li>
+            {% endfor %}
+        {% endfor %}
+    {% else %}
+        <li>Aucune table disponible.</li>
+    {% endif %}
+</ul>
+
+{% endblock %}
+
