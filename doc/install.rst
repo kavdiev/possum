@@ -140,7 +140,6 @@ Ubuntu
   sudo apt-get install apache2 libapache2-mod-wsgi
   sudo a2enmod wsgi
 
-
 Il faut éditer le fichier de configuration du serveur web pour activer
 POSSUM. Le fichier par défaut doit être /etc/apache2/sites-enabled/default.
 
