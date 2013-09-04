@@ -1,7 +1,7 @@
 #!/bin/bash
 cd /home/pos/possum-software
-git pull >/dev/null 2>&1
-if [ $? -gt 0 ]
+NBLINE=$(git pull 2>&1 | wc -l)
+if [ $NBLINE -gt 1 ]
 then
     # update doc on each update
     source /home/pos/bin/activate
