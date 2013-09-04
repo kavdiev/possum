@@ -33,7 +33,10 @@ On va maintenant préparer cet environnement:
 
   source /home/pos/bin/activate 
   pip install Django south wsgiref sphinx django_extensions Werkzeug
-  deactivate
+
+
+Note: il faudra utiliser ''deactivate'' pour sortir du virtualenv Possum une fois toutes
+la configuration terminée.
 
 
 Possum
