@@ -19,7 +19,7 @@ Dans notre exemple, nous allons installer Possum dans le répertoire ''/home/pos
 pouvez évidemment choisir un autre répertoire si vous le souhaitez.
 
 Il faut dans un premier temps installer l'outil virtualenv de python si ce n'est déjà fait. 
-Voir https://pypi.python.org/pypi/virtualenv
+Voir `VirtualEnv <https://pypi.python.org/pypi/virtualenv>`_
 
 :: 
 
