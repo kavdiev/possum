@@ -66,3 +66,4 @@ class Categorie(Nom, Priorite):
             infos += " ___"
 #        return u"1 %s % 12.2f" % (self.produit.nom_facture, self.prix)
         return u"%-18s (% 3d produits)  [%s]" % (self.nom[:18], nb, infos)
+

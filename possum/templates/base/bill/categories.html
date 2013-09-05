@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h1>Sélection d'une catégorie</h1>
+
+<ul id="categories">
+    {% for category in categories %}
+        <li onclick="window.location='/bill/{{bill_id}}/product/{{category.id}}/select/'">
+        <a href="/bill/{{bill_id}}/product/{{category.id}}/select/">{{category.nom}}</a>
+        </li>
+    {% empty %}
+        <li>Aucune categorie disponible.</li>
+    {% endfor %}
+</ul>
+
+{% endblock %}
+

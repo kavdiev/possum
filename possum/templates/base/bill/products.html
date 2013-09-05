@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h1>Sélection d'un produit</h1>
+
+<ul id="products">
+    {% for product in products %}
+        <li onclick="window.location='/bill/{{bill_id}}/product/add/{{product.id}}/'">
+        <a href="/bill/{{bill_id}}/product/add/{{product.id}}/">{{product.nom}}</a>
+        </li>
+    {% empty %}
+        <li>Aucun produit disponible.</li>
+    {% endfor %}
+</ul>
+
+{% endblock %}
+

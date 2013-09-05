@@ -542,6 +542,44 @@ def table_set(request, bill_id, table_id):
                                 context_instance=RequestContext(request))
 
 @permission_required('base.p5')
+def category_select(request, bill_id):
+    """Select a category to add a new product on a bill."""
+    data = get_user(request)
+    data['menu_bills'] = True
+    data['categories'] = Categorie.objects.order_by('priorite', 'nom')
+    data['bill_id'] = bill_id
+    return render_to_response('base/bill/categories.html',
+                                data,
+                                context_instance=RequestContext(request))
+
+@permission_required('base.p5')
+def product_select(request, bill_id, category_id):
+    """Select a product to add on a bill."""
+    data = get_user(request)
+    data['menu_bills'] = True
+    bill = get_object_or_404(Facture, pk=bill_id)
+    category = get_object_or_404(Categorie, pk=category_id)
+    data['products'] = Produit.objects.filter(categorie=category, actif=True)
+    data['bill_id'] = bill_id
+    return render_to_response('base/bill/products.html',
+                                data,
+                                context_instance=RequestContext(request))
+
+@permission_required('base.p5')
+def product_add(request, bill_id, product_id):
+    """Add a product to a bill"""
+    data = get_user(request)
+    bill = get_object_or_404(Facture, pk=bill_id)
+    product = get_object_or_404(Produit, pk=product_id)
+    product_sell = ProduitVendu(produit=product)
+    product_sell.save()
+    bill.add(product_sell)
+    data['facture'] = bill
+    return render_to_response('base/facture.html',
+                                data,
+                                context_instance=RequestContext(request))
+
+@permission_required('base.p5')
 def couverts_select(request, bill_id):
     """List of couverts for a bill"""
     data = get_user(request)
@@ -577,6 +615,7 @@ def factures(request):
 def bill_view(request, bill_id):
     data = get_user(request)
     data['facture'] = get_object_or_404(Facture, pk=bill_id)
+    data['menu_bills'] = True
     return render_to_response('base/facture.html',
                                 data,
                                 context_instance=RequestContext(request))
