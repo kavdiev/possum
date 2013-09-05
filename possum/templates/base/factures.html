@@ -10,7 +10,7 @@
         <li onclick="window.location='/bill/{{facture.id}}/'">
         {{facture}}</br>
         Couverts: {{facture.couverts}}</br>
-        Table: {{facture.table}}</br>
+        Table: {% if facture.table %}{{facture.table}}{% endif %}</br>
         </li>
         {% endfor %}
     {% endif %}

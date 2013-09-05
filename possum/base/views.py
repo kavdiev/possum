@@ -514,7 +514,9 @@ def bill_new(request):
     data['menu_bills'] = True
     bill = Facture()
     bill.save()
-    return HttpResponseRedirect('/bill/%s/table/select/' % bill.id)
+    return render_to_response('base/facture.html',
+                                data,
+                                context_instance=RequestContext(request))
 
 @permission_required('base.p5')
 def table_select(request, bill_id):
@@ -534,6 +536,28 @@ def table_set(request, bill_id, table_id):
     bill = get_object_or_404(Facture, pk=bill_id)
     table = get_object_or_404(Table, pk=table_id)
     bill.set_table(table)
+    data['facture'] = bill
+    return render_to_response('base/facture.html',
+                                data,
+                                context_instance=RequestContext(request))
+
+@permission_required('base.p5')
+def couverts_select(request, bill_id):
+    """List of couverts for a bill"""
+    data = get_user(request)
+    data['menu_bills'] = True
+    data['nb_couverts'] = range(35)
+    data['bill_id'] = bill_id
+    return render_to_response('base/couverts.html',
+                                data,
+                                context_instance=RequestContext(request))
+
+@permission_required('base.p5')
+def couverts_set(request, bill_id, number):
+    """Set couverts of a bill"""
+    data = get_user(request)
+    bill = get_object_or_404(Facture, pk=bill_id)
+    bill.set_couverts(number)
     data['facture'] = bill
     return render_to_response('base/facture.html',
                                 data,

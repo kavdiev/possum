@@ -471,6 +471,19 @@ li
     padding:5px;
 }
 
+/* list of couverts */
+#couverts {
+    list-style:none; /* inutile pour safari et firefox, mais pas pour IE */
+}
+#couverts li {
+    float:left; /* c'est cette balise qui fait l'effet tableau*/
+    width:30px;
+    height:30px;
+    background:#eee;
+    margin:5px;
+    overflow:hidden; /* permet de limiter l'affichage du contenu au dimension du contenant */
+    padding:5px;
+}
 .affichage_sans_float {
     clear: both;
 }
