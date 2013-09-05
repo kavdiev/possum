@@ -484,6 +484,32 @@ li
     overflow:hidden; /* permet de limiter l'affichage du contenu au dimension du contenant */
     padding:5px;
 }
+/* list of products sold */
+#products_sold {
+    list-style:none; /* inutile pour safari et firefox, mais pas pour IE */
+}
+#products_sold li {
+    float:left; /* c'est cette balise qui fait l'effet tableau*/
+    width:200px;
+    height:30px;
+    background:#eee;
+    margin:5px;
+    overflow:hidden; /* permet de limiter l'affichage du contenu au dimension du contenant */
+    padding:5px;
+}
+/* list of paiements */
+#paiements {
+    list-style:none; /* inutile pour safari et firefox, mais pas pour IE */
+}
+#paiements li {
+    float:left; /* c'est cette balise qui fait l'effet tableau*/
+    width:200px;
+    height:30px;
+    background:#eee;
+    margin:5px;
+    overflow:hidden; /* permet de limiter l'affichage du contenu au dimension du contenant */
+    padding:5px;
+}
 /* list of products */
 #products {
     list-style:none; /* inutile pour safari et firefox, mais pas pour IE */

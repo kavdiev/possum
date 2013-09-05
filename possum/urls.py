@@ -7,7 +7,7 @@ from django.conf import settings
 # admin.autodiscover()
 
 urlpatterns = patterns('possum.base.views',
-    url(r'^$', 'accueil', name='home'),
+    url(r'^$', 'home', name='home'),
 #    (r'^accueil$', 'accueil'),
 
     url(r'^carte/categories/$', 'categories'),
@@ -39,10 +39,12 @@ urlpatterns = patterns('possum.base.views',
     url(r'^bill/(?P<bill_id>\d+)/category/select/$', 'category_select'),
     url(r'^bill/(?P<bill_id>\d+)/product/add/(?P<product_id>\d+)/$', 'product_add'),
     url(r'^bill/(?P<bill_id>\d+)/product/(?P<category_id>\d+)/select/$', 'product_select'),
+    url(r'^bill/(?P<bill_id>\d+)/sold/(?P<sold_id>\d+)/category/(?P<category_id>\d+)/select/$', 'subproduct_select'),
+    url(r'^bill/(?P<bill_id>\d+)/sold/(?P<sold_id>\d+)/(?P<product_id>\d+)/add/$', 'subproduct_add'),
     url(r'^bill/(?P<bill_id>\d+)/$', 'bill_view'),
     url(r'^jukebox/$', 'jukebox'),
-    url(r'^stats/$', 'stats'),
-    url(r'^kitchen/$', 'accueil'),
+    url(r'^manager/$', 'manager'),
+    url(r'^kitchen/$', 'kitchen'),
 
     url(r'^profile/$', 'profile'),
 

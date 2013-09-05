@@ -11,6 +11,7 @@
         {{facture}}</br>
         Couverts: {{facture.couverts}}</br>
         Table: {% if facture.table %}{{facture.table}}{% endif %}</br>
+        Montant: {{facture.get_montant}}€</br>
         </li>
         {% endfor %}
     {% endif %}

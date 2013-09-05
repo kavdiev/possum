@@ -66,11 +66,19 @@ def permission_required(perm, **kwargs):
     return decorator
 
 @login_required
-def accueil(request):
-#    today = datetime.date.today()
+def home(request):
     data = get_user(request)
 
-    return render_to_response('base/accueil.html',
+    return render_to_response('base/home.html',
+            data,
+            context_instance=RequestContext(request))
+
+@login_required
+def kitchen(request):
+    data = get_user(request)
+    data['menu_kitchen'] = True
+
+    return render_to_response('base/kitchen/view.html',
             data,
             context_instance=RequestContext(request))
 
@@ -360,10 +368,10 @@ def jukebox(request):
                                 context_instance=RequestContext(request))
 
 @permission_required('base.p7')
-def stats(request):
+def manager(request):
     data = get_user(request)
-    data['menu_stats'] = True
-    return render_to_response('base/stats.html',
+    data['menu_manager'] = True
+    return render_to_response('base/manager.html',
                                 data,
                                 context_instance=RequestContext(request))
 
@@ -566,14 +574,50 @@ def product_select(request, bill_id, category_id):
                                 context_instance=RequestContext(request))
 
 @permission_required('base.p5')
+def subproduct_select(request, bill_id, sold_id, category_id):
+    """Select a subproduct to a product."""
+    data = get_user(request)
+    data['menu_bills'] = True
+    category = get_object_or_404(Categorie, pk=category_id)
+    data['products'] = Produit.objects.filter(categorie=category, actif=True)
+    data['bill_id'] = bill_id
+    data['sold_id'] = sold_id
+    return render_to_response('base/bill/subproducts.html',
+                                data,
+                                context_instance=RequestContext(request))
+
+@permission_required('base.p5')
+def subproduct_add(request, bill_id, sold_id, product_id):
+    """Add a product to a bill. If this product contains others products,
+    we have to add them too."""
+    data = get_user(request)
+    bill = get_object_or_404(Facture, pk=bill_id)
+    product = get_object_or_404(Produit, pk=product_id)
+    product_sell = ProduitVendu(produit=product)
+    product_sell.save()
+    menu = get_object_or_404(ProduitVendu, pk=sold_id)
+    menu.contient.add(product_sell)
+    category = menu.getFreeCategorie()
+    if category:
+        return HttpResponseRedirect('/bill/%s/sold/%s/category/%s/select/' % (bill_id, menu.id, category.id))
+    data['facture'] = bill
+    return render_to_response('base/facture.html',
+                                data,
+                                context_instance=RequestContext(request))
+
+@permission_required('base.p5')
 def product_add(request, bill_id, product_id):
-    """Add a product to a bill"""
+    """Add a product to a bill. If this product contains others products,
+    we have to add them too."""
     data = get_user(request)
     bill = get_object_or_404(Facture, pk=bill_id)
     product = get_object_or_404(Produit, pk=product_id)
     product_sell = ProduitVendu(produit=product)
     product_sell.save()
     bill.add(product_sell)
+    if product.est_un_menu():
+        category = product_sell.getFreeCategorie()
+        return HttpResponseRedirect('/bill/%s/sold/%s/category/%s/select/' % (bill_id, product_sell.id, category.id))
     data['facture'] = bill
     return render_to_response('base/facture.html',
                                 data,

@@ -35,6 +35,9 @@
             <li class="{% if menu_kitchen %}menuSelected{% else %}menuElement{% endif %}" onclick="window.location='/kitchen/'">
                 <a href="/kitchen/">Cuisine</a>
             </li>
+            <li class="{% if menu_manager %}menuSelected{% else %}menuElement{% endif %}" onclick="window.location='/manager/'">
+                <a href="/manager/">Manager</a>
+            </li>
             <!--li class="{% if menu_jukebox %}menuSelected{% else %}menuElement{% endif %}" onclick="window.location='/jukebox/'">
                 <a href="/jukebox/">Jukebox</a>
             </li-->
@@ -44,9 +47,6 @@
             <!--li class="{% block menuWeather %}menuElement{% endblock %}" onclick="window.location='/weather/'">
                 <a href="/weather/">Météo</a>
             </li-->
-            <li class="{% if menu_stats %}menuSelected{% else %}menuElement{% endif %}" onclick="window.location='/stats/'">
-                <a href="/stats/">Résultats</a>
-            </li>
             <li class="{% if menu_users %}menuSelected{% else %}menuElement{% endif %}" onclick="window.location='/users/'">
                 <a href="/users/">Utilisateurs</a>
             </li>
