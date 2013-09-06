@@ -522,9 +522,7 @@ def bill_new(request):
     data['menu_bills'] = True
     bill = Facture()
     bill.save()
-    return render_to_response('base/facture.html',
-                                data,
-                                context_instance=RequestContext(request))
+    return HttpResponseRedirect('/bill/%s/' % bill.id)
 
 @permission_required('base.p5')
 def table_select(request, bill_id):

@@ -5,7 +5,7 @@
 
 <ul id="categories">
     {% for category in categories %}
-    <li onclick="window.location='/bill/{{bill_id}}/product/{{category.id}}/select/'" background="{{category.couleur.web}}">
+    <li onclick="window.location='/bill/{{bill_id}}/product/{{category.id}}/select/'" style="background:{{category.couleur.web}};">
         <a href="/bill/{{bill_id}}/product/{{category.id}}/select/">{{category.nom}}</a>
         </li>
     {% empty %}

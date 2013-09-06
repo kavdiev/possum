@@ -31,7 +31,7 @@
     <li onclick="window.location='/bill/{{facture.id}}/category/select/'">
     <a href='/bill/{{facture.id}}/category/select/'>Ajouter</a></li>
     {% for vendu in facture.produits.all %}
-        <li onclick="window.location='/bill/{{facture.id}}/category/select/'">
+        <li onclick="window.location='/bill/{{facture.id}}/category/select/'" style="background:{{vendu.produit.categorie.couleur.web}};">
         <a href='/bill/{{facture.id}}/category/select/'>{{vendu}} {{vendu.prix}}€</a></br>
         {% for subproduct in vendu.contient.all %}
             {{subproduct}} 
