@@ -5,8 +5,9 @@
 
 <ul id="products">
     {% for product in products %}
-    <li onclick="window.location='/bill/{{bill_id}}/sold/{{sold_id}}/{{product.id}}/add/'">
-    <a href="/bill/{{bill_id}}/sold/{{sold_id}}/{{product.id}}/add/">{{product.nom}}</a>
+    <li onclick="window.location='/bill/{{bill_id}}/sold/{{sold_id}}/{{product.id}}/add/'"
+        style="background:{{product.categorie.couleur.web}};">
+    {{product.nom}}
         </li>
     {% empty %}
         <li>Aucun produit disponible.</li>

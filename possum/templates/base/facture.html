@@ -6,10 +6,10 @@
 
 <ul id="bill_info">
     <li onclick="window.location='/bill/{{facture.id}}/category/select/'">Envoi en cuisine</li>
-    <li onclick="window.location='/bill/{{facture.id}}/table/select/'">Table: {{facture.table.nom}}</li>
-    <li onclick="window.location='/bill/{{facture.id}}/couverts/select/'">Couverts: {{facture.couverts}}</li>
+    <li onclick="window.location='/bill/{{facture.id}}/table/select/'">Table:</br>{{facture.table.nom}}</li>
+    <li onclick="window.location='/bill/{{facture.id}}/couverts/select/'">Couverts:</br>{{facture.couverts}}</li>
     <li onclick="window.location='/bill/{{facture.id}}/couverts/select/'">sur place</li>
-    <li>Restant à payer: {{facture.restant_a_payer}} €</li>
+    <li>Restant à payer:</br>{{facture.restant_a_payer}}€</li>
     <li onclick="window.location='/bill/{{facture.id}}/delete/'" class="critical">Supprimer</li>
 </ul></br></br></br>
 

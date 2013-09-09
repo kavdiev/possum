@@ -395,7 +395,7 @@ li
 #products_sold li {
     float:left; /* c'est cette balise qui fait l'effet tableau*/
     width:200px;
-    height:30px;
+    height:40px;
     background:#eee;
     margin:5px;
     overflow:hidden; /* permet de limiter l'affichage du contenu au dimension du contenant */

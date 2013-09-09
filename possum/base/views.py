@@ -601,7 +601,7 @@ def sold_delete(request, bill_id, sold_id):
     sold = get_object_or_404(ProduitVendu, pk=sold_id)
     bill.del_produit(sold)
     bill.save()
-    return HttpResponseRedirect('/bills/')
+    return HttpResponseRedirect('/bill/%s/' % bill_id)
 
 @permission_required('base.p5')
 def subproduct_add(request, bill_id, sold_id, product_id):
@@ -618,9 +618,7 @@ def subproduct_add(request, bill_id, sold_id, product_id):
     if category:
         return HttpResponseRedirect('/bill/%s/sold/%s/category/%s/select/' % (bill_id, menu.id, category.id))
     data['facture'] = bill
-    return render_to_response('base/facture.html',
-                                data,
-                                context_instance=RequestContext(request))
+    return HttpResponseRedirect('/bill/%s/' % bill_id)
 
 @permission_required('base.p5')
 def product_add(request, bill_id, product_id):
@@ -636,9 +634,7 @@ def product_add(request, bill_id, product_id):
         category = product_sell.getFreeCategorie()
         return HttpResponseRedirect('/bill/%s/sold/%s/category/%s/select/' % (bill_id, product_sell.id, category.id))
     data['facture'] = bill
-    return render_to_response('base/facture.html',
-                                data,
-                                context_instance=RequestContext(request))
+    return HttpResponseRedirect('/bill/%s/' % bill_id)
 
 @permission_required('base.p5')
 def couverts_select(request, bill_id):
