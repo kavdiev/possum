@@ -4,22 +4,18 @@
 
 <h2>Commande [{{facture}}]</h2>
 
-<center><table border=1>
-        <tr>
-            <td onclick="window.location='/bill/{{facture.id}}/table/select/'">Table: <a href="/bill/{{facture.id}}/table/select/">{{facture.table.nom}} [modifier]</a></td>
-            <td onclick="window.location='/bill/{{facture.id}}/couverts/select/'">Couverts: <a href="/bill/{{facture.id}}/couverts/select/">{{facture.couverts}} [modifier]</a></td>
-            <td onclick="window.location='/bill/{{facture.id}}/couverts/select/'"><a href="/bill/{{facture.id}}/couverts/select/">sur place [modifier]</a></td>
-        </tr>
-        <tr>
-            <td>Reste à payer</td>
-            <td>{{facture.restant_a_payer}} €</td>
-        </tr>
-</table></center>
+<ul id="bill_info">
+    <li onclick="window.location='/bill/{{facture.id}}/category/select/'">Envoi en cuisine</li>
+    <li onclick="window.location='/bill/{{facture.id}}/table/select/'">Table: {{facture.table.nom}}</li>
+    <li onclick="window.location='/bill/{{facture.id}}/couverts/select/'">Couverts: {{facture.couverts}}</li>
+    <li onclick="window.location='/bill/{{facture.id}}/couverts/select/'">sur place</li>
+    <li>Restant à payer: {{facture.restant_a_payer}} €</li>
+    <li onclick="window.location='/bill/{{facture.id}}/delete/'" class="critical">Supprimer</li>
+</ul></br></br></br>
 
 <h3>Paiements</h3>
 <ul id="paiements">
-    <li onclick="window.location='/bill/{{facture.id}}/paiement/select/'">
-    <a href='/bill/{{facture.id}}/paiement/select/'>Ajouter</a></li>
+    <li onclick="window.location='/bill/{{facture.id}}/paiement/select/'">Ajouter</li>
     {% for paiement in facture.paiements.all %}
         <li onclick="window.location='/bill/{{facture.id}}/paiement/select/'">
         <a href='/bill/{{facture.id}}/paiement/select/'>{{paiement.type.nom}} {{paiement.montant}}</a></li>
@@ -28,11 +24,10 @@
 
 <h3>Produits</h3>
 <ul id="products_sold">
-    <li onclick="window.location='/bill/{{facture.id}}/category/select/'">
-    <a href='/bill/{{facture.id}}/category/select/'>Ajouter</a></li>
+    <li onclick="window.location='/bill/{{facture.id}}/category/select/'">Ajouter</li>
     {% for vendu in facture.produits.all %}
-        <li onclick="window.location='/bill/{{facture.id}}/category/select/'" style="background:{{vendu.produit.categorie.couleur.web}};">
-        <a href='/bill/{{facture.id}}/category/select/'>{{vendu}} {{vendu.prix}}€</a></br>
+    <li style="background:{{vendu.produit.categorie.couleur.web}};" onclick="window.location='/bill/{{facture.id}}/sold/{{vendu.id}}/view/'">
+        {{vendu}} {{vendu.prix}}€</br>
         {% for subproduct in vendu.contient.all %}
             {{subproduct}} 
         {% endfor %}

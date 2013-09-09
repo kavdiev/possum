@@ -134,8 +134,8 @@ INSTALLED_APPS = (
     # 'django.contrib.admindocs',
 )
 
-LOGIN_URL = 'users/login/'
-LOGIN_REDIRECT_URL = '/'
+LOGIN_URL = '/users/login/'
+LOGIN_REDIRECT_URL = '/bills'
 # Configuration de POSSUM
 #PATH_TICKET = "/home/pos/possum/data/tickets"
 # tmp est en memoire (tmpfs)

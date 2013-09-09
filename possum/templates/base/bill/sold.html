@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block titre %}Facture {{facture.id}}{% endblock %}
+{% block content %}
+
+<h2>{{sold.produit.nom}}</h2>
+
+<ul id="sold_info">
+    <li onclick="window.location='/bill/{{bill_id}}/'">Retour Facture</li>
+    <li onclick="window.location='/bill/{{facture.id}}/category/select/'">Envoi en cuisine: entree ?</li>
+    <li onclick="window.location='/bill/{{facture.id}}/couverts/select/'">Cuisson</li>
+    <li>{{sold.produit.prix}}€</li>
+    <li onclick="window.location='/bill/{{bill_id}}/sold/{{sold.id}}/delete/'" class="critical">Supprimer</li>
+</ul></br></br></br>
+
+
+{% endblock %}
+

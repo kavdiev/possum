@@ -2,9 +2,7 @@
 {% block content %}
 
 <ul id="bills">
-    <li onclick="window.location='/bill/new/'">
-        <a href="/bill/new/">Nouvelle commande</a>
-    </li>
+    <li onclick="window.location='/bill/new/'">Nouvelle commande</li>
     {% if factures %}
         {% for facture in factures %}
         <li onclick="window.location='/bill/{{facture.id}}/'">

@@ -6,7 +6,7 @@ body
 {
     margin: 0;
     padding: 0;
-    background: #F5F5F5;
+    background: #FFF;
     text-align: justify;
     font-family: Vectora, Utopia, Arial, Times, serif;
 }
@@ -32,12 +32,6 @@ h1
 p
 {
 
-}
-
-.buttontable
-{
-border: 0px; border-collapse: collapse;
-border-spacing: 0;
 }
 
 table, thead, tbody, tfoot
@@ -82,66 +76,6 @@ input
 .prize
 {
     width: 50px;
-}
-/*
-** header section
-*/
-#header #headerMain
-{
-    margin: 0 ;
-    padding: 0;
-    width: 100%;
-/*  height: 107px; */
-    background-color: #FFFFFF;
-    border-bottom: 1px solid #DDDDDD;
-}
-
-#header #headerMain #headerTitreGeneral
-{
-    margin: 0 auto;
-    padding: 0;
-    padding-top: 20px;
-    padding-bottom: 2px;
-    max-width:600px;
-    text-align: center;
-    color: #003882;
-    font-family: Vectora, Utopia, Dax, Arial, Times, serif;
-    /*position: relative;*/
-}
-
-#header #headerMain #headerTitrePage
-{
-
-    margin: 0 auto;
-    padding: 0;
-    padding-top: 2px;
-    padding-bottom: 0px;
-    max-width:600px;
-    text-align: center;
-    color: #2A2A2A;
-    font-family: Arial, Times, serif;
-}
-#headerTab
-{
-    margin-top: 5px;
-    margin-right: 10px;
-    float: right;
-}
-#headerTab ul
-{
-    list-style: none;
-    padding: 0px;
-    margin: 0px;
-}
-.headerTabNoOver
-{
-    display: inline;
-    padding: 2px 15px;
-    margin: 1px;
-    background: #FFFFFF;
-    border-left: 1px solid #DDDDDD;
-    border-right: 1px solid #DDDDDD;
-    border-bottom: 1px solid #DDDDDD;
 }
 
 /*
@@ -191,23 +125,6 @@ div.right
     width: 33%;
     text-align: right;
 }
-/*
-** main
-*/
-#main
-{
-    clear: both;
-    display: block;
-    position: absolute;
-    padding: 0;
-    margin: 0;
-
-    top: 27px;
-    bottom: 20px;
-    left: 10px;
-    right: 10px;
-}
-
 #login
 {
     position: absolute;
@@ -226,6 +143,10 @@ div.right
     padding: 0px;
     margin: 0px;
 }
+#login li
+{
+    text-align: center;
+}
 #login p input
 {
     width: 70%;
@@ -237,92 +158,45 @@ div.right
 /*
 ** menu
 */
-.color {
-    width: 70px;
-}
-#clock
-{
-    text-align: center;
-    top: 90%;
-    width: 11%;
-    position: absolute;
-    overflow: auto;
-    background-color: #FFFFFF;
-    border: 1px solid #DDDDDD;
-}
 #menu
 {
-    float: left;
+    float: top;
     margin: 0;
     padding: 0;
-    margin-right: 5px;
-    text-align: left;
-    width: 11%;
+    width: 100%;
     overflow: auto;
     background-color: #FFFFFF;
     border: 1px solid #DDDDDD;
-    border-bottom: none;
 }
 #menu  a, a:link, a:visited, a:active
 {
     text-decoration: none;
     color: #003882;/*#202020;*/
 }
-#menu  ul
+#menu ul
 {
     list-style: none;
-    padding: 0px;
-    margin: 0px;
 }
-.menuElement,
-.menuElementNoPadding,
-.headerTabNoOver,
-.menuSelected
+#menu li
 {
-    padding: 5px 15px;
-    margin: 0;
-    background-color: #FFFFFF;
-    border-bottom: 1px solid #DDDDDD;
+    list-style: none;
+    text-align: center;
+    width:100px;
+    float:left; /* c'est cette balise qui fait l'effet tableau*/
+    height:20px;
+    background:#eee;
+    margin:5px;
+    overflow:hidden; /* permet de limiter l'affichage du contenu au dimension du contenant */
+    padding:5px;
 }
-.submenu
-{
-    padding: 2px 15%;
-    border-bottom: 1px solid #DDDDDD;
-}
-.menuElementNoPadding
-{
-    padding: 0px;
-    border: 0px;
-}
-.menuElement:hover,
-.menuElement a:hover,
-{
-    background-color: #DEE5F0/*#CCCCCC*/;
-    color: #003882;/*#FFFFFF;*/
-}
-.menuSelected a,
-.menuSelected
+#menu li.menuSelected
 {
     background-color: #DEE5F0;
-    /*color: #000000;*/
-
 }
-
-/*
-** content section
-*/
 #content
 {
-    position: absolute;
-    display: block;
-    padding: 10px;
-    overflow: auto;
+    margin: 10px;
     background-color: #FFFFFF;
-    border: 1px solid #DDDDDD;
-    bottom: 0;
-    left: 12%;
-    right: 0;
-    top: 0;
 }
 /* messages */
 .messages {
@@ -440,7 +314,7 @@ ul
 
 li
 {
-    text-align:left;
+    text-align:center;
 }
 
 /* list of bills */
@@ -457,6 +331,36 @@ li
     padding:5px;
 }
 
+#sold_info {
+    list-style:none;
+}
+#sold_info li {
+    float:left; /* c'est cette balise qui fait l'effet tableau*/
+    width:140px;
+    height:40px;
+    background:#eee;
+    margin:5px;
+    overflow:hidden; /* permet de limiter l'affichage du contenu au dimension du contenant */
+    padding:5px;
+}
+#sold_info li.critical { 
+    background-color: #FF0000;
+}
+#bill_info {
+    list-style:none;
+}
+#bill_info li {
+    float:left; /* c'est cette balise qui fait l'effet tableau*/
+    width:140px;
+    height:40px;
+    background:#eee;
+    margin:5px;
+    overflow:hidden; /* permet de limiter l'affichage du contenu au dimension du contenant */
+    padding:5px;
+}
+#bill_info li.critical { 
+    background-color: #FF0000;
+}
 /* list of tables */
 #tables {
     list-style:none; /* inutile pour safari et firefox, mais pas pour IE */
@@ -539,11 +443,5 @@ li
 .affichage_sans_float {
     clear: both;
 }
-/* pour la page d'accueil */
-/*body {
-  background:none repeat scroll 0 0 #F0F0F0;
-  color: black;
-  font: 120% Arial,Verdana,Lucida,Helvetica,sans-serif;
-}*/
 
 

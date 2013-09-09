@@ -585,6 +585,25 @@ def subproduct_select(request, bill_id, sold_id, category_id):
                                 context_instance=RequestContext(request))
 
 @permission_required('base.p5')
+def sold_view(request, bill_id, sold_id):
+    data = get_user(request)
+    data['menu_bills'] = True
+    data['bill_id'] = bill_id
+    data['sold'] = get_object_or_404(ProduitVendu, pk=sold_id)
+    return render_to_response('base/bill/sold.html',
+                                data,
+                                context_instance=RequestContext(request))
+
+@permission_required('base.p5')
+def sold_delete(request, bill_id, sold_id):
+    data = get_user(request)
+    bill = get_object_or_404(Facture, pk=bill_id)
+    sold = get_object_or_404(ProduitVendu, pk=sold_id)
+    bill.del_produit(sold)
+    bill.save()
+    return HttpResponseRedirect('/bills/')
+
+@permission_required('base.p5')
 def subproduct_add(request, bill_id, sold_id, product_id):
     """Add a product to a bill. If this product contains others products,
     we have to add them too."""
@@ -662,6 +681,9 @@ def bill_view(request, bill_id):
                                 data,
                                 context_instance=RequestContext(request))
 
-#   return render_to_response('login.html', data,
-#           context_instance=RequestContext(request))
+@permission_required('base.p3')
+def bill_delete(request, bill_id):
+    order = get_object_or_404(Facture, pk=bill_id)
+    order.delete()
+    return HttpResponseRedirect('/bills/')
 
