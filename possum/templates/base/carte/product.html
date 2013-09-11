@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h1>Produit: {{product.nom}}</h2>
+
+<ul id="product_info">
+    <li onclick="window.location='/carte/categories/{{product.categorie.id}}/'">
+        Retour catégorie
+    </li>
+    <li onclick="window.location='/carte/categories/{{category.id}}/less/'">
+        Nom:</br>
+        {{product.nom}}</li>
+    <li onclick="window.location='/carte/categories/{{category.id}}/less/'">
+        Nom facture:</br>
+        {{product.nom_facture}}</li>
+    <li onclick="window.location='/carte/categories/{{category.id}}/color/'" 
+        style="background:{{product.categorie.couleur.web}};">
+        Catégorie:</br>{{product.categorie}}</li>
+    <li onclick="window.location='/carte/categories/{{category.id}}/surtaxable/'"
+        {% if product.actif %}
+            class="enabled"> Est actif
+        {% else %}
+            class="disabled"> N'est pas actif
+        {% endif %}
+    </li>
+    <li onclick="window.location='/carte/categories/{{category.id}}/less/'">
+        Prix HT:</br>
+        {{product.prix}}€</li>
+    <li onclick="window.location='/carte/categories/{{category.id}}/vat_onsite/'">
+        TTC sur place:</br>
+        {{product.get_prize_onsite}}€</li>
+    <li onclick="window.location='/carte/categories/{{category.id}}/vat_onsite/'">
+        TTC à emporter:</br>
+        {{product.get_prize_takeaway}}€</li>
+</ul>
+
+{% endblock %}
+

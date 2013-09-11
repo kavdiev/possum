@@ -331,6 +331,27 @@ li
     padding:5px;
 }
 
+#product_info {
+    list-style:none;
+}
+#product_info li {
+    float:left; /* c'est cette balise qui fait l'effet tableau*/
+    width:140px;
+    height:40px;
+    background:#eee;
+    margin:5px;
+    overflow:hidden; /* permet de limiter l'affichage du contenu au dimension du contenant */
+    padding:5px;
+}
+#product_info li.critical { 
+    background-color: #FF0000;
+}
+#product_info li.disabled { 
+    background-color: #FF0000;
+}
+#product_info li.enabled { 
+    background-color: #00FF00;
+}
 #category_info {
     list-style:none;
 }

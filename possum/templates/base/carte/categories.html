@@ -26,69 +26,11 @@
     {% for vat in vats %}
     <li onclick="window.location='/carte/vats/{{vat.id}}/'">
         {{vat.name}}</br>
-        {{vat.tax}}
+        {{vat.tax}}%
         </li>
     {% endfor %}
 </ul>
 
-
-
-<table>
-<tr>
-    <td><b>Priorite</b></td>
-    <td><b>Nom</b></td>
-    <td><b>Couleur</b></td>
-    <td></td>
-    <td align="center"><b>S1</b></td>
-    <td align="center"><b>S2</b></td>
-    <td align="center"><b>A1</b></td>
-    <td></td>
-    <td></td>
-    <td></td>
-</tr>
-{% for c in categories %}
-<tr bgcolor="{{c.couleur.web}}">
-    <td>
-        <a href="/carte/categories/{{c.id}}/less-10/"><<</a>
-        <a href="/carte/categories/{{c.id}}/less/"><</a>
-        {{ c.priorite }}
-        <a href="/carte/categories/{{c.id}}/more/">></a>
-        <a href="/carte/categories/{{c.id}}/more-10/">>></a>
-    </td>
-    <form method='post' action='/carte/categories/{{c.id}}/change/'>{% csrf_token %}
-    <td><input name='name' value="{{c.nom}}"></td>
-    <td><input class="color {hash:true,caps:false}" name="color" value="{{ c.couleur.web }}"></td>
-    <td><input type='submit' value='Modifier'></td>
-    </form>
-    <td align="center" onclick="window.location='/carte/categories/{{c.id}}/surtaxable/'">
-            <input type="checkbox" name="reponse" {% if c.surtaxable %}checked="True"{% endif %} />
-    </td>
-    <td align="center" onclick="window.location='/carte/categories/{{c.id}}/disable_surtaxe/'">
-            <input type="checkbox" name="reponse" {% if c.disable_surtaxe %}checked="True"{% endif %} />
-    </td>
-    <td align="center" onclick="window.location='/carte/categories/{{c.id}}/alcool/'">
-            <input type="checkbox" name="reponse" {% if c.alcool %}checked="True"{% endif %} />
-    </td>
-    <td align='center'><a href="/stats/categorie/{{c.id}}/">ventes</a></td>
-    <td align="center"><a href="/carte/products/cat/{{c.id}}/">produits</a></td>
-    <td align="center"><a href="/carte/categories/{{c.id}}/delete/">supprimer</a></td>
-</tr>
-{% endfor %}
-<tr><form method='post' action='/carte/categories/new/'>{% csrf_token %}
-    <td><input name='priority'></td>
-    <td><input name='name'></td>
-    <td><input type='submit' value='Créer'></td>
-    </form>
-</tr>
-</table>
-
-<p>Description:
-<ul>
-    <li>[S1] Cette catégorie est soumisse à la surtaxe pour le service en terrasse</li>
-    <li>[S2] Lorsqu'un produit de cette catégorie est ajouté à la facture, la surtaxe est automatiquement désactivée</li>
-    <li>[A1] Cette catégorie contient des alcools (TVA à 19,6%)</li>
-</ul>
-</p>
 
 {% endblock %}
 

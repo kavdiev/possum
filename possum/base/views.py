@@ -111,35 +111,6 @@ def products(request, cat_id, only_enable=False):
                                 context_instance=RequestContext(request))
 
 @permission_required('base.p6')
-def products_new(request, cat_id):
-    data = get_user(request)
-    cat = get_object_or_404(Categorie, pk=cat_id)
-    name = request.POST.get('name', '').strip()
-    billname = request.POST.get('billname', '').strip()
-    prize = request.POST.get('prize', '').strip()
-    if name:
-        if billname:
-            if prize:
-                product = Produit()
-                product.categorie = cat
-                product.nom = name
-                product.nom_facture = billname
-                product.prix = prize
-                try:
-                    product.save()
-                    logging.info("[%s] new product [%s]" % (data['user'].username, name))
-                except:
-                    logging.warning("[%s] new product failed: [%s]" % (data['user'].username, name))
-                    messages.add_message(request, messages.ERROR, "Le nouveau produit n'a pu être créé.")
-            else:
-                messages.add_message(request, messages.ERROR, "Vous devez définir un prix pour le nouveau produit.")
-        else:
-            messages.add_message(request, messages.ERROR, "Vous devez choisir un nom qui s'affichera sur la facture pour le nouveau produit.")
-    else:
-        messages.add_message(request, messages.ERROR, "Vous devez choisir un nom pour le nouveau produit.")
-    return HttpResponseRedirect('/carte/products/cat/%s/' % cat_id)
-
-@permission_required('base.p6')
 def products_details(request, product_id):
     data = get_user(request)
     product = get_object_or_404(Produit, pk=product_id)
@@ -259,6 +230,9 @@ def categories_delete(request, cat_id):
 def categories_view(request, cat_id):
     data = get_user(request)
     data['category'] = get_object_or_404(Categorie, pk=cat_id)
+    products = Produit.objects.filter(categorie=data['category'])
+    data['products_enable'] = products.exclude(actif=False)
+    data['products_disable'] = products.exclude(actif=True)
     return render_to_response('base/carte/category.html',
                                 data,
                                 context_instance=RequestContext(request))
@@ -334,6 +308,35 @@ def categories_surtaxable(request, cat_id):
     return HttpResponseRedirect('/carte/categories/%s/' % cat_id)
 
 @permission_required('base.p6')
+def categories_vat_takeaway(request, cat_id):
+    data = get_user(request)
+    data['category'] = get_object_or_404(Categorie, pk=cat_id)
+    data['type_vat'] = 'TVA à emporter'
+    data['url_vat'] = 'vat_takeaway'
+    data['vats'] = VAT.objects.all()
+    return render_to_response('base/carte/vat.html',
+                                data,
+                                context_instance=RequestContext(request))
+
+@permission_required('base.p6')
+def categories_set_vat_takeaway(request, cat_id, vat_id):
+    data = get_user(request)
+    category = get_object_or_404(Categorie, pk=cat_id)
+    vat = get_object_or_404(VAT, pk=vat_id)
+    category.vat_takeaway = vat
+    category.save()
+    return HttpResponseRedirect('/carte/categories/%s/' % cat_id)
+
+@permission_required('base.p6')
+def categories_set_vat_onsite(request, cat_id, vat_id):
+    data = get_user(request)
+    category = get_object_or_404(Categorie, pk=cat_id)
+    vat = get_object_or_404(VAT, pk=vat_id)
+    category.vat_onsite = vat
+    category.save()
+    return HttpResponseRedirect('/carte/categories/%s/' % cat_id)
+
+@permission_required('base.p6')
 def categories_vat_onsite(request, cat_id):
     data = get_user(request)
     data['category'] = get_object_or_404(Categorie, pk=cat_id)
@@ -349,6 +352,14 @@ def vats(request):
     data = get_user(request)
     data['vats'] = VAT.objects.all()
     return render_to_response('base/carte/vats.html',
+                                data,
+                                context_instance=RequestContext(request))
+
+@permission_required('base.p6')
+def products_view(request, product_id):
+    data = get_user(request)
+    data['product'] = get_object_or_404(Produit, pk=product_id)
+    return render_to_response('base/carte/product.html',
                                 data,
                                 context_instance=RequestContext(request))
 
@@ -384,6 +395,39 @@ def vats_change(request, vat_id):
             messages.add_message(request, messages.ERROR, "Vous devez entrer un nom.")
 
     return render_to_response('base/carte/vats_change.html',
+                                data,
+                                context_instance=RequestContext(request))
+
+@permission_required('base.p6')
+def products_new(request, cat_id):
+    data = get_user(request)
+    data['category'] = get_object_or_404(Categorie, pk=cat_id)
+    if request.method == 'POST':
+        name = request.POST.get('name', '').strip()
+        billname = request.POST.get('billname', '').strip()
+        prize = request.POST.get('prize', '').strip()
+        if name:
+            if billname:
+                if prize:
+                    try:
+                        product = Produit(
+                                nom=name, 
+                                nom_facture=billname,
+                                prix=prize)
+                        product.categorie = data['category']
+                        product.save()
+                    except:
+                        messages.add_message(request, messages.ERROR, "Les modifications n'ont pu être enregistrées.")
+                    else:
+                        return HttpResponseRedirect('/carte/categories/%s/' % data['category'].id)
+                else:
+                    messages.add_message(request, messages.ERROR, "Vous devez saisir un prix.")
+            else:
+                messages.add_message(request, messages.ERROR, "Vous devez saisir un nom pour la facture.")
+        else:
+            messages.add_message(request, messages.ERROR, "Vous devez entrer un nom.")
+
+    return render_to_response('base/carte/product_new.html',
                                 data,
                                 context_instance=RequestContext(request))
 

@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h1>Nouveau produit</h1>
+
+<form method='post' action='/carte/categories/{{category.id}}/product/new/'>{% csrf_token %}
+<table>
+<tr>
+    <td><b>Nom</b></td>
+    <td><input name='name'></td>
+</tr>
+<tr>
+    <td><b>Nom sur la facture</b></td>
+    <td><input name='billname'></td>
+</tr>
+<tr>
+    <td><b>Prix HT</b></td>
+    <td><input name='prize'></td>
+</tr>
+<tr>
+    <td colspan=2><input type='submit' value='Créer'></td>
+</tr>
+</table>
+</form>
+
+{% endblock %}
+

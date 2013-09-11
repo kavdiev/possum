@@ -27,20 +27,24 @@ urlpatterns = patterns('possum.base.views',
     url(r'^carte/categories/(?P<cat_id>\d+)/vat_onsite/$', 'categories_vat_onsite'),
     url(r'^carte/categories/(?P<cat_id>\d+)/vat_onsite/set/(?P<vat_id>\d+)/$', 'categories_set_vat_onsite'),
     url(r'^carte/categories/(?P<cat_id>\d+)/vat_takeaway/$', 'categories_vat_takeaway'),
+    url(r'^carte/categories/(?P<cat_id>\d+)/vat_takeaway/set/(?P<vat_id>\d+)/$', 'categories_set_vat_takeaway'),
     url(r'^carte/categories/(?P<cat_id>\d+)/delete/$', 'categories_delete'),
     url(r'^carte/categories/(?P<cat_id>\d+)/disable_surtaxe/$', 'categories_disable_surtaxe'),
+    url(r'^carte/categories/(?P<cat_id>\d+)/product/new/$', 'products_new'),
+
+    url(r'^carte/products/(?P<product_id>\d+)/$', 'products_view'),
 
     url(r'^carte/vats/new/$', 'vat_new'),
     url(r'^carte/vats/$', 'vats'),
     url(r'^carte/vats/(?P<vat_id>\d+)/$', 'vats_view'),
     url(r'^carte/vats/(?P<vat_id>\d+)/change/$', 'vats_change'),
 
+# a virer avec template/base/products/html/
     url(r'^carte/products/$', 'categories'),
     url(r'^carte/products/cat/(?P<cat_id>\d+)/$', 'products'),
     url(r'^carte/products/cat/(?P<cat_id>\d+)/enable/$', 'products', {'only_enable': True}),
     url(r'^carte/products/(?P<product_id>\d+)/change/$', 'products_change'),
     url(r'^carte/products/(?P<product_id>\d+)/details/$', 'products_details'),
-    url(r'^carte/products/cat/(?P<cat_id>\d+)/new/$', 'products_new'),
 
     url(r'^pos/$', 'pos'),
     url(r'^bills/$', 'factures'),
