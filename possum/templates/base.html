@@ -4,16 +4,16 @@
 
 <ul id="menu">
     <li class="{% if menu_carte %}menuSelected{% endif %}" onclick="window.location='/carte/categories/'">
-        <a href="/carte/categories/">Carte</a>
+        <img src="/static/images/carte-90x20.jpg">
     </li>
     <li class="{% if menu_bills %}menuSelected{% endif %}" onclick="window.location='/bills/'">
-        <a href="/bills/">Commandes</a>
+        Commandes
     </li>
     <li class="{% if menu_kitchen %}menuSelected{% endif %}" onclick="window.location='/kitchen/'">
-        <a href="/kitchen/">Cuisine</a>
+        Cuisine
     </li>
     <li class="{% if menu_manager %}menuSelected{% endif %}" onclick="window.location='/manager/'">
-        <a href="/manager/">Manager</a>
+        Manager
     </li>
     <li>HEURE</li>
     {% if user.is_authenticated %}

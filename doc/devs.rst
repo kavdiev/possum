@@ -201,13 +201,6 @@ Pour cela, il suffit de consulter la page suivante: `GitHub <https://github.com/
 Si votre bug est inconnu, alors nous vous serons reconnaissant de décrire ce bug et si possible les conditions
 pour le recréer à la même adresse que ci-dessus.
 
-Note importante: 
-
-Si le bug est un bug de sécurité, il est préférable d'envoyer un mail à `la liste de 
-de diffusion dédiée <https://possum.insa-rouen.fr/cgi-bin/mailman/listinfo/security>`_ et de ne pas
-créer un bug dans le gestionnaire de bug. En effet, on essayera de corriger le bug de sécurité avant
-de le rendre public.
-
 Correction d'un bug
 -------------------
 
