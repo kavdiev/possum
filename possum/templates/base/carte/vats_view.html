@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h1>TVA: {{vat.name}}</h1>
+
+<ul id="vats">
+    <li onclick="window.location='/carte/'">Retour Carte</li>
+    <li onclick="window.location='/carte/vats/{{vat.id}}/change/'">
+        {{vat.name}}</br>
+        {{vat.tax}}
+        </li>
+</ul>
+
+{% endblock %}
+

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-#    Copyright 2009, 2010, 2011 Sébastien Bonnegent
+#    Copyright 2009-2013 Sébastien Bonnegent
 #
 #    This file is part of POSSUM.
 #
@@ -28,6 +28,7 @@ from possum.base.color import Couleur
 from possum.base.category import Categorie
 from possum.base.options import Cuisson, Sauce, Accompagnement
 from possum.base.location import Zone, Table
+from possum.base.vat import VAT
 
 from django.contrib.auth import authenticate, login, logout
 from django.shortcuts import render_to_response, get_object_or_404
@@ -202,7 +203,8 @@ def categories(request):
     data = get_user(request)
     data['menu_carte'] = True
     data['categories'] = Categorie.objects.order_by('priorite', 'nom')
-    return render_to_response('base/categories.html',
+    data['vats'] = VAT.objects.all()
+    return render_to_response('base/carte/categories.html',
                     data,
                     context_instance=RequestContext(request))
 
@@ -254,6 +256,21 @@ def categories_delete(request, cat_id):
                                 context_instance=RequestContext(request))
 
 @permission_required('base.p6')
+def categories_view(request, cat_id):
+    data = get_user(request)
+    data['category'] = get_object_or_404(Categorie, pk=cat_id)
+    return render_to_response('base/carte/category.html',
+                                data,
+                                context_instance=RequestContext(request))
+
+@permission_required('base.p6')
+def categories_add(request):
+    data = get_user(request)
+    return render_to_response('base/carte/categories_add.html',
+                                data,
+                                context_instance=RequestContext(request))
+
+@permission_required('base.p6')
 def categories_new(request):
     data = get_user(request)
     priority = request.POST.get('priority', '').strip()
@@ -274,22 +291,37 @@ def categories_new(request):
     return HttpResponseRedirect('/carte/categories/')
 
 @permission_required('base.p6')
+def categories_name(request, cat_id):
+    data = get_user(request)
+    data['category'] = get_object_or_404(Categorie, pk=cat_id)
+    return render_to_response('base/carte/name.html',
+                                data,
+                                context_instance=RequestContext(request))
+
+@permission_required('base.p6')
+def categories_color(request, cat_id):
+    data = get_user(request)
+    data['category'] = get_object_or_404(Categorie, pk=cat_id)
+    data['categories'] = Categorie.objects.order_by('priorite', 'nom')
+    return render_to_response('base/carte/color.html',
+                                data,
+                                context_instance=RequestContext(request))
+
+@permission_required('base.p6')
 def categories_less_priority(request, cat_id, nb=1):
     data = get_user(request)
     cat = get_object_or_404(Categorie, pk=cat_id)
-    cat.priorite -= nb
-    cat.save()
+    cat.set_less_priority(nb)
     logging.info("[%s] cat [%s] priority - %d" % (data['user'].username, cat.nom, nb))
-    return HttpResponseRedirect('/carte/categories/')
+    return HttpResponseRedirect('/carte/categories/%s/' % cat_id)
 
 @permission_required('base.p6')
 def categories_more_priority(request, cat_id, nb=1):
     data = get_user(request)
     cat = get_object_or_404(Categorie, pk=cat_id)
-    cat.priorite += nb
-    cat.save()
+    cat.set_more_priority(nb)
     logging.info("[%s] cat [%s] priority + %d" % (data['user'].username, cat.nom, nb))
-    return HttpResponseRedirect('/carte/categories/')
+    return HttpResponseRedirect('/carte/categories/%s/' % cat_id)
 
 @permission_required('base.p6')
 def categories_surtaxable(request, cat_id):
@@ -299,22 +331,91 @@ def categories_surtaxable(request, cat_id):
     cat.surtaxable = new
     cat.save()
     logging.info("[%s] cat [%s] surtaxable: %s" % (data['user'].username, cat.nom, cat.surtaxable))
-    return HttpResponseRedirect('/carte/categories/')
+    return HttpResponseRedirect('/carte/categories/%s/' % cat_id)
 
 @permission_required('base.p6')
-def categories_alcool(request, cat_id):
+def categories_vat_onsite(request, cat_id):
     data = get_user(request)
-    cat = get_object_or_404(Categorie, pk=cat_id)
-    new = not cat.alcool
-    cat.alcool = new
-    cat.save()
-    logging.info("[%s] cat [%s] alcool: %s" % (data['user'].username, cat.nom, cat.alcool))
-    return HttpResponseRedirect('/carte/categories/')
+    data['category'] = get_object_or_404(Categorie, pk=cat_id)
+    data['type_vat'] = 'TVA sur place'
+    data['url_vat'] = 'vat_onsite'
+    data['vats'] = VAT.objects.all()
+    return render_to_response('base/carte/vat.html',
+                                data,
+                                context_instance=RequestContext(request))
 
 @permission_required('base.p6')
-def categories_change(request, cat_id):
+def vats(request):
     data = get_user(request)
-    name = request.POST.get('name', '').strip()
+    data['vats'] = VAT.objects.all()
+    return render_to_response('base/carte/vats.html',
+                                data,
+                                context_instance=RequestContext(request))
+
+@permission_required('base.p6')
+def vats_view(request, vat_id):
+    data = get_user(request)
+    data['vat'] = get_object_or_404(VAT, pk=vat_id)
+    return render_to_response('base/carte/vats_view.html',
+                                data,
+                                context_instance=RequestContext(request))
+
+@permission_required('base.p6')
+def vats_change(request, vat_id):
+    data = get_user(request)
+    data['vat'] = get_object_or_404(VAT, pk=vat_id)
+    if request.method == 'POST':
+        name = request.POST.get('name', '').strip()
+        tax = request.POST.get('tax', '').strip()
+        if name:
+            if tax:
+                try:
+                    data['vat'].name = name
+                    data['vat'].tax = tax
+                    data['vat'].save()
+                except:
+                    messages.add_message(request, messages.ERROR, "Les modifications n'ont pu être enregistrées.")
+                else:
+                    return HttpResponseRedirect('/carte/')
+
+            else:
+                messages.add_message(request, messages.ERROR, "Vous devez saisir un pourcentage de taxe.")
+        else:
+            messages.add_message(request, messages.ERROR, "Vous devez entrer un nom.")
+
+    return render_to_response('base/carte/vats_change.html',
+                                data,
+                                context_instance=RequestContext(request))
+
+@permission_required('base.p6')
+def vat_new(request):
+    data = get_user(request)
+    data['vats'] = VAT.objects.all()
+    if request.method == 'POST':
+        name = request.POST.get('name', '').strip()
+        tax = request.POST.get('tax', '').strip()
+        if name:
+            if tax:
+                try:
+                    vat = VAT(name=name, tax=tax)
+                    vat.save()
+                except:
+                    messages.add_message(request, messages.ERROR, "Les modifications n'ont pu être enregistrées.")
+                else:
+                    return HttpResponseRedirect('/carte/')
+
+            else:
+                messages.add_message(request, messages.ERROR, "Vous devez saisir un pourcentage de taxe.")
+        else:
+            messages.add_message(request, messages.ERROR, "Vous devez entrer un nom.")
+
+    return render_to_response('base/carte/vat_new.html',
+                                data,
+                                context_instance=RequestContext(request))
+
+@permission_required('base.p6')
+def categories_set_color(request, cat_id):
+    data = get_user(request)
     color = request.POST.get('color', '').strip()
     cat = get_object_or_404(Categorie, pk=cat_id)
     if not cat.couleur or color != cat.couleur.web():
@@ -330,6 +431,19 @@ def categories_change(request, cat_id):
         else:
             logging.warning("[%s] invalid color [%s]" % (data['user'].username, color))
             messages.add_message(request, messages.ERROR, "La nouvelle couleur n'a pu être enregistrée.")
+
+    try:
+        cat.save()
+    except:
+        messages.add_message(request, messages.ERROR, "Les modifications n'ont pu être enregistrées.")
+        logging.warning("[%s] save failed for [%s]" % (data['user'].username, cat.nom))
+    return HttpResponseRedirect('/carte/categories/%s/' % cat_id)
+
+@permission_required('base.p6')
+def categories_set_name(request, cat_id):
+    data = get_user(request)
+    name = request.POST.get('name', '').strip()
+    cat = get_object_or_404(Categorie, pk=cat_id)
     if name != cat.nom:
         logging.info("[%s] new categorie name: [%s] > [%s]" % (data['user'].username, cat.nom, name))
         cat.nom = name
@@ -339,7 +453,7 @@ def categories_change(request, cat_id):
     except:
         messages.add_message(request, messages.ERROR, "Les modifications n'ont pu être enregistrées.")
         logging.warning("[%s] save failed for [%s]" % (data['user'].username, cat.nom))
-    return HttpResponseRedirect('/carte/categories/')
+    return HttpResponseRedirect('/carte/categories/%s/' % cat_id)
 
 @permission_required('base.p6')
 def categories_disable_surtaxe(request, cat_id):

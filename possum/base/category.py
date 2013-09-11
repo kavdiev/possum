@@ -20,14 +20,17 @@
 from django.db import models
 from possum.base.generic import Nom, Priorite
 from possum.base.color import Couleur
+from possum.base.vat import VAT
 
 class Categorie(Nom, Priorite):
     surtaxable = models.BooleanField("majoration terrasse", default=False)
-    couleur = models.ForeignKey('Couleur', null=True, blank=True, related_name="categorie-couleur")
-#    majoration_terrasse = models.BooleanField()
-#    couleur = models.ForeignKey(Couleur)
-    alcool = models.BooleanField(default=False)
     disable_surtaxe = models.BooleanField("peut enlever la surtaxe presente", default=False)
+    couleur = models.ForeignKey('Couleur', null=True, blank=True, 
+            related_name="categorie-couleur")
+    vat_onsite = models.ForeignKey('VAT', null=True, blank=True, 
+            related_name="categorie-vat-onsite")
+    vat_takeaway = models.ForeignKey('VAT', null=True, blank=True, 
+            related_name="categorie-vat-takeaway")
 
     def __cmp__(self,other):
         """
@@ -52,18 +55,4 @@ class Categorie(Nom, Priorite):
         else:
             return cmp(self.priorite,other.priorite)
 
-    def show(self):
-        nb = Produit.objects.filter(categorie=self,actif=True).count()
-        if self.surtaxable:
-            # soumis a la majoration terrasse
-            infos = "MAJ"
-        else:
-            infos = "___"
-        if self.disable_surtaxe:
-            # peut desactiver une eventuelle surtaxe
-            infos += " DIS"
-        else:
-            infos += " ___"
-#        return u"1 %s % 12.2f" % (self.produit.nom_facture, self.prix)
-        return u"%-18s (% 3d produits)  [%s]" % (self.nom[:18], nb, infos)
 

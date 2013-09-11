@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-#    Copyright 2009, 2010, 2011, 2012 Sébastien Bonnegent
+#    Copyright 2009, 2010, 2011, 2012, 2013 Sébastien Bonnegent
 #
 #    This file is part of POSSUM.
 #
@@ -17,24 +17,19 @@
 #    You should have received a copy of the GNU General Public License
 #    along with POSSUM.  If not, see <http://www.gnu.org/licenses/>.
 #
-
 from django.db import models
-import logging
-#import io
 
-from django.conf import settings
-from possum.base.vat import VAT
-from possum.base.stats import StatsJour, StatsJourGeneral, \
-    StatsJourPaiement, StatsJourProduit, StatsJourCategorie
-from possum.base.bill import Facture, Suivi
-from possum.base.generic import Nom, NomDouble, Priorite, Etat
-from possum.base.log import LogType, Log
-from possum.base.product import Produit, ProduitVendu
-from possum.base.payment import PaiementType, Paiement
-from possum.base.color import Couleur
-from possum.base.category import Categorie
-from possum.base.options import Cuisson, Sauce, Accompagnement
-from possum.base.location import Zone, Table
+class VAT(models.Model):
+    name = models.CharField(max_length=32)
+    tax = models.DecimalField(max_digits=4, decimal_places=2, default=0)
 
+    def __unicode__(self):
+        return self.name
+
+    def __cmp__(self,other):
+        return cmp(self.name, other.name)
+
+    class Meta:
+        ordering = ['name']
 
 

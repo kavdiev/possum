@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h1>Changement de couleur pour: {{category.nom}}</h2>
+
+<form method='post' action='/carte/categories/{{category.id}}/color/set/'>{% csrf_token %}
+    <input name="color" value="{{ category.couleur.web }}">
+    <input type='submit' value='Modifier'>
+</form>
+
+<h2>Couleurs actuelles</h2>
+
+<ul id="categories">
+    {% for category in categories %}
+        <li style="background:{{category.couleur.web}};">{{category.nom}}</li>
+    {% empty %}
+        <li>Aucune categorie disponible.</li>
+    {% endfor %}
+</ul>
+
+{% endblock %}
+

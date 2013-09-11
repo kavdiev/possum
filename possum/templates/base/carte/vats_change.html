@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h1>Modifier la TVA: {{vat.name}}</h1>
+
+<form method='post' action='/carte/vats/{{vat.id}}/change/'>{% csrf_token %}
+<table>
+<tr>
+    <td><b>Nom</b></td>
+    <td><input name='name' value="{{vat.name}}"></td>
+</tr>
+<tr>
+    <td><b>Taxe (exemple: 19.6)</b></td>
+    <td><input name='tax' value="{{vat.tax}}"></td>
+</tr>
+<tr>
+    <td colspan=2><input type='submit' value='Modifier'></td>
+</tr>
+</table>
+</form>
+
+{% endblock %}
+

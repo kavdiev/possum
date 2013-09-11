@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h1>Catégorie: {{category.nom}}</h2>
+
+<ul id="category_info">
+    <li onclick="window.location='/carte/categories/{{category.id}}/less-10/'">
+        <<</br>
+        Priorité - 10</li>
+    <li onclick="window.location='/carte/categories/{{category.id}}/less/'">
+        <</br>
+        Priorité - 1</li>
+    <li>Priorité:</br>{{category.priorite}}</li>
+    <li onclick="window.location='/carte/categories/{{category.id}}/more/'">
+        ></br>
+        Priorité + 1</li>
+    <li onclick="window.location='/carte/categories/{{category.id}}/more-10/'">
+        >></br>
+        Priorité + 10</li>
+    <li onclick="window.location='/carte/categories/{{category.id}}/color/'" 
+        style="background:{{category.couleur.web}};">
+        Couleur:</br>{{category.couleur.web}}</li>
+    <li onclick="window.location='/carte/categories/{{category.id}}/name/'">
+        Changement de nom</li>
+    <li onclick="window.location='/carte/categories/{{category.id}}/surtaxable/'"
+        {% if category.surtaxable %}
+            class="enabled"> Est surtaxable
+        {% else %}
+            class="disabled"> N'est pas surtaxable
+        {% endif %}
+    </li>
+    <li onclick="window.location='/carte/categories/{{category.id}}/disable_surtaxe/'"
+        {% if category.disable_surtaxe %}
+            class="enabled"> Peux annuler la surtaxe
+        {% else %}
+            class="disabled"> Ne peux annuler la surtaxe
+        {% endif %}
+    </li>
+    <li onclick="window.location='/carte/categories/{{category.id}}/vat_onsite/'">
+        TVA sur place:</br>
+        {% if category.vat_onsite %}
+            {{category.vat_onsite.name}}
+        {% else %}
+            non défini
+        {% endif %}
+    </li>
+
+
+
+
+    <li onclick="window.location='/bill/{{facture.id}}/category/select/'">À envoyer avec:</br>entrée</li>
+    {% if sold.produit.choix_cuisson %}
+    <li onclick="window.location='/bill/{{facture.id}}/couverts/select/'">Cuisson:</br>{{sold.cuisson}}</li>
+    {% endif %}
+    <li>Prix:</br>{{sold.produit.prix}}€</li>
+    <li onclick="window.location='/bill/{{bill_id}}/sold/{{sold.id}}/delete/'" class="critical">Supprimer</li>
+</ul></br></br></br>
+
+{% endblock %}
+

@@ -55,6 +55,18 @@ class Priorite(models.Model):
     def __cmp__(self, other):
         return cmp(self.priorite,other.priorite)
 
+    def set_less_priority(self, number=1):
+        tmp = self.priorite - number
+        if tmp < 0:
+            self.priorite = 0
+        else:
+            self.priorite = tmp
+        self.save()
+
+    def set_more_priority(self, number=1):
+        self.priorite += number
+        self.save()
+
 class Etat(Nom, Priorite):
     """Etat d'une facture"""
 

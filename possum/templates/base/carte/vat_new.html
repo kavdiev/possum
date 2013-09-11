@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h1>Nouvelle TVA</h1>
+
+<form method='post' action='/carte/vats/new/'>{% csrf_token %}
+<table>
+<tr>
+    <td><b>Nom</b></td>
+    <td><input name='name'></td>
+</tr>
+<tr>
+    <td><b>Taxe (exemple: 19.6)</b></td>
+    <td><input name='tax'></td>
+</tr>
+<tr>
+    <td colspan=2><input type='submit' value='Créer'></td>
+</tr>
+</table>
+</form>
+
+<h2>TVA existantes</h2>
+<ul id="vats">
+    {% for vat in vats %}
+    <li onclick="window.location='/carte/vats/{{vat.id}}/'">
+        {{vat.name}}</br>
+        {{vat.tax}}
+        </li>
+    {% empty %}
+    <li>Aucune TVA à afficher.</li>
+    {% endfor %}
+</ul>
+
+{% endblock %}
+

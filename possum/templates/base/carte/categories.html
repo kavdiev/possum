@@ -3,6 +3,36 @@
 
 <h1>Carte</h1>
 
+<ul id="categories">
+    <li onclick="window.location='/carte/categories/add/'">Ajouter</li>
+    {% for category in categories %}
+    <li onclick="window.location='/carte/categories/{{category.id}}/'" style="background:{{category.couleur.web}};">
+        [{{category.priorite}}] {{category.nom}}
+        </li>
+    {% empty %}
+        <li>Aucune categorie disponible.</li>
+    {% endfor %}
+</ul>
+</br></br></br>
+</br></br></br>
+</br></br></br>
+</br></br></br>
+
+<h2>TVA</h2>
+<ul id="vats">
+    <li onclick="window.location='/carte/vats/new/'">
+        Ajouter
+    </li>
+    {% for vat in vats %}
+    <li onclick="window.location='/carte/vats/{{vat.id}}/'">
+        {{vat.name}}</br>
+        {{vat.tax}}
+        </li>
+    {% endfor %}
+</ul>
+
+
+
 <table>
 <tr>
     <td><b>Priorite</b></td>

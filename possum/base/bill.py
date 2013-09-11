@@ -62,7 +62,7 @@ class Facture(models.Model):
             related_name="facture-table")
     couverts = models.PositiveIntegerField("nombre de couverts", default=0)
     produits = models.ManyToManyField('ProduitVendu', \
-        related_name="les produits facturés", \
+        related_name="les produits vendus", \
         limit_choices_to = {'date__gt': datetime.datetime.today()})
     montant_normal = models.DecimalField(max_digits=9, decimal_places=2, 
             default=0)

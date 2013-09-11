@@ -21,6 +21,13 @@ from django.db import models
 from possum.base.generic import Nom
 
 class Zone(Nom):
+    """Un zone peut avoir une surtaxe par exemple dans le cas d'une majoration
+    pour le service en terrasse. Dans ce cas, prix_surtaxe est ajouté au prix_ttc
+    de tous les produits dans les categories 'surtaxable'.
+
+    Il est possible d'indiquer une catégorie de produits qui désactive la surtaxe
+    pour toute la commande (par exemple lorsque les clients mangent).
+    """
     surtaxe = models.BooleanField("zone surtaxée ?", default=False)
     prix_surtaxe = models.DecimalField(max_digits=4, decimal_places=2, default=0)
 #    prix_surtaxe = models.PositiveIntegerField("surtaxe en centimes")

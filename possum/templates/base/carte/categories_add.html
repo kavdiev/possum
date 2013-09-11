@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h1>Nouvelle catégorie</h1>
+
+<form method='post' action='/carte/categories/new/'>{% csrf_token %}
+<table>
+<tr>
+    <td><b>Priorite</b></td>
+    <td><input name='priority'></td>
+</tr>
+<tr>
+    <td><b>Nom</b></td>
+    <td><input name='name'></td>
+</tr>
+<tr>
+    <td colspan=2><input type='submit' value='Créer'></td>
+</tr>
+</table>
+</form>
+
+{% endblock %}
+

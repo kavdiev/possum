@@ -183,7 +183,7 @@ div.right
     text-align: center;
     width:100px;
     float:left; /* c'est cette balise qui fait l'effet tableau*/
-    height:20px;
+    height:40px;
     background:#eee;
     margin:5px;
     overflow:hidden; /* permet de limiter l'affichage du contenu au dimension du contenant */
@@ -331,6 +331,27 @@ li
     padding:5px;
 }
 
+#category_info {
+    list-style:none;
+}
+#category_info li {
+    float:left; /* c'est cette balise qui fait l'effet tableau*/
+    width:140px;
+    height:40px;
+    background:#eee;
+    margin:5px;
+    overflow:hidden; /* permet de limiter l'affichage du contenu au dimension du contenant */
+    padding:5px;
+}
+#category_info li.critical { 
+    background-color: #FF0000;
+}
+#category_info li.disabled { 
+    background-color: #FF0000;
+}
+#category_info li.enabled { 
+    background-color: #00FF00;
+}
 #sold_info {
     list-style:none;
 }
@@ -375,6 +396,18 @@ li
     padding:5px;
 }
 
+#vats {
+    list-style:none; /* inutile pour safari et firefox, mais pas pour IE */
+}
+#vats li {
+    float:left; /* c'est cette balise qui fait l'effet tableau*/
+    width:200px;
+    height:40px;
+    background:#eee;
+    margin:5px;
+    overflow:hidden; /* permet de limiter l'affichage du contenu au dimension du contenant */
+    padding:5px;
+}
 /* list of categories */
 #categories {
     list-style:none; /* inutile pour safari et firefox, mais pas pour IE */

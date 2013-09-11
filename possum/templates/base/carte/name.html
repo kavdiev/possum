@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h1>Changement de nom pour: {{category.nom}}</h2>
+
+<form method='post' action='/carte/categories/{{category.id}}/name/set/'>{% csrf_token %}
+    <input name="name" value="{{ category.nom }}">
+    <input type='submit' value='Modifier'>
+</form>
+
+{% endblock %}
+
