@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h1>Changement de nom pour: {{product.nom}}</h1>
+
+<form method='post' action='/carte/products/{{product.id}}/change/'>{% csrf_token %}
+<table>
+    <tr>
+        <td><b>Nom:</b></td>
+        <td><input name="name" value="{{ product.nom }}"></td>
+    </tr>
+    <tr>
+        <td><b>Nom sur la facture:</b></td>
+        <td><input name="billname" value="{{ product.nom_facture }}"></td>
+    </tr>
+    <tr>
+        <td><b>Prix HT:</b></td>
+        <td><input name="prize" value="{{ product.prix }}"></td>
+    <tr>
+        <td colspan="2"><input type='submit' value='Modifier'></td>
+    </tr>
+</table>
+</form>
+
+{% endblock %}
+

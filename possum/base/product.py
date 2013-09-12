@@ -62,6 +62,52 @@ class Produit(NomDouble):
 #        return u"1 %s % 12.2f" % (self.produit.nom_facture, self.prix)
         return u" 1 %-25s % 7.2f" % (self.nom_facture[:25], self.prix)
 
+    def set_prize(self, prize):
+        """With new prize, we have to create a new product to keep statistics
+        and historics.
+        """
+        if prize != str(self.prix):
+            product = Produit()
+            product.actif = self.actif
+            self.actif = False
+            self.save()
+            product.prix = prize
+            product.nom = self.nom
+            product.nom_facture = self.nom_facture
+            product.choix_cuisson = self.choix_cuisson
+            product.choix_accompagnement = self.choix_accompagnement
+            product.choix_sauce = self.choix_sauce
+            product.categorie = self.categorie
+            product.save()
+            for c in self.categories_ok.distinct():
+                product.categories_ok.add(c)
+            for p in self.produits_ok.distinct():
+                product.produits_ok.add(p)
+            product.save()
+            return product
+        else:
+            return self
+
+    def get_prize_takeaway(self):
+        if self.categorie:
+            if self.categorie.vat_takeaway:
+                ttc = self.prix * self.categorie.vat_takeaway.value
+                return ttc
+            else:
+                return self.prix
+        else:
+            return self.prix
+
+    def get_prize_onsite(self):
+        if self.categorie:
+            if self.categorie.vat_onsite:
+                ttc = self.prix * self.categorie.vat_onsite.value
+                return ttc
+            else:
+                return self.prix
+        else:
+            return self.prix
+
 class ProduitVendu(models.Model):
     """le prix sert a affiche correctement les prix pour les surtaxes
     """

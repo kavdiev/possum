@@ -94,82 +94,6 @@ def carte(request):
                                 context_instance=RequestContext(request))
 
 @permission_required('base.p6')
-def products(request, cat_id, only_enable=False):
-    data = get_user(request)
-    cat = get_object_or_404(Categorie, pk=cat_id)
-    data['menu_carte'] = True
-    data['categories'] = Categorie.objects.order_by('priorite', 'nom')
-    data['cat_current'] = cat
-    products = Produit.objects.filter(categorie=cat)
-    if only_enable:
-        data['products'] = products.filter(actif=True)
-        data['only_enable'] = True
-    else:
-        data['products'] = products
-    return render_to_response('base/products.html',
-                                data,
-                                context_instance=RequestContext(request))
-
-@permission_required('base.p6')
-def products_details(request, product_id):
-    data = get_user(request)
-    product = get_object_or_404(Produit, pk=product_id)
-    data['product'] = product
-    return render_to_response('base/a_product.html',
-                                data,
-                                context_instance=RequestContext(request))
-
-@permission_required('base.p6')
-def products_change(request, product_id):
-    data = get_user(request)
-    name = request.POST.get('name', '').strip()
-    billname = request.POST.get('billname', '').strip()
-    prize = request.POST.get('prize', '').strip()
-    product = get_object_or_404(Produit, pk=product_id)
-    if prize != str(product.prix):
-        # new prize, so we have to create a new product to keep statistics
-        # and historics
-        logging.info("[%s] new prize for [%s]: [%s] > [%s]" % (data['user'].username, product.nom, product.prix, prize))
-        old = product
-        product = Produit()
-        product.actif = old.actif
-        old.actif = False
-        old.save()
-        product.prix = prize
-        product.nom = old.nom
-        product.nom_facture = old.nom_facture
-        product.choix_cuisson = old.choix_cuisson
-        product.choix_accompagnement = old.choix_accompagnement
-        product.choix_sauce = old.choix_sauce
-        product.categorie = old.categorie
-        try:
-            product.save()
-            for c in old.categories_ok.distinct():
-                product.categories_ok.add(c)
-            for p in old.produits_ok.distinct():
-                product.produits_ok.add(p)
-            messages.add_message(request, messages.INFO,
-                    "Le prix d'un produit ne peut être modifié, en conséquence un nouveau produit a été créé et l'ancien a été désactivé.")
-        except:
-            messages.add_message(request, messages.ERROR, "Les modifications n'ont pu être enregistrées.")
-            logging.warning("[%s] save failed for product [%s]" % (data['user'].username, product.nom))
-            return HttpResponseRedirect('/carte/products/cat/%s/' % product.categorie.id)
-    if name != product.nom:
-        logging.info("[%s] new product name: [%s] > [%s]" % (data['user'].username, product.nom, name))
-        product.nom = name
-    if billname != product.nom_facture:
-        logging.info("[%s] new product bill name [%s]: [%s] > [%s]" % (data['user'].username, product.nom, product.nom_facture, billname))
-        product.nom_facture = billname
-
-    try:
-        product.save()
-    except:
-        messages.add_message(request, messages.ERROR, "Les modifications n'ont pu être enregistrées.")
-        logging.warning("[%s] save failed for product [%s]" % (data['user'].username, product.nom))
-    return HttpResponseRedirect('/carte/products/cat/%s/' % product.categorie.id)
-
-
-@permission_required('base.p6')
 def categories(request):
     data = get_user(request)
     data['menu_carte'] = True
@@ -377,13 +301,13 @@ def vats_change(request, vat_id):
     data['vat'] = get_object_or_404(VAT, pk=vat_id)
     if request.method == 'POST':
         name = request.POST.get('name', '').strip()
-        tax = request.POST.get('tax', '').strip()
+        tax = request.POST.get('tax', '').strip().replace(',','.')
         if name:
             if tax:
                 try:
                     data['vat'].name = name
-                    data['vat'].tax = tax
                     data['vat'].save()
+                    data['vat'].set_tax(tax)
                 except:
                     messages.add_message(request, messages.ERROR, "Les modifications n'ont pu être enregistrées.")
                 else:
@@ -437,11 +361,12 @@ def vat_new(request):
     data['vats'] = VAT.objects.all()
     if request.method == 'POST':
         name = request.POST.get('name', '').strip()
-        tax = request.POST.get('tax', '').strip()
+        tax = request.POST.get('tax', '').strip().replace(",",".")
         if name:
             if tax:
                 try:
-                    vat = VAT(name=name, tax=tax)
+                    vat = VAT(name=name)
+                    vat.set_tax(tax)
                     vat.save()
                 except:
                     messages.add_message(request, messages.ERROR, "Les modifications n'ont pu être enregistrées.")
@@ -482,6 +407,64 @@ def categories_set_color(request, cat_id):
         messages.add_message(request, messages.ERROR, "Les modifications n'ont pu être enregistrées.")
         logging.warning("[%s] save failed for [%s]" % (data['user'].username, cat.nom))
     return HttpResponseRedirect('/carte/categories/%s/' % cat_id)
+
+@permission_required('base.p6')
+def products_set_category(request, product_id, cat_id):
+    data = get_user(request)
+    product = get_object_or_404(Produit, pk=product_id)
+    category = get_object_or_404(Categorie, pk=cat_id)
+    product.categorie = category
+    product.save()
+    return HttpResponseRedirect('/carte/products/%s/' % product_id)
+
+@permission_required('base.p6')
+def products_category(request, product_id):
+    data = get_user(request)
+    data['product'] = get_object_or_404(Produit, pk=product_id)
+    data['categories'] = Categorie.objects.order_by('priorite', 'nom')
+    return render_to_response('base/carte/product_category.html',
+                                data,
+                                context_instance=RequestContext(request))
+
+@permission_required('base.p6')
+def products_enable(request, product_id):
+    data = get_user(request)
+    product = get_object_or_404(Produit, pk=product_id)
+    new = not product.actif
+    product.actif = new
+    product.save()
+    return HttpResponseRedirect('/carte/products/%s/' % product_id)
+
+@permission_required('base.p6')
+def products_change(request, product_id):
+    data = get_user(request)
+    product = get_object_or_404(Produit, pk=product_id)
+    if request.method == 'POST':
+        name = request.POST.get('name', '').strip()
+        billname = request.POST.get('billname', '').strip()
+        prize = request.POST.get('prize', '').strip().replace(',','.')
+        if name:
+            if billname:
+                if prize:
+                    product = product.set_prize(prize)
+                    product.nom = name
+                    product.nom_facture = billname
+                    try:
+                        product.save()
+                    except:
+                        messages.add_message(request, messages.ERROR, "Les modifications n'ont pu être enregistrées.")
+                    else:
+                        return HttpResponseRedirect('/carte/products/%s/' % product.id)
+                else:
+                    messages.add_message(request, messages.ERROR, "Vous devez entrer un prix.")
+            else:
+                messages.add_message(request, messages.ERROR, "Vous devez saisir un nom pour la facture.")
+        else:
+            messages.add_message(request, messages.ERROR, "Vous devez saisir un nom.")
+    data['product'] = product
+    return render_to_response('base/carte/product_change.html',
+                                data,
+                                context_instance=RequestContext(request))
 
 @permission_required('base.p6')
 def categories_set_name(request, cat_id):

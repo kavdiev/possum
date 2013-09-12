@@ -18,10 +18,17 @@
 #    along with POSSUM.  If not, see <http://www.gnu.org/licenses/>.
 #
 from django.db import models
+from decimal import Decimal
 
 class VAT(models.Model):
+    """name is a symbolic name
+    tax is for example '19.6' for 19.6%
+    value: is used to obtain ttc, example: '1.196'
+        prize * value = ttc
+    """
     name = models.CharField(max_length=32)
     tax = models.DecimalField(max_digits=4, decimal_places=2, default=0)
+    value = models.DecimalField(max_digits=6, decimal_places=4, default=0)
 
     def __unicode__(self):
         return self.name
@@ -32,4 +39,7 @@ class VAT(models.Model):
     class Meta:
         ordering = ['name']
 
-
+    def set_tax(self, tax):
+        self.tax = tax
+        self.value = Decimal(tax) / 100 + 1
+        self.save()
