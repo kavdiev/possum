@@ -1682,9 +1682,7 @@
         "pk": 3, 
         "model": "base.paiementtype", 
         "fields": {
-            "nom_facture": "Ticket Resto", 
             "nom": "Tic. Resto.", 
-            "priorite": 0, 
             "fixed_value": true
         }
     }, 
@@ -1692,9 +1690,7 @@
         "pk": 5, 
         "model": "base.paiementtype", 
         "fields": {
-            "nom_facture": "ANCV", 
             "nom": "ANCV", 
-            "priorite": 2, 
             "fixed_value": true
         }
     }, 
@@ -1702,9 +1698,7 @@
         "pk": 8, 
         "model": "base.paiementtype", 
         "fields": {
-            "nom_facture": "CB", 
             "nom": "CB", 
-            "priorite": 4, 
             "fixed_value": false
         }
     }, 
@@ -1712,9 +1706,7 @@
         "pk": 1, 
         "model": "base.paiementtype", 
         "fields": {
-            "nom_facture": "Espece", 
             "nom": "Espece", 
-            "priorite": 5, 
             "fixed_value": false
         }
     }, 
@@ -1722,9 +1714,7 @@
         "pk": 2, 
         "model": "base.paiementtype", 
         "fields": {
-            "nom_facture": "Cheque", 
             "nom": "Cheque", 
-            "priorite": 6, 
             "fixed_value": false
         }
     }, 
@@ -1732,9 +1722,7 @@
         "pk": 7, 
         "model": "base.paiementtype", 
         "fields": {
-            "nom_facture": "American Express", 
             "nom": "AMEX", 
-            "priorite": 7, 
             "fixed_value": false
         }
     }

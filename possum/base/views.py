@@ -427,6 +427,15 @@ def products_category(request, product_id):
                                 context_instance=RequestContext(request))
 
 @permission_required('base.p6')
+def products_cooking(request, product_id):
+    data = get_user(request)
+    product = get_object_or_404(Produit, pk=product_id)
+    new = not product.choix_cuisson
+    product.choix_cuisson = new
+    product.save()
+    return HttpResponseRedirect('/carte/products/%s/' % product_id)
+
+@permission_required('base.p6')
 def products_enable(request, product_id):
     data = get_user(request)
     product = get_object_or_404(Produit, pk=product_id)
@@ -810,6 +819,16 @@ def factures(request):
                                 context_instance=RequestContext(request))
 
 @permission_required('base.p3')
+def bill_payment(request, bill_id):
+    data = get_user(request)
+    data['facture'] = get_object_or_404(Facture, pk=bill_id)
+    data['type_payments'] = PaiementType.objects.all()
+    data['menu_bills'] = True
+    return render_to_response('base/bill/payment.html',
+                                data,
+                                context_instance=RequestContext(request))
+
+@permission_required('base.p3')
 def bill_view(request, bill_id):
     data = get_user(request)
     data['facture'] = get_object_or_404(Facture, pk=bill_id)
@@ -823,4 +842,13 @@ def bill_delete(request, bill_id):
     order = get_object_or_404(Facture, pk=bill_id)
     order.delete()
     return HttpResponseRedirect('/bills/')
+
+@permission_required('base.p6')
+def bill_onsite(request, bill_id):
+    data = get_user(request)
+    order = get_object_or_404(Facture, pk=bill_id)
+    new = not order.onsite
+    order.onsite = new
+    order.save()
+    return HttpResponseRedirect('/bill/%s/' % bill_id)
 

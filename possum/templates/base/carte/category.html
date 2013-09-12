@@ -36,20 +36,18 @@
             class="disabled"> Ne peux annuler la surtaxe
         {% endif %}
     </li>
-    <li onclick="window.location='/carte/categories/{{category.id}}/vat_onsite/'">
-        TVA sur place:</br>
+    <li onclick="window.location='/carte/categories/{{category.id}}/vat_onsite/'"
         {% if category.vat_onsite %}
-            {{category.vat_onsite.name}}
+            >TVA sur place:</br>{{category.vat_onsite.name}}
         {% else %}
-            non défini
+            class="disabled">TVA sur place:</br>non défini
         {% endif %}
     </li>
-    <li onclick="window.location='/carte/categories/{{category.id}}/vat_takeaway/'">
-        TVA à emporter:</br>
+    <li onclick="window.location='/carte/categories/{{category.id}}/vat_takeaway/'"
         {% if category.vat_takeaway %}
-            {{category.vat_takeaway.name}}
+            >TVA à emporter:</br>{{category.vat_takeaway.name}}
         {% else %}
-            non défini
+            class="disabled">TVA à emporter:</br>non défini
         {% endif %}
     </li>
     <li onclick="window.location='/carte/categories/{{category.id}}/delete/'" class="critical">Supprimer</li>

@@ -23,6 +23,13 @@
             class="disabled"> N'est pas actif
         {% endif %}
     </li>
+    <li onclick="window.location='/carte/products/{{product.id}}/cooking/'"
+        {% if product.choix_cuisson %}
+            class="enabled">Peux choisir la cuisson
+        {% else %}
+            class="disabled">Ne peux pas choisir la cuisson
+        {% endif %}
+    </li>
     <li onclick="window.location='/carte/products/{{product.id}}/change/'">
         Prix HT:</br>
         {{product.prix}}€</li>

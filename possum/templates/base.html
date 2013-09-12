@@ -3,11 +3,11 @@
 <script type="text/javascript">window.onload = date_heure('myclock');</script>
 
 <ul id="menu">
+    <li class="{% if menu_bills %}menuSelected{% endif %}" onclick="window.location='/bills/'">
+    <!--img src="/static/images/template_icon.png"-->Commandes
+    </li>
     <li class="{% if menu_carte %}menuSelected{% endif %}" onclick="window.location='/carte/categories/'">
         <img src="/static/images/carte-90x20.jpg">
-    </li>
-    <li class="{% if menu_bills %}menuSelected{% endif %}" onclick="window.location='/bills/'">
-    <img src="/static/images/template_icon.png">
     </li>
     <li class="{% if menu_kitchen %}menuSelected{% endif %}" onclick="window.location='/kitchen/'">
         Cuisine

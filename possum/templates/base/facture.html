@@ -8,17 +8,24 @@
     <li onclick="window.location='/bill/{{facture.id}}/category/select/'">Envoi en cuisine</li>
     <li onclick="window.location='/bill/{{facture.id}}/table/select/'">Table:</br>{{facture.table.nom}}</li>
     <li onclick="window.location='/bill/{{facture.id}}/couverts/select/'">Couverts:</br>{{facture.couverts}}</li>
-    <li onclick="window.location='/bill/{{facture.id}}/couverts/select/'">sur place</li>
+    <li onclick="window.location='/bill/{{facture.id}}/onsite/'" 
+        {% if facture.onsite %}
+            class="enabled">sur place
+        {% else %}
+            class="disabled">à emporter
+        {% endif %}
+    </li>
+    <li>Imprimer la facture</li>
     <li>Restant à payer:</br>{{facture.restant_a_payer}}€</li>
     <li onclick="window.location='/bill/{{facture.id}}/delete/'" class="critical">Supprimer</li>
 </ul></br></br></br>
 
 <h3>Paiements</h3>
 <ul id="paiements">
-    <li onclick="window.location='/bill/{{facture.id}}/paiement/select/'">Ajouter</li>
-    {% for paiement in facture.paiements.all %}
-        <li onclick="window.location='/bill/{{facture.id}}/paiement/select/'">
-        <a href='/bill/{{facture.id}}/paiement/select/'>{{paiement.type.nom}} {{paiement.montant}}</a></li>
+    <li onclick="window.location='/bill/{{facture.id}}/payment/'">Ajouter</li>
+    {% for payment in facture.paiements.all %}
+        <li onclick="window.location='/bill/{{facture.id}}/payment/{{payment.id}}/'">
+        <a href='/bill/{{facture.id}}/payment/select/'>{{payment.type.nom}} {{payment.montant}}</a></li>
     {% endfor %}
 </ul></br></br>
 

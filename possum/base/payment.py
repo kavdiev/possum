@@ -18,9 +18,9 @@
 #    along with POSSUM.  If not, see <http://www.gnu.org/licenses/>.
 #
 from django.db import models
-from possum.base.generic import NomDouble, Priorite
+from possum.base.generic import Nom
 
-class PaiementType(Priorite, NomDouble):
+class PaiementType(Nom):
     """Type de paiment"""
     fixed_value = models.BooleanField("ticket ?", default=False)
 #    last_value = models.PositiveIntegerField("dernière valeur", default=0)

@@ -384,6 +384,21 @@ li
 #sold_info li.critical { 
     background-color: #FF0000;
 }
+#type_payment {
+    list-style:none;
+}
+#type_payment li {
+    float:left; /* c'est cette balise qui fait l'effet tableau*/
+    width:140px;
+    height:20px;
+    background:#eee;
+    margin:5px;
+    overflow:hidden; /* permet de limiter l'affichage du contenu au dimension du contenant */
+    padding:5px;
+}
+#type_payment li.enabled { 
+    background-color: #00FF00;
+}
 #bill_info {
     list-style:none;
 }
@@ -398,6 +413,12 @@ li
 }
 #bill_info li.critical { 
     background-color: #FF0000;
+}
+#bill_info li.disabled { 
+    background-color: #FF0000;
+}
+#bill_info li.enabled { 
+    background-color: #00FF00;
 }
 /* list of tables */
 #tables {
@@ -479,15 +500,15 @@ li
 }
 /* list of couverts */
 #couverts {
-    list-style:none; /* inutile pour safari et firefox, mais pas pour IE */
+    list-style:none;
 }
 #couverts li {
-    float:left; /* c'est cette balise qui fait l'effet tableau*/
+    float:left;
     width:30px;
     height:30px;
     background:#eee;
     margin:5px;
-    overflow:hidden; /* permet de limiter l'affichage du contenu au dimension du contenant */
+    overflow:hidden;
     padding:5px;
 }
 .affichage_sans_float {

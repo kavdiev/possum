@@ -75,6 +75,7 @@ class Facture(models.Model):
             default=0)
     etats = models.ManyToManyField('Suivi', related_name="le suivi")
     saved_in_stats = models.BooleanField(default=False)
+    onsite = models.BooleanField(default=True)
 
     class Meta:
         get_latest_by = 'id'
