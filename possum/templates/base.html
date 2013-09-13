@@ -3,17 +3,33 @@
 <script type="text/javascript">window.onload = date_heure('myclock');</script>
 
 <ul id="menu">
-    <li class="{% if menu_bills %}menuSelected{% endif %}" onclick="window.location='/bills/'">
-    <!--img src="/static/images/template_icon.png"-->Commandes
+    <li class="icon" onclick="window.location='/bills/'">
+    {% if menu_bills %}
+        <img src="/static/images/order_color.jpg">
+    {% else %}
+        <img src="/static/images/order_bw.jpg">
+    {% endif %}
     </li>
-    <li class="{% if menu_carte %}menuSelected{% endif %}" onclick="window.location='/carte/categories/'">
-        <img src="/static/images/carte-90x20.jpg">
+    <li class="icon" onclick="window.location='/carte/categories/'">
+    {% if menu_carte %}
+        <img src="/static/images/carte_color.jpg">
+    {% else %}
+        <img src="/static/images/carte_bw.jpg">
+    {% endif %}
     </li>
-    <li class="{% if menu_kitchen %}menuSelected{% endif %}" onclick="window.location='/kitchen/'">
-        Cuisine
+    <li class="icon" onclick="window.location='/kitchen/'">
+    {% if menu_kitchen %}
+        <img src="/static/images/kitchen_color.jpg">
+    {% else %}
+        <img src="/static/images/kitchen_bw.jpg">
+    {% endif %}
     </li>
-    <li class="{% if menu_manager %}menuSelected{% endif %}" onclick="window.location='/manager/'">
-        Manager
+    <li class="icon" onclick="window.location='/manager/'">
+    {% if menu_manager %}
+        <img src="/static/images/manager_color.jpg">
+    {% else %}
+        <img src="/static/images/manager_bw.jpg">
+    {% endif %}
     </li>
     <li>HEURE</li>
     {% if user.is_authenticated %}

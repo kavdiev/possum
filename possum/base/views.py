@@ -227,6 +227,8 @@ def categories_surtaxable(request, cat_id):
     cat = get_object_or_404(Categorie, pk=cat_id)
     new = not cat.surtaxable
     cat.surtaxable = new
+    if cat.surtaxable:
+        cat.disable_surtaxe = False
     cat.save()
     logging.info("[%s] cat [%s] surtaxable: %s" % (data['user'].username, cat.nom, cat.surtaxable))
     return HttpResponseRedirect('/carte/categories/%s/' % cat_id)
@@ -497,9 +499,11 @@ def categories_disable_surtaxe(request, cat_id):
     cat = get_object_or_404(Categorie, pk=cat_id)
     new = not cat.disable_surtaxe
     cat.disable_surtaxe = new
+    if cat.disable_surtaxe:
+        cat.surtaxable = False
     cat.save()
     logging.info("[%s] cat [%s] disable_surtaxe: %s" % (data['user'].username, cat.nom, cat.disable_surtaxe))
-    return HttpResponseRedirect('/carte/categories/')
+    return HttpResponseRedirect('/carte/categories/%s/' % cat_id)
 
 @permission_required('base.p5')
 def pos(request):
@@ -715,6 +719,10 @@ def product_select(request, bill_id, category_id):
     data['menu_bills'] = True
     bill = get_object_or_404(Facture, pk=bill_id)
     category = get_object_or_404(Categorie, pk=category_id)
+    if not category.vat_onsite:
+        messages.add_message(request, messages.ERROR, "La TVA sur place n'est pas définie!")
+    if not category.vat_takeaway:
+        messages.add_message(request, messages.ERROR, "La TVA à emporter n'est pas définie!")
     data['products'] = Produit.objects.filter(categorie=category, actif=True)
     data['bill_id'] = bill_id
     return render_to_response('base/bill/products.html',
@@ -740,6 +748,8 @@ def sold_view(request, bill_id, sold_id):
     data['menu_bills'] = True
     data['bill_id'] = bill_id
     data['sold'] = get_object_or_404(ProduitVendu, pk=sold_id)
+    bill = get_object_or_404(Facture, pk=bill_id)
+    data['prize'] = bill.get_product_prize(data['sold'])
     return render_to_response('base/bill/sold.html',
                                 data,
                                 context_instance=RequestContext(request))
@@ -749,7 +759,7 @@ def sold_delete(request, bill_id, sold_id):
     data = get_user(request)
     bill = get_object_or_404(Facture, pk=bill_id)
     sold = get_object_or_404(ProduitVendu, pk=sold_id)
-    bill.del_produit(sold)
+    bill.del_product(sold)
     bill.save()
     return HttpResponseRedirect('/bill/%s/' % bill_id)
 
@@ -779,7 +789,7 @@ def product_add(request, bill_id, product_id):
     product = get_object_or_404(Produit, pk=product_id)
     product_sell = ProduitVendu(produit=product)
     product_sell.save()
-    bill.add(product_sell)
+    bill.add_product(product_sell)
     if product.est_un_menu():
         category = product_sell.getFreeCategorie()
         return HttpResponseRedirect('/bill/%s/sold/%s/category/%s/select/' % (bill_id, product_sell.id, category.id))
@@ -850,5 +860,6 @@ def bill_onsite(request, bill_id):
     new = not order.onsite
     order.onsite = new
     order.save()
+    order.compute_total()
     return HttpResponseRedirect('/bill/%s/' % bill_id)
 

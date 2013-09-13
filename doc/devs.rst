@@ -31,6 +31,13 @@ Voici le schèma général des différentes classes utilisées.
 
 La classe centrale, et donc la plus importante, est la classe Facture_.
 
+Après toute modification dans les modèles, il faudrat utiliser South pour les appliquer:
+
+::
+
+  ./manage.py schemamigration base --auto
+  ./manage.py migrate base
+
 Accompagnement
 --------------
 

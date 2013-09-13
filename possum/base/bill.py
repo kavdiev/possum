@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-#    Copyright 2009, 2010, 2011, 2012 Sébastien Bonnegent
+#    Copyright 2009-2013 Sébastien Bonnegent
 #
 #    This file is part of POSSUM.
 #
@@ -64,13 +64,13 @@ class Facture(models.Model):
     produits = models.ManyToManyField('ProduitVendu', \
         related_name="les produits vendus", \
         limit_choices_to = {'date__gt': datetime.datetime.today()})
-    montant_normal = models.DecimalField(max_digits=9, decimal_places=2, 
-            default=0)
-    montant_alcool = models.DecimalField(max_digits=9, decimal_places=2, 
+    total_ttc = models.DecimalField(max_digits=9, decimal_places=2, 
             default=0)
     paiements = models.ManyToManyField('Paiement',
         related_name="les paiements",
         limit_choices_to = {'date__gt': datetime.datetime.today()})
+    vats = models.ManyToManyField('VATOnBill',
+        related_name="vat total for each vat on a bill")
     restant_a_payer = models.DecimalField(max_digits=9, decimal_places=2, 
             default=0)
     etats = models.ManyToManyField('Suivi', related_name="le suivi")
@@ -134,40 +134,22 @@ class Facture(models.Model):
         """Change la table de la facture
         On prend en compte le changement de tarification si changement
         de zone.
-        """
-        surtaxe_avant = self.est_surtaxe()
-        self.table = table
-        self._changement_de_surtaxe(surtaxe_avant, self.est_surtaxe())
-        self.save()
 
-    def _changement_de_surtaxe(self, surtaxe_avant, surtaxe_apres):
-        """ajoute ou enleve les surtaxes pour la terrasse
-        Les 2 parametres sont des booleens
-
-        Attention: pour enlever ou ajouter la surtaxe, on utilise la
-        surtaxe de la nouvelle table (on ne connait pas l'ancienne). Le
-        montant de la surtaxe doit donc etre la meme que la surtaxe soit
-        active ou pas sur la zone.
+        On ne traite pas le cas ou les 2 tables sont surtaxées à des montants
+        différents.
         """
-        #logging.debug("")
-        if surtaxe_avant != surtaxe_apres:
-            logging.debug("changement de surtaxe")
-            # on enleve ou on ajoute
-            if surtaxe_avant:
-                # on enleve
-                multi = Decimal("-1")
-            else:
-                # on ajoute
-                multi = Decimal("1")
-            for vendu in self.produits.iterator():
-                if vendu.produit.categorie.surtaxable:
-                    vendu.prix += self.table.zone.prix_surtaxe * multi
-                    vendu.save()
-                    if vendu.produit.categorie.alcool:
-                        self.montant_alcool += self.table.zone.prix_surtaxe * multi
-                    else:
-                        self.montant_normal += self.table.zone.prix_surtaxe * multi
-                    self.restant_a_payer += self.table.zone.prix_surtaxe * multi
+        if self.est_surtaxe():
+            if not table.zone.surtaxe:
+                # la nouvelle table n'est pas surtaxée
+                self.remove_surtaxe()
+            self.table = table
+            self.save()
+        else:
+            self.table = table
+            self.save()
+            if table.zone.surtaxe:
+                # la nouvelle table est surtaxée
+                self.add_surtaxe()
 
     def nb_soldee_jour(self, date):
         """Nombre de facture soldee le jour 'date'"""
@@ -192,7 +174,74 @@ class Facture(models.Model):
             liste.append(i)
         return liste
 
-    def add(self, vendu):
+    def compute_total(self):
+        self.total_ttc = Decimal("0")
+        self.restant_a_payer = Decimal("0")
+        for v in self.vats.all():
+            v.total = 0
+            v.save()
+        for product in self.produits.all():
+            self.add_product_prize(product)
+        for payment in self.paiements.all():
+            self.restant_a_payer -= payment.montant
+        self.save()
+
+    def get_vat(self, product):
+        if self.onsite:
+            vat = product.produit.categorie.vat_onsite
+        else:
+            vat = product.produit.categorie.vat_takeaway
+        return vat
+
+    def get_product_prize(self, product):
+        """Return a TTC prize of a product.
+        """
+        vat = self.get_vat(product)
+        if vat:
+            return "%.2f" % vat.get_ttc_for(product.prix)
+        else:
+            return "0"
+
+    def add_product_prize(self, product):
+        """Ajout le prix HT d'un ProduitVendu sur la facture."""
+        vat = self.get_vat(product)
+        if vat:
+            ttc = vat.get_ttc_for(product.prix)
+            self.total_ttc += ttc
+            self.restant_a_payer += ttc
+            self.save()
+            vatonbill, created = self.vats.get_or_create(vat=vat)
+            vatonbill.total += vat.get_tax_for(product.prix)
+            vatonbill.save()
+
+    def del_product_prize(self, product):
+        vat = self.get_vat(product)
+        if vat:
+            ttc = vat.get_ttc_for(product.prix)
+            self.total_ttc -= ttc
+            self.restant_a_payer -= ttc
+            self.save()
+            vatonbill, created = self.vats.get_or_create(vat=vat)
+            vatonbill.total -= vat.get_tax_for(product.prix)
+            vatonbill.save()
+
+    def add_surtaxe(self):
+        """Add surtaxe on all needed products
+        """
+        for product in self.produits.filter(produit__categorie__surtaxable=True):
+            product.prix += self.table.zone.prix_surtaxe
+            product.save()
+        self.compute_total()
+
+    def remove_surtaxe(self):
+        """Remove surtaxe on all needed products
+        """
+        for product in self.produits.filter(produit__categorie__surtaxable=True):
+            product.prix -= self.table.zone.prix_surtaxe
+            product.save()
+        self.compute_total()
+
+    def add_product(self, vendu):
         """Ajout d'un produit à la facture.
         Si c'est le premier produit alors on modifie la date de creation
         """
@@ -202,78 +251,53 @@ class Facture(models.Model):
         vendu.prix = vendu.produit.prix
         vendu.save()
         if vendu.prix:
-            surtaxe_avant = self.est_surtaxe()
             self.produits.add(vendu)
-            # ici on utilise surtaxe_avant car le cas du changement de
-            # tarification est traite sur toute la facture
-            if vendu.produit.categorie.surtaxable and surtaxe_avant:
-                vendu.prix += self.table.zone.prix_surtaxe
-                vendu.save()
-            if vendu.produit.categorie.alcool:
-                self.montant_alcool += vendu.prix
+            self.save()
+            if self.est_surtaxe():
+                if vendu.produit.categorie.disable_surtaxe:
+                    # on doit enlever la surtaxe pour tous les produits
+                    # concernés
+                    self.remove_surtaxe()
+                else:
+                    if vendu.produit.categorie.surtaxable:
+                        vendu.prix += self.table.zone.prix_surtaxe
+                        vendu.save()
+                    self.add_product_prize(vendu)
             else:
-                self.montant_normal += vendu.prix
-            self.restant_a_payer += vendu.prix
+                self.add_product_prize(vendu)
 
-            # il y a modification de la surtaxe du a l'ajout d'un produit ?
-            # cas d'une table surtaxee avec alcool qui achete de la nourriture
-            self._changement_de_surtaxe(surtaxe_avant, self.est_surtaxe())
-        else:
-            # on a certainement a faire a une reduction
-            # -10%
-            if vendu.produit.nom == "Remise -10%":
-                vendu.prix = self.get_montant() / Decimal("-10")
-                vendu.save()
-                logging.debug("la remise est de: %s" % vendu.prix)
-                self.produits.add(vendu)
-                self.restant_a_payer += vendu.prix
-                self.montant_normal += vendu.prix
-            else:
-                logging.debug("cette remise n'est pas connue")
+#        else:
+#            # on a certainement a faire a une reduction
+#            # -10%
+#            if vendu.produit.nom == "Remise -10%":
+#                vendu.prix = self.get_montant() / Decimal("-10")
+#                vendu.save()
+#                logging.debug("la remise est de: %s" % vendu.prix)
+#                self.produits.add(vendu)
+#                self.restant_a_payer += vendu.prix
+#                self.montant_normal += vendu.prix
+#            else:
+#                logging.debug("cette remise n'est pas connue")
         #self.produits.order_by('produit')
-        self.save()
+#        self.save()
 
-    def del_produit(self, vendu):
+    def del_product(self, product):
         """On enleve un produit à la facture.
 
         Si le montant est négatif après le retrait d'un élèment,
         c'est qu'il reste certainement une remise, dans
         ce cas on enlève tous les produits.
         """
-        if vendu in self.produits.all():
-            self.produits.remove(vendu)
-            #prix = vendu.produit.prix
-            #if vendu.produit.categorie.surtaxable and self.est_surtaxe():
-            #    prix += self.table.zone.prix_surtaxe
-            if vendu.produit.categorie.alcool:
-                self.montant_alcool -= vendu.prix
+        if product in self.produits.all():
+            surtaxe = self.est_surtaxe()
+            self.produits.remove(product)
+            if surtaxe != self.est_surtaxe():
+                self.compute_total()
             else:
-                self.montant_normal -= vendu.prix
-            self.restant_a_payer -= vendu.prix
-            vendu.delete()
-            self.save()
-            if self.get_montant() < Decimal("0"):
-                self.del_all_produits()
+                self.del_product_prize(product)
         else:
             logging.warning("[%s] on essaye de supprimer un produit "\
                             "qui n'est pas dans la facture" % self)
-
-    def del_all_produits(self):
-        """On supprime tous les produits"""
-        if self.produits.count():
-            for vendu in self.produits.iterator():
-                vendu.delete()
-            self.produits.clear()
-            self.montant_alcool = Decimal("0")
-            self.montant_normal = Decimal("0")
-
-            for paiement in self.paiements.iterator():
-                paiement.delete()
-            self.paiements.clear()
-            self.restant_a_payer = Decimal("0")
-            self.save()
-        else:
-            logging.debug("la facture ne contient pas de produits")
 
     def del_all_paiements(self):
         """On supprime tous les paiements"""
@@ -432,13 +456,16 @@ class Facture(models.Model):
         """
         Table is surtaxed et il n'y a pas de nourriture.
         """
-        for produit in self.produits.all():
-            #logging.debug("test with produit: %s and categorie id: %d" % (produit.nom, produit.categorie.id))
-            if produit.produit.categorie.disable_surtaxe:
-                #logging.debug("pas de surtaxe")
+        if self.onsite:
+            for produit in self.produits.all():
+                #logging.debug("test with produit: %s and categorie id: %d" % (produit.nom, produit.categorie.id))
+                if produit.produit.categorie.disable_surtaxe:
+                    #logging.debug("pas de surtaxe")
+                    return False
+            if self.table:
+                return self.table.est_surtaxe()
+            else:
                 return False
-        if self.table:
-            return self.table.est_surtaxe()
         else:
             return False
 

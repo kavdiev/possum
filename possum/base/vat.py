@@ -43,3 +43,28 @@ class VAT(models.Model):
         self.tax = tax
         self.value = Decimal(tax) / 100 + 1
         self.save()
+
+    def get_tax_for(self, prize):
+        """Retourne la part de taxe
+        pour un prix HT
+        """
+        if self.tax:
+            if prize:
+                return Decimal(prize) * self.tax / 100
+            else:
+                return Decimal('0')
+        else:
+            return Decimal('0')
+
+    def get_ttc_for(self, prize):
+        """Retourne le prix TTC
+        pour un prix HT
+        """
+        if self.tax:
+            if prize:
+                return Decimal(prize) * self.value
+            else:
+                return Decimal('0')
+        else:
+            return prize
+

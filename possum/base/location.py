@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-#    Copyright 2009, 2010, 2011, 2012 Sébastien Bonnegent
+#    Copyright 2009-2013 Sébastien Bonnegent
 #
 #    This file is part of POSSUM.
 #
@@ -22,7 +22,7 @@ from possum.base.generic import Nom
 
 class Zone(Nom):
     """Un zone peut avoir une surtaxe par exemple dans le cas d'une majoration
-    pour le service en terrasse. Dans ce cas, prix_surtaxe est ajouté au prix_ttc
+    pour le service en terrasse. Dans ce cas, prix_surtaxe est ajouté au prix HT
     de tous les produits dans les categories 'surtaxable'.
 
     Il est possible d'indiquer une catégorie de produits qui désactive la surtaxe

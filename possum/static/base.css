@@ -179,7 +179,7 @@ div.right
     text-align: center;
     width:100px;
     float:left; /* c'est cette balise qui fait l'effet tableau*/
-    height:40px;
+    height:45px;
     background:#eee;
     margin:5px;
     overflow:hidden; /* permet de limiter l'affichage du contenu au dimension du contenant */
@@ -188,6 +188,9 @@ div.right
 #menu li.menuSelected
 {
     background-color: #DEE5F0;
+}
+#menu li.icon {
+    background-color: #FFF;
 }
 #content
 {
@@ -200,28 +203,24 @@ div.right
 }
 .info {
     padding: 1em 1em 1em 1em;
-    border: 1px solid #000000;
     margin: 1em 5em 1em 5em;
     text-align: center;
     background-color: #00FF00;
 }
 .success {
     padding: 1em 1em 1em 1em;
-    border: 1px solid #000000;
     margin: 1em 5em 1em 5em;
     text-align: center;
     background-color: #00FF00;
 }
 .warning {
     padding: 1em 1em 1em 1em;
-    border: 1px solid #000000;
     margin: 1em 5em 1em 5em;
     text-align: center;
     background-color: #f8bd30;
 }
 .error {
     padding: 1em 1em 1em 1em;
-    border: 1px solid #000000;
     margin: 1em 5em 1em 5em;
     text-align: center;
     background-color: #FF0000;
@@ -414,6 +413,9 @@ li
 #bill_info li.critical { 
     background-color: #FF0000;
 }
+#bill_info li.warning {
+    background-color: #f8bd30;
+}
 #bill_info li.disabled { 
     background-color: #FF0000;
 }
@@ -433,7 +435,9 @@ li
     overflow:hidden; /* permet de limiter l'affichage du contenu au dimension du contenant */
     padding:5px;
 }
-
+#tables li.warning {
+    background-color: #f8bd30;
+}
 #vats {
     list-style:none; /* inutile pour safari et firefox, mais pas pour IE */
 }

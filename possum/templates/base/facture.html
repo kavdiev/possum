@@ -6,7 +6,9 @@
 
 <ul id="bill_info">
     <li onclick="window.location='/bill/{{facture.id}}/category/select/'">Envoi en cuisine</li>
-    <li onclick="window.location='/bill/{{facture.id}}/table/select/'">Table:</br>{{facture.table.nom}}</li>
+    <li onclick="window.location='/bill/{{facture.id}}/table/select/'"
+        {% if facture.est_surtaxe %}class="warning"{% endif %}>
+        Table:</br>{{facture.table.nom}}</li>
     <li onclick="window.location='/bill/{{facture.id}}/couverts/select/'">Couverts:</br>{{facture.couverts}}</li>
     <li onclick="window.location='/bill/{{facture.id}}/onsite/'" 
         {% if facture.onsite %}
@@ -16,8 +18,18 @@
         {% endif %}
     </li>
     <li>Imprimer la facture</li>
+    <li>Total TTC:</br>{{facture.total_ttc}}€</li>
     <li>Restant à payer:</br>{{facture.restant_a_payer}}€</li>
     <li onclick="window.location='/bill/{{facture.id}}/delete/'" class="critical">Supprimer</li>
+</ul></br></br></br>
+
+<h3>TVA</h3>
+<ul id="vats">
+    {% for vat in facture.vats.all %}
+    <li>{{vat}}</li>
+    {% empty %}
+    <li>Aucune TVA</li>
+    {% endfor %}
 </ul></br></br></br>
 
 <h3>Paiements</h3>
@@ -34,7 +46,7 @@
     <li onclick="window.location='/bill/{{facture.id}}/category/select/'">Ajouter</li>
     {% for vendu in facture.produits.all %}
     <li style="background:{{vendu.produit.categorie.couleur.web}};" onclick="window.location='/bill/{{facture.id}}/sold/{{vendu.id}}/view/'">
-        {{vendu}} {{vendu.prix}}€</br>
+        {{vendu}}</br>
         {% for subproduct in vendu.contient.all %}
             {{subproduct}} 
         {% endfor %}
