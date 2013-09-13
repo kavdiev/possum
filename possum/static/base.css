@@ -438,6 +438,18 @@ li
 #tables li.warning {
     background-color: #f8bd30;
 }
+#cookings {
+    list-style:none; /* inutile pour safari et firefox, mais pas pour IE */
+}
+#cookings li {
+    float:left; /* c'est cette balise qui fait l'effet tableau*/
+    width:200px;
+    height:40px;
+    background:#eee;
+    margin:5px;
+    overflow:hidden; /* permet de limiter l'affichage du contenu au dimension du contenant */
+    padding:5px;
+}
 #vats {
     list-style:none; /* inutile pour safari et firefox, mais pas pour IE */
 }

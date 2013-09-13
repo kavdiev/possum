@@ -793,8 +793,24 @@ def product_add(request, bill_id, product_id):
     if product.est_un_menu():
         category = product_sell.getFreeCategorie()
         return HttpResponseRedirect('/bill/%s/sold/%s/category/%s/select/' % (bill_id, product_sell.id, category.id))
-    data['facture'] = bill
+    if product.choix_cuisson:
+        HttpResponseRedirect('/bill/%s/sold/%s/cooking/' % (bill_id, product_sell.id))
     return HttpResponseRedirect('/bill/%s/' % bill_id)
+
+@permission_required('base.p5')
+def sold_cooking(request, bill_id, sold_id, cooking_id=-1):
+    data = get_user(request)
+    data['sold'] = get_object_or_404(ProduitVendu, pk=sold_id)
+    data['cookings'] = Cuisson.objects.all()
+    data['bill_id'] = bill_id
+    if cooking_id > -1:
+        cooking = get_object_or_404(Cuisson, pk=cooking_id)
+        data['sold'].cuisson = cooking
+        data['sold'].save()
+        return HttpResponseRedirect('/bill/%s/' % bill_id)
+    return render_to_response('base/bill/cooking.html',
+                                data,
+                                context_instance=RequestContext(request))
 
 @permission_required('base.p5')
 def couverts_select(request, bill_id):

@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h1>Choix de la cuisson pour: {{sold.produit.nom}}</h1>
+
+<ul id="cookings">
+    {% for cooking in cookings %}
+    <li onclick="window.location='/bill/{{bill_id}}/sold/{{sold.id}}/cooking/{{cooking.id}}/'">
+        {{cooking}}
+        </li>
+    {% empty %}
+    <li>Aucune cuisson disponible.</li>
+    {% endfor %}
+</ul>
+
+{% endblock %}
+
