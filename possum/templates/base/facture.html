@@ -36,8 +36,8 @@
 <ul id="paiements">
     <li onclick="window.location='/bill/{{facture.id}}/payment/'">Ajouter</li>
     {% for payment in facture.paiements.all %}
-        <li onclick="window.location='/bill/{{facture.id}}/payment/{{payment.id}}/'">
-        <a href='/bill/{{facture.id}}/payment/select/'>{{payment.type.nom}} {{payment.montant}}</a></li>
+        <li onclick="window.location='/bill/{{facture.id}}/payment/view/{{payment.id}}/'">
+        {{payment.type.nom}} {{payment.montant}}</li>
     {% endfor %}
 </ul></br></br>
 

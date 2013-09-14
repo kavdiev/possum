@@ -299,27 +299,27 @@ class Facture(models.Model):
             logging.warning("[%s] on essaye de supprimer un produit "\
                             "qui n'est pas dans la facture" % self)
 
-    def del_all_paiements(self):
+    def del_all_payments(self):
         """On supprime tous les paiements"""
         if self.paiements.count():
             for paiement in self.paiements.iterator():
                 paiement.delete()
             self.paiements.clear()
-            self.restant_a_payer = self.get_montant()
+            self.restant_a_payer = self.total_ttc
             self.save()
 
-    def del_paiement(self, paiement):
+    def del_payment(self, payment):
         """On supprime un paiement"""
-        if paiement in self.paiements.all():
-            self.restant_a_payer += paiement.montant
-            self.paiements.remove(paiement)
-            paiement.delete()
+        if payment in self.paiements.all():
+            self.paiements.remove(payment)
+            payment.delete()
             self.save()
+            self.compute_total()
         else:
             logging.warning("[%s] on essaye de supprimer un paiement "\
                             "qui n'est pas dans la facture: %s %s %s %s"\
-                            % (self, paiement.id, paiement.date,\
-                            paiement.type.nom, paiement.montant))
+                            % (self, payment.id, payment.date,\
+                            payment.type.nom, payment.montant))
 
     def get_users(self):
         """Donne la liste des noms d'utilisateurs"""
@@ -366,10 +366,11 @@ class Facture(models.Model):
     def get_montant(self):
         return self.montant_normal + self.montant_alcool
 
-    def ajout_paiement(self, modepaiement, montant, valeur_unitaire=Decimal("1.0")):
+    def add_payment(self, type_payment, montant, valeur_unitaire="1.0"):
         """
-        modepaiement est un TypePaiement
-        montant est un Decimal
+        type_payment est un TypePaiement
+        montant et valeur_unitaire sont des chaines de caracteres
+        qui seront converti en Decimal
 
         Si le montant est superieur au restant du alors on rembourse en
         espece.
@@ -382,49 +383,37 @@ class Facture(models.Model):
             return False
 
         paiement = Paiement()
-        paiement.type = modepaiement
-        paiement.valeur_unitaire = valeur_unitaire
-        #paiement.facture = self
+        paiement.type = type_payment
+        paiement.valeur_unitaire = Decimal(valeur_unitaire)
         if self.produits:
             # le montant est-il indique ?
-            if montant == Decimal("0"):
-                # on droit en trouver un
-                if modepaiement.fixed_value:
-                    # on doit trouver le nombre de ticket
-                    paiement.nb_tickets = int(self.restant_a_payer / valeur_unitaire)
-                    if paiement.nb_tickets == 0:
-                        # on enregistre 1 ticket et un rendu de monnaie
-                        # en espece
-                        paiement.nb_tickets = 1
-                        paiement.montant = valeur_unitaire
-                    else:
-                        paiement.montant = valeur_unitaire * paiement.nb_tickets
-                else:
-                    paiement.montant = self.restant_a_payer
+            if float(montant) == 0.0:
+                return False
             else:
                 # le montant est indique
-                if modepaiement.fixed_value:
+                if type_payment.fixed_value:
                     # dans ce cas le montant est le nombre de ticket
                     paiement.nb_tickets = int(montant)
-                    paiement.montant = paiement.nb_tickets * valeur_unitaire
+                    paiement.montant = paiement.nb_tickets * paiement.valeur_unitaire
                 else:
-                    paiement.montant = montant
-            # on enregistre ce paiement
-            paiement.save()
-            self.paiements.add(paiement)
+                    paiement.montant = Decimal(montant)
+                # on enregistre ce paiement
+                paiement.save()
+                self.paiements.add(paiement)
             # regularisation si le montant est superieur au montant du
             if paiement.montant > self.restant_a_payer:
                 monnaie = Paiement()
                 monnaie.type = PaiementType.objects.get(nom="Espece")
-                #monnaie.facture = self
                 monnaie.montant = self.restant_a_payer - paiement.montant
                 monnaie.save()
                 self.paiements.add(monnaie)
                 self.restant_a_payer -= monnaie.montant
             self.restant_a_payer -= paiement.montant
             self.save()
+            return True
         else:
             logging.debug("pas de produit, donc rien n'a payer")
+            return False
 
     def total(self):
         return self.montant_alcool + self.montant_normal

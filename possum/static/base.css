@@ -383,13 +383,88 @@ li
 #sold_info li.critical { 
     background-color: #FF0000;
 }
+#back {
+    list-style:none;
+}
+#back li {
+    float:left; /* c'est cette balise qui fait l'effet tableau*/
+    width:140px;
+    height:40px;
+    background:#eee;
+    margin:5px;
+    overflow:hidden; /* permet de limiter l'affichage du contenu au dimension du contenant */
+    padding:5px;
+}
+#save_payment {
+    list-style:none;
+}
+#save_payment li {
+    float:left; /* c'est cette balise qui fait l'effet tableau*/
+    width:220px;
+    height:40px;
+    background:#eee;
+    margin:5px;
+    overflow:hidden; /* permet de limiter l'affichage du contenu au dimension du contenant */
+    padding:5px;
+}
+#lcd_save {
+    list-style:none;
+}
+#lcd_save li {
+    float:left; /* c'est cette balise qui fait l'effet tableau*/
+    width:220px;
+    height:40px;
+    background:#eee;
+    margin:0px;
+    overflow:hidden; /* permet de limiter l'affichage du contenu au dimension du contenant */
+    padding:0px;
+}
+#lcd {
+    list-style:none;
+}
+#lcd li {
+    float:left; /* c'est cette balise qui fait l'effet tableau*/
+    width:30px;
+    height:40px;
+    background:#000;
+    margin:0px;
+    overflow:hidden; /* permet de limiter l'affichage du contenu au dimension du contenant */
+    padding:0px;
+}
+#calc {
+    list-style:none;
+}
+#calc li {
+    float:left; /* c'est cette balise qui fait l'effet tableau*/
+    width:120px;
+    height:40px;
+    background:#eee;
+    margin:5px;
+    overflow:hidden; /* permet de limiter l'affichage du contenu au dimension du contenant */
+    padding:5px;
+}
+#payment_tickets {
+    list-style:none;
+}
+#payment_tickets li {
+    float:left; /* c'est cette balise qui fait l'effet tableau*/
+    width:220px;
+    height:40px;
+    background:#eee;
+    margin:5px;
+    overflow:hidden; /* permet de limiter l'affichage du contenu au dimension du contenant */
+    padding:5px;
+}
+#payment_tickets li.critical { 
+    background-color: #FF0000;
+}
 #type_payment {
     list-style:none;
 }
 #type_payment li {
     float:left; /* c'est cette balise qui fait l'effet tableau*/
     width:140px;
-    height:20px;
+    height:40px;
     background:#eee;
     margin:5px;
     overflow:hidden; /* permet de limiter l'affichage du contenu au dimension du contenant */

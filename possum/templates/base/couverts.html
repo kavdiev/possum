@@ -6,7 +6,7 @@
 <ul id="couverts">
     {% for number in nb_couverts %}
         <li onclick="window.location='/bill/{{bill_id}}/couverts/set/{{number}}/'">
-        <a href="/bill/{{bill_id}}/couverts/set/{{number}}/">{{number}}</a>
+        {{number}}
         </li>
     {% empty %}
         <li>Aucune liste disponible.</li>

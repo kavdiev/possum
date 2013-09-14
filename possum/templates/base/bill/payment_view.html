@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block content %}
+
+<ul id="back">
+    <li onclick="window.location='/bill/{{bill_id}}/'">Retour facture</li>
+</ul>
+</br></br></br>
+
+<ul id="payment_tickets">
+{% if payment.type.fixed_value %}
+<li>Valeur d'un ticket: {{payment.valeur_unitaire}}€</li>
+<li>Nb tickets: {{payment.nb_tickets}}</li>
+{% endif %}
+<li>Total: {{payment.montant}}€</li>
+<li onclick="window.location='/bill/{{bill_id}}/payment/delete/{{payment.id}}/'" class="critical">Supprimer ce paiement</li>
+</ul>
+</br></br></br>
+
+{% endblock %}
+

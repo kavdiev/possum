@@ -1,27 +1,38 @@
 {% extends "base.html" %}
 {% block content %}
 
-<h1>Nouveau paiement</h1>
+<ul id="back">
+    <li onclick="window.location='/bill/{{bill_id}}/'">Retour facture</li>
+</ul>
+</br></br></br>
 
+<h1>Nouveau paiement</h1>
 <ul id="type_payment">
     {% for type in type_payments %}
-        <li>{{type.nom}}</li>
+        <li {% if type == type_selected %}class="enabled"{% endif %}
+            onclick="window.location='/bill/{{bill_id}}/payment/{{type.id}}/'" >
+        {{type.nom}}</li>
     {% empty %}
         <li>Aucun type de paiement disponible.</li>
     {% endfor %}
-</ul>
+</ul></br></br></br>
 
-<ul id="products">
-    <li onclick="window.location='/bill/{{bill_id}}/category/select/'">Retour</li>
-    {% for product in products %}
-        <li 
-            onclick="window.location='/bill/{{bill_id}}/product/add/{{product.id}}/'" 
-            style="background:{{product.categorie.couleur.web}};">{{product.nom}}
+<ul id="payment_tickets">
+{% if type_selected.fixed_value %}
+<li onclick="window.location='/bill/{{bill_id}}/payment/{{type_selected.id}}/{{left}}.{{right}}/{{tickets_count}}/set/'" >
+Valeur d'un ticket: {{left}}.{{right}}€</li>
+<li onclick="window.location='/bill/{{bill_id}}/payment/{{type_selected.id}}/{{left}}.{{right}}/count/'" >
+        Nb tickets: {{tickets_count}}</li>
+<li onclick="window.location='/bill/{{bill_id}}/payment/{{type_selected.id}}/{{left}}.{{right}}/{{tickets_count}}/save/'"> Enregistrer le paiement</li>
+
+{% else %}
+<li onclick="window.location='/bill/{{bill_id}}/payment/{{type_selected.id}}/{{left}}.{{right}}/0/set/'" >
+    Montant: {{left}},{{right}}€</li>
+    <li onclick="window.location='/bill/{{bill_id}}/payment/{{type_selected.id}}/{{left}}.{{right}}/0/save/'">Enregistrer le paiement
         </li>
-    {% empty %}
-        <li>Aucun produit disponible.</li>
-    {% endfor %}
+{% endif %}
 </ul>
+</br></br></br>
 
 {% endblock %}
 
