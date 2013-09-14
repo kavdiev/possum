@@ -106,6 +106,7 @@ def categories(request):
 @permission_required('base.p6')
 def categories_delete(request, cat_id):
     data = get_user(request)
+    data['menu_carte'] = True
     data['current_cat'] = get_object_or_404(Categorie, pk=cat_id)
     data['categories'] = Categorie.objects.order_by('priorite', 'nom').exclude(id=cat_id)
     cat_report_id = request.POST.get('cat_report', '').strip()

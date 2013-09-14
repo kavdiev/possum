@@ -38,6 +38,13 @@ Après toute modification dans les modèles, il faudrat utiliser South pour les 
   ./manage.py schemamigration base --auto
   ./manage.py migrate base
 
+
+On peut également se créer un jeu de données avec:
+
+::
+
+  ./manage.py dumpdata --indent=2 --format=json base > possum/base/fixtures/demo1.json
+
 Accompagnement
 --------------
 

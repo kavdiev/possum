@@ -1,0 +1,1809 @@
+[
+{
+  "pk": 1, 
+  "model": "base.vat", 
+  "fields": {
+    "tax": "5.5", 
+    "name": "TVA normal", 
+    "value": "1.055"
+  }
+},
+{
+  "pk": 2, 
+  "model": "base.vat", 
+  "fields": {
+    "tax": "19.6", 
+    "name": "TVA alcool", 
+    "value": "1.196"
+  }
+},
+{
+  "pk": 3, 
+  "model": "base.vat", 
+  "fields": {
+    "tax": "3", 
+    "name": "TVA \u00e0 emporter", 
+    "value": "1.03"
+  }
+},
+{
+  "pk": 1, 
+  "model": "base.vatonbill", 
+  "fields": {
+    "total": "0", 
+    "vat": 2
+  }
+},
+{
+  "pk": 2, 
+  "model": "base.vatonbill", 
+  "fields": {
+    "total": "0", 
+    "vat": 3
+  }
+},
+{
+  "pk": 3, 
+  "model": "base.vatonbill", 
+  "fields": {
+    "total": "0.2", 
+    "vat": 3
+  }
+},
+{
+  "pk": 4, 
+  "model": "base.vatonbill", 
+  "fields": {
+    "total": "1.42", 
+    "vat": 1
+  }
+},
+{
+  "pk": 5, 
+  "model": "base.vatonbill", 
+  "fields": {
+    "total": "0", 
+    "vat": 3
+  }
+},
+{
+  "pk": 6, 
+  "model": "base.vatonbill", 
+  "fields": {
+    "total": "1.36", 
+    "vat": 1
+  }
+},
+{
+  "pk": 7, 
+  "model": "base.vatonbill", 
+  "fields": {
+    "total": "0", 
+    "vat": 3
+  }
+},
+{
+  "pk": 8, 
+  "model": "base.vatonbill", 
+  "fields": {
+    "total": "3.08", 
+    "vat": 1
+  }
+},
+{
+  "pk": 1, 
+  "model": "base.etat", 
+  "fields": {
+    "nom": "apero", 
+    "priorite": 10
+  }
+},
+{
+  "pk": 2, 
+  "model": "base.etat", 
+  "fields": {
+    "nom": "entree", 
+    "priorite": 15
+  }
+},
+{
+  "pk": 3, 
+  "model": "base.etat", 
+  "fields": {
+    "nom": "plat", 
+    "priorite": 20
+  }
+},
+{
+  "pk": 4, 
+  "model": "base.etat", 
+  "fields": {
+    "nom": "dessert", 
+    "priorite": 25
+  }
+},
+{
+  "pk": 5, 
+  "model": "base.etat", 
+  "fields": {
+    "nom": "cafe", 
+    "priorite": 30
+  }
+},
+{
+  "pk": 6, 
+  "model": "base.etat", 
+  "fields": {
+    "nom": "solde", 
+    "priorite": 35
+  }
+},
+{
+  "pk": 1, 
+  "model": "base.logtype", 
+  "fields": {
+    "nom": "Possum Facturation System: ready", 
+    "description": ""
+  }
+},
+{
+  "pk": 2, 
+  "model": "base.logtype", 
+  "fields": {
+    "nom": "Possum Facturation System: shutting down", 
+    "description": ""
+  }
+},
+{
+  "pk": 3, 
+  "model": "base.logtype", 
+  "fields": {
+    "nom": "Database initialized", 
+    "description": ""
+  }
+},
+{
+  "pk": 4, 
+  "model": "base.logtype", 
+  "fields": {
+    "nom": "Rapport generated", 
+    "description": ""
+  }
+},
+{
+  "pk": 5, 
+  "model": "base.logtype", 
+  "fields": {
+    "nom": "Warning", 
+    "description": ""
+  }
+},
+{
+  "pk": 6, 
+  "model": "base.logtype", 
+  "fields": {
+    "nom": "Critical", 
+    "description": ""
+  }
+},
+{
+  "pk": 7, 
+  "model": "base.logtype", 
+  "fields": {
+    "nom": "Nouveau Montant", 
+    "description": ""
+  }
+},
+{
+  "pk": 8, 
+  "model": "base.logtype", 
+  "fields": {
+    "nom": "Version", 
+    "description": ""
+  }
+},
+{
+  "pk": 9, 
+  "model": "base.logtype", 
+  "fields": {
+    "nom": "nb_couverts", 
+    "description": "Nombre de couverts"
+  }
+},
+{
+  "pk": 10, 
+  "model": "base.logtype", 
+  "fields": {
+    "nom": "nb_factures", 
+    "description": "Nombre de factures"
+  }
+},
+{
+  "pk": 11, 
+  "model": "base.logtype", 
+  "fields": {
+    "nom": "nb_bar", 
+    "description": "Nombre de factures pour le bar"
+  }
+},
+{
+  "pk": 12, 
+  "model": "base.logtype", 
+  "fields": {
+    "nom": "ca_resto", 
+    "description": "CA restauration"
+  }
+},
+{
+  "pk": 13, 
+  "model": "base.logtype", 
+  "fields": {
+    "nom": "ca_bar", 
+    "description": "CA bar"
+  }
+},
+{
+  "pk": 14, 
+  "model": "base.logtype", 
+  "fields": {
+    "nom": "montant_alcool", 
+    "description": "Montant Alcool"
+  }
+},
+{
+  "pk": 15, 
+  "model": "base.logtype", 
+  "fields": {
+    "nom": "maj_stats", 
+    "description": "61982"
+  }
+},
+{
+  "pk": 16, 
+  "model": "base.logtype", 
+  "fields": {
+    "nom": "montant_normal", 
+    "description": "Montant Normal"
+  }
+},
+{
+  "pk": 17, 
+  "model": "base.logtype", 
+  "fields": {
+    "nom": "tm_resto", 
+    "description": "TM restauration"
+  }
+},
+{
+  "pk": 18, 
+  "model": "base.logtype", 
+  "fields": {
+    "nom": "ca", 
+    "description": "CA TTC"
+  }
+},
+{
+  "pk": 19, 
+  "model": "base.logtype", 
+  "fields": {
+    "nom": "tm_bar", 
+    "description": "TM bar"
+  }
+},
+{
+  "pk": 20, 
+  "model": "base.logtype", 
+  "fields": {
+    "nom": "tva_alcool", 
+    "description": "TVA Alcool"
+  }
+},
+{
+  "pk": 21, 
+  "model": "base.logtype", 
+  "fields": {
+    "nom": "tva_normal", 
+    "description": "TVA Normal"
+  }
+},
+{
+  "pk": 1, 
+  "model": "base.couleur", 
+  "fields": {
+    "blue": 0, 
+    "nom": "", 
+    "green": 159, 
+    "red": 255
+  }
+},
+{
+  "pk": 2, 
+  "model": "base.couleur", 
+  "fields": {
+    "blue": 153, 
+    "nom": "", 
+    "green": 204, 
+    "red": 102
+  }
+},
+{
+  "pk": 3, 
+  "model": "base.couleur", 
+  "fields": {
+    "blue": 50, 
+    "nom": "", 
+    "green": 200, 
+    "red": 255
+  }
+},
+{
+  "pk": 4, 
+  "model": "base.couleur", 
+  "fields": {
+    "blue": 189, 
+    "nom": "", 
+    "green": 159, 
+    "red": 166
+  }
+},
+{
+  "pk": 5, 
+  "model": "base.couleur", 
+  "fields": {
+    "blue": 42, 
+    "nom": "", 
+    "green": 218, 
+    "red": 184
+  }
+},
+{
+  "pk": 6, 
+  "model": "base.couleur", 
+  "fields": {
+    "blue": 0, 
+    "nom": "", 
+    "green": 161, 
+    "red": 201
+  }
+},
+{
+  "pk": 7, 
+  "model": "base.couleur", 
+  "fields": {
+    "blue": 108, 
+    "nom": "", 
+    "green": 224, 
+    "red": 69
+  }
+},
+{
+  "pk": 8, 
+  "model": "base.couleur", 
+  "fields": {
+    "blue": 160, 
+    "nom": "", 
+    "green": 249, 
+    "red": 255
+  }
+},
+{
+  "pk": 9, 
+  "model": "base.couleur", 
+  "fields": {
+    "blue": 78, 
+    "nom": "", 
+    "green": 249, 
+    "red": 255
+  }
+},
+{
+  "pk": 10, 
+  "model": "base.couleur", 
+  "fields": {
+    "blue": 255, 
+    "nom": "", 
+    "green": 166, 
+    "red": 148
+  }
+},
+{
+  "pk": 11, 
+  "model": "base.couleur", 
+  "fields": {
+    "blue": 33, 
+    "nom": "", 
+    "green": 225, 
+    "red": 255
+  }
+},
+{
+  "pk": 12, 
+  "model": "base.couleur", 
+  "fields": {
+    "blue": 220, 
+    "nom": "", 
+    "green": 179, 
+    "red": 68
+  }
+},
+{
+  "pk": 13, 
+  "model": "base.couleur", 
+  "fields": {
+    "blue": 149, 
+    "nom": "", 
+    "green": 101, 
+    "red": 234
+  }
+},
+{
+  "pk": 14, 
+  "model": "base.couleur", 
+  "fields": {
+    "blue": 109, 
+    "nom": "", 
+    "green": 90, 
+    "red": 255
+  }
+},
+{
+  "pk": 15, 
+  "model": "base.couleur", 
+  "fields": {
+    "blue": 181, 
+    "nom": "", 
+    "green": 151, 
+    "red": 234
+  }
+},
+{
+  "pk": 16, 
+  "model": "base.couleur", 
+  "fields": {
+    "blue": 149, 
+    "nom": "", 
+    "green": 135, 
+    "red": 255
+  }
+},
+{
+  "pk": 17, 
+  "model": "base.couleur", 
+  "fields": {
+    "blue": 165, 
+    "nom": "", 
+    "green": 255, 
+    "red": 29
+  }
+},
+{
+  "pk": 18, 
+  "model": "base.couleur", 
+  "fields": {
+    "blue": 96, 
+    "nom": "", 
+    "green": 53, 
+    "red": 255
+  }
+},
+{
+  "pk": 19, 
+  "model": "base.couleur", 
+  "fields": {
+    "blue": 39, 
+    "nom": "", 
+    "green": 240, 
+    "red": 136
+  }
+},
+{
+  "pk": 20, 
+  "model": "base.couleur", 
+  "fields": {
+    "blue": 172, 
+    "nom": "", 
+    "green": 164, 
+    "red": 63
+  }
+},
+{
+  "pk": 21, 
+  "model": "base.couleur", 
+  "fields": {
+    "blue": 5, 
+    "nom": "", 
+    "green": 159, 
+    "red": 255
+  }
+},
+{
+  "pk": 22, 
+  "model": "base.couleur", 
+  "fields": {
+    "blue": 3, 
+    "nom": "", 
+    "green": 159, 
+    "red": 255
+  }
+},
+{
+  "pk": 1, 
+  "model": "base.categorie", 
+  "fields": {
+    "nom": "Menu", 
+    "disable_surtaxe": true, 
+    "couleur": 17, 
+    "vat_takeaway": 3, 
+    "priorite": 13, 
+    "vat_onsite": 1, 
+    "surtaxable": false
+  }
+},
+{
+  "pk": 3, 
+  "model": "base.categorie", 
+  "fields": {
+    "nom": "Entrees", 
+    "disable_surtaxe": true, 
+    "couleur": 2, 
+    "vat_takeaway": 3, 
+    "priorite": 7, 
+    "vat_onsite": 1, 
+    "surtaxable": false
+  }
+},
+{
+  "pk": 4, 
+  "model": "base.categorie", 
+  "fields": {
+    "nom": "Plats", 
+    "disable_surtaxe": true, 
+    "couleur": 3, 
+    "vat_takeaway": 3, 
+    "priorite": 8, 
+    "vat_onsite": 1, 
+    "surtaxable": false
+  }
+},
+{
+  "pk": 5, 
+  "model": "base.categorie", 
+  "fields": {
+    "nom": "Desserts", 
+    "disable_surtaxe": true, 
+    "couleur": 4, 
+    "vat_takeaway": 3, 
+    "priorite": 9, 
+    "vat_onsite": 1, 
+    "surtaxable": false
+  }
+},
+{
+  "pk": 7, 
+  "model": "base.categorie", 
+  "fields": {
+    "nom": "Cafes", 
+    "disable_surtaxe": false, 
+    "couleur": 6, 
+    "vat_takeaway": 3, 
+    "priorite": 12, 
+    "vat_onsite": 1, 
+    "surtaxable": true
+  }
+},
+{
+  "pk": 12, 
+  "model": "base.categorie", 
+  "fields": {
+    "nom": "Bieres", 
+    "disable_surtaxe": false, 
+    "couleur": 11, 
+    "vat_takeaway": 2, 
+    "priorite": 2, 
+    "vat_onsite": 2, 
+    "surtaxable": true
+  }
+},
+{
+  "pk": 15, 
+  "model": "base.categorie", 
+  "fields": {
+    "nom": "Vins Rouges", 
+    "disable_surtaxe": false, 
+    "couleur": 14, 
+    "vat_takeaway": 2, 
+    "priorite": 11, 
+    "vat_onsite": 2, 
+    "surtaxable": true
+  }
+},
+{
+  "pk": 1, 
+  "model": "base.cuisson", 
+  "fields": {
+    "nom_facture": "B", 
+    "nom": "bleu", 
+    "priorite": 10, 
+    "couleur": 1
+  }
+},
+{
+  "pk": 2, 
+  "model": "base.cuisson", 
+  "fields": {
+    "nom_facture": "S", 
+    "nom": "saignant", 
+    "priorite": 15, 
+    "couleur": 1
+  }
+},
+{
+  "pk": 3, 
+  "model": "base.cuisson", 
+  "fields": {
+    "nom_facture": "BC", 
+    "nom": "bien cuit", 
+    "priorite": 20, 
+    "couleur": 1
+  }
+},
+{
+  "pk": 1, 
+  "model": "base.sauce", 
+  "fields": {
+    "couleur": null, 
+    "nom": "bearnaise"
+  }
+},
+{
+  "pk": 2, 
+  "model": "base.sauce", 
+  "fields": {
+    "couleur": null, 
+    "nom": "poivre"
+  }
+},
+{
+  "pk": 1, 
+  "model": "base.accompagnement", 
+  "fields": {
+    "couleur": null, 
+    "nom": "frites"
+  }
+},
+{
+  "pk": 2, 
+  "model": "base.accompagnement", 
+  "fields": {
+    "couleur": null, 
+    "nom": "haricots verts"
+  }
+},
+{
+  "pk": 3, 
+  "model": "base.accompagnement", 
+  "fields": {
+    "couleur": null, 
+    "nom": "gratin dauphinois"
+  }
+},
+{
+  "pk": 80, 
+  "model": "base.produit", 
+  "fields": {
+    "nom": "Cafe", 
+    "choix_sauce": false, 
+    "choix_accompagnement": false, 
+    "choix_cuisson": false, 
+    "produits_ok": [], 
+    "prix": "1.2", 
+    "categories_ok": [], 
+    "nom_facture": "Cafe express", 
+    "categorie": 7, 
+    "actif": true
+  }
+},
+{
+  "pk": 141, 
+  "model": "base.produit", 
+  "fields": {
+    "nom": "1664", 
+    "choix_sauce": false, 
+    "choix_accompagnement": false, 
+    "choix_cuisson": false, 
+    "produits_ok": [], 
+    "prix": "2.8", 
+    "categories_ok": [], 
+    "nom_facture": "1664", 
+    "categorie": 12, 
+    "actif": true
+  }
+},
+{
+  "pk": 169, 
+  "model": "base.produit", 
+  "fields": {
+    "nom": "Plat du jour", 
+    "choix_sauce": false, 
+    "choix_accompagnement": false, 
+    "choix_cuisson": false, 
+    "produits_ok": [], 
+    "prix": "8.5", 
+    "categories_ok": [], 
+    "nom_facture": "Plat du jour", 
+    "categorie": 4, 
+    "actif": true
+  }
+},
+{
+  "pk": 177, 
+  "model": "base.produit", 
+  "fields": {
+    "nom": "Entree jour", 
+    "choix_sauce": false, 
+    "choix_accompagnement": false, 
+    "choix_cuisson": false, 
+    "produits_ok": [], 
+    "prix": "4.8", 
+    "categories_ok": [], 
+    "nom_facture": "Entree du jour", 
+    "categorie": 3, 
+    "actif": true
+  }
+},
+{
+  "pk": 210, 
+  "model": "base.produit", 
+  "fields": {
+    "nom": "1 boule", 
+    "choix_sauce": false, 
+    "choix_accompagnement": false, 
+    "choix_cuisson": false, 
+    "produits_ok": [
+      242
+    ], 
+    "prix": "3.5", 
+    "categories_ok": [], 
+    "nom_facture": "Glace 1 boule", 
+    "categorie": 5, 
+    "actif": true
+  }
+},
+{
+  "pk": 242, 
+  "model": "base.produit", 
+  "fields": {
+    "nom": "Entree/Plat", 
+    "choix_sauce": false, 
+    "choix_accompagnement": false, 
+    "choix_cuisson": false, 
+    "produits_ok": [
+      210, 
+      413, 
+      388, 
+      400
+    ], 
+    "prix": "14.5", 
+    "categories_ok": [
+      5, 
+      3, 
+      4
+    ], 
+    "nom_facture": "Menu express", 
+    "categorie": 1, 
+    "actif": true
+  }
+},
+{
+  "pk": 243, 
+  "model": "base.produit", 
+  "fields": {
+    "nom": "Cafe allonge", 
+    "choix_sauce": false, 
+    "choix_accompagnement": false, 
+    "choix_cuisson": false, 
+    "produits_ok": [], 
+    "prix": "1.4", 
+    "categories_ok": [], 
+    "nom_facture": "Cafe allonge", 
+    "categorie": 7, 
+    "actif": true
+  }
+},
+{
+  "pk": 261, 
+  "model": "base.produit", 
+  "fields": {
+    "nom": "St-Emilion 75", 
+    "choix_sauce": false, 
+    "choix_accompagnement": false, 
+    "choix_cuisson": false, 
+    "produits_ok": [], 
+    "prix": "22.2", 
+    "categories_ok": [], 
+    "nom_facture": "St-Emilion (75cl)", 
+    "categorie": 15, 
+    "actif": true
+  }
+},
+{
+  "pk": 388, 
+  "model": "base.produit", 
+  "fields": {
+    "nom": "Buffet froid", 
+    "choix_sauce": false, 
+    "choix_accompagnement": false, 
+    "choix_cuisson": false, 
+    "produits_ok": [
+      242
+    ], 
+    "prix": "8.7", 
+    "categories_ok": [], 
+    "nom_facture": "Buffet froid", 
+    "categorie": 3, 
+    "actif": true
+  }
+},
+{
+  "pk": 400, 
+  "model": "base.produit", 
+  "fields": {
+    "nom": "Pave de saumon", 
+    "choix_sauce": false, 
+    "choix_accompagnement": false, 
+    "choix_cuisson": false, 
+    "produits_ok": [
+      242
+    ], 
+    "prix": "11", 
+    "categories_ok": [], 
+    "nom_facture": "Pave de saumon", 
+    "categorie": 4, 
+    "actif": true
+  }
+},
+{
+  "pk": 411, 
+  "model": "base.produit", 
+  "fields": {
+    "nom": "Cafe liegois", 
+    "choix_sauce": false, 
+    "choix_accompagnement": false, 
+    "choix_cuisson": false, 
+    "produits_ok": [], 
+    "prix": "5.1", 
+    "categories_ok": [], 
+    "nom_facture": "Cafe liegeois", 
+    "categorie": 5, 
+    "actif": true
+  }
+},
+{
+  "pk": 412, 
+  "model": "base.produit", 
+  "fields": {
+    "nom": "Chocolat liegeois", 
+    "choix_sauce": false, 
+    "choix_accompagnement": false, 
+    "choix_cuisson": false, 
+    "produits_ok": [], 
+    "prix": "5.1", 
+    "categories_ok": [], 
+    "nom_facture": "Chocolat liegeois", 
+    "categorie": 5, 
+    "actif": true
+  }
+},
+{
+  "pk": 413, 
+  "model": "base.produit", 
+  "fields": {
+    "nom": "2 boules", 
+    "choix_sauce": false, 
+    "choix_accompagnement": false, 
+    "choix_cuisson": false, 
+    "produits_ok": [
+      242
+    ], 
+    "prix": "3.5", 
+    "categories_ok": [], 
+    "nom_facture": "Glace 2 boules", 
+    "categorie": 5, 
+    "actif": true
+  }
+},
+{
+  "pk": 420, 
+  "model": "base.produit", 
+  "fields": {
+    "nom": "Ass. fromage", 
+    "choix_sauce": false, 
+    "choix_accompagnement": false, 
+    "choix_cuisson": false, 
+    "produits_ok": [], 
+    "prix": "4.9", 
+    "categories_ok": [], 
+    "nom_facture": "Assiette de fromages", 
+    "categorie": 5, 
+    "actif": true
+  }
+},
+{
+  "pk": 430, 
+  "model": "base.produit", 
+  "fields": {
+    "nom": "Gd chocolat", 
+    "choix_sauce": false, 
+    "choix_accompagnement": false, 
+    "choix_cuisson": false, 
+    "produits_ok": [], 
+    "prix": "2", 
+    "categories_ok": [], 
+    "nom_facture": "Grand chocolat", 
+    "categorie": 7, 
+    "actif": true
+  }
+},
+{
+  "pk": 527, 
+  "model": "base.produit", 
+  "fields": {
+    "nom": "Entrecote", 
+    "choix_sauce": false, 
+    "choix_accompagnement": false, 
+    "choix_cuisson": true, 
+    "produits_ok": [], 
+    "prix": "11", 
+    "categories_ok": [], 
+    "nom_facture": "Entrecote", 
+    "categorie": 4, 
+    "actif": true
+  }
+},
+{
+  "pk": 2, 
+  "model": "base.produitvendu", 
+  "fields": {
+    "produit": 177, 
+    "contient": [], 
+    "prix": "4.8", 
+    "accompagnement": null, 
+    "date": "2013-09-05T21:22:11.443", 
+    "sauce": null, 
+    "cuisson": null
+  }
+},
+{
+  "pk": 7, 
+  "model": "base.produitvendu", 
+  "fields": {
+    "produit": 177, 
+    "contient": [], 
+    "prix": "0", 
+    "accompagnement": null, 
+    "date": "2013-09-05T23:26:55.676", 
+    "sauce": null, 
+    "cuisson": null
+  }
+},
+{
+  "pk": 8, 
+  "model": "base.produitvendu", 
+  "fields": {
+    "produit": 177, 
+    "contient": [], 
+    "prix": "0", 
+    "accompagnement": null, 
+    "date": "2013-09-05T23:27:09.124", 
+    "sauce": null, 
+    "cuisson": null
+  }
+},
+{
+  "pk": 9, 
+  "model": "base.produitvendu", 
+  "fields": {
+    "produit": 400, 
+    "contient": [], 
+    "prix": "0", 
+    "accompagnement": null, 
+    "date": "2013-09-05T23:27:11.661", 
+    "sauce": null, 
+    "cuisson": null
+  }
+},
+{
+  "pk": 10, 
+  "model": "base.produitvendu", 
+  "fields": {
+    "produit": 413, 
+    "contient": [], 
+    "prix": "0", 
+    "accompagnement": null, 
+    "date": "2013-09-05T23:27:13.364", 
+    "sauce": null, 
+    "cuisson": null
+  }
+},
+{
+  "pk": 11, 
+  "model": "base.produitvendu", 
+  "fields": {
+    "produit": 413, 
+    "contient": [], 
+    "prix": "0", 
+    "accompagnement": null, 
+    "date": "2013-09-05T23:36:21.239", 
+    "sauce": null, 
+    "cuisson": null
+  }
+},
+{
+  "pk": 12, 
+  "model": "base.produitvendu", 
+  "fields": {
+    "produit": 413, 
+    "contient": [], 
+    "prix": "0", 
+    "accompagnement": null, 
+    "date": "2013-09-05T23:36:22.316", 
+    "sauce": null, 
+    "cuisson": null
+  }
+},
+{
+  "pk": 13, 
+  "model": "base.produitvendu", 
+  "fields": {
+    "produit": 413, 
+    "contient": [], 
+    "prix": "0", 
+    "accompagnement": null, 
+    "date": "2013-09-05T23:36:22.932", 
+    "sauce": null, 
+    "cuisson": null
+  }
+},
+{
+  "pk": 14, 
+  "model": "base.produitvendu", 
+  "fields": {
+    "produit": 413, 
+    "contient": [], 
+    "prix": "0", 
+    "accompagnement": null, 
+    "date": "2013-09-05T23:36:23.628", 
+    "sauce": null, 
+    "cuisson": null
+  }
+},
+{
+  "pk": 15, 
+  "model": "base.produitvendu", 
+  "fields": {
+    "produit": 413, 
+    "contient": [], 
+    "prix": "0", 
+    "accompagnement": null, 
+    "date": "2013-09-05T23:36:23.915", 
+    "sauce": null, 
+    "cuisson": null
+  }
+},
+{
+  "pk": 16, 
+  "model": "base.produitvendu", 
+  "fields": {
+    "produit": 413, 
+    "contient": [], 
+    "prix": "0", 
+    "accompagnement": null, 
+    "date": "2013-09-05T23:36:24.138", 
+    "sauce": null, 
+    "cuisson": null
+  }
+},
+{
+  "pk": 17, 
+  "model": "base.produitvendu", 
+  "fields": {
+    "produit": 413, 
+    "contient": [], 
+    "prix": "0", 
+    "accompagnement": null, 
+    "date": "2013-09-05T23:36:24.337", 
+    "sauce": null, 
+    "cuisson": null
+  }
+},
+{
+  "pk": 19, 
+  "model": "base.produitvendu", 
+  "fields": {
+    "produit": 177, 
+    "contient": [], 
+    "prix": "0", 
+    "accompagnement": null, 
+    "date": "2013-09-05T23:37:24.725", 
+    "sauce": null, 
+    "cuisson": null
+  }
+},
+{
+  "pk": 20, 
+  "model": "base.produitvendu", 
+  "fields": {
+    "produit": 400, 
+    "contient": [], 
+    "prix": "0", 
+    "accompagnement": null, 
+    "date": "2013-09-05T23:37:25.601", 
+    "sauce": null, 
+    "cuisson": null
+  }
+},
+{
+  "pk": 21, 
+  "model": "base.produitvendu", 
+  "fields": {
+    "produit": 413, 
+    "contient": [], 
+    "prix": "0", 
+    "accompagnement": null, 
+    "date": "2013-09-05T23:37:26.594", 
+    "sauce": null, 
+    "cuisson": null
+  }
+},
+{
+  "pk": 22, 
+  "model": "base.produitvendu", 
+  "fields": {
+    "produit": 413, 
+    "contient": [], 
+    "prix": "0", 
+    "accompagnement": null, 
+    "date": "2013-09-05T23:39:28.239", 
+    "sauce": null, 
+    "cuisson": null
+  }
+},
+{
+  "pk": 23, 
+  "model": "base.produitvendu", 
+  "fields": {
+    "produit": 413, 
+    "contient": [], 
+    "prix": "0", 
+    "accompagnement": null, 
+    "date": "2013-09-05T23:39:29.282", 
+    "sauce": null, 
+    "cuisson": null
+  }
+},
+{
+  "pk": 24, 
+  "model": "base.produitvendu", 
+  "fields": {
+    "produit": 413, 
+    "contient": [], 
+    "prix": "0", 
+    "accompagnement": null, 
+    "date": "2013-09-05T23:39:30.604", 
+    "sauce": null, 
+    "cuisson": null
+  }
+},
+{
+  "pk": 25, 
+  "model": "base.produitvendu", 
+  "fields": {
+    "produit": 413, 
+    "contient": [], 
+    "prix": "0", 
+    "accompagnement": null, 
+    "date": "2013-09-05T23:44:07.474", 
+    "sauce": null, 
+    "cuisson": null
+  }
+},
+{
+  "pk": 26, 
+  "model": "base.produitvendu", 
+  "fields": {
+    "produit": 413, 
+    "contient": [], 
+    "prix": "3.5", 
+    "accompagnement": null, 
+    "date": "2013-09-08T19:11:00.890", 
+    "sauce": null, 
+    "cuisson": null
+  }
+},
+{
+  "pk": 27, 
+  "model": "base.produitvendu", 
+  "fields": {
+    "produit": 243, 
+    "contient": [], 
+    "prix": "1.4", 
+    "accompagnement": null, 
+    "date": "2013-09-08T19:11:35.998", 
+    "sauce": null, 
+    "cuisson": null
+  }
+},
+{
+  "pk": 28, 
+  "model": "base.produitvendu", 
+  "fields": {
+    "produit": 169, 
+    "contient": [], 
+    "prix": "8.5", 
+    "accompagnement": null, 
+    "date": "2013-09-08T19:12:27.600", 
+    "sauce": null, 
+    "cuisson": null
+  }
+},
+{
+  "pk": 29, 
+  "model": "base.produitvendu", 
+  "fields": {
+    "produit": 400, 
+    "contient": [], 
+    "prix": "11", 
+    "accompagnement": null, 
+    "date": "2013-09-08T19:53:22.135", 
+    "sauce": null, 
+    "cuisson": null
+  }
+},
+{
+  "pk": 30, 
+  "model": "base.produitvendu", 
+  "fields": {
+    "produit": 177, 
+    "contient": [], 
+    "prix": "4.8", 
+    "accompagnement": null, 
+    "date": "2013-09-09T13:08:23.316", 
+    "sauce": null, 
+    "cuisson": null
+  }
+},
+{
+  "pk": 37, 
+  "model": "base.produitvendu", 
+  "fields": {
+    "produit": 388, 
+    "contient": [], 
+    "prix": "0", 
+    "accompagnement": null, 
+    "date": "2013-09-09T23:00:51.196", 
+    "sauce": null, 
+    "cuisson": null
+  }
+},
+{
+  "pk": 38, 
+  "model": "base.produitvendu", 
+  "fields": {
+    "produit": 400, 
+    "contient": [], 
+    "prix": "0", 
+    "accompagnement": null, 
+    "date": "2013-09-09T23:00:52.900", 
+    "sauce": null, 
+    "cuisson": null
+  }
+},
+{
+  "pk": 39, 
+  "model": "base.produitvendu", 
+  "fields": {
+    "produit": 411, 
+    "contient": [], 
+    "prix": "0", 
+    "accompagnement": null, 
+    "date": "2013-09-09T23:02:54.544", 
+    "sauce": null, 
+    "cuisson": null
+  }
+},
+{
+  "pk": 40, 
+  "model": "base.produitvendu", 
+  "fields": {
+    "produit": 411, 
+    "contient": [], 
+    "prix": "0", 
+    "accompagnement": null, 
+    "date": "2013-09-09T23:03:28.248", 
+    "sauce": null, 
+    "cuisson": null
+  }
+},
+{
+  "pk": 41, 
+  "model": "base.produitvendu", 
+  "fields": {
+    "produit": 411, 
+    "contient": [], 
+    "prix": "0", 
+    "accompagnement": null, 
+    "date": "2013-09-09T23:04:11.742", 
+    "sauce": null, 
+    "cuisson": null
+  }
+},
+{
+  "pk": 42, 
+  "model": "base.produitvendu", 
+  "fields": {
+    "produit": 242, 
+    "contient": [
+      45, 
+      43, 
+      44
+    ], 
+    "prix": "14.5", 
+    "accompagnement": null, 
+    "date": "2013-09-09T23:05:24.972", 
+    "sauce": null, 
+    "cuisson": null
+  }
+},
+{
+  "pk": 43, 
+  "model": "base.produitvendu", 
+  "fields": {
+    "produit": 177, 
+    "contient": [
+      42
+    ], 
+    "prix": "0", 
+    "accompagnement": null, 
+    "date": "2013-09-09T23:05:26.634", 
+    "sauce": null, 
+    "cuisson": null
+  }
+},
+{
+  "pk": 44, 
+  "model": "base.produitvendu", 
+  "fields": {
+    "produit": 400, 
+    "contient": [
+      42
+    ], 
+    "prix": "0", 
+    "accompagnement": null, 
+    "date": "2013-09-09T23:05:27.858", 
+    "sauce": null, 
+    "cuisson": null
+  }
+},
+{
+  "pk": 45, 
+  "model": "base.produitvendu", 
+  "fields": {
+    "produit": 420, 
+    "contient": [
+      42
+    ], 
+    "prix": "0", 
+    "accompagnement": null, 
+    "date": "2013-09-09T23:05:29.694", 
+    "sauce": null, 
+    "cuisson": null
+  }
+},
+{
+  "pk": 46, 
+  "model": "base.produitvendu", 
+  "fields": {
+    "produit": 388, 
+    "contient": [], 
+    "prix": "8.7", 
+    "accompagnement": null, 
+    "date": "2013-09-12T23:02:51.533", 
+    "sauce": null, 
+    "cuisson": null
+  }
+},
+{
+  "pk": 63, 
+  "model": "base.produitvendu", 
+  "fields": {
+    "produit": 400, 
+    "contient": [], 
+    "prix": "11", 
+    "accompagnement": null, 
+    "date": "2013-09-13T22:53:37.901", 
+    "sauce": null, 
+    "cuisson": null
+  }
+},
+{
+  "pk": 68, 
+  "model": "base.produitvendu", 
+  "fields": {
+    "produit": 527, 
+    "contient": [], 
+    "prix": "11", 
+    "accompagnement": null, 
+    "date": "2013-09-14T00:06:00.277", 
+    "sauce": null, 
+    "cuisson": 1
+  }
+},
+{
+  "pk": 69, 
+  "model": "base.produitvendu", 
+  "fields": {
+    "produit": 527, 
+    "contient": [], 
+    "prix": "11", 
+    "accompagnement": null, 
+    "date": "2013-09-14T16:00:53.725", 
+    "sauce": null, 
+    "cuisson": 2
+  }
+},
+{
+  "pk": 70, 
+  "model": "base.produitvendu", 
+  "fields": {
+    "produit": 169, 
+    "contient": [], 
+    "prix": "8.5", 
+    "accompagnement": null, 
+    "date": "2013-09-14T16:00:58.188", 
+    "sauce": null, 
+    "cuisson": null
+  }
+},
+{
+  "pk": 71, 
+  "model": "base.produitvendu", 
+  "fields": {
+    "produit": 527, 
+    "contient": [], 
+    "prix": "11", 
+    "accompagnement": null, 
+    "date": "2013-09-14T18:23:07.043", 
+    "sauce": null, 
+    "cuisson": 2
+  }
+},
+{
+  "pk": 72, 
+  "model": "base.produitvendu", 
+  "fields": {
+    "produit": 527, 
+    "contient": [], 
+    "prix": "11", 
+    "accompagnement": null, 
+    "date": "2013-09-14T18:24:22.961", 
+    "sauce": null, 
+    "cuisson": 2
+  }
+},
+{
+  "pk": 73, 
+  "model": "base.produitvendu", 
+  "fields": {
+    "produit": 242, 
+    "contient": [
+      74, 
+      75
+    ], 
+    "prix": "14.5", 
+    "accompagnement": null, 
+    "date": "2013-09-14T18:25:30.735", 
+    "sauce": null, 
+    "cuisson": null
+  }
+},
+{
+  "pk": 74, 
+  "model": "base.produitvendu", 
+  "fields": {
+    "produit": 177, 
+    "contient": [
+      73
+    ], 
+    "prix": "0", 
+    "accompagnement": null, 
+    "date": "2013-09-14T18:25:31.966", 
+    "sauce": null, 
+    "cuisson": null
+  }
+},
+{
+  "pk": 75, 
+  "model": "base.produitvendu", 
+  "fields": {
+    "produit": 527, 
+    "contient": [
+      73
+    ], 
+    "prix": "0", 
+    "accompagnement": null, 
+    "date": "2013-09-14T18:25:33.544", 
+    "sauce": null, 
+    "cuisson": 2
+  }
+},
+{
+  "pk": 1, 
+  "model": "base.paiementtype", 
+  "fields": {
+    "nom": "Espece", 
+    "fixed_value": false
+  }
+},
+{
+  "pk": 2, 
+  "model": "base.paiementtype", 
+  "fields": {
+    "nom": "Cheque", 
+    "fixed_value": false
+  }
+},
+{
+  "pk": 3, 
+  "model": "base.paiementtype", 
+  "fields": {
+    "nom": "Tic. Resto.", 
+    "fixed_value": true
+  }
+},
+{
+  "pk": 5, 
+  "model": "base.paiementtype", 
+  "fields": {
+    "nom": "ANCV", 
+    "fixed_value": true
+  }
+},
+{
+  "pk": 7, 
+  "model": "base.paiementtype", 
+  "fields": {
+    "nom": "AMEX", 
+    "fixed_value": false
+  }
+},
+{
+  "pk": 8, 
+  "model": "base.paiementtype", 
+  "fields": {
+    "nom": "CB", 
+    "fixed_value": false
+  }
+},
+{
+  "pk": 1, 
+  "model": "base.paiement", 
+  "fields": {
+    "date": "2013-09-14T15:53:46.031", 
+    "nb_tickets": 0, 
+    "valeur_unitaire": "1", 
+    "type": 8, 
+    "montant": "26.38"
+  }
+},
+{
+  "pk": 2, 
+  "model": "base.zone", 
+  "fields": {
+    "nom": "Terrasse", 
+    "prix_surtaxe": "0.2", 
+    "surtaxe": true
+  }
+},
+{
+  "pk": 3, 
+  "model": "base.zone", 
+  "fields": {
+    "nom": "Rez de chauss\u00e9e", 
+    "prix_surtaxe": "0.2", 
+    "surtaxe": false
+  }
+},
+{
+  "pk": 6, 
+  "model": "base.zone", 
+  "fields": {
+    "nom": "Bar", 
+    "prix_surtaxe": "0.2", 
+    "surtaxe": false
+  }
+},
+{
+  "pk": 2, 
+  "model": "base.table", 
+  "fields": {
+    "nom": "T01", 
+    "zone": 2
+  }
+},
+{
+  "pk": 3, 
+  "model": "base.table", 
+  "fields": {
+    "nom": "T02", 
+    "zone": 2
+  }
+},
+{
+  "pk": 4, 
+  "model": "base.table", 
+  "fields": {
+    "nom": "T03", 
+    "zone": 2
+  }
+},
+{
+  "pk": 5, 
+  "model": "base.table", 
+  "fields": {
+    "nom": "T04", 
+    "zone": 2
+  }
+},
+{
+  "pk": 6, 
+  "model": "base.table", 
+  "fields": {
+    "nom": "T05", 
+    "zone": 2
+  }
+},
+{
+  "pk": 7, 
+  "model": "base.table", 
+  "fields": {
+    "nom": "T06", 
+    "zone": 2
+  }
+},
+{
+  "pk": 8, 
+  "model": "base.table", 
+  "fields": {
+    "nom": "T07", 
+    "zone": 2
+  }
+},
+{
+  "pk": 9, 
+  "model": "base.table", 
+  "fields": {
+    "nom": "T08", 
+    "zone": 2
+  }
+},
+{
+  "pk": 10, 
+  "model": "base.table", 
+  "fields": {
+    "nom": "T09", 
+    "zone": 2
+  }
+},
+{
+  "pk": 11, 
+  "model": "base.table", 
+  "fields": {
+    "nom": "T10", 
+    "zone": 2
+  }
+},
+{
+  "pk": 12, 
+  "model": "base.table", 
+  "fields": {
+    "nom": "T11", 
+    "zone": 2
+  }
+},
+{
+  "pk": 13, 
+  "model": "base.table", 
+  "fields": {
+    "nom": "T12", 
+    "zone": 2
+  }
+},
+{
+  "pk": 14, 
+  "model": "base.table", 
+  "fields": {
+    "nom": "T20", 
+    "zone": 3
+  }
+},
+{
+  "pk": 15, 
+  "model": "base.table", 
+  "fields": {
+    "nom": "T21", 
+    "zone": 3
+  }
+},
+{
+  "pk": 16, 
+  "model": "base.table", 
+  "fields": {
+    "nom": "T22", 
+    "zone": 3
+  }
+},
+{
+  "pk": 17, 
+  "model": "base.table", 
+  "fields": {
+    "nom": "T23", 
+    "zone": 3
+  }
+},
+{
+  "pk": 18, 
+  "model": "base.table", 
+  "fields": {
+    "nom": "T24", 
+    "zone": 3
+  }
+},
+{
+  "pk": 19, 
+  "model": "base.table", 
+  "fields": {
+    "nom": "T25", 
+    "zone": 3
+  }
+},
+{
+  "pk": 20, 
+  "model": "base.table", 
+  "fields": {
+    "nom": "T26", 
+    "zone": 3
+  }
+},
+{
+  "pk": 21, 
+  "model": "base.table", 
+  "fields": {
+    "nom": "T27", 
+    "zone": 3
+  }
+},
+{
+  "pk": 22, 
+  "model": "base.table", 
+  "fields": {
+    "nom": "T28", 
+    "zone": 3
+  }
+},
+{
+  "pk": 23, 
+  "model": "base.table", 
+  "fields": {
+    "nom": "T29", 
+    "zone": 3
+  }
+},
+{
+  "pk": 54, 
+  "model": "base.table", 
+  "fields": {
+    "nom": "T--", 
+    "zone": 6
+  }
+}
+]
