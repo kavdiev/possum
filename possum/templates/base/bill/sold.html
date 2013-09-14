@@ -19,7 +19,9 @@
 
 <ul id="products_sold">
     {% for product in sold.contient.all %}
-    <li style="background:{{product.produit.categorie.couleur.web}};" onclick="window.location='/bill/{{bill_id}}/sold/{{product.id}}/view/'">{{product.produit.nom}}</li>
+    <li style="background:{{product.produit.categorie.couleur.web}};" onclick="window.location='/bill/{{bill_id}}/sold/{{product.id}}/view/'">{{product.produit.nom}}</br>
+    {% if product.cuisson %}({{product.cuisson}}){% endif %}
+    </li>
     {% endfor %}
 </ul>
 {% endif %}

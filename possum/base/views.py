@@ -786,10 +786,11 @@ def subproduct_add(request, bill_id, sold_id, product_id):
     product_sell.save()
     menu = get_object_or_404(ProduitVendu, pk=sold_id)
     menu.contient.add(product_sell)
+    if product.choix_cuisson:
+        return HttpResponseRedirect('/bill/%s/sold/%s/%s/cooking/' % (bill_id, menu.id, product_sell.id))
     category = menu.getFreeCategorie()
     if category:
         return HttpResponseRedirect('/bill/%s/sold/%s/category/%s/select/' % (bill_id, menu.id, category.id))
-    data['facture'] = bill
     return HttpResponseRedirect('/bill/%s/' % bill_id)
 
 @permission_required('base.p5')
@@ -806,11 +807,11 @@ def product_add(request, bill_id, product_id):
         category = product_sell.getFreeCategorie()
         return HttpResponseRedirect('/bill/%s/sold/%s/category/%s/select/' % (bill_id, product_sell.id, category.id))
     if product.choix_cuisson:
-        HttpResponseRedirect('/bill/%s/sold/%s/cooking/' % (bill_id, product_sell.id))
+        return HttpResponseRedirect('/bill/%s/sold/%s/cooking/' % (bill_id, product_sell.id))
     return HttpResponseRedirect('/bill/%s/' % bill_id)
 
 @permission_required('base.p5')
-def sold_cooking(request, bill_id, sold_id, cooking_id=-1):
+def sold_cooking(request, bill_id, sold_id, cooking_id=-1, menu_id=-1):
     data = get_user(request)
     data['sold'] = get_object_or_404(ProduitVendu, pk=sold_id)
     data['cookings'] = Cuisson.objects.order_by('priorite', 'nom')
@@ -819,6 +820,12 @@ def sold_cooking(request, bill_id, sold_id, cooking_id=-1):
         cooking = get_object_or_404(Cuisson, pk=cooking_id)
         data['sold'].cuisson = cooking
         data['sold'].save()
+        if menu_id > -1:
+            # this is a menu
+            menu = get_object_or_404(ProduitVendu, pk=menu_id)
+            category = menu.getFreeCategorie()
+            if category:
+                return HttpResponseRedirect('/bill/%s/sold/%s/category/%s/select/' % (bill_id, menu.id, category.id))
         return HttpResponseRedirect('/bill/%s/' % bill_id)
     return render_to_response('base/bill/cooking.html',
                                 data,
