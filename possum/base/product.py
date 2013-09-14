@@ -179,6 +179,20 @@ class ProduitVendu(models.Model):
         else:
             return False
 
+    def get_menu_resume(self):
+        """Return a short string with product in menu
+        """
+        if self.est_un_menu():
+            products = []
+            for product in self.contient.all():
+                tmp = product.produit.nom[:6]
+                if product.cuisson:
+                    tmp += product.cuisson.nom_facture
+                products.append(tmp)
+            return "/".join(products)
+        else:
+            return ""
+
     def show(self):
 #        return u"1 %s % 12.2f" % (self.produit.nom_facture, self.prix)
         return u"1 %-25s % 7.2f" % (self.produit.nom_facture[:25], self.prix)

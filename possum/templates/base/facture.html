@@ -48,9 +48,7 @@
     <li style="background:{{vendu.produit.categorie.couleur.web}};" onclick="window.location='/bill/{{facture.id}}/sold/{{vendu.id}}/view/'">
         {{vendu}}</br>
         {% if vendu.cuisson %}({{vendu.cuisson}}){% endif %}
-        {% for subproduct in vendu.contient.all %}
-            {{subproduct}} 
-        {% endfor %}
+        {{ vendu.get_menu_resume }}
         </li>
     {% endfor %}
 </ul></br></br>

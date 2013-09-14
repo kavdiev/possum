@@ -18,10 +18,10 @@
 #    along with POSSUM.  If not, see <http://www.gnu.org/licenses/>.
 #
 from django.db import models
-from possum.base.generic import Nom, Priorite
+from possum.base.generic import Nom, Priorite, NomDouble
 from possum.base.color import Couleur
 
-class Cuisson(Nom, Priorite):
+class Cuisson(NomDouble, Priorite):
     """Cuisson d'un produit"""
     couleur = models.ForeignKey('Couleur', null=True, blank=True, related_name="cuisson-couleur")
 
