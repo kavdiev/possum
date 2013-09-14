@@ -2,15 +2,13 @@
 {% block content %}
 
 <h1>Carte</h1>
-
+<h2>Catégories</h2>
 <ul id="categories">
     <li onclick="window.location='/carte/categories/add/'">Ajouter</li>
     {% for category in categories %}
     <li onclick="window.location='/carte/categories/{{category.id}}/'" style="background:{{category.couleur.web}};">
         [{{category.priorite}}] {{category.nom}}
         </li>
-    {% empty %}
-        <li>Aucune categorie disponible.</li>
     {% endfor %}
 </ul>
 </br></br></br>

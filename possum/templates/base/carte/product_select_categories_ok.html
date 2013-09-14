@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h1>Sélectionner une catégorie à activer pour: {{product.nom}}</h1>
+
+<ul id="categories">
+    {% for category in categories %}
+    <li onclick="window.location='/carte/products/{{product.id}}/categories_ok/{{category.id}}/add/'" style="background:{{category.couleur.web}};">
+        {{category.nom}}
+        </li>
+    {% empty %}
+        <li>Aucune categorie disponible.</li>
+    {% endfor %}
+</ul>
+
+{% endblock %}
+

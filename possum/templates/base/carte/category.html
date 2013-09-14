@@ -1,8 +1,12 @@
 {% extends "base.html" %}
 {% block content %}
 
-<h1>Catégorie: {{category.nom}}</h1>
+<ul id="back">
+    <li onclick="window.location='/carte/'">Retour carte</li>
+</ul>
+</br></br></br>
 
+<h1>Catégorie: {{category.nom}}</h1>
 <ul id="category_info">
     <li onclick="window.location='/carte/categories/{{category.id}}/less-10/'">
         <<</br>

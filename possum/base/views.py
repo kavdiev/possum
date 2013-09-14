@@ -441,6 +441,70 @@ def products_category(request, product_id):
                                 context_instance=RequestContext(request))
 
 @permission_required('base.p6')
+def products_del_produits_ok(request, product_id, sub_id):
+    data = get_user(request)
+    menu = get_object_or_404(Produit, pk=product_id)
+    sub = get_object_or_404(Produit, pk=sub_id)
+    menu.produits_ok.remove(sub)
+    menu.save()
+    return HttpResponseRedirect('/carte/products/%s/' % product_id)
+
+@permission_required('base.p6')
+def products_select_produits_ok(request, product_id):
+    data = get_user(request)
+    data['product'] = get_object_or_404(Produit, pk=product_id)
+    data['menu_carte'] = True
+    data['products'] = []
+    for category in data['product'].categories_ok.all():
+        for sub in Produit.objects.filter(categorie=category, actif=True):
+            if sub not in data['product'].produits_ok.all():
+                data['products'].append(sub)
+    return render_to_response('base/carte/product_select_produits_ok.html',
+                                data,
+                                context_instance=RequestContext(request))
+
+@permission_required('base.p6')
+def products_add_produits_ok(request, product_id, sub_id):
+    data = get_user(request)
+    menu = get_object_or_404(Produit, pk=product_id)
+    product = get_object_or_404(Produit, pk=sub_id)
+    menu.produits_ok.add(product)
+    menu.save()
+    return HttpResponseRedirect('/carte/products/%s/' % product_id)
+
+@permission_required('base.p6')
+def products_del_categories_ok(request, product_id, cat_id):
+    data = get_user(request)
+    product = get_object_or_404(Produit, pk=product_id)
+    category = get_object_or_404(Categorie, pk=cat_id)
+    product.categories_ok.remove(category)
+    product.save()
+    return HttpResponseRedirect('/carte/products/%s/' % product_id)
+
+@permission_required('base.p6')
+def products_add_categories_ok(request, product_id, cat_id):
+    data = get_user(request)
+    product = get_object_or_404(Produit, pk=product_id)
+    category = get_object_or_404(Categorie, pk=cat_id)
+    product.categories_ok.add(category)
+    product.save()
+    return HttpResponseRedirect('/carte/products/%s/' % product_id)
+
+@permission_required('base.p6')
+def products_select_categories_ok(request, product_id):
+    data = get_user(request)
+    data['product'] = get_object_or_404(Produit, pk=product_id)
+    data['menu_carte'] = True
+    data['categories'] = []
+    for category in Categorie.objects.order_by('priorite', 'nom'):
+        if category not in data['product'].categories_ok.all() \
+                and category != data['product'].categorie:
+            data['categories'].append(category)
+    return render_to_response('base/carte/product_select_categories_ok.html',
+                                data,
+                                context_instance=RequestContext(request))
+
+@permission_required('base.p6')
 def products_cooking(request, product_id):
     data = get_user(request)
     product = get_object_or_404(Produit, pk=product_id)
