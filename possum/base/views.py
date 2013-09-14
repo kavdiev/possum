@@ -154,6 +154,7 @@ def categories_delete(request, cat_id):
 def categories_view(request, cat_id):
     data = get_user(request)
     data['category'] = get_object_or_404(Categorie, pk=cat_id)
+    data['menu_carte'] = True
     products = Produit.objects.filter(categorie=data['category'])
     data['products_enable'] = products.exclude(actif=False)
     data['products_disable'] = products.exclude(actif=True)
@@ -164,6 +165,7 @@ def categories_view(request, cat_id):
 @permission_required('base.p6')
 def categories_add(request):
     data = get_user(request)
+    data['menu_carte'] = True
     return render_to_response('base/carte/categories_add.html',
                                 data,
                                 context_instance=RequestContext(request))
@@ -801,7 +803,7 @@ def product_add(request, bill_id, product_id):
 def sold_cooking(request, bill_id, sold_id, cooking_id=-1):
     data = get_user(request)
     data['sold'] = get_object_or_404(ProduitVendu, pk=sold_id)
-    data['cookings'] = Cuisson.objects.all()
+    data['cookings'] = Cuisson.objects.order_by('priorite', 'nom')
     data['bill_id'] = bill_id
     if cooking_id > -1:
         cooking = get_object_or_404(Cuisson, pk=cooking_id)
