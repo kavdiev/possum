@@ -242,6 +242,7 @@ def categories_vat_takeaway(request, cat_id):
     data['type_vat'] = 'TVA à emporter'
     data['url_vat'] = 'vat_takeaway'
     data['vats'] = VAT.objects.all()
+    data['menu_carte'] = True
     return render_to_response('base/carte/vat.html',
                                 data,
                                 context_instance=RequestContext(request))
@@ -267,6 +268,7 @@ def categories_set_vat_onsite(request, cat_id, vat_id):
 @permission_required('base.p6')
 def categories_vat_onsite(request, cat_id):
     data = get_user(request)
+    data['menu_carte'] = True
     data['category'] = get_object_or_404(Categorie, pk=cat_id)
     data['type_vat'] = 'TVA sur place'
     data['url_vat'] = 'vat_onsite'
@@ -279,6 +281,7 @@ def categories_vat_onsite(request, cat_id):
 def vats(request):
     data = get_user(request)
     data['vats'] = VAT.objects.all()
+    data['menu_carte'] = True
     return render_to_response('base/carte/vats.html',
                                 data,
                                 context_instance=RequestContext(request))
@@ -287,6 +290,7 @@ def vats(request):
 def products_view(request, product_id):
     data = get_user(request)
     data['product'] = get_object_or_404(Produit, pk=product_id)
+    data['menu_carte'] = True
     return render_to_response('base/carte/product.html',
                                 data,
                                 context_instance=RequestContext(request))
@@ -294,6 +298,7 @@ def products_view(request, product_id):
 @permission_required('base.p6')
 def vats_view(request, vat_id):
     data = get_user(request)
+    data['menu_carte'] = True
     data['vat'] = get_object_or_404(VAT, pk=vat_id)
     return render_to_response('base/carte/vats_view.html',
                                 data,
@@ -303,6 +308,7 @@ def vats_view(request, vat_id):
 def vats_change(request, vat_id):
     data = get_user(request)
     data['vat'] = get_object_or_404(VAT, pk=vat_id)
+    data['menu_carte'] = True
     if request.method == 'POST':
         name = request.POST.get('name', '').strip()
         tax = request.POST.get('tax', '').strip().replace(',','.')
@@ -329,6 +335,7 @@ def vats_change(request, vat_id):
 @permission_required('base.p6')
 def products_new(request, cat_id):
     data = get_user(request)
+    data['menu_carte'] = True
     data['category'] = get_object_or_404(Categorie, pk=cat_id)
     if request.method == 'POST':
         name = request.POST.get('name', '').strip()
@@ -362,6 +369,7 @@ def products_new(request, cat_id):
 @permission_required('base.p6')
 def vat_new(request):
     data = get_user(request)
+    data['menu_carte'] = True
     data['vats'] = VAT.objects.all()
     if request.method == 'POST':
         name = request.POST.get('name', '').strip()
@@ -425,6 +433,7 @@ def products_set_category(request, product_id, cat_id):
 def products_category(request, product_id):
     data = get_user(request)
     data['product'] = get_object_or_404(Produit, pk=product_id)
+    data['menu_carte'] = True
     data['categories'] = Categorie.objects.order_by('priorite', 'nom')
     return render_to_response('base/carte/product_category.html',
                                 data,
@@ -452,6 +461,7 @@ def products_enable(request, product_id):
 def products_change(request, product_id):
     data = get_user(request)
     product = get_object_or_404(Produit, pk=product_id)
+    data['menu_carte'] = True
     if request.method == 'POST':
         name = request.POST.get('name', '').strip()
         billname = request.POST.get('billname', '').strip()
