@@ -347,6 +347,18 @@ li
 #product_info li.enabled { 
     background-color: #00FF00;
 }
+#manager {
+    list-style:none;
+}
+#manager li {
+    float:left; /* c'est cette balise qui fait l'effet tableau*/
+    width:140px;
+    height:40px;
+    background:#eee;
+    margin:5px;
+    overflow:hidden; /* permet de limiter l'affichage du contenu au dimension du contenant */
+    padding:5px;
+}
 #category_info {
     list-style:none;
 }

@@ -2,6 +2,11 @@
 {% block titre %}Facture {{facture.id}}{% endblock %}
 {% block content %}
 
+<ul id="back">
+    <li onclick="window.location='/bills/'">Retour commandes</li>
+</ul>
+</br></br></br>
+
 <h2>Commande [{{facture}}]</h2>
 
 <ul id="bill_info">

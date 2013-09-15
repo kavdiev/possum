@@ -32,11 +32,22 @@ On va maintenant préparer cet environnement:
 ::
 
   source /home/pos/bin/activate 
-  pip install Django south wsgiref sphinx django_extensions Werkzeug ipython
+  pip install Django south wsgiref sphinx django_extensions Werkzeug ipython pycups
 
 
 Note: il faudra utiliser ''deactivate'' pour sortir du virtualenv Possum une fois toutes
 la configuration terminée.
+
+Impression
+----------
+
+Possum peut imprimer sur plusieurs imprimantes. Afin de pouvoir les utiliser, il faut avoir
+un cups configurer sur le serveur. Vous pouvez vérifier que les imprimantes sont bien
+disponibles avec la commande:
+
+::
+
+  lpstat -v
 
 
 Possum

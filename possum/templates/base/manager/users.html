@@ -18,7 +18,7 @@
 </tr>
 {% for u in users %}
 <!-- permissions get_all_permissions() -->
-<tr><form method='post' action='/users/{{u.id}}/change/'>{% csrf_token %}
+<tr><form method='post' action='/manager/users/{{u.id}}/change/'>{% csrf_token %}
     <td>
         <input name='login' value="{{u.username}}">
     </td>
@@ -35,7 +35,7 @@
         <input type='submit' value='Modifier'>
     </td>
     </form>
-    <td align="center" onclick="window.location='/users/{{u.id}}/active/'"
+    <td align="center" onclick="window.location='/manager/users/{{u.id}}/active/'"
         {% if u.is_active %}bgcolor="#00FF00"> 
         <input type="checkbox" checked="True"/>
         {% else %}bgcolor="#FF0000"> 
@@ -43,7 +43,7 @@
         {% endif %}
     </td>        
     {% for p in perms_list %}
-    <td align="center" onclick="window.location='/users/{{u.id}}/perm/{{p}}/'"
+    <td align="center" onclick="window.location='/manager/users/{{u.id}}/perm/{{p}}/'"
         {% if p in u.permissions %}bgcolor="#00FF00"> 
         <input type="checkbox" checked="True"/>
         {% else %}bgcolor="#FF0000"> 
@@ -51,10 +51,10 @@
         {% endif %}
     </td>    
     {% endfor %}
-    <td align="center"><a href="/users/{{u.id}}/passwd/">Changer</a></td>
+    <td align="center"><a href="/manager/users/{{u.id}}/passwd/">Changer</a></td>
 </tr>
 {% endfor %}
-<tr><form method='post' action='/users/new/'>{% csrf_token %}
+<tr><form method='post' action='/manager/users/new/'>{% csrf_token %}
     <td><input name='login'></td>
     <td><input name='last_name'></td>
     <td><input name='first_name'></td>

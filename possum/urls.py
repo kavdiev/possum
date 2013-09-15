@@ -83,17 +83,18 @@ urlpatterns = patterns('possum.base.views',
     url(r'^bill/(?P<bill_id>\d+)/payment/(?P<type_id>\d+)/(?P<left>\d+).(?P<right>\d+)/count/$', 'bill_payment_count'),
     url(r'^bill/(?P<bill_id>\d+)/$', 'bill_view'),
     url(r'^jukebox/$', 'jukebox'),
-    url(r'^manager/$', 'manager'),
     url(r'^kitchen/$', 'kitchen'),
 
     url(r'^profile/$', 'profile'),
 
-    url(r'^users/$', 'users'),
-    url(r'^users/new/$', 'users_new'),
-    url(r'^users/(?P<user_id>\d+)/passwd/$', 'users_passwd'),
-    url(r'^users/(?P<user_id>\d+)/active/$', 'users_active'),
-    url(r'^users/(?P<user_id>\d+)/change/$', 'users_change'),
-    url(r'^users/(?P<user_id>\d+)/perm/(?P<codename>p\d+)/$', 'users_change_perm'),
+    url(r'^manager/$', 'manager'),
+    url(r'^manager/credits/$', 'credits'),
+    url(r'^manager/users/$', 'users'),
+    url(r'^manager/users/new/$', 'users_new'),
+    url(r'^manager/users/(?P<user_id>\d+)/passwd/$', 'users_passwd'),
+    url(r'^manager/users/(?P<user_id>\d+)/active/$', 'users_active'),
+    url(r'^manager/users/(?P<user_id>\d+)/change/$', 'users_change'),
+    url(r'^manager/users/(?P<user_id>\d+)/perm/(?P<codename>p\d+)/$', 'users_change_perm'),
 
 )
 

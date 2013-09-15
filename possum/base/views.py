@@ -599,10 +599,18 @@ def jukebox(request):
                                 context_instance=RequestContext(request))
 
 @permission_required('base.p7')
+def credits(request):
+    data = get_user(request)
+    data['menu_manager'] = True
+    return render_to_response('base/manager/credits.html',
+                                data,
+                                context_instance=RequestContext(request))
+
+@permission_required('base.p7')
 def manager(request):
     data = get_user(request)
     data['menu_manager'] = True
-    return render_to_response('base/manager.html',
+    return render_to_response('base/manager/manager.html',
                                 data,
                                 context_instance=RequestContext(request))
 
@@ -634,12 +642,12 @@ def profile(request):
 @permission_required('base.p1')
 def users(request):
     data = get_user(request)
-    data['menu_users'] = True
     data['perms_list'] = settings.PERMS
+    data['menu_manager'] = True
     data['users'] = User.objects.all()
     for user in data['users']:
         user.permissions = [p.codename for p in user.user_permissions.all()]
-    return render_to_response('base/users.html',
+    return render_to_response('base/manager/users.html',
                                 data,
                                 context_instance=RequestContext(request))
 
@@ -665,7 +673,7 @@ def users_new(request):
             #data['error'] = "Le nouvel utilisateur n'a pu être créé."
             logging.warning("[%s] new user failed: [%s] [%s] [%s] [%s]" % (data['user'].username, login, first_name, last_name, mail))
             messages.add_message(request, messages.ERROR, "Le nouveau compte n'a pu être créé.")
-    return HttpResponseRedirect('/users/')
+    return HttpResponseRedirect('/manager/users/')
 
 @permission_required('base.p1')
 def users_change(request, user_id):
@@ -693,7 +701,7 @@ def users_change(request, user_id):
     except:
         messages.add_message(request, messages.ERROR, "Les modifications n'ont pu être enregistrées.")
         logging.warning("[%s] save failed for [%s]" % (data['user'].username, user.username))
-    return HttpResponseRedirect('/users/')
+    return HttpResponseRedirect('/manager/users/')
 
 @permission_required('base.p1')
 def users_active(request, user_id):
@@ -708,7 +716,7 @@ def users_active(request, user_id):
         user.is_active = new
         user.save()
         logging.info("[%s] user [%s] active: %s" % (data['user'].username, user.username, user.is_active))
-    return HttpResponseRedirect('/users/')
+    return HttpResponseRedirect('/manager/users/')
 
 @permission_required('base.p1')
 def users_passwd(request, user_id):
@@ -721,7 +729,7 @@ def users_passwd(request, user_id):
     user.save()
     messages.add_message(request, messages.SUCCESS, "Le nouveau mot de passe l'utilisateur %s est : %s" % (user.username, passwd))
     logging.info("[%s] user [%s] new password" % (data['user'].username, user.username))
-    return HttpResponseRedirect('/users/')
+    return HttpResponseRedirect('/manager/users/')
 
 @permission_required('base.p1')
 def users_change_perm(request, user_id, codename):
@@ -744,7 +752,7 @@ def users_change_perm(request, user_id, codename):
             logging.info("[%s] user [%s] add perm: %s" % (data['user'].username, user.username, codename))
     else:
         logging.warning("[%s] wrong perm info : [%s]" % (data['user'].username, codename))
-    return HttpResponseRedirect('/users/')
+    return HttpResponseRedirect('/manager/users/')
 
 @permission_required('base.p5')
 def bill_new(request):
