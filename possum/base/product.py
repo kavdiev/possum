@@ -58,10 +58,6 @@ class Produit(NomDouble):
         else:
             return False
 
-    def show(self):
-#        return u"1 %s % 12.2f" % (self.produit.nom_facture, self.prix)
-        return u" 1 %-25s % 7.2f" % (self.nom_facture[:25], self.prix)
-
     def set_prize(self, prize):
         """With new prize, we have to create a new product to keep statistics
         and historics.
@@ -192,13 +188,6 @@ class ProduitVendu(models.Model):
             return "/".join(products)
         else:
             return ""
-
-    def show(self):
-#        return u"1 %s % 12.2f" % (self.produit.nom_facture, self.prix)
-        return u"1 %-25s % 7.2f" % (self.produit.nom_facture[:25], self.prix)
-
-    def showSubProducts(self):
-        return u"   - %s " % self.produit.nom_facture
 
     def getFreeCategorie(self):
         """Retourne la premiere categorie dans la liste categories_ok

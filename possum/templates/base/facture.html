@@ -22,7 +22,7 @@
             class="disabled">à emporter
         {% endif %}
     </li>
-    <li>Imprimer la facture</li>
+    <li onclick="window.location='/bill/{{facture.id}}/print/'">Imprimer le ticket</li>
     <li>Total TTC:</br>{{facture.total_ttc}}€</li>
     <li>Restant à payer:</br>{{facture.restant_a_payer}}€</li>
     <li onclick="window.location='/bill/{{facture.id}}/delete/'" class="critical">Supprimer</li>

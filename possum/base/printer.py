@@ -73,10 +73,6 @@ class Printer(models.Model):
                 result.append(printer)
         return result
 
-    def create_default_directory(self):
-        if not os.path.exists(settings.PATH_TICKET):
-            os.makedirs(settings.PATH_TICKET)
-
     def print_file(self, filename):
         conn = cups.Connection()
         if not os.path.exists(filename):
@@ -88,14 +84,21 @@ class Printer(models.Model):
         except:
             return False
 
-    def print_test(self):
-        self.create_default_directory()
-        path = "%s/test-%s.txt" % (settings.PATH_TICKET, self.id)
+    def print_list(self, list_to_print, name):
+        path = "%s/%s-%s.txt" % (settings.PATH_TICKET, self.id, name)
         fd = open(path, "w")
         fd.write(self.header)
-        fd.write("> POSSUM Printing test !\n")
-        fd.write(datetime.now().strftime("> %H:%M %d/%m/%Y\n"))
+        for line in list_to_print:
+            fd.write("%s\n" % line)
         fd.write(self.footer)
         fd.close()
-        return self.print_file(path)
+        result = self.print_file(path)
+        os.remove(path)
+        return result
+
+    def print_test(self):
+        list_to_print = []
+        list_to_print.append("> POSSUM Printing test !")
+        list_to_print.append(datetime.now().strftime("> %H:%M %d/%m/%Y\n"))
+        return self.print_list(path, "test")
 

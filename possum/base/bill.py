@@ -30,6 +30,7 @@ import os
 from possum.base.stats import StatsJourGeneral, StatsJourPaiement, \
         StatsJourProduit, StatsJourCategorie
 from possum.base.category import Categorie
+from possum.base.printer import Printer
 from possum.base.log import LogType
 from django.contrib.auth import authenticate
 
@@ -415,9 +416,6 @@ class Facture(models.Model):
             logging.debug("pas de produit, donc rien n'a payer")
             return False
 
-    def total(self):
-        return self.montant_alcool + self.montant_normal
-
     def est_soldee(self):
         """La facture a été utilisée et soldée"""
         if self.restant_a_payer == 0 and self.produits.count() > 0:
@@ -434,7 +432,7 @@ class Facture(models.Model):
                 return True
         return False
 
-    def est_vierge(self):
+    def is_empty(self):
         """La facture est vierge"""
         if self.restant_a_payer == 0 and self.produits.count() == 0:
             return True
@@ -457,16 +455,6 @@ class Facture(models.Model):
                 return False
         else:
             return False
-
-    def check_path(self, path):
-        """Verifie l'existance du chemin et cree le repertoire si besoin
-        '"""
-        path_splitted = path.split("/")
-        for i in xrange(len(path_splitted)):
-            if path_splitted[i]:
-                tmp = "/".join(path_splitted[:i+1])
-                if not os.path.exists(tmp):
-                    os.mkdir(tmp)
 
     def rapport_mois(self, mois):
         """Retourne dans une liste le rapport du mois 'mois'
@@ -898,95 +886,26 @@ class Facture(models.Model):
             self.saved_in_stats = True
             self.save()
 
-    def ticket(self):
-        """Retourne le ticket sous la forme d'une liste de ligne.
-        """
-        #self.check_path(settings.PATH_TICKET)
-        #filename = "%s/%s" % (settings.PATH_TICKET, \
-        #        self.date_creation.strftime("%Y%m%d%H%M%S"))
-        #fd = open(filename, "w")
-        texte = []
-        #fd.write("           le Saint Saens\n")
-        #fd.write("       -----------------------\n")
-        #fd.write("       sarl Brasserie des Arts\n")
-        #fd.write("       SIRET: 502 922 032 00011\n")
-        #fd.write("        tel: 02.35.71.03.12\n")
-        #fd.write("      120 rue du General Leclerc\n")
-        #fd.write("             76000 Rouen\n")
-        #fd.write("\n")
-        texte.append("           le Saint Saens")
-        texte.append("       -----------------------")
-        texte.append("       sarl Brasserie des Arts")
-        texte.append("       SIRET: 502 922 032 00011")
-        texte.append("        tel: 02.35.71.03.12")
-        texte.append("      120 rue du General Leclerc")
-        texte.append("             76000 Rouen")
-        texte.append(" ")
+    def print_ticket(self):
+        ticket = []
         if self.table != None:
             table = self.table
         else:
             table = "T--"
-        #fd.write("%s - table: %s\n" % (self.date_creation.strftime("%d/%m/%Y %H:%M"), table))
-        #fd.write("=======================================\n")
-        texte.append("%s - table: %s" % (self.date_creation.strftime("%d/%m/%Y %H:%M"), table))
-        texte.append("=======================================")
+        ticket.append("%s - table: %s" % (self.date_creation.strftime("%d/%m/%Y %H:%M"), table))
+        ticket.append("=======================================")
         for vendu in self.produits.order_by( \
                             "produit__categorie__priorite").iterator():
-            #fd.write("  %s\n" % vendu.show())
-            texte.append("  %s" % vendu.show())
-        #fd.write("=======================================\n")
-        texte.append("=======================================")
-        if self.est_surtaxe():
-            #fd.write("   Total (terrasse) : % 8.2f Euros\n" % self.total())
-            texte.append("   Total (terrasse) : % 8.2f Euros" % self.total())
-        else:
-            #fd.write("   Total            : % 8.2f Euros\n" % self.total())
-            texte.append("   Total            : % 8.2f Euros" % self.total())
-        #fd.write("      dont TVA 5,5  : % 8.2f Euros\n" % self.getTvaNormal())
-        #fd.write("      dont TVA 19,6 : % 8.2f Euros\n" % self.getTvaAlcool())
-        #fd.write("=======================================\n")
-        texte.append("      dont TVA 5,5  : % 8.2f Euros" % self.getTvaNormal())
-        texte.append("      dont TVA 19,6 : % 8.2f Euros" % self.getTvaAlcool())
-        texte.append("=======================================")
-# il y a 70 tirets
-#       fd.write("----------------------------------------------------------------------\n")
-        #fd.write(" Service tous les jours de 7h a 22h30\n")
-        #fd.write("   sauf le mardi soir, mercredi soir\n")
-        #fd.write("          et le dimanche soir\n")
-        #fd.write("\n")
-        #fd.write("       - Merci de votre visite -\n")
-        #fd.write("\n")
-        texte.append(" Service tous les jours de 7h a 22h30")
-        texte.append("   sauf le mardi soir, mercredi soir")
-        texte.append("          et le dimanche soir")
-        texte.append(" ")
-        texte.append("       - Merci de votre visite -")
-        texte.append(" ")
-        #fd.write("\n")
-        #fd.write("\n")
-        #fd.write("\n")
-        #fd.write("\n")
-        #fd.close()
-        #return filename
-        return texte
-
-    def show(self):
-        if self.table:
-            table = self.table.nom
-        else:
-            table = "T--"
-        if self.date_creation:
-            date = self.date_creation.strftime("%H:%M:%S %d/%m/%y")
-        else:
-            date = "--:--:-- --/--/--"
-        return "%s %s" % (table, date)
-
-    def showPaiements(self):
-        result = []
-        for paiement in self.paiements.all():
-            deb = "%s " % paiement.type.nom_facture
-            if paiement.type.fixed_value:
-                deb += "(%s x %.0f) " % (paiement.valeur_unitaire, paiement.nb_tickets)
-            fin = " %.2f " % paiement.montant
-            result.append(deb+remplissage(len(deb+fin), ".", 30)+fin)
+            name = vendu.produit.nom_facture[:25]
+            prize = self.get_product_prize(vendu)
+            ticket.append("  1 %-25s %s" % (name, prize))
+        ticket.append("=======================================")
+        ticket.append("  Total            : % 8.2f Eur." % self.total_ttc)
+        for vatonbill in self.vats.all():
+            ticket.append("  dont TVA % 6.2f%% : % 8.2f Eur." % (\
+                    vatonbill.vat.tax, vatonbill.total))
+        ticket.append("=======================================")
+        for printer in Printer.objects.filter(billing=True):
+            result = printer.print_list(ticket, "bill%s" % self.id)
         return result
+

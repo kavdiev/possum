@@ -43,7 +43,13 @@ from django.contrib.auth.models import User, UserManager, Permission
 from django.conf import settings
 from django.contrib import messages
 from django.utils.functional import wraps
+import os
 
+# Création des répertoires obligatoires
+def create_default_directory():
+    if not os.path.exists(settings.PATH_TICKET):
+        os.makedirs(settings.PATH_TICKET)
+create_default_directory()
 
 def get_user(request):
     data = {}
@@ -863,6 +869,22 @@ def bill_new(request):
     data['menu_bills'] = True
     bill = Facture()
     bill.save()
+    return HttpResponseRedirect('/bill/%s/' % bill.id)
+
+@permission_required('base.p5')
+def bill_print(request, bill_id):
+    """Print the bill"""
+    data = get_user(request)
+    data['menu_bills'] = True
+    bill = get_object_or_404(Facture, pk=bill_id)
+    if bill.is_empty():
+        messages.add_message(request, messages.ERROR, "La facture est vide.")
+    else:
+        if Printer.objects.filter(billing=True).count() == 0:
+            messages.add_message(request, messages.ERROR, "Aucune imprimante n'est configurée pour la facturation.")
+        else:
+            if not bill.print_ticket():
+                messages.add_message(request, messages.ERROR, "L'impression a échouée.")
     return HttpResponseRedirect('/bill/%s/' % bill.id)
 
 @permission_required('base.p5')
