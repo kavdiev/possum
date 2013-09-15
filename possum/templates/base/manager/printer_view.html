@@ -22,6 +22,8 @@
         {% endif %}>Manager</li>
     <li onclick="window.location='/manager/printer/{{printer.id}}/width/'">
         Largeur du ticket:</br>{{printer.width}}</li>
+    <li onclick="window.location='/manager/printer/{{printer.id}}/test/'">
+        Test d'impression</li>
 </ul>
 </br></br></br></br>
 
@@ -32,11 +34,11 @@
     <td><input name="options" value="{{printer.options}}"></td>
 </tr>
 <tr>
-    <td><b>entête du ticket</b></td>
+    <td><b>entête du ticket (sans accent)</b></td>
     <td><textarea name="header" rows="10" cols="{{printer.width}}">{{printer.header}}</textarea></td>
 </tr>
 <tr>
-    <td><b>fin du ticket</b></td>
+    <td><b>fin du ticket (sans accent)</b></td>
     <td><textarea name="footer" rows="10" cols="{{printer.width}}">{{printer.footer}}</textarea></td>
 </tr>
 <tr>

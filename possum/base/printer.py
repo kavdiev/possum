@@ -97,5 +97,5 @@ class Printer(models.Model):
         fd.write(datetime.now().strftime("> %H:%M %d/%m/%Y\n"))
         fd.write(self.footer)
         fd.close()
-        self.print_file(path)
+        return self.print_file(path)
 

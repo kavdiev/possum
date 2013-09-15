@@ -680,6 +680,16 @@ def printer_set_width(request, printer_id, number):
     return HttpResponseRedirect('/manager/printer/%s/' % printer_id)
 
 @permission_required('base.p7')
+def printer_test_print(request, printer_id):
+    data = get_user(request)
+    printer = get_object_or_404(Printer, pk=printer_id)
+    if printer.print_test():
+        messages.add_message(request, messages.SUCCESS, "L'impression a été acceptée.")
+    else:
+        messages.add_message(request, messages.ERROR, "L'impression de test a achouée.")
+    return HttpResponseRedirect('/manager/printer/%s/' % printer_id)
+
+@permission_required('base.p7')
 def printer_change_kitchen(request, printer_id):
     data = get_user(request)
     printer = get_object_or_404(Printer, pk=printer_id)
