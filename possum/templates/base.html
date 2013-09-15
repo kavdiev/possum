@@ -1,6 +1,5 @@
 {% extends "template.html" %}
 {% block page %}
-<script type="text/javascript">window.onload = date_heure('myclock');</script>
 
 <ul id="menu">
     <li class="icon" onclick="window.location='/bills/'">
@@ -31,7 +30,7 @@
         <img src="/static/images/manager_bw.jpg">
     {% endif %}
     </li>
-    <li>HEURE</li>
+    <li><div id="myclock"><script type="text/javascript">window.onload = date_heure('myclock');</script></div></li>
     {% if user.is_authenticated %}
     <li class="{% if menu_profile %}menuSelected{% endif %}" onclick="window.location='/profile/'"><a href="/profile/">{% if user.get_full_name %}{{ user.get_full_name }}{%else%}{{user.username}}{%endif%}</a></li>
     <li><a href="/users/logout/">Déconnexion</a></li>
