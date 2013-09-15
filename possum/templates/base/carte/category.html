@@ -54,6 +54,13 @@
             class="disabled">TVA à emporter:</br>non défini
         {% endif %}
     </li>
+    <li onclick="window.location='/carte/categories/{{category.id}}/kitchen/'"
+        {% if category.made_in_kitchen %}
+            class="enabled">Est préparé dans la cuisine
+        {% else %}
+            class="disabled">N'est pas préparé dans la cuisine
+        {% endif %}
+    </li>
     <li onclick="window.location='/carte/categories/{{category.id}}/delete/'" class="critical">Supprimer</li>
 </ul>
 </br></br></br>

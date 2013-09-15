@@ -578,6 +578,15 @@ def categories_set_name(request, cat_id):
     return HttpResponseRedirect('/carte/categories/%s/' % cat_id)
 
 @permission_required('base.p6')
+def categories_set_kitchen(request, cat_id):
+    data = get_user(request)
+    cat = get_object_or_404(Categorie, pk=cat_id)
+    new = not cat.made_in_kitchen
+    cat.made_in_kitchen = new
+    cat.save()
+    return HttpResponseRedirect('/carte/categories/%s/' % cat_id)
+
+@permission_required('base.p6')
 def categories_disable_surtaxe(request, cat_id):
     data = get_user(request)
     cat = get_object_or_404(Categorie, pk=cat_id)
@@ -922,6 +931,26 @@ def category_select(request, bill_id):
                                 context_instance=RequestContext(request))
 
 @permission_required('base.p5')
+def product_select_made_with(request, bill_id, product_id):
+    data = get_user(request)
+    data['menu_bills'] = True
+    data['bill'] = get_object_or_404(Facture, pk=bill_id)
+    data['product'] = get_object_or_404(ProduitVendu, pk=product_id)
+    data['categories'] = Categorie.objects.filter(made_in_kitchen=True)
+    return render_to_response('base/bill/product_select_made_with.html',
+                                data,
+                                context_instance=RequestContext(request))
+
+@permission_required('base.p5')
+def product_set_made_with(request, bill_id, product_id, category_id):
+    data = get_user(request)
+    product = get_object_or_404(ProduitVendu, pk=product_id)
+    category = get_object_or_404(Categorie, pk=category_id)
+    product.made_with = category
+    product.save()
+    return HttpResponseRedirect('/bill/%s/sold/%s/view/' % (bill_id, product.id))
+
+@permission_required('base.p5')
 def product_select(request, bill_id, category_id):
     """Select a product to add on a bill."""
     data = get_user(request)
@@ -980,6 +1009,7 @@ def subproduct_add(request, bill_id, sold_id, product_id):
     bill = get_object_or_404(Facture, pk=bill_id)
     product = get_object_or_404(Produit, pk=product_id)
     product_sell = ProduitVendu(produit=product)
+    product_sell.made_with = product_sell.produit.categorie
     product_sell.save()
     menu = get_object_or_404(ProduitVendu, pk=sold_id)
     menu.contient.add(product_sell)
@@ -1181,6 +1211,7 @@ def bill_payment(request, bill_id, type_id=-1, count=-1, left=0, right=0):
 def bill_view(request, bill_id):
     data = get_user(request)
     data['facture'] = get_object_or_404(Facture, pk=bill_id)
+    data['next'] = data['facture'].something_for_the_kitchen()
     data['menu_bills'] = True
     return render_to_response('base/facture.html',
                                 data,

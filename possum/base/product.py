@@ -118,6 +118,10 @@ class ProduitVendu(models.Model):
     # dans le cas d'un menu, peut contenir d'autres produits
 #    contient = models.ManyToManyField(Produit, null=True)
     contient = models.ManyToManyField('self')
+    # faut-il préparer ce plat avec les entrées ?
+    made_with = models.ForeignKey('Categorie', related_name="produit-kitchen", null=True)
+    # a-t-il été envoyé en cuisine
+    sent = models.BooleanField(default=False)
 
     class Meta:
         ordering = ('produit',)

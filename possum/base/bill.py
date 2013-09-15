@@ -112,6 +112,63 @@ class Facture(models.Model):
         """
         return cmp(self.date_creation, other.date_creation)
 
+    def something_for_the_kitchen(self):
+        """Return, if one, the first category to prepare in the
+        kitchen. Example: Entree if there are Entree and Plat.
+        """
+        todolist = [p.made_with for p in self.produits.filter( \
+                produit__categorie__made_in_kitchen=True, 
+                sent=False)]
+        # le cas des menus
+        menu = [p.made_with for p in self.produits.filter( \
+                contient__produit__categorie__made_in_kitchen=True, 
+                sent=False)]
+        if menu:
+            todolist += menu
+        if todolist:
+            todolist.sort()
+            return todolist[0]
+        else:
+            return None
+
+    def send_in_the_kitchen(self):
+        """We send the first category available to the kitchen.
+        """
+        category = self.something_for_the_kitchen()
+        if category:
+            todolist = []
+            if self.produits.filter(sent=True).count() == 0:
+                # on crée le ticket avec la liste des produits et 
+                # des suites
+                first = True
+            else:
+                # on indique seulement qu'il faut la suite de la table
+                first = False
+            heure = datetime.datetime.now().strftime("%H:%M")
+            if first:
+                todolist.append("> Table %s : envoyé %s (%s)" % (self.table, category.nom, heure))
+                todolist.append("*> %s" % category.nom)
+            else:
+                todolist.append("> Table %s : envoyé %s (%s)" % (self.table, category.nom, heure))
+            # les produits standards
+            for product in self.produits.filter(made_with=category, sent=False):
+                if first:
+                    tmp = " %s  " % product.nom
+                    if product.produit.choix_cuisson:
+                        tmp += ": %s" % product.cuisson
+                    todolist.append(tmp)
+                product.sent = True
+                product.save()
+            # les menus
+            for product in self.produits.filter(contient__made_with=category, sent=False):
+                if first:
+                    todolist.append(product)
+                product.sent = True
+                product.save()
+            for printer in Printer.objects.filter(kitchen=True):
+                result = printer.print_list(todolist, "kitchen%s-%s" % (self.id, category.id))
+            return result
+
     def guest_couverts(self):
         """Essaye de deviner le nombre de couverts"""
         nb = {}
@@ -250,6 +307,7 @@ class Facture(models.Model):
             self.date_creation = datetime.datetime.now()
 
         vendu.prix = vendu.produit.prix
+        vendu.made_with = vendu.produit.categorie
         vendu.save()
         if vendu.prix:
             self.produits.add(vendu)
@@ -516,75 +574,6 @@ class Facture(models.Model):
         texte.append("%-20s %10.2f" % ("total TVA 19.6:", tva_alcool))
         return texte
 
-    def rapport_mois_old(self, mois):
-        """Retourne dans une liste le rapport du mois 'mois'
-        'mois' est de type datetime.today()
-
-        exemple:
-
-        -- CA mensuel 12/2010 --
-        Cheque               285,05
-        Ticket Resto         723,67
-        Espece              3876,46
-        ANCV                 150,00
-        CB                  3355,60
-        total TTC:          8386,08
-        montant TVA  5,5:    353,26
-        montant TVA 19,6:    263,82
-
-        """
-        date_min = datetime.datetime(mois.year, mois.month, 1, 5)
-        # on est le mois suivant (32 c'est pour etre sur de ne pas
-        # tomber sur le 31 du mois)
-        tmp = date_min + datetime.timedelta(days=32)
-        # modulo pour le cas de decembre + 1 = janvier
-        date_max = datetime.datetime(tmp.year, tmp.month, 1, 5)
-        total = Decimal("0")
-        tva_normal = Decimal("0")
-        tva_alcool = Decimal("0")
-        paiements = {}
-        for p in PaiementType.objects.iterator():
-            paiements[p.nom] = Decimal("0")
-        #nb_f = 0
-        for f in Facture.objects.filter( \
-                            date_creation__gt=date_min, \
-                            date_creation__lt=date_max).iterator():
-            if f.est_soldee():
-                #nb_f += 1
-                for p in f.paiements.iterator():
-                    paiements[p.type.nom] += p.montant
-                total += f.get_montant()
-                tva_normal += f.getTvaNormal()
-                tva_alcool += f.getTvaAlcool()
-                #print "nb facture: %d" % nb_f
-                #print "total: %s" % total
-        # enregistrement
-        #self.check_path(settings.PATH_TICKET)
-        #filename = "%s/%s" % (settings.PATH_TICKET, \
-        #                        mois.strftime("mois-%Y%m"))
-        #fd = open(filename, "w")
-        texte = []
-        #fd.write("    -- CA mensuel %s --\n" % mois.strftime("%m/%Y"))
-        texte.append("    -- CA mensuel %s --" % mois.strftime("%m/%Y"))
-        for p in PaiementType.objects.iterator():
-            if paiements[p.nom]:
-                texte.append("%-20s %10.2f" % (p.nom, paiements[p.nom]))
-                #fd.write("%-20s %10.2f\n" % (p.nom, paiements[p.nom]))
-        texte.append("%-20s %10.2f" % ("total TTC:", total))
-        texte.append("%-20s %10.2f" % ("total TVA  5.5:", tva_normal))
-        texte.append("%-20s %10.2f" % ("total TVA 19.6:", tva_alcool))
-        #fd.write("%-20s %10.2f\n" % ("total TTC:", total))
-        #fd.write("%-20s %10.2f\n" % ("total TVA  5.5:", tva_normal))
-        #fd.write("%-20s %10.2f\n" % ("total TVA 19.6:", tva_alcool))
-        #fd.write("\n")
-        #fd.write("\n")
-        #fd.write("\n")
-        #fd.write("\n")
-        #fd.write("\n")
-        #fd.close()
-        #return filename
-        return texte
-
     def get_factures_du_jour(self, date):
         """Retourne la liste des factures soldees du jour 'date'"""
         date_min = datetime.datetime(date.year, date.month, date.day, 5)
@@ -656,100 +645,6 @@ class Facture(models.Model):
                 texte.append(" ")
             except StatsJourCategorie.DoesNotExist:
                 continue
-        return texte
-
-    def rapport_jour_old(self, date):
-        """Retourne le rapport du jour sous la forme d'une liste
-        'jour' est de type datetime.today()
-
-        exemple:
-        -- 15/12/2010 --
-        Cheque               285,05
-        Ticket Resto         723,67
-        Espece              3876,46
-        ANCV                 150,00
-        CB                  3355,60
-        total TTC:          8386,08
-        montant TVA  5,5:    353,26
-        montant TVA 19,6:    263,82
-
-        Menu E/P :            16
-        Menu P/D :            16
-        Menu Tradition :      16
-
-        Salade cesar :         6
-        ...
-
-        plat ...
-        """
-        logging.debug(date)
-        date_min = datetime.datetime(date.year, date.month, date.day, 5)
-        tmp = date_min + datetime.timedelta(days=1)
-        date_max = datetime.datetime(tmp.year, tmp.month, tmp.day, 5)
-        total = Decimal("0")
-        tva_normal = Decimal("0")
-        tva_alcool = Decimal("0")
-        nb_plats = {}
-        categories = ["Formules", "Entrees", "Plats", "Desserts"]
-        for cate in categories:
-            nb_plats[cate] = {}
-            nb_plats[cate]['total'] = 0
-        paiements = {}
-        for p in PaiementType.objects.iterator():
-            paiements[p.nom] = Decimal("0")
-        nb_factures = 0
-        for f in Facture.objects.filter( \
-                            date_creation__gt=date_min, \
-                            date_creation__lt=date_max).iterator():
-            if f.est_soldee():
-                nb_factures += 1
-                for p in f.paiements.iterator():
-                    paiements[p.type.nom] += p.montant
-                for p in f.produits.iterator():
-                    nom = p.produit.categorie.nom
-                    if nom in categories:
-                        if p.produit.nom in nb_plats[nom]:
-                            nb_plats[nom][p.produit.nom] += 1
-                        else:
-                            nb_plats[nom][p.produit.nom] = 1
-                        nb_plats[nom]['total'] += 1
-                total += f.get_montant()
-                tva_normal += f.getTvaNormal()
-                tva_alcool += f.getTvaAlcool()
-        # enregistrement
-        #self.check_path(settings.PATH_TICKET)
-        #filename = "%s/%s" % (settings.PATH_TICKET, \
-        #                        date.strftime("jour-%Y%m%d"))
-        #fd = open(filename, "w")
-        texte = []
-        #fd.write("       -- %s --\n" % date.strftime("%d/%m/%Y"))
-        #fd.write("CA TTC (% 4d fact.): %11.2f\n" % (nb_factures, total))
-        #fd.write("%-20s %11.2f\n" % ("total TVA  5.5:", tva_normal))
-        #fd.write("%-20s %11.2f\n" % ("total TVA 19.6:", tva_alcool))
-        texte.append("       -- %s --" % date.strftime("%d/%m/%Y"))
-        texte.append("CA TTC (% 4d fact.): %11.2f" % (nb_factures, total))
-        texte.append("%-20s %11.2f" % ("total TVA  5.5:", tva_normal))
-        texte.append("%-20s %11.2f" % ("total TVA 19.6:", tva_alcool))
-        for p in PaiementType.objects.iterator():
-            if paiements[p.nom]:
-                #fd.write("%-20s %11.2f\n" % (p.nom, paiements[p.nom]))
-                texte.append("%-20s %11.2f" % (p.nom, paiements[p.nom]))
-        for cate in categories:
-            if nb_plats[cate]:
-                if nb_plats[cate]['total'] > 0:
-#                    fd.write("%-21s %10d\n" % (cate, nb_plats[cate]['total']))
-                    texte.append("%-21s %10d" % (cate, nb_plats[cate]['total']))
-                    for p in nb_plats[cate]:
-                        if p != "total":
-                            texte.append(" %-20s %10d" % (p, nb_plats[cate][p]))
-#                            fd.write(" %-20s %10d\n" % (p, nb_plats[cate][p]))
-#        fd.write("\n")
-#        fd.write("\n")
-#        fd.write("\n")
-#        fd.write("\n")
-#        fd.write("\n")
-#        fd.close()
-#        return filename
         return texte
 
     def get_working_date(self):

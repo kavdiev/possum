@@ -10,7 +10,14 @@
 <h2>Commande [{{facture}}]</h2>
 
 <ul id="bill_info">
-    <li onclick="window.location='/bill/{{facture.id}}/category/select/'">Envoi en cuisine</li>
+    <li onclick="window.location='/bill/{{facture.id}}/kitchen/'"
+    {% if next %}
+        style="background:{{next.couleur.web}};"
+        >Cuisine:</br>Envoyé {{next.nom}} ?
+    {% else %}
+        >Cuisine:</br>Rien à envoyer
+    {% endif %}
+    </li>
     <li onclick="window.location='/bill/{{facture.id}}/table/select/'"
         {% if facture.est_surtaxe %}class="warning"{% endif %}>
         Table:</br>{{facture.table.nom}}</li>
