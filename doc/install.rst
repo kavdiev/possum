@@ -49,6 +49,9 @@ disponibles avec la commande:
 
   lpstat -v
 
+D'autre part, l'impression des tickets nécessite la création et la suppression de nombreux
+fichiers. Je vous recommande donc d'utiliser un système de fichier virtuel type tmpfs pour
+ce répertoire (variable ''PATH_TICKET'' du fichier ''settings.py'').
 
 Possum
 ------
