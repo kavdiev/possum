@@ -22,6 +22,7 @@ import logging
 
 from possum.base.stats import StatsJourProduit, StatsJourCategorie
 from possum.base.bill import Facture
+from possum.base.models import Printer
 from possum.base.product import Produit, ProduitVendu
 from possum.base.payment import PaiementType, Paiement
 from possum.base.color import Couleur
@@ -613,6 +614,97 @@ def manager(request):
     return render_to_response('base/manager/manager.html',
                                 data,
                                 context_instance=RequestContext(request))
+
+@permission_required('base.p7')
+def printers(request):
+    data = get_user(request)
+    data['menu_manager'] = True
+    data['printers'] = Printer.objects.all()
+    return render_to_response('base/manager/printers.html',
+                                data,
+                                context_instance=RequestContext(request))
+
+@permission_required('base.p7')
+def printer_add(request):
+    data = get_user(request)
+    data['menu_manager'] = True
+    data['printers'] = Printer().get_available_printers()
+    return render_to_response('base/manager/printer_add.html',
+                                data,
+                                context_instance=RequestContext(request))
+
+@permission_required('base.p7')
+def printer_added(request, name):
+    """Save new printer"""
+    data = get_user(request)
+    printer = Printer(name=name)
+    printer.save()
+    return HttpResponseRedirect('/manager/printers/')
+
+@permission_required('base.p7')
+def printer_view(request, printer_id):
+    data = get_user(request)
+    data['menu_manager'] = True
+    data['printer'] = get_object_or_404(Printer, pk=printer_id)
+    if request.method == 'POST':
+        options = request.POST.get('options', '').strip()
+        header = request.POST.get('header', '')
+        footer = request.POST.get('footer', '')
+        data['printer'].options = options
+        data['printer'].header = header
+        data['printer'].footer = footer
+        try:
+            data['printer'].save()
+        except:
+            messages.add_message(request, messages.ERROR, "Les informations n'ont pu être enregistrées.")
+    return render_to_response('base/manager/printer_view.html',
+                                data,
+                                context_instance=RequestContext(request))
+
+@permission_required('base.p7')
+def printer_select_width(request, printer_id):
+    data = get_user(request)
+    data['menu_manager'] = True
+    data['printer'] = get_object_or_404(Printer, pk=printer_id)
+    data['max'] = range(120)
+    return render_to_response('base/manager/printer_select_width.html',
+                                data,
+                                context_instance=RequestContext(request))
+
+@permission_required('base.p7')
+def printer_set_width(request, printer_id, number):
+    data = get_user(request)
+    printer = get_object_or_404(Printer, pk=printer_id)
+    printer.width = number
+    printer.save()
+    return HttpResponseRedirect('/manager/printer/%s/' % printer_id)
+
+@permission_required('base.p7')
+def printer_change_kitchen(request, printer_id):
+    data = get_user(request)
+    printer = get_object_or_404(Printer, pk=printer_id)
+    new = not printer.kitchen
+    printer.kitchen = new
+    printer.save()
+    return HttpResponseRedirect('/manager/printer/%s/' % printer_id)
+
+@permission_required('base.p7')
+def printer_change_billing(request, printer_id):
+    data = get_user(request)
+    printer = get_object_or_404(Printer, pk=printer_id)
+    new = not printer.billing
+    printer.billing = new
+    printer.save()
+    return HttpResponseRedirect('/manager/printer/%s/' % printer_id)
+
+@permission_required('base.p7')
+def printer_change_manager(request, printer_id):
+    data = get_user(request)
+    printer = get_object_or_404(Printer, pk=printer_id)
+    new = not printer.manager
+    printer.manager = new
+    printer.save()
+    return HttpResponseRedirect('/manager/printer/%s/' % printer_id)
 
 @login_required
 def profile(request):

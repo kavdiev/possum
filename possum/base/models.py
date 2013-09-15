@@ -24,6 +24,7 @@ import logging
 
 from django.conf import settings
 from possum.base.vat import VAT
+from possum.base.printer import Printer
 from possum.base.vatonbill import VATOnBill
 from possum.base.stats import StatsJour, StatsJourGeneral, \
     StatsJourPaiement, StatsJourProduit, StatsJourCategorie

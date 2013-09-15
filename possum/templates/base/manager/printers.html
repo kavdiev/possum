@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block content %}
+
+<ul id="back">
+    <li onclick="window.location='/manager/'">Retour</li>
+</ul>
+</br></br></br>
+
+<h1>Gestion des imprimantes</h1>
+
+<ul id="printers">
+    <li onclick="window.location='/manager/printer/add/'">Ajouter</li>
+    {% for printer in printers %}
+    <li onclick="window.location='/manager/printer/{{printer.id}}/'">
+        {{printer.name}}</br>{{printer.get_resume}}
+        </li>
+    {% endfor %}
+</ul>
+
+{% endblock %}
+

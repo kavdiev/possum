@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block content %}
+
+<ul id="back">
+    <li onclick="window.location='/manager/printers/'">Retour imprimantes</li>
+</ul>
+</br></br></br>
+
+<h1>Ajout d'une imprimante</h1>
+<ul id="printers">
+    {% for printer in printers %}
+    <li onclick="window.location='/manager/printer/add/{{printer}}/'">
+        {{printer}}
+        </li>
+    {% empty %}
+    <li>Il n'y a pas d'imprimantes disponibles.</li>
+    {% endfor %}
+</ul>
+{% endblock %}
+

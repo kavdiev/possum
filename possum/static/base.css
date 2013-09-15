@@ -347,6 +347,36 @@ li
 #product_info li.enabled { 
     background-color: #00FF00;
 }
+#printer {
+    list-style:none;
+}
+#printer li {
+    float:left; /* c'est cette balise qui fait l'effet tableau*/
+    width:140px;
+    height:40px;
+    background:#eee;
+    margin:5px;
+    overflow:hidden; /* permet de limiter l'affichage du contenu au dimension du contenant */
+    padding:5px;
+}
+#printer li.disabled { 
+    background-color: #FF0000;
+}
+#printer li.enabled { 
+    background-color: #00FF00;
+}
+#printers {
+    list-style:none;
+}
+#printers li {
+    float:left;
+    width:220px;
+    height:40px;
+    background:#eee;
+    margin:5px;
+    overflow:hidden;
+    padding:5px;
+}
 #manager {
     list-style:none;
 }
@@ -601,7 +631,18 @@ li
     overflow:hidden; /* permet de limiter l'affichage du contenu au dimension du contenant */
     padding:5px;
 }
-/* list of couverts */
+#printer_width {
+    list-style:none;
+}
+#printer_width li {
+    float:left;
+    width:30px;
+    height:30px;
+    background:#eee;
+    margin:5px;
+    overflow:hidden;
+    padding:5px;
+}
 #couverts {
     list-style:none;
 }

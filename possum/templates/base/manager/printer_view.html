@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% block content %}
+
+<ul id="back">
+    <li onclick="window.location='/manager/printers/'">Retour imprimantes</li>
+</ul>
+</br></br></br>
+
+<h1>Imprimante: {{printer.name}}</h1>
+<ul id="printer">
+    <li onclick="window.location='/manager/printer/{{printer.id}}/kitchen/'"
+        {% if printer.kitchen %}class="enabled"
+        {% else %}class="disabled"
+        {% endif %}>Cuisine</li>
+    <li onclick="window.location='/manager/printer/{{printer.id}}/billing/'"
+        {% if printer.billing %}class="enabled"
+        {% else %}class="disabled"
+        {% endif %}>Facturation</li>
+    <li onclick="window.location='/manager/printer/{{printer.id}}/manager/'"
+        {% if printer.manager %}class="enabled"
+        {% else %}class="disabled"
+        {% endif %}>Manager</li>
+    <li onclick="window.location='/manager/printer/{{printer.id}}/width/'">
+        Largeur du ticket:</br>{{printer.width}}</li>
+</ul>
+</br></br></br></br>
+
+<form method='post' action='/manager/printer/{{printer.id}}/'>{% csrf_token %}
+<table>
+<tr>
+    <td><b>options d'impressions</b></td>
+    <td><input name="options" value="{{printer.options}}"></td>
+</tr>
+<tr>
+    <td><b>entête du ticket</b></td>
+    <td><textarea name="header" rows="10" cols="{{printer.width}}">{{printer.header}}</textarea></td>
+</tr>
+<tr>
+    <td><b>fin du ticket</b></td>
+    <td><textarea name="footer" rows="10" cols="{{printer.width}}">{{printer.footer}}</textarea></td>
+</tr>
+<tr>
+    <td colspan=2><input type='submit' value='Enregistrer'></td>
+</tr>
+</table>
+</form>
+{% endblock %}
+
