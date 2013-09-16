@@ -44,6 +44,7 @@ from django.conf import settings
 from django.contrib import messages
 from django.utils.functional import wraps
 import os
+from datetime import datetime
 
 # Création des répertoires obligatoires
 def create_default_directory():
@@ -619,6 +620,21 @@ def credits(request):
     data = get_user(request)
     data['menu_manager'] = True
     return render_to_response('base/manager/credits.html',
+                                data,
+                                context_instance=RequestContext(request))
+
+@permission_required('base.p7')
+def rapports(request):
+    """try/except sont là pour le cas où les rapports sont demandés
+    alors qu'il n'y a pas encore eu de facture ce jour"""
+    data = get_user(request)
+    data['menu_manager'] = True
+    date = datetime.now()
+    try:
+        data['nb_invoices'] = StatsJourGeneral.objects.get(date=date, type__nom="nb_invoices")
+    except:
+        data['nb_invoices'] = 0
+    return render_to_response('base/manager/rapports/home.html',
                                 data,
                                 context_instance=RequestContext(request))
 

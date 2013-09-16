@@ -672,20 +672,28 @@ class Facture(models.Model):
         ID_vat_only : VAT part only for each vat
         ID_vat_ttc  : VAT total (HT+VAT) for each vat
         """
-        logtype = LogType.objects.get_or_create(nom="nb_invoices")[0]
+        logtype, created = LogType.objects.get_or_create(nom="nb_invoices")[0]
+        if created:
+            logtype.save()
         stat = StatsJourGeneral.objects.get_or_create(date=date, type=logtype)[0]
         stat.valeur += 1
         stat.save()
-        logtype = LogType.objects.get_or_create(nom="total_ttc")[0]
+        logtype, created = LogType.objects.get_or_create(nom="total_ttc")[0]
+        if created:
+            logtype.save()
         stat = StatsJourGeneral.objects.get_or_create(date=date, type=logtype)[0]
         stat.valeur += self.total_ttc
         stat.save()
         for vatonbill in self.vats.all():
-            logtype = LogType.objects.get_or_create(nom="%s_vat_only" % vatonbill.vat.id)[0]
+            logtype, created = LogType.objects.get_or_create(nom="%s_vat_only" % vatonbill.vat.id)[0]
+            if created:
+                logtype.save()
             stat = StatsJourGeneral.objects.get_or_create(date=date, type=logtype)[0]
             stat.valeur += vatonbill.total
             stat.save()
-            logtype = LogType.objects.get_or_create(nom="%s_vat_ttc" % vatonbill.vat.id)[0]
+            logtype, created = LogType.objects.get_or_create(nom="%s_vat_ttc" % vatonbill.vat.id)[0]
+            if created:
+                logtype.save()
             stat = StatsJourGeneral.objects.get_or_create(date=date, type=logtype)[0]
             stat.valeur += vatonbill.total
             stat.save()
@@ -722,7 +730,9 @@ class Facture(models.Model):
         guest_average    : average TTC by guest
         guests_total_ttc : total TTC for guests
         """
-        logtype = LogType.objects.get_or_create(nom="nb_guests")[0]
+        logtype, created = LogType.objects.get_or_create(nom="nb_guests")[0]
+        if created:
+            logtype.save()
         stat = StatsJourGeneral.objects.get_or_create(date=date, type=logtype)[0]
         if self.couverts == 0:
             # if not, we try to find a number
@@ -731,12 +741,16 @@ class Facture(models.Model):
         stat.valeur += self.couverts
         stat.save()
         nb_guests = stat.valeur
-        logtype = LogType.objects.get_or_create(nom="guests_total_ttc")[0]
+        logtype, created = LogType.objects.get_or_create(nom="guests_total_ttc")[0]
+        if created:
+            logtype.save()
         stat = StatsJourGeneral.objects.get_or_create(date=date, type=logtype)[0]
         stat.valeur += self.total_ttc
         stat.save()
         total_ttc = stat.valeur
-        logtype = LogType.objects.get_or_create(nom="guest_average")[0]
+        logtype, created = LogType.objects.get_or_create(nom="guest_average")[0]
+        if created:
+            logtype.save()
         stat = StatsJourGeneral.objects.get_or_create(date=date, type=logtype)[0]
         if nb_guests:
             stat.valeur = total_ttc / nb_guests
@@ -750,17 +764,23 @@ class Facture(models.Model):
         bar_average   : average TTC by invoice
         bar_total_ttc : total TTC for bar activity
         """
-        logtype = LogType.objects.get_or_create(nom="nb_bar")[0]
+        logtype, created = LogType.objects.get_or_create(nom="nb_bar")[0]
+        if created:
+            logtype.save()
         stat = StatsJourGeneral.objects.get_or_create(date=date, type=logtype)[0]
         stat.valeur += 1
         stat.save()
         nb_bar = stat.valeur
-        logtype = LogType.objects.get_or_create(nom="bar_total_ttc")[0]
+        logtype, created = LogType.objects.get_or_create(nom="bar_total_ttc")[0]
+        if created:
+            logtype.save()
         stat = StatsJourGeneral.objects.get_or_create(date=date, type=logtype)[0]
         stat.valeur += self.total_ttc
         stat.save()
         total_ttc = stat.valeur
-        logtype = LogType.objects.get_or_create(nom="bar_average")[0]
+        logtype, created = LogType.objects.get_or_create(nom="bar_average")[0]
+        if created:
+            logtype.save()
         stat = StatsJourGeneral.objects.get_or_create(date=date, type=logtype)[0]
         if nb_bar:
             stat.valeur = total_ttc / nb_bar

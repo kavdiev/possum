@@ -93,6 +93,7 @@ urlpatterns = patterns('possum.base.views',
 
     url(r'^manager/$', 'manager'),
     url(r'^manager/credits/$', 'credits'),
+
     url(r'^manager/printers/$', 'printers'),
     url(r'^manager/printer/add/$', 'printer_add'),
     url(r'^manager/printer/add/(?P<name>[a-zA-Z0-9_-]+)/$', 'printer_added'),
@@ -103,6 +104,7 @@ urlpatterns = patterns('possum.base.views',
     url(r'^manager/printer/(?P<printer_id>\d+)/width/$', 'printer_select_width'),
     url(r'^manager/printer/(?P<printer_id>\d+)/test/$', 'printer_test_print'),
     url(r'^manager/printer/(?P<printer_id>\d+)/width/set/(?P<number>\d+)/$', 'printer_set_width'),
+
     url(r'^manager/users/$', 'users'),
     url(r'^manager/users/new/$', 'users_new'),
     url(r'^manager/users/(?P<user_id>\d+)/passwd/$', 'users_passwd'),
@@ -110,6 +112,7 @@ urlpatterns = patterns('possum.base.views',
     url(r'^manager/users/(?P<user_id>\d+)/change/$', 'users_change'),
     url(r'^manager/users/(?P<user_id>\d+)/perm/(?P<codename>p\d+)/$', 'users_change_perm'),
 
+    url(r'^manager/rapports/$', 'rapports'),
 )
 
 urlpatterns += patterns('',

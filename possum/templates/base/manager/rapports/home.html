@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block content %}
+
+<ul id="back">
+<li onclick="window.location='/manager/'">Retour</li>
+</ul>
+</br></br></br>
+
+<h1>Rapports</h1>
+<ul id="categories">
+    <li>Nb factures: {{nb_invoices}}</li>
+    <li>Total TTC: {{total_ttc}}€</li>
+    {% for vat in vats %}
+    <li>TVA {{vat}}: €</li>
+    {% endfor %}
+<li>Envoyer par mail</li>
+<li>Imprimer</li>
+</ul>
+
+<h2>Restauration</h2>
+
+<h2>Bar</h2>
+
+<h2>Categories</h2>
+
+<p>accès rapide au rapport journalier/mensuel avec option pour imprimer ou envoie par mail</p>
+
+{% endblock %}
+
