@@ -484,11 +484,13 @@ class Facture(models.Model):
             return False
 
     def est_un_repas(self):
-        """Est ce que la facture contient un element compris dans les
-        categories entrees, plats, desserts ou formules
+        """Est ce que la facture contient un element qui est
+        fabriqué en cuisine
         """
         for vendu in self.produits.iterator():
-            if vendu.produit.categorie.nom in ["Entrees", "Plats", "Formules"]:
+            if vendu.produit.categorie.made_in_kitchen:
+                return True
+            if vendu.contient.filter(produit__categorie__made_in_kitchen=True).count():
                 return True
         return False
 
