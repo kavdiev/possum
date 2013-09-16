@@ -1189,6 +1189,9 @@ def bill_payment_count(request, bill_id, type_id, left, right):
 def bill_payment(request, bill_id, type_id=-1, count=-1, left=0, right=0):
     data = get_user(request)
     bill = get_object_or_404(Facture, pk=bill_id)
+    if bill.restant_a_payer == 0:
+        messages.add_message(request, messages.ERROR, "Il n'y a rien à payer.")
+        return HttpResponseRedirect('/bill/%s/' % bill.id)
     data['bill_id'] = bill_id
     data['type_payments'] = PaiementType.objects.all()
     data['menu_bills'] = True
