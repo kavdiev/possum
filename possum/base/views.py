@@ -1135,8 +1135,6 @@ def bill_payment_save(request, bill_id, type_id, left, right, count):
     """Enregistre le paiement
     """
     data = get_user(request)
-    data['menu_bills'] = True
-    data['bill_id'] = bill_id
     type_payment = get_object_or_404(PaiementType, pk=type_id)
     bill = get_object_or_404(Facture, pk=bill_id)
     montant = "%s.%s" % (left, right)
@@ -1146,7 +1144,11 @@ def bill_payment_save(request, bill_id, type_id, left, right, count):
         result = bill.add_payment(type_payment, montant)
     if not result:
         messages.add_message(request, messages.ERROR, "Le paiement n'a pu être enregistré.")
-    return HttpResponseRedirect('/bill/%s/' % bill_id)
+    if bill.saved_in_stats:
+        messages.add_message(request, messages.SUCCESS, "La facture a été soldée.")
+        return HttpResponseRedirect('/bills/')
+    else:
+        return HttpResponseRedirect('/bill/%s/' % bill_id)
 
 @permission_required('base.p3')
 def bill_payment_set(request, bill_id, type_id, left, right, count, part="left"):

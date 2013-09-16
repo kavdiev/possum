@@ -469,6 +469,8 @@ class Facture(models.Model):
                 self.restant_a_payer -= monnaie.montant
             self.restant_a_payer -= paiement.montant
             self.save()
+            # if needed, update stats
+            self.update_stats()
             return True
         else:
             logging.debug("pas de produit, donc rien n'a payer")
@@ -661,123 +663,131 @@ class Facture(models.Model):
             logging.warning("la facture n'a pas de date_creation")
             return None
 
-    def maj_stats_avec_nouvelles_factures(self):
-        """Calcule les stats pour toutes les nouvelles factures
-        soldées."""
-        selection = Facture.objects.filter(saved_in_stats=False)
-        logging.info("parcours des factures")
-        for facture in selection.iterator():
-            facture.maj_stats()
+    def update_common_stats(self, date):
+        """Update common stats
+        nb_invoices : number of invoices
+        total_ttc   : total
+        ID_vat_only : VAT part only for each vat
+        ID_vat_ttc  : VAT total (HT+VAT) for each vat
+        """
+        logtype = LogType.objects.get_or_create(nom="nb_invoices")[0]
+        stat = StatsJourGeneral.objects.get_or_create(date=date, type=logtype)[0]
+        stat.valeur += 1
+        stat.save()
+        logtype = LogType.objects.get_or_create(nom="total_ttc")[0]
+        stat = StatsJourGeneral.objects.get_or_create(date=date, type=logtype)[0]
+        stat.valeur += self.total_ttc
+        stat.save()
+        for vatonbill in self.vats.all():
+            logtype = LogType.objects.get_or_create(nom="%s_vat_only" % vatonbill.vat.id)[0]
+            stat = StatsJourGeneral.objects.get_or_create(date=date, type=logtype)[0]
+            stat.valeur += vatonbill.total
+            stat.save()
+            logtype = LogType.objects.get_or_create(nom="%s_vat_ttc" % vatonbill.vat.id)[0]
+            stat = StatsJourGeneral.objects.get_or_create(date=date, type=logtype)[0]
+            stat.valeur += vatonbill.total
+            stat.save()
+            
+    def update_products_stats(self, date):
+        """Update stats on products, for each:
+        nb     : how many
+        valeur : total_ht
+        """
+        for vendu in self.produits.iterator():
+            # produit
+            stat = StatsJourProduit.objects.get_or_create(date=date, produit=vendu.produit)[0]
+            stat.valeur += vendu.prix
+            stat.nb += 1
+            stat.save()
+            for sous_vendu in vendu.contient.iterator():
+                # il n'y a pas de CA donc on ne le compte pas
+                stat = StatsJourProduit.objects.get_or_create(date=date, produit=sous_vendu.produit)[0]
+                stat.nb += 1
+                stat.save()
+                # categorie
+                stat = StatsJourCategorie.objects.get_or_create(date=date, categorie=sous_vendu.produit.categorie)[0]
+                stat.nb += 1
+                stat.save()
+            # categorie
+            stat = StatsJourCategorie.objects.get_or_create(date=date, categorie=vendu.produit.categorie)[0]
+            stat.valeur += vendu.prix
+            stat.nb += 1
+            stat.save()
 
+    def update_guests_stats(self, date):
+        """Update stats on guests, for each:
+        nb_guests        : how many people
+        guest_average    : average TTC by guest
+        guests_total_ttc : total TTC for guests
+        """
+        logtype = LogType.objects.get_or_create(nom="nb_guests")[0]
+        stat = StatsJourGeneral.objects.get_or_create(date=date, type=logtype)[0]
+        if self.couverts == 0:
+            # if not, we try to find a number
+            self.couverts = self.guest_couverts()
+            self.save()
+        stat.valeur += self.couverts
+        stat.save()
+        nb_guests = stat.valeur
+        logtype = LogType.objects.get_or_create(nom="guests_total_ttc")[0]
+        stat = StatsJourGeneral.objects.get_or_create(date=date, type=logtype)[0]
+        stat.valeur += self.total_ttc
+        stat.save()
+        total_ttc = stat.valeur
+        logtype = LogType.objects.get_or_create(nom="guest_average")[0]
+        stat = StatsJourGeneral.objects.get_or_create(date=date, type=logtype)[0]
+        if nb_guests:
+            stat.valeur = total_ttc / nb_guests
+        else:
+            stat.valeur = 0
+        stat.save()
 
-    def maj_stats(self):
+    def update_bar_stats(self, date):
+        """Update stats on bar, for each:
+        nb_bar        : how many invoices
+        bar_average   : average TTC by invoice
+        bar_total_ttc : total TTC for bar activity
+        """
+        logtype = LogType.objects.get_or_create(nom="nb_bar")[0]
+        stat = StatsJourGeneral.objects.get_or_create(date=date, type=logtype)[0]
+        stat.valeur += 1
+        stat.save()
+        nb_bar = stat.valeur
+        logtype = LogType.objects.get_or_create(nom="bar_total_ttc")[0]
+        stat = StatsJourGeneral.objects.get_or_create(date=date, type=logtype)[0]
+        stat.valeur += self.total_ttc
+        stat.save()
+        total_ttc = stat.valeur
+        logtype = LogType.objects.get_or_create(nom="bar_average")[0]
+        stat = StatsJourGeneral.objects.get_or_create(date=date, type=logtype)[0]
+        if nb_bar:
+            stat.valeur = total_ttc / nb_bar
+        else:
+            stat.valeur = 0
+        stat.save()
+
+    def update_payments_stats(self, date):
+        for paiement in self.paiements.iterator():
+            stat = StatsJourPaiement.objects.get_or_create(date=date, paiement=paiement.type)[0]
+            stat.valeur += paiement.montant
+            if paiement.nb_tickets > 0:
+                stat.nb += paiement.nb_tickets
+            else:
+                stat.nb += 1
+            stat.save()
+
+    def update_stats(self):
         """Calcule les statistiques pour cette facture
         si elle est soldée"""
-        try:
-            nb_factures = LogType.objects.get(nom="nb_factures")
-            nb_couverts = LogType.objects.get(nom="nb_couverts")
-            nb_bar = LogType.objects.get(nom="nb_bar")
-            ca = LogType.objects.get(nom="ca")
-            tva_alcool = LogType.objects.get(nom="tva_alcool")
-            tva_normal = LogType.objects.get(nom="tva_normal")
-            montant_alcool = LogType.objects.get(nom="montant_alcool")
-            montant_normal = LogType.objects.get(nom="montant_normal")
-            ca_resto = LogType.objects.get(nom="ca_resto")
-            ca_bar = LogType.objects.get(nom="ca_bar")
-            tm_bar = LogType.objects.get(nom="tm_bar")
-            tm_resto = LogType.objects.get(nom="tm_resto")
-        except LogType.DoesNotExist:
-            logging.warning("il manque un type, abandon")
-            return
-
         if self.est_soldee():
             date = self.get_working_date()
-            stats = StatsJourGeneral.objects.get_or_create(date=date, type=nb_factures)[0]
-            stats.valeur += 1
-            stats.save()
-            tmp_montant = self.get_montant()
-            stats = StatsJourGeneral.objects.get_or_create(date=date, type=ca)[0]
-            stats.valeur += tmp_montant
-            stats.save()
-            stats = StatsJourGeneral.objects.get_or_create(date=date, type=tva_alcool)[0]
-            stats.valeur += self.getTvaAlcool()
-            stats.save()
-            stats = StatsJourGeneral.objects.get_or_create(date=date, type=tva_normal)[0]
-            stats.valeur += self.getTvaNormal()
-            stats.save()
-            stats = StatsJourGeneral.objects.get_or_create(date=date, type=montant_alcool)[0]
-            stats.valeur += self.montant_alcool
-            stats.save()
-            stats = StatsJourGeneral.objects.get_or_create(date=date, type=montant_normal)[0]
-            stats.valeur += self.montant_normal
-            stats.save()
+            self.update_common_stats(date)
+            self.update_products_stats(date)
             if self.est_un_repas():
-                # nb_couverts
-                stats = StatsJourGeneral.objects.get_or_create(date=date, type=nb_couverts)[0]
-                if self.couverts == 0:
-                    self.couverts = self.guest_couverts()
-                    self.save()
-                stats.valeur += self.couverts
-                tmp_couverts = stats.valeur
-                stats.save()
-                # ca_resto
-                stats = StatsJourGeneral.objects.get_or_create(date=date, type=ca_resto)[0]
-                stats.valeur += tmp_montant
-                tmp_ca = stats.valeur
-                stats.save()
-                # tm_resto
-                stats = StatsJourGeneral.objects.get_or_create(date=date, type=tm_resto)[0]
-                if tmp_couverts == 0:
-                    stats.valeur = 0
-                else:
-                    stats.valeur = tmp_ca / tmp_couverts
-                stats.save()
+                self.update_guests_stats(date)
             else:
-                # nb_bar
-                stats = StatsJourGeneral.objects.get_or_create(date=date, type=nb_bar)[0]
-                stats.valeur += 1
-                tmp_couverts = stats.valeur
-                stats.save()
-                # ca_bar
-                stats = StatsJourGeneral.objects.get_or_create(date=date, type=ca_bar)[0]
-                stats.valeur += tmp_montant
-                tmp_ca = stats.valeur
-                stats.save()
-                # tm_bar
-                stats = StatsJourGeneral.objects.get_or_create(date=date, type=tm_bar)[0]
-                if tmp_couverts == 0:
-                    stats.valeur = 0
-                else:
-                    stats.valeur = tmp_ca / tmp_couverts
-                stats.save()
-            for vendu in self.produits.iterator():
-                # produit
-                stats = StatsJourProduit.objects.get_or_create(date=date, produit=vendu.produit)[0]
-                stats.valeur += vendu.prix
-                stats.nb += 1
-                stats.save()
-                for sous_vendu in vendu.contient.iterator():
-                    # il n'y a pas de CA donc on ne le compte pas
-                    stats = StatsJourProduit.objects.get_or_create(date=date, produit=sous_vendu.produit)[0]
-                    stats.nb += 1
-                    stats.save()
-                    # categorie
-                    stats = StatsJourCategorie.objects.get_or_create(date=date, categorie=sous_vendu.produit.categorie)[0]
-                    stats.nb += 1
-                    stats.save()
-                # categorie
-                stats = StatsJourCategorie.objects.get_or_create(date=date, categorie=vendu.produit.categorie)[0]
-                stats.valeur += vendu.prix
-                stats.nb += 1
-                stats.save()
-            for paiement in self.paiements.iterator():
-                stats = StatsJourPaiement.objects.get_or_create(date=date, paiement=paiement.type)[0]
-                stats.valeur += paiement.montant
-                if paiement.nb_tickets > 0:
-                    stats.nb += paiement.nb_tickets
-                else:
-                    stats.nb += 1
-                stats.save()
+                self.update_bar_stats(date)
+            self.update_payments_stats(date)
             self.saved_in_stats = True
             self.save()
 
