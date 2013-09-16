@@ -303,357 +303,142 @@ div.button
     color:#DD1111;
 }
 
-ul
-{
-}
-
-li
-{
-    text-align:center;
-}
-
-/* list of bills */
-#bills {
+ul {
     list-style:none; /* inutile pour safari et firefox, mais pas pour IE */
 }
-#bills li {
+li {
     float:left; /* c'est cette balise qui fait l'effet tableau*/
+    width:200px;
+    height:40px;
+    background:#eee;
+    margin:5px;
+    overflow:hidden; /* permet de limiter l'affichage du contenu au dimension du contenant */
+    padding:5px;
+    text-align:center;
+}
+#bills li {
     width:140px;
     height:70px;
-    background:#eee;
-    margin:5px;
-    overflow:hidden; /* permet de limiter l'affichage du contenu au dimension du contenant */
-    padding:5px;
-}
-
-#product_info {
-    list-style:none;
 }
 #product_info li {
-    float:left; /* c'est cette balise qui fait l'effet tableau*/
     width:140px;
     height:40px;
-    background:#eee;
-    margin:5px;
-    overflow:hidden; /* permet de limiter l'affichage du contenu au dimension du contenant */
-    padding:5px;
 }
-#product_info li.critical { 
+li.critical { 
     background-color: #FF0000;
 }
-#product_info li.disabled { 
+li.disabled { 
     background-color: #FF0000;
 }
-#product_info li.enabled { 
+li.enabled { 
     background-color: #00FF00;
 }
-#printer {
-    list-style:none;
+li.warning {
+    background-color: #f8bd30;
 }
 #printer li {
-    float:left; /* c'est cette balise qui fait l'effet tableau*/
     width:140px;
     height:40px;
-    background:#eee;
-    margin:5px;
-    overflow:hidden; /* permet de limiter l'affichage du contenu au dimension du contenant */
-    padding:5px;
-}
-#printer li.disabled { 
-    background-color: #FF0000;
-}
-#printer li.enabled { 
-    background-color: #00FF00;
-}
-#printers {
-    list-style:none;
 }
 #printers li {
-    float:left;
     width:220px;
     height:40px;
-    background:#eee;
-    margin:5px;
-    overflow:hidden;
-    padding:5px;
-}
-#manager {
-    list-style:none;
 }
 #manager li {
-    float:left; /* c'est cette balise qui fait l'effet tableau*/
     width:140px;
     height:40px;
-    background:#eee;
-    margin:5px;
-    overflow:hidden; /* permet de limiter l'affichage du contenu au dimension du contenant */
-    padding:5px;
-}
-#category_info {
-    list-style:none;
 }
 #category_info li {
-    float:left; /* c'est cette balise qui fait l'effet tableau*/
     width:140px;
     height:40px;
-    background:#eee;
-    margin:5px;
-    overflow:hidden; /* permet de limiter l'affichage du contenu au dimension du contenant */
-    padding:5px;
-}
-#category_info li.critical { 
-    background-color: #FF0000;
-}
-#category_info li.disabled { 
-    background-color: #FF0000;
-}
-#category_info li.enabled { 
-    background-color: #00FF00;
-}
-#sold_info {
-    list-style:none;
 }
 #sold_info li {
-    float:left; /* c'est cette balise qui fait l'effet tableau*/
     width:140px;
     height:40px;
-    background:#eee;
-    margin:5px;
-    overflow:hidden; /* permet de limiter l'affichage du contenu au dimension du contenant */
-    padding:5px;
-}
-#sold_info li.critical { 
-    background-color: #FF0000;
-}
-#back {
-    list-style:none;
 }
 #back li {
-    float:left; /* c'est cette balise qui fait l'effet tableau*/
     width:140px;
     height:40px;
-    background:#eee;
-    margin:5px;
-    overflow:hidden; /* permet de limiter l'affichage du contenu au dimension du contenant */
-    padding:5px;
-}
-#save_payment {
-    list-style:none;
 }
 #save_payment li {
-    float:left; /* c'est cette balise qui fait l'effet tableau*/
     width:220px;
     height:40px;
-    background:#eee;
-    margin:5px;
-    overflow:hidden; /* permet de limiter l'affichage du contenu au dimension du contenant */
-    padding:5px;
-}
-#lcd_save {
-    list-style:none;
 }
 #lcd_save li {
-    float:left; /* c'est cette balise qui fait l'effet tableau*/
     width:220px;
     height:40px;
-    background:#eee;
     margin:0px;
-    overflow:hidden; /* permet de limiter l'affichage du contenu au dimension du contenant */
     padding:0px;
 }
-#lcd {
-    list-style:none;
-}
 #lcd li {
-    float:left; /* c'est cette balise qui fait l'effet tableau*/
     width:30px;
     height:40px;
     background:#000;
     margin:0px;
-    overflow:hidden; /* permet de limiter l'affichage du contenu au dimension du contenant */
     padding:0px;
 }
-#calc {
-    list-style:none;
-}
 #calc li {
-    float:left; /* c'est cette balise qui fait l'effet tableau*/
     width:120px;
     height:40px;
-    background:#eee;
-    margin:5px;
-    overflow:hidden; /* permet de limiter l'affichage du contenu au dimension du contenant */
-    padding:5px;
 }
 #payment_tickets {
     list-style:none;
 }
 #payment_tickets li {
-    float:left; /* c'est cette balise qui fait l'effet tableau*/
     width:220px;
     height:40px;
-    background:#eee;
-    margin:5px;
-    overflow:hidden; /* permet de limiter l'affichage du contenu au dimension du contenant */
-    padding:5px;
-}
-#payment_tickets li.critical { 
-    background-color: #FF0000;
-}
-#type_payment {
-    list-style:none;
 }
 #type_payment li {
-    float:left; /* c'est cette balise qui fait l'effet tableau*/
     width:140px;
     height:40px;
-    background:#eee;
-    margin:5px;
-    overflow:hidden; /* permet de limiter l'affichage du contenu au dimension du contenant */
-    padding:5px;
-}
-#type_payment li.enabled { 
-    background-color: #00FF00;
-}
-#bill_info {
-    list-style:none;
 }
 #bill_info li {
-    float:left; /* c'est cette balise qui fait l'effet tableau*/
     width:140px;
     height:40px;
-    background:#eee;
-    margin:5px;
-    overflow:hidden; /* permet de limiter l'affichage du contenu au dimension du contenant */
-    padding:5px;
-}
-#bill_info li.critical { 
-    background-color: #FF0000;
-}
-#bill_info li.warning {
-    background-color: #f8bd30;
-}
-#bill_info li.disabled { 
-    background-color: #FF0000;
-}
-#bill_info li.enabled { 
-    background-color: #00FF00;
-}
-/* list of tables */
-#tables {
-    list-style:none; /* inutile pour safari et firefox, mais pas pour IE */
 }
 #tables li {
-    float:left; /* c'est cette balise qui fait l'effet tableau*/
     width:30px;
     height:30px;
-    background:#eee;
-    margin:5px;
-    overflow:hidden; /* permet de limiter l'affichage du contenu au dimension du contenant */
-    padding:5px;
-}
-#tables li.warning {
-    background-color: #f8bd30;
-}
-#cookings {
-    list-style:none; /* inutile pour safari et firefox, mais pas pour IE */
 }
 #cookings li {
-    float:left; /* c'est cette balise qui fait l'effet tableau*/
     width:200px;
     height:40px;
-    background:#eee;
-    margin:5px;
-    overflow:hidden; /* permet de limiter l'affichage du contenu au dimension du contenant */
-    padding:5px;
-}
-#vats {
-    list-style:none; /* inutile pour safari et firefox, mais pas pour IE */
 }
 #vats li {
-    float:left; /* c'est cette balise qui fait l'effet tableau*/
     width:200px;
     height:40px;
-    background:#eee;
-    margin:5px;
-    overflow:hidden; /* permet de limiter l'affichage du contenu au dimension du contenant */
-    padding:5px;
-}
-/* list of categories */
-#categories {
-    list-style:none; /* inutile pour safari et firefox, mais pas pour IE */
 }
 #categories li {
-    float:left; /* c'est cette balise qui fait l'effet tableau*/
     width:200px;
     height:40px;
-    background:#eee;
-    margin:5px;
-    overflow:hidden; /* permet de limiter l'affichage du contenu au dimension du contenant */
-    padding:5px;
-}
-/* list of products sold */
-#products_sold {
-    list-style:none; /* inutile pour safari et firefox, mais pas pour IE */
 }
 #products_sold li {
-    float:left; /* c'est cette balise qui fait l'effet tableau*/
     width:200px;
     height:40px;
-    background:#eee;
-    margin:5px;
-    overflow:hidden; /* permet de limiter l'affichage du contenu au dimension du contenant */
-    padding:5px;
-}
-/* list of paiements */
-#paiements {
-    list-style:none; /* inutile pour safari et firefox, mais pas pour IE */
 }
 #paiements li {
-    float:left; /* c'est cette balise qui fait l'effet tableau*/
     width:200px;
     height:30px;
-    background:#eee;
-    margin:5px;
-    overflow:hidden; /* permet de limiter l'affichage du contenu au dimension du contenant */
-    padding:5px;
-}
-/* list of products */
-#products {
-    list-style:none; /* inutile pour safari et firefox, mais pas pour IE */
 }
 #products li {
-    float:left; /* c'est cette balise qui fait l'effet tableau*/
     width:200px;
     height:30px;
-    background:#eee;
-    margin:5px;
-    overflow:hidden; /* permet de limiter l'affichage du contenu au dimension du contenant */
-    padding:5px;
-}
-#printer_width {
-    list-style:none;
 }
 #printer_width li {
-    float:left;
     width:30px;
     height:30px;
-    background:#eee;
-    margin:5px;
-    overflow:hidden;
-    padding:5px;
-}
-#couverts {
-    list-style:none;
 }
 #couverts li {
-    float:left;
     width:30px;
     height:30px;
-    background:#eee;
-    margin:5px;
-    overflow:hidden;
-    padding:5px;
+}
+#perms li {
+    width:250px;
+    height:80px;
+}
+#credits li {
+    width:220px;
+    height:60px;
 }
 .affichage_sans_float {
     clear: both;

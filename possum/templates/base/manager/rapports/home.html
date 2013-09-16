@@ -7,23 +7,49 @@
 </br></br></br>
 
 <h1>Rapports</h1>
-<ul id="categories">
+<ul id="rapports">
     <li>Nb factures: {{nb_invoices}}</li>
     <li>Total TTC: {{total_ttc}}€</li>
     {% for vat in vats %}
-    <li>TVA {{vat}}: €</li>
+    <li>{{vat}}€</li>
     {% endfor %}
 <li>Envoyer par mail</li>
 <li>Imprimer</li>
 </ul>
+</br></br></br>
 
 <h2>Restauration</h2>
+<ul id="rapports">
+    <li>Nb de couverts: {{nb_guests}}</li>
+    <li>Total TTC: {{guests_total_ttc}}€</li>
+    <li>Ticket moyen par couvert: {{guest_average}}€</li>
+</ul>
+</br></br></br>
 
 <h2>Bar</h2>
+<ul id="rapports">
+    <li>Nb factures bar: {{nb_bar}}</li>
+    <li>Total TTC: {{bar_total_ttc}}€</li>
+    <li>Ticket moyen par facture: {{bar_average}}€</li>
+</ul>
+</br></br></br>
+
+<h2>Paiements</h2>
+<ul id="rapports">
+    {% for payment in payments %}
+    <li>{{payment}}€</li>
+    {% endfor %}
+</ul>
+</br></br></br>
 
 <h2>Categories</h2>
+<ul id="rapports">
+    {% for category in categories %}
+    <li style="background:{{category.couleur.web}};">{{category.nom}} : {{category.nb}}</li>
+    {% endfor %}
+</ul>
+</br></br></br>
 
-<p>accès rapide au rapport journalier/mensuel avec option pour imprimer ou envoie par mail</p>
 
 {% endblock %}
 

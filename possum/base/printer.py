@@ -84,13 +84,15 @@ class Printer(models.Model):
         except:
             return False
 
-    def print_list(self, list_to_print, name):
+    def print_list(self, list_to_print, name, with_header=False):
         path = "%s/%s-%s.txt" % (settings.PATH_TICKET, self.id, name)
         fd = open(path, "w")
-        fd.write(self.header)
+        if with_header:
+            fd.write(self.header)
         for line in list_to_print:
             fd.write("%s\n" % line)
-        fd.write(self.footer)
+        if with_header:
+            fd.write(self.footer)
         fd.close()
         result = self.print_file(path)
         os.remove(path)

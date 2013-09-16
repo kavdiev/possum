@@ -672,26 +672,26 @@ class Facture(models.Model):
         ID_vat_only : VAT part only for each vat
         ID_vat_ttc  : VAT total (HT+VAT) for each vat
         """
-        logtype, created = LogType.objects.get_or_create(nom="nb_invoices")[0]
+        logtype, created = LogType.objects.get_or_create(nom="nb_invoices")
         if created:
             logtype.save()
         stat = StatsJourGeneral.objects.get_or_create(date=date, type=logtype)[0]
         stat.valeur += 1
         stat.save()
-        logtype, created = LogType.objects.get_or_create(nom="total_ttc")[0]
+        logtype, created = LogType.objects.get_or_create(nom="total_ttc")
         if created:
             logtype.save()
         stat = StatsJourGeneral.objects.get_or_create(date=date, type=logtype)[0]
         stat.valeur += self.total_ttc
         stat.save()
         for vatonbill in self.vats.all():
-            logtype, created = LogType.objects.get_or_create(nom="%s_vat_only" % vatonbill.vat.id)[0]
+            logtype, created = LogType.objects.get_or_create(nom="%s_vat_only" % vatonbill.vat.id)
             if created:
                 logtype.save()
             stat = StatsJourGeneral.objects.get_or_create(date=date, type=logtype)[0]
             stat.valeur += vatonbill.total
             stat.save()
-            logtype, created = LogType.objects.get_or_create(nom="%s_vat_ttc" % vatonbill.vat.id)[0]
+            logtype, created = LogType.objects.get_or_create(nom="%s_vat_ttc" % vatonbill.vat.id)
             if created:
                 logtype.save()
             stat = StatsJourGeneral.objects.get_or_create(date=date, type=logtype)[0]
@@ -730,7 +730,7 @@ class Facture(models.Model):
         guest_average    : average TTC by guest
         guests_total_ttc : total TTC for guests
         """
-        logtype, created = LogType.objects.get_or_create(nom="nb_guests")[0]
+        logtype, created = LogType.objects.get_or_create(nom="nb_guests")
         if created:
             logtype.save()
         stat = StatsJourGeneral.objects.get_or_create(date=date, type=logtype)[0]
@@ -741,14 +741,14 @@ class Facture(models.Model):
         stat.valeur += self.couverts
         stat.save()
         nb_guests = stat.valeur
-        logtype, created = LogType.objects.get_or_create(nom="guests_total_ttc")[0]
+        logtype, created = LogType.objects.get_or_create(nom="guests_total_ttc")
         if created:
             logtype.save()
         stat = StatsJourGeneral.objects.get_or_create(date=date, type=logtype)[0]
         stat.valeur += self.total_ttc
         stat.save()
         total_ttc = stat.valeur
-        logtype, created = LogType.objects.get_or_create(nom="guest_average")[0]
+        logtype, created = LogType.objects.get_or_create(nom="guest_average")
         if created:
             logtype.save()
         stat = StatsJourGeneral.objects.get_or_create(date=date, type=logtype)[0]
@@ -764,21 +764,21 @@ class Facture(models.Model):
         bar_average   : average TTC by invoice
         bar_total_ttc : total TTC for bar activity
         """
-        logtype, created = LogType.objects.get_or_create(nom="nb_bar")[0]
+        logtype, created = LogType.objects.get_or_create(nom="nb_bar")
         if created:
             logtype.save()
         stat = StatsJourGeneral.objects.get_or_create(date=date, type=logtype)[0]
         stat.valeur += 1
         stat.save()
         nb_bar = stat.valeur
-        logtype, created = LogType.objects.get_or_create(nom="bar_total_ttc")[0]
+        logtype, created = LogType.objects.get_or_create(nom="bar_total_ttc")
         if created:
             logtype.save()
         stat = StatsJourGeneral.objects.get_or_create(date=date, type=logtype)[0]
         stat.valeur += self.total_ttc
         stat.save()
         total_ttc = stat.valeur
-        logtype, created = LogType.objects.get_or_create(nom="bar_average")[0]
+        logtype, created = LogType.objects.get_or_create(nom="bar_average")
         if created:
             logtype.save()
         stat = StatsJourGeneral.objects.get_or_create(date=date, type=logtype)[0]
@@ -833,6 +833,6 @@ class Facture(models.Model):
                     vatonbill.vat.tax, vatonbill.total))
         ticket.append("=======================================")
         for printer in Printer.objects.filter(billing=True):
-            result = printer.print_list(ticket, "bill%s" % self.id)
+            result = printer.print_list(ticket, "bill%s" % self.id, with_header=True)
         return result
 
