@@ -28,7 +28,7 @@ from possum.base.payment import PaiementType
 from django.contrib.auth.models import User
 import os
 from possum.base.stats import StatsJourGeneral, StatsJourPaiement, \
-        StatsJourProduit, StatsJourCategorie
+        StatsJourProduit, StatsJourCategorie, get_working_day
 from possum.base.category import Categorie
 from possum.base.printer import Printer
 from possum.base.log import LogType
@@ -651,20 +651,6 @@ class Facture(models.Model):
                 continue
         return texte
 
-    def get_working_date(self):
-        """Retourne la journee de travail officiel
-        (qui fini a 5h du matin)"""
-        tmp = self.date_creation
-        if tmp:
-            if tmp.hour < 5:
-                # jour de travail precedent
-                return tmp - datetime.timedelta(days=1)
-            else:
-                return tmp
-        else:
-            logging.warning("la facture n'a pas de date_creation")
-            return None
-
     def update_common_stats(self, date):
         """Update common stats
         nb_invoices : number of invoices
@@ -802,7 +788,7 @@ class Facture(models.Model):
         """Calcule les statistiques pour cette facture
         si elle est soldée"""
         if self.est_soldee():
-            date = self.get_working_date()
+            date = get_working_day(self.date_creation)
             self.update_common_stats(date)
             self.update_products_stats(date)
             if self.est_un_repas():

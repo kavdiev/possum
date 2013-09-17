@@ -23,6 +23,7 @@ import logging
 from possum.base.stats import StatsJourProduit, StatsJourCategorie
 from possum.base.stats import StatsJourGeneral
 from possum.base.stats import StatsJourPaiement
+from possum.base.stats import get_current_working_day
 from possum.base.bill import Facture
 from possum.base.models import Printer
 from possum.base.product import Produit, ProduitVendu
@@ -46,7 +47,6 @@ from django.conf import settings
 from django.contrib import messages
 from django.utils.functional import wraps
 import os
-import datetime
 
 # Création des répertoires obligatoires
 def create_default_directory():
@@ -631,53 +631,31 @@ def rapports(request):
     alors qu'il n'y a pas encore eu de facture ce jour"""
     data = get_user(request)
     data['menu_manager'] = True
-    now = datetime.datetime.now()
-    if now.hour < 5:
-        date = now - datetime.timedelta(days=1)
-    else:
-        data = now
+    date = get_current_working_day()
     for name in ['nb_invoices', 'total_ttc']:
-        try:
-            data[name] = StatsJourGeneral.objects.get(date=date, type__nom=name).valeur
-        except:
-            data[name] = 0.0
+        data[name] = StatsJourGeneral().get_data(name, date)
     data['vats'] = []
     for vat in VAT.objects.all():
         name = "%s_vat_only" % vat.id
-        try:
-            valeur = StatsJourGeneral.objects.get(date=date, type__nom=name).valeur
-        except:
-            valeur = 0.0
+        valeur = StatsJourGeneral().get_data(name, date)
         data['vats'].append("TVA % 6.2f%% : %.2f" % (vat.tax, valeur))
     # restaurant
     for name in ['nb_guests', 'guest_average', 'guests_total_ttc']:
-        try:
-            data[name] = StatsJourGeneral.objects.get(date=date, type__nom=name).valeur
-        except:
-            data[name] = 0.0
+        data[name] = StatsJourGeneral().get_data(name, date)
     # bar
     for name in ['nb_bar', 'bar_average', 'bar_total_ttc']:
-        try:
-            data[name] = StatsJourGeneral.objects.get(date=date, type__nom=name).valeur
-        except:
-            data[name] = 0.0
+        data[name] = StatsJourGeneral().get_data(name, date)
     # categories
     data['categories'] = []
     for category in Categorie.objects.all():
-        try:
-            valeur = StatsJourCategorie.objects.get(date=date, categorie=category).nb
-        except:
-            valeur = 0
-        category.nb = valeur
+        category.nb = StatsJourCategorie().get_data(category, date)
         data['categories'].append(category)
     # payments
     data['payments'] = []
     for payment_type in PaiementType.objects.all():
-        try:
-            valeur = StatsJourPaiement.objects.get(date=date, paiement=payment_type).valeur
-        except:
-            valeur = 0.0
-        data['payments'].append("%s : %.2f" % (payment_type.nom, valeur))
+        data['payments'].append("%s : %.2f" % (
+                payment_type.nom, 
+                StatsJourPaiement().get_data(payment_type, date)))
     return render_to_response('base/manager/rapports/home.html',
                                 data,
                                 context_instance=RequestContext(request))

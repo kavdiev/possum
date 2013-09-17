@@ -25,6 +25,22 @@ from possum.base.product import Produit
 from possum.base.payment import PaiementType
 from decimal import Decimal
 import logging
+import datetime
+
+def get_working_day(date):
+    """Retourne la journee de travail officiel
+    (qui fini a 5h du matin)
+    date de type datetime.datetime.now()
+    """
+    if date.hour < 5:
+        # jour de travail precedent
+        return date - datetime.timedelta(days=1)
+    else:
+        return date
+
+def get_current_working_day():
+    now = datetime.datetime.now()
+    return get_working_day(now)
 
 class StatsJour(models.Model):
     """Modele pour les classes de statistiques."""
@@ -34,14 +50,6 @@ class StatsJour(models.Model):
     class Meta:
         get_latest_by = 'date'
         abstract = True
-
-class StatsJourGeneral(StatsJour):
-    """Les stats concernent un type
-    (nb_couverts, nb_facture, nb_bar, ca_resto, ca_bar)"""
-    type = models.ForeignKey('LogType',
-                             null=True,
-                             blank=True,
-                             related_name="statsjour-logtype")
 
     def get_data(self, nom, date):
         """Cherche dans les stats, une donnee au nom et a la date
@@ -100,6 +108,15 @@ class StatsJourGeneral(StatsJour):
             return Decimal("0")
 
 
+class StatsJourGeneral(StatsJour):
+    """Les stats concernent un type
+    (nb_couverts, nb_facture, nb_bar, ca_resto, ca_bar)"""
+    type = models.ForeignKey('LogType',
+                             null=True,
+                             blank=True,
+                             related_name="statsjour-logtype")
+
+
 class StatsJourPaiement(StatsJour):
     """Les stats concernent les paiements :
     - nombre de paiements (ou nombre de tickets pour TR et ANCV)
@@ -110,6 +127,16 @@ class StatsJourPaiement(StatsJour):
                                 blank=True,
                                 related_name="statsjour-paiement")
     nb = models.PositiveIntegerField(default=0)
+
+    def get_data(self, payment, date):
+        try:
+            stats = StatsJourPaiement.objects.get(date=date, paiement=payment).valeur
+            if stats:
+                return stats
+            else:
+                return Decimal("0")
+        except StatsJourPaiement.DoesNotExist:
+            return Decimal("0")
 
 class StatsJourProduit(StatsJour):
     """Les stats concernent un produit (nombre de produits vendus, CA)
@@ -128,6 +155,16 @@ class StatsJourCategorie(StatsJour):
                                   blank=True,
                                   related_name="statsjour-categorie")
     nb = models.PositiveIntegerField(default=0)
+
+    def get_data(self, category, date):
+        try:
+            stats = StatsJourCategorie.objects.get(date=date, categorie=category).nb
+            if stats:
+                return stats
+            else:
+                return 0
+        except StatsJourCategorie.DoesNotExist:
+            return 0
 
 #class StatsSemaine(models.Model):
     #"""Statistique par semaine"""
