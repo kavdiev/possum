@@ -24,7 +24,7 @@ from possum.base.stats import StatsJourProduit, StatsJourCategorie
 from possum.base.stats import StatsJourGeneral
 from possum.base.stats import StatsJourPaiement
 from possum.base.stats import get_current_working_day
-from possum.base.bill import Facture
+from possum.base.bill import Facture, Suivi
 from possum.base.models import Printer
 from possum.base.product import Produit, ProduitVendu
 from possum.base.payment import PaiementType, Paiement
@@ -89,7 +89,7 @@ def home(request):
 def kitchen(request):
     data = get_user(request)
     data['menu_kitchen'] = True
-
+    data['suivis'] = Suivi.objects.filter(facture__restant_a_payer__gt=0)
     return render_to_response('base/kitchen/view.html',
             data,
             context_instance=RequestContext(request))
@@ -965,6 +965,23 @@ def bill_new(request):
     data['menu_bills'] = True
     bill = Facture()
     bill.save()
+    return HttpResponseRedirect('/bill/%s/' % bill.id)
+
+@permission_required('base.p5')
+def bill_send_kitchen(request, bill_id):
+    """Send in the kitchen"""
+    bill = get_object_or_404(Facture, pk=bill_id)
+    if bill.table:
+        if bill.send_in_the_kitchen():
+            if bill.table:
+                msg = u"%s envoyée" % bill.table
+            else:
+                msg = u"Envoyé en cuisine"
+            messages.add_message(request, messages.SUCCESS, msg)
+        else:
+            messages.add_message(request, messages.ERROR, "Erreur dans l'envoi (imprimante ok?).")
+    else:
+        messages.add_message(request, messages.ERROR, "Vous devez choisir une table.")
     return HttpResponseRedirect('/bill/%s/' % bill.id)
 
 @permission_required('base.p5')

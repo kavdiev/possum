@@ -47,13 +47,14 @@ def remplissage(nb,  caractere,  largeur):
 
 
 class Suivi(models.Model):
-    """Suivi des etats"""
+    """Suivi des envois en cuisine:
+    category est la categorie envoyée en cuisine"""
     facture = models.ForeignKey('base.Facture', related_name="suivi-facture")
-    etat = models.ForeignKey('Etat', related_name="suivi-etat")
+    category = models.ForeignKey('Categorie', related_name="suivi-category")
     date = models.DateTimeField('depuis le', auto_now_add=True)
 
     def __unicode__(self):
-        return "Facture %s : etat %s" % (self.facture, self.etat.nom)
+        return "Facture %s: %s" % (self.facture, self.category.nom)
 
 
 class Facture(models.Model):
@@ -131,6 +132,40 @@ class Facture(models.Model):
         else:
             return None
 
+    def get_first_todolist_for_kitchen(self):
+        """Prepare la liste des produits a envoyer en cuisine
+        """
+        categories = []
+        products = {}
+        for product in self.produits.filter(sent=False):
+            for subproduct in product.contient.all():
+                # cas des menus
+                if subproduct.made_with not in categories:
+                    categories.append(subproduct.made_with)
+                if subproduct.made_with.id not in products:
+                    products[subproduct.made_with.id] = []
+                    name = subproduct.produit.nom
+                    if subproduct.produit.choix_cuisson:
+                        name += ": %s" % subproduct.cuisson
+                    products[subproduct.made_with.id].append(name)
+            else:
+                if product.made_with not in categories:
+                    categories.append(product.made_with)
+                if product.made_with.id not in products:
+                    products[product.made_with.id] = []
+                    name = product.produit.nom
+                    if product.produit.choix_cuisson:
+                        name += ": %s" % product.cuisson
+                    products[product.made_with.id].append(name)
+        categories.sort()
+        todolist = []
+        for category in categories:
+            todolist.append("***> %s" % category.nom)
+            for product in products[category.id]:
+                todolist.append(product)
+            todolist.append(" ")
+        return todolist
+
     def send_in_the_kitchen(self):
         """We send the first category available to the kitchen.
         """
@@ -146,27 +181,24 @@ class Facture(models.Model):
                 first = False
             heure = datetime.datetime.now().strftime("%H:%M")
             if first:
-                todolist.append("> Table %s : envoyé %s (%s)" % (self.table, category.nom, heure))
-                todolist.append("*> %s" % category.nom)
+                todolist.append("> Table %s : envoye %s (%s)" % (self.table, category.nom, heure))
+                products = self.get_first_todolist_for_kitchen()
+                if products:
+                    todolist += products
             else:
-                todolist.append("> Table %s : envoyé %s (%s)" % (self.table, category.nom, heure))
+                todolist.append("> Table %s : envoye %s (%s)" % (self.table, category.nom, heure))
             # les produits standards
             for product in self.produits.filter(made_with=category, sent=False):
-                if first:
-                    tmp = " %s  " % product.nom
-                    if product.produit.choix_cuisson:
-                        tmp += ": %s" % product.cuisson
-                    todolist.append(tmp)
                 product.sent = True
                 product.save()
             # les menus
             for product in self.produits.filter(contient__made_with=category, sent=False):
-                if first:
-                    todolist.append(product)
                 product.sent = True
                 product.save()
             for printer in Printer.objects.filter(kitchen=True):
                 result = printer.print_list(todolist, "kitchen%s-%s" % (self.id, category.id))
+            suivi = Suivi(category=category, facture=self)
+            suivi.save()
             return result
 
     def guest_couverts(self):

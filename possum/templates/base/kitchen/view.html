@@ -3,7 +3,18 @@
 
 <h1>Cuisine</h1>
 
-<p>À faire.</p>
+<ul id="kitchen">
+    {% for suivi in suivis %}
+    <li onclick="window.location='/bill/{{suivi.facture.id}}/'" 
+        style="background:{{suivi.category.couleur.web}};">
+        [{{suivi.date|date:'H:i'}}] 
+        {% if suivi.facture.table %}{{suivi.facture.table}}
+        {% else %}Table ?{% endif %}
+        </br>{{suivi.category.nom}}</li>
+    {% empty %}
+    <li>Aucune table en cours.</li>
+    {% endfor %}
+</ul>
 
 {% endblock %}
 
