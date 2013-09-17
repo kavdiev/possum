@@ -197,29 +197,29 @@ div.right
     margin: 10px;
     background-color: #FFFFFF;
 }
-/* messages */
-.messages {
-    list-style: none;
-}
 .info {
+    float: right;
     padding: 1em 1em 1em 1em;
     margin: 1em 5em 1em 5em;
     text-align: center;
     background-color: #00FF00;
 }
 .success {
+    float: right;
     padding: 1em 1em 1em 1em;
     margin: 1em 5em 1em 5em;
     text-align: center;
     background-color: #00FF00;
 }
 .warning {
+    float: right;
     padding: 1em 1em 1em 1em;
     margin: 1em 5em 1em 5em;
     text-align: center;
     background-color: #f8bd30;
 }
 .error {
+    float: right;
     padding: 1em 1em 1em 1em;
     margin: 1em 5em 1em 5em;
     text-align: center;
