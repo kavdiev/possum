@@ -23,6 +23,7 @@ from possum.base.log import LogType
 from possum.base.category import Categorie
 from possum.base.product import Produit
 from possum.base.payment import PaiementType
+from possum.base.vat import VAT
 from decimal import Decimal
 import logging
 import datetime
@@ -116,6 +117,21 @@ class StatsJourGeneral(StatsJour):
                              blank=True,
                              related_name="statsjour-logtype")
 
+    def get_common_data(self, date):
+        """Return les stats pour date sous forme de liste
+        """
+        result = []
+        result.append("  -- %s --" % date)
+        nb_invoices = self.get_data("nb_invoices", date)
+        total_ttc = self.get_data("total_ttc", date)
+        result.append("Total TTC (% 4d fact.): %11.2f" % (
+                nb_invoices, total_ttc))
+        for vat in VAT.objects.all():
+            tax = "TVA    % 6.2f%%:" % vat.tax
+            name = "%s_vat_only" % vat.id
+            result.append("%-20s %11.2f" % (
+                    tax, StatsJourGeneral().get_data(name, date)))
+        return result
 
 class StatsJourPaiement(StatsJour):
     """Les stats concernent les paiements :

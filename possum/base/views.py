@@ -46,6 +46,7 @@ from django.contrib.auth.models import User, UserManager, Permission
 from django.conf import settings
 from django.contrib import messages
 from django.utils.functional import wraps
+from django.core.mail import send_mail
 import os
 
 # Création des répertoires obligatoires
@@ -632,6 +633,9 @@ def rapports(request):
     data = get_user(request)
     data['menu_manager'] = True
     date = get_current_working_day()
+    data['year'] = date.year
+    data['month'] = date.month
+    data['day'] = date.day
     for name in ['nb_invoices', 'total_ttc']:
         data[name] = StatsJourGeneral().get_data(name, date)
     data['vats'] = []
@@ -659,6 +663,51 @@ def rapports(request):
     return render_to_response('base/manager/rapports/home.html',
                                 data,
                                 context_instance=RequestContext(request))
+
+@permission_required('base.p7')
+def rapports_common_day_send(request, year, month, day):
+    date = "%s-%s-%s" % (year, month, day)
+    result = StatsJourGeneral().get_common_data(date)
+    try:
+        result = StatsJourGeneral().get_common_data(date)
+    except:
+        messages.add_message(request, messages.ERROR, "Les statistiques n'ont pu être récupérées.")
+    else:
+        subject = "Rapport journalier du %s" % date
+        mail = ""
+        for line in result:
+            mail += "%s\n" % line
+        if request.user.email:
+            try:
+                send_mail(subject, mail, settings.DEFAULT_FROM_EMAIL, [request.user.email], fail_silently=False)
+            except:
+                messages.add_message(request, messages.ERROR, u"Le mail n'a pu être envoyé.")
+            else:
+                messages.add_message(request, messages.SUCCESS, u"Le mail a été envoyé à %s." % request.user.email)
+        else:
+            messages.add_message(request, messages.ERROR, u"Vous n'avez pas d'adresse mail.")
+    return HttpResponseRedirect('/manager/rapports/')
+
+@permission_required('base.p7')
+def rapports_common_day_print(request, year, month, day):
+    date = "%s-%s-%s" % (year, month, day)
+    result = StatsJourGeneral().get_common_data(date)
+    try:
+        result = StatsJourGeneral().get_common_data(date)
+    except:
+        messages.add_message(request, messages.ERROR, "Les statistiques n'ont pu être récupérées.")
+    else:
+        printers = Printer.objects.filter(billing=True)
+        if printers:
+            printer = printers[0]
+            if printer.print_list(result, "rapport_common_%s" % date):
+                messages.add_message(request, messages.SUCCESS, u"L'impression a été envoyée sur %s." % printer.name)
+            else:
+                messages.add_message(request, messages.ERROR, u"L'impression a achouée sur %s." % printer.name)
+        else:
+            messages.add_message(request, messages.ERROR, u"Aucune imprimante type 'manager' disponible.")
+    return HttpResponseRedirect('/manager/rapports/')
+
 
 @permission_required('base.p7')
 def manager(request):

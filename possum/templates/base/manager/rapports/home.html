@@ -13,8 +13,8 @@
     {% for vat in vats %}
     <li>{{vat}}€</li>
     {% endfor %}
-<li>Envoyer par mail</li>
-<li>Imprimer</li>
+<li onclick="window.location='/manager/rapports/{{year}}/{{month}}/{{day}}/common/send/'">Envoyer par mail</li>
+<li onclick="window.location='/manager/rapports/{{year}}/{{month}}/{{day}}/common/print/'">Imprimer</li>
 </ul>
 </br></br></br>
 

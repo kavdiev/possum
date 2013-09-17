@@ -113,6 +113,8 @@ urlpatterns = patterns('possum.base.views',
     url(r'^manager/users/(?P<user_id>\d+)/perm/(?P<codename>p\d+)/$', 'users_change_perm'),
 
     url(r'^manager/rapports/$', 'rapports'),
+    url(r'^manager/rapports/(?P<year>\d{4})/(?P<month>\d+)/(?P<day>\d+)/common/print/$', 'rapports_common_day_print'),
+    url(r'^manager/rapports/(?P<year>\d{4})/(?P<month>\d+)/(?P<day>\d+)/common/send/$', 'rapports_common_day_send'),
 )
 
 urlpatterns += patterns('',

@@ -65,8 +65,11 @@ class Printer(models.Model):
     def get_available_printers(self):
         """Return a string list of availables printers
         """
-        conn = cups.Connection()
         result = []
+        try:
+            conn = cups.Connection()
+        except RuntimeError:
+            return result
         printers = conn.getPrinters()
         for printer in printers:
             if Printer.objects.filter(name=printer).count() == 0:
@@ -74,7 +77,10 @@ class Printer(models.Model):
         return result
 
     def print_file(self, filename):
-        conn = cups.Connection()
+        try:
+            conn = cups.Connection()
+        except RuntimeError:
+            return False
         if not os.path.exists(filename):
             return False
         title = filename.split("/")[-1]
