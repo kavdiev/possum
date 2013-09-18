@@ -21,6 +21,7 @@ from django.db import models
 from possum.base.generic import NomDouble
 from possum.base.category import Categorie
 from possum.base.options import Cuisson, Sauce, Accompagnement
+from decimal import Decimal
 
 class Produit(NomDouble):
     categorie = models.ForeignKey('Categorie', related_name="produit-categorie")
@@ -37,6 +38,8 @@ class Produit(NomDouble):
     # decimal_places: la partie décimale
     # ici: 2 chiffres après la virgule et 5 chiffres pour la partie entière
     prix = models.DecimalField(max_digits=7, decimal_places=2, default=0)
+    vat_onsite = models.DecimalField(max_digits=7, decimal_places=2, default=0)
+    vat_takeaway = models.DecimalField(max_digits=7, decimal_places=2, default=0)
 
     def __cmp__(self,other):
         if self.categorie == other.categorie:
@@ -75,6 +78,7 @@ class Produit(NomDouble):
             product.choix_sauce = self.choix_sauce
             product.categorie = self.categorie
             product.save()
+            product.update_vats()
             for c in self.categories_ok.distinct():
                 product.categories_ok.add(c)
             for p in self.produits_ok.distinct():
@@ -83,6 +87,22 @@ class Produit(NomDouble):
             return product
         else:
             return self
+
+    def set_category(self, category):
+        self.categorie = category
+        self.update_vats()
+
+    def update_vats(self):
+        """Update vat_onsite and vat_takeaway with prix in TTC
+        """
+        un = Decimal('1')
+        if self.categorie.vat_onsite:
+            value = self.categorie.vat_onsite.value
+            self.vat_onsite = Decimal(self.prix) / (un+value) * value
+        if self.categorie.vat_takeaway:
+            value = self.categorie.vat_takeaway.value
+            self.vat_takeaway = Decimal(self.prix) / (un+value) * value
+        self.save()
 
     def get_prize_takeaway(self):
         if self.categorie:

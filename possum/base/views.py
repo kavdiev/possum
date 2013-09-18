@@ -264,8 +264,9 @@ def categories_set_vat_takeaway(request, cat_id, vat_id):
     data = get_user(request)
     category = get_object_or_404(Categorie, pk=cat_id)
     vat = get_object_or_404(VAT, pk=vat_id)
-    category.vat_takeaway = vat
-    category.save()
+    category.set_vat_takeaway(vat)
+    for product in Produit.objects.filter(categorie=category, actif=True):
+        product.update_vats()
     return HttpResponseRedirect('/carte/categories/%s/' % cat_id)
 
 @permission_required('base.p6')
@@ -273,8 +274,9 @@ def categories_set_vat_onsite(request, cat_id, vat_id):
     data = get_user(request)
     category = get_object_or_404(Categorie, pk=cat_id)
     vat = get_object_or_404(VAT, pk=vat_id)
-    category.vat_onsite = vat
-    category.save()
+    category.set_vat_onsite(vat)
+    for product in Produit.objects.filter(categorie=category, actif=True):
+        product.update_vats()
     return HttpResponseRedirect('/carte/categories/%s/' % cat_id)
 
 @permission_required('base.p6')
@@ -330,6 +332,10 @@ def vats_change(request, vat_id):
                     data['vat'].name = name
                     data['vat'].save()
                     data['vat'].set_tax(tax)
+                    for product in Produit.objects.filter(categorie__vat_onsite=data['vat']):
+                        product.update_vats()
+                    for product in Produit.objects.filter(categorie__vat_takeaway=data['vat']):
+                        product.update_vats()
                 except:
                     messages.add_message(request, messages.ERROR, "Les modifications n'ont pu être enregistrées.")
                 else:
@@ -361,7 +367,7 @@ def products_new(request, cat_id):
                                 nom=name, 
                                 nom_facture=billname,
                                 prix=prize)
-                        product.categorie = data['category']
+                        product.set_category(data['category'])
                         product.save()
                     except:
                         messages.add_message(request, messages.ERROR, "Les modifications n'ont pu être enregistrées.")
@@ -437,8 +443,8 @@ def products_set_category(request, product_id, cat_id):
     data = get_user(request)
     product = get_object_or_404(Produit, pk=product_id)
     category = get_object_or_404(Categorie, pk=cat_id)
-    product.categorie = category
-    product.save()
+    product.set_category(category)
+
     return HttpResponseRedirect('/carte/products/%s/' % product_id)
 
 @permission_required('base.p6')
@@ -1091,7 +1097,6 @@ def sold_view(request, bill_id, sold_id):
     data['bill_id'] = bill_id
     data['sold'] = get_object_or_404(ProduitVendu, pk=sold_id)
     bill = get_object_or_404(Facture, pk=bill_id)
-    data['prize'] = bill.get_product_prize(data['sold'])
     return render_to_response('base/bill/sold.html',
                                 data,
                                 context_instance=RequestContext(request))
@@ -1311,7 +1316,8 @@ def bill_payment(request, bill_id, type_id=-1, count=-1, left=0, right=0):
             data['ticket_value'] = "0.0"
         else:
             if left == 0 and right == 0:
-                (data['left'], data['right']) = unicode(bill.restant_a_payer).split(".")
+                montant = u"%.2f" % bill.restant_a_payer
+                (data['left'], data['right']) = montant.split(".")
     return render_to_response('base/bill/payment.html',
                                 data,
                                 context_instance=RequestContext(request))

@@ -279,44 +279,36 @@ class Facture(models.Model):
             self.restant_a_payer -= payment.montant
         self.save()
 
-    def get_vat(self, product):
+    def add_product_prize(self, product):
+        """Ajoute le prix d'un ProduitVendu sur la facture."""
+        ttc = product.produit.prix
+        self.total_ttc += ttc
+        self.restant_a_payer += ttc
+        self.save()
         if self.onsite:
             vat = product.produit.categorie.vat_onsite
+            value = product.produit.vat_onsite
         else:
             vat = product.produit.categorie.vat_takeaway
-        return vat
-
-    def get_product_prize(self, product):
-        """Return a TTC prize of a product.
-        """
-        vat = self.get_vat(product)
-        if vat:
-            return "%.2f" % vat.get_ttc_for(product.prix)
-        else:
-            return "0"
-
-    def add_product_prize(self, product):
-        """Ajout le prix HT d'un ProduitVendu sur la facture."""
-        vat = self.get_vat(product)
-        if vat:
-            ttc = vat.get_ttc_for(product.prix)
-            self.total_ttc += ttc
-            self.restant_a_payer += ttc
-            self.save()
-            vatonbill, created = self.vats.get_or_create(vat=vat)
-            vatonbill.total += vat.get_tax_for(product.prix)
-            vatonbill.save()
+            value = product.produit.vat_takeaway
+        vatonbill, created = self.vats.get_or_create(vat=vat)
+        vatonbill.total += value
+        vatonbill.save()
 
     def del_product_prize(self, product):
-        vat = self.get_vat(product)
-        if vat:
-            ttc = vat.get_ttc_for(product.prix)
-            self.total_ttc -= ttc
-            self.restant_a_payer -= ttc
-            self.save()
-            vatonbill, created = self.vats.get_or_create(vat=vat)
-            vatonbill.total -= vat.get_tax_for(product.prix)
-            vatonbill.save()
+        ttc = product.produit.prix
+        self.total_ttc -= ttc
+        self.restant_a_payer -= ttc
+        self.save()
+        if self.onsite:
+            vat = product.produit.categorie.vat_onsite
+            value = product.produit.vat_onsite
+        else:
+            vat = product.produit.categorie.vat_takeaway
+            value = product.produit.vat_takeaway
+        vatonbill, created = self.vats.get_or_create(vat=vat)
+        vatonbill.total -= value
+        vatonbill.save()
 
     def add_surtaxe(self):
         """Add surtaxe on all needed products
@@ -691,7 +683,6 @@ class Facture(models.Model):
         nb_invoices : number of invoices
         total_ttc   : total
         ID_vat_only : VAT part only for each vat
-        ID_vat_ttc  : VAT total (HT+VAT) for each vat
         """
         logtype, created = LogType.objects.get_or_create(nom="nb_invoices")
         if created:
@@ -712,17 +703,11 @@ class Facture(models.Model):
             stat = StatsJourGeneral.objects.get_or_create(date=date, type=logtype)[0]
             stat.valeur += vatonbill.total
             stat.save()
-            logtype, created = LogType.objects.get_or_create(nom="%s_vat_ttc" % vatonbill.vat.id)
-            if created:
-                logtype.save()
-            stat = StatsJourGeneral.objects.get_or_create(date=date, type=logtype)[0]
-            stat.valeur += vatonbill.total
-            stat.save()
             
     def update_products_stats(self, date):
         """Update stats on products, for each:
         nb     : how many
-        valeur : total_ht
+        valeur : total TTC
         """
         for vendu in self.produits.iterator():
             # produit
@@ -845,7 +830,7 @@ class Facture(models.Model):
         for vendu in self.produits.order_by( \
                             "produit__categorie__priorite").iterator():
             name = vendu.produit.nom_facture[:25]
-            prize = self.get_product_prize(vendu)
+            prize = "%.2f" % vendu.produit.prix
             ticket.append("  1 %-25s %s" % (name, prize))
         ticket.append("=======================================")
         ticket.append("  Total            : % 8.2f Eur." % self.total_ttc)

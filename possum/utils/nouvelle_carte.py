@@ -30,9 +30,20 @@ from possum.base.models import Accompagnement, Sauce, Etat, \
 Produit.objects.all().delete()
 Categorie.objects.all().delete()
 
-# on entre les nouveaux produits
-cat = Categorie(nom="Entrees2")
-cat.save()
-Produit(nom="salade", nom_facture="salade", prix="3.40", categorie=cat)
-Produit(nom="salade2", nom_facture="salade2", prix="3.40", categorie=cat)
+# TVA
+vat_onsite = VAT(name="sur place")
+vat_onsite.set_tax("19.6")
+vat_onsite.save()
+vat_takeaway = VAT(name=u"à emporter")
+vat_takeaway.set_tax("7")
+vat_takeaway.save()
 
+# on entre les nouveaux produits, les prix sont TTC
+cat = Categorie(nom="Entrees", vat_onsite=vat_onsite, vat_takeaway=vat_takeaway)
+cat.save()
+Produit(nom="salade", nom_facture="salade", prix="3.40", categorie=cat).save()
+Produit(nom="salade2", nom_facture="salade2", prix="3.40", categorie=cat).save()
+
+# mis a jour des TTC et TVA
+for product in Produit.objects.all():
+    p.update_vats()

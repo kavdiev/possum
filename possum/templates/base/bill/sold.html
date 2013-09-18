@@ -14,7 +14,7 @@
     {% if sold.produit.choix_cuisson %}
     <li onclick="window.location='/bill/{{bill_id}}/sold/{{sold.id}}/cooking/'">Cuisson:</br>{{sold.cuisson}}</li>
     {% endif %}
-    <li>Prix TTC:</br>{{prize}}€</li>
+    <li>Prix TTC:</br>{{sold.produit.prix}}€</li>
     <li onclick="window.location='/bill/{{bill_id}}/sold/{{sold.id}}/delete/'" class="critical">Supprimer</li>
 </ul></br></br></br>
 

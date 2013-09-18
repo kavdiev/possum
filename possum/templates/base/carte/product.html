@@ -32,14 +32,14 @@
         {% endif %}
     </li>
     <li onclick="window.location='/carte/products/{{product.id}}/change/'">
-        Prix HT:</br>
+        Prix TTC:</br>
         {{product.prix}}€</li>
     <li>
-        TTC sur place:</br>
-        {{product.get_prize_onsite}}€</li>
+        TVA sur place:</br>
+        {{product.vat_onsite}}€</li>
     <li>
-        TTC à emporter:</br>
-        {{product.get_prize_takeaway}}€</li>
+        TVA à emporter:</br>
+        {{product.vat_takeaway}}€</li>
 </ul>
 </br></br></br>
 

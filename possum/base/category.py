@@ -56,4 +56,12 @@ class Categorie(Nom, Priorite):
         else:
             return cmp(self.priorite,other.priorite)
 
+    def set_vat_takeaway(self, vat):
+        self.vat_takeaway = vat
+        self.save()
+        # il faut toujours faire un product.update_vats()
+
+    def set_vat_onsite(self, vat):
+        self.vat_onsite = vat
+        self.save()
 

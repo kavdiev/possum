@@ -23,8 +23,7 @@ from decimal import Decimal
 class VAT(models.Model):
     """name is a symbolic name
     tax is for example '19.6' for 19.6%
-    value: is used to obtain ttc, example: '1.196'
-        prize * value = ttc
+    value: is used to minimize operations (example: 0.196
     """
     name = models.CharField(max_length=32)
     tax = models.DecimalField(max_digits=4, decimal_places=2, default=0)
@@ -41,7 +40,7 @@ class VAT(models.Model):
 
     def set_tax(self, tax):
         self.tax = tax
-        self.value = Decimal(tax) / 100 + 1
+        self.value = Decimal(tax) / 100 
         self.save()
 
     def get_tax_for(self, prize):
@@ -50,7 +49,7 @@ class VAT(models.Model):
         """
         if self.tax:
             if prize:
-                return Decimal(prize) * self.tax / 100
+                return Decimal(prize) * self.value
             else:
                 return Decimal('0')
         else:
@@ -62,7 +61,7 @@ class VAT(models.Model):
         """
         if self.tax:
             if prize:
-                return Decimal(prize) * self.value
+                return Decimal(prize) * (1+self.value)
             else:
                 return Decimal('0')
         else:
