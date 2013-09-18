@@ -5,10 +5,8 @@
 <ul id="back">
     <li onclick="window.location='/bills/'">Retour commandes</li>
 </ul>
-</br></br></br>
 
-<h2>Commande [{{facture}}]</h2>
-
+<h1>Commande [{{facture}}]</h1>
 <ul id="bill_info">
     <li onclick="window.location='/bill/{{facture.id}}/kitchen/'"
     {% if next %}
@@ -33,27 +31,9 @@
     <li>Total TTC:</br>{{facture.total_ttc}}€</li>
     <li>Restant à payer:</br>{{facture.restant_a_payer}}€</li>
     <li onclick="window.location='/bill/{{facture.id}}/delete/'" class="critical">Supprimer</li>
-</ul></br></br></br>
+</ul>
 
-<h3>TVA</h3>
-<ul id="vats">
-    {% for vat in facture.vats.all %}
-    <li>{{vat}}</li>
-    {% empty %}
-    <li>Aucune TVA</li>
-    {% endfor %}
-</ul></br></br></br>
-
-<h3>Paiements</h3>
-<ul id="paiements">
-    <li onclick="window.location='/bill/{{facture.id}}/payment/'">Ajouter</li>
-    {% for payment in facture.paiements.all %}
-        <li onclick="window.location='/bill/{{facture.id}}/payment/view/{{payment.id}}/'">
-        {{payment.type.nom}} {{payment.montant}}</li>
-    {% endfor %}
-</ul></br></br>
-
-<h3>Produits</h3>
+<h2>Produits</h2>
 <ul id="products_sold">
     <li onclick="window.location='/bill/{{facture.id}}/category/select/'">Ajouter</li>
     {% for vendu in facture.produits.all %}
@@ -63,9 +43,27 @@
         {{ vendu.get_menu_resume }}
         </li>
     {% endfor %}
-</ul></br></br></br></br>
+</ul>
 
-<h3>Suivi en cuisine</h3>
+<h2>Paiements</h2>
+<ul id="paiements">
+    <li onclick="window.location='/bill/{{facture.id}}/payment/'">Ajouter</li>
+    {% for payment in facture.paiements.all %}
+        <li onclick="window.location='/bill/{{facture.id}}/payment/view/{{payment.id}}/'">
+        {{payment.type.nom}} {{payment.montant}}</li>
+    {% endfor %}
+</ul>
+
+<h2>TVA</h2>
+<ul id="vats">
+    {% for vat in facture.vats.all %}
+    <li>{{vat}}</li>
+    {% empty %}
+    <li>Aucune TVA</li>
+    {% endfor %}
+</ul>
+
+<h2>Suivi en cuisine</h2>
 <ul id="kitchen">
     {% for suivi in suivis %}
     <li onclick="window.location='/bill/{{suivi.facture.id}}/'" 
@@ -75,7 +73,7 @@
     {% empty %}
     <li>Aucun suivi.</li>
     {% endfor %}
-</ul></br></br></br>
+</ul>
 
 {% endblock %}
 

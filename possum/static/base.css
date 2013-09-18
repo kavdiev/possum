@@ -74,29 +74,6 @@ input
     width: 50px;
 }
 
-/*
-** footer section
-*/
-#footer
-{
-    position: absolute;
-    clear: both;
-    background-color: #FFFFFF;
-    width: 100%;
-    border-top: 1px solid #DDDDDD;
-    margin: 0 auto;
-    bottom: 0px;
-   /* height: 30px;*/
-}
-.footerLinkElement
-{
-    display: inline;
-
-}
-.footerLinkElement:after
-{
-    content:"   ";
-}
 div.left
 {
     position: relative;
@@ -121,6 +98,10 @@ div.right
     width: 33%;
     text-align: right;
 }
+/* to have newlive after ul/li */
+h1 {clear: both;}
+h2 {clear: both;}
+h3 {clear: both;}
 #login
 {
     position: absolute;

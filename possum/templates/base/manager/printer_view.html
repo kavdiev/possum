@@ -4,7 +4,6 @@
 <ul id="back">
     <li onclick="window.location='/manager/printers/'">Retour imprimantes</li>
 </ul>
-</br></br></br>
 
 <h1>Imprimante: {{printer.name}}</h1>
 <ul id="printer">
@@ -25,8 +24,8 @@
     <li onclick="window.location='/manager/printer/{{printer.id}}/test/'">
         Test d'impression</li>
 </ul>
-</br></br></br></br>
 
+<h2>Options</h2>
 <form method='post' action='/manager/printer/{{printer.id}}/'>{% csrf_token %}
 <table>
 <tr>

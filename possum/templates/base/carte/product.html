@@ -4,7 +4,6 @@
 <ul id="back">
     <li onclick="window.location='/carte/categories/{{product.categorie.id}}/'">Retour catégorie</li>
 </ul>
-</br></br></br>
 
 <h1>Produit: {{product.nom}}</h2>
 <ul id="product_info">
@@ -41,7 +40,6 @@
         TVA à emporter:</br>
         {{product.vat_takeaway}}€</li>
 </ul>
-</br></br></br>
 
 <h2>Catégories actives</h2>
 <p>Si ce produit est un menu qui peut contenir d'autres produits (entrées, plats, ...), vous devez
@@ -54,7 +52,6 @@ d'abord activer des catégories de produits ici avant de pouvoir activer des pro
         </li>
     {% endfor %}
 </ul>
-</br></br></br>
 
 <h2>Produits actifs</h2>
 <ul id="products">
@@ -66,9 +63,6 @@ d'abord activer des catégories de produits ici avant de pouvoir activer des pro
         </li>
     {% endfor %}
 </ul>
-
-
-
 
 {% endblock %}
 

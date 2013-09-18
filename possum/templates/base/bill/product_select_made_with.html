@@ -4,10 +4,8 @@
 <ul id="back">
     <li onclick="window.location='/bill/{{bill.id}}/sold/{{product.id}}/view/'">Retour produit</li>
 </ul>
-</br></br></br>
 
 <h1>Ce produit est à envoyer en cuisine avec:</h1>
-
 <ul id="categories">
     {% for category in categories %}
     <li onclick="window.location='/bill/{{bill.id}}/product/{{product.id}}/made_with/{{category.id}}/'" style="background:{{category.couleur.web}};">

@@ -4,9 +4,9 @@
 <ul id="back">
     <li onclick="window.location='/bill/{{bill_id}}/'">Retour facture</li>
 </ul>
-</br></br></br>
 
 <h1>Nouveau paiement</h1>
+<h2>Type</h2>
 <ul id="type_payment">
     {% for type in type_payments %}
         <li {% if type == type_selected %}class="enabled"{% endif %}
@@ -15,8 +15,9 @@
     {% empty %}
         <li>Aucun type de paiement disponible.</li>
     {% endfor %}
-</ul></br></br></br>
+</ul>
 
+<h2>Montant</h2>
 <ul id="payment_tickets">
 {% if type_selected.fixed_value %}
 <li onclick="window.location='/bill/{{bill_id}}/payment/{{type_selected.id}}/{{left}}.{{right}}/{{tickets_count}}/set/'" >
@@ -32,7 +33,6 @@ Valeur d'un ticket: {{left}}.{{right}}€</li>
         </li>
 {% endif %}
 </ul>
-</br></br></br>
 
 {% endblock %}
 

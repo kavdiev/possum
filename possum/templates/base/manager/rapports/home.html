@@ -4,7 +4,6 @@
 <ul id="back">
 <li onclick="window.location='/manager/'">Retour</li>
 </ul>
-</br></br></br>
 
 <h1>Rapports</h1>
 <ul id="rapports">
@@ -16,7 +15,6 @@
 <li onclick="window.location='/manager/rapports/{{year}}/{{month}}/{{day}}/common/send/'">Envoyer par mail</li>
 <li onclick="window.location='/manager/rapports/{{year}}/{{month}}/{{day}}/common/print/'">Imprimer</li>
 </ul>
-</br></br></br>
 
 <h2>Restauration</h2>
 <ul id="rapports">
@@ -24,7 +22,6 @@
     <li>Total TTC: {{guests_total_ttc}}€</li>
     <li>Ticket moyen par couvert: {{guest_average}}€</li>
 </ul>
-</br></br></br>
 
 <h2>Bar</h2>
 <ul id="rapports">
@@ -32,7 +29,6 @@
     <li>Total TTC: {{bar_total_ttc}}€</li>
     <li>Ticket moyen par facture: {{bar_average}}€</li>
 </ul>
-</br></br></br>
 
 <h2>Paiements</h2>
 <ul id="rapports">
@@ -40,7 +36,6 @@
     <li>{{payment}}€</li>
     {% endfor %}
 </ul>
-</br></br></br>
 
 <h2>Categories</h2>
 <ul id="rapports">
@@ -48,8 +43,6 @@
     <li style="background:{{category.couleur.web}};">{{category.nom}} : {{category.nb}}</li>
     {% endfor %}
 </ul>
-</br></br></br>
-
 
 {% endblock %}
 

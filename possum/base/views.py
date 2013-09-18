@@ -1326,6 +1326,9 @@ def bill_payment(request, bill_id, type_id=-1, count=-1, left=0, right=0):
 def bill_view(request, bill_id):
     data = get_user(request)
     data['facture'] = get_object_or_404(Facture, pk=bill_id)
+    if data['facture'].est_soldee():
+        messages.add_message(request, messages.ERROR, "Cette facture a déjà été soldée.")
+        return HttpResponseRedirect('/bills/')
     data['next'] = data['facture'].something_for_the_kitchen()
     data['suivis'] = Suivi.objects.filter(facture=data['facture']).order_by("-date")
     data['menu_bills'] = True

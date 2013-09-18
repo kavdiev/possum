@@ -4,8 +4,8 @@
 <ul id="back">
     <li onclick="window.location='/bill/{{bill_id}}/'">Retour facture</li>
 </ul>
-</br></br></br>
 
+<h1>Paiement {{payment.type}}</h1>
 <ul id="payment_tickets">
 {% if payment.type.fixed_value %}
 <li>Valeur d'un ticket: {{payment.valeur_unitaire}}€</li>
@@ -14,7 +14,6 @@
 <li>Total: {{payment.montant}}€</li>
 <li onclick="window.location='/bill/{{bill_id}}/payment/delete/{{payment.id}}/'" class="critical">Supprimer ce paiement</li>
 </ul>
-</br></br></br>
 
 {% endblock %}
 
