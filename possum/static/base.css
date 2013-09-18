@@ -277,6 +277,7 @@ li {
     overflow:hidden; /* permet de limiter l'affichage du contenu au dimension du contenant */
     padding:5px;
     text-align:center;
+    border-radius: 10px; /* bord arrondi */
 }
 #bills li {
     width:140px;
