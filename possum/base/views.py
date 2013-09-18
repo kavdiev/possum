@@ -1106,9 +1106,19 @@ def sold_delete(request, bill_id, sold_id):
     data = get_user(request)
     bill = get_object_or_404(Facture, pk=bill_id)
     sold = get_object_or_404(ProduitVendu, pk=sold_id)
-    bill.del_product(sold)
-    bill.save()
-    return HttpResponseRedirect('/bill/%s/' % bill_id)
+    if sold in bill.produits.all():
+        # it is a product
+        bill.del_product(sold)
+        bill.save()
+        return HttpResponseRedirect('/bill/%s/' % bill_id)
+    else:
+        # it as a subproduct in a menu
+        menu = bill.produits.filter(contient=sold)[0]
+        menu.contient.remove(sold)
+        menu.save()
+        category = sold.produit.categorie
+        sold.delete()
+        return HttpResponseRedirect('/bill/%s/sold/%s/category/%s/select/' % (bill_id, menu.id, category.id))
 
 @permission_required('base.p5')
 def subproduct_add(request, bill_id, sold_id, product_id):
