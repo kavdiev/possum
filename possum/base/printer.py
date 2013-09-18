@@ -108,5 +108,5 @@ class Printer(models.Model):
         list_to_print = []
         list_to_print.append("> POSSUM Printing test !")
         list_to_print.append(datetime.now().strftime("> %H:%M %d/%m/%Y\n"))
-        return self.print_list(path, "test")
+        return self.print_list(list_to_print, "test")
 
