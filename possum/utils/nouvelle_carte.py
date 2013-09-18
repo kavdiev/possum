@@ -19,7 +19,7 @@
 #    along with POSSUM.  If not, see <http://www.gnu.org/licenses/>.
 #
 import sys, os
-sys.path.append('/home/pos')
+sys.path.append('/home/pos/possum-software')
 os.environ['DJANGO_SETTINGS_MODULE'] = 'possum.settings'
 
 from possum.base.models import Accompagnement, Sauce, Etat, \
@@ -46,4 +46,4 @@ Produit(nom="salade2", nom_facture="salade2", prix="3.40", categorie=cat).save()
 
 # mis a jour des TTC et TVA
 for product in Produit.objects.all():
-    p.update_vats()
+    product.update_vats()
