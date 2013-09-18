@@ -78,7 +78,6 @@ class Facture(models.Model):
         related_name="vat total for each vat on a bill")
     restant_a_payer = models.DecimalField(max_digits=9, decimal_places=2, 
             default=0)
-    etats = models.ManyToManyField('Suivi', related_name="le suivi")
     saved_in_stats = models.BooleanField(default=False)
     onsite = models.BooleanField(default=True)
 
@@ -141,12 +140,13 @@ class Facture(models.Model):
         categories = []
         products = {}
         for product in self.produits.filter(sent=False):
-            for subproduct in product.contient.all():
-                # cas des menus
-                if subproduct.made_with not in categories:
-                    categories.append(subproduct.made_with)
-                if subproduct.made_with.id not in products:
-                    products[subproduct.made_with.id] = []
+            if product.est_un_menu():
+                for subproduct in product.contient.all():
+                    # cas des menus
+                    if subproduct.made_with not in categories:
+                        categories.append(subproduct.made_with)
+                    if subproduct.made_with.id not in products:
+                        products[subproduct.made_with.id] = []
                     name = subproduct.produit.nom
                     if subproduct.produit.choix_cuisson:
                         name += ": %s" % subproduct.cuisson
@@ -156,10 +156,10 @@ class Facture(models.Model):
                     categories.append(product.made_with)
                 if product.made_with.id not in products:
                     products[product.made_with.id] = []
-                    name = product.produit.nom
-                    if product.produit.choix_cuisson:
-                        name += ": %s" % product.cuisson
-                    products[product.made_with.id].append(name)
+                name = product.produit.nom
+                if product.produit.choix_cuisson:
+                    name += ": %s" % product.cuisson
+                products[product.made_with.id].append(name)
         categories.sort()
         todolist = []
         for category in categories:
@@ -199,7 +199,7 @@ class Facture(models.Model):
                 product.sent = True
                 product.save()
             for printer in Printer.objects.filter(kitchen=True):
-                result = printer.print_list(todolist, "kitchen%s-%s" % (self.id, category.id))
+                result = printer.print_list(todolist, "kitchen-%s-%s" % (self.id, category.id))
             suivi = Suivi(category=category, facture=self)
             suivi.save()
             return result
