@@ -48,7 +48,7 @@ class Produit(NomDouble):
             return cmp(self.categorie,other.categorie)
 
     class Meta:
-        ordering = ('categorie', 'nom')
+        ordering = ['categorie', 'nom']
 #        ordering = ['-actif', 'nom']
 
     def __unicode__(self):
@@ -144,7 +144,7 @@ class ProduitVendu(models.Model):
     sent = models.BooleanField(default=False)
 
     class Meta:
-        ordering = ('produit',)
+        ordering = ['produit',]
 
     def __unicode__(self):
         return u"%s" % self.produit.nom
