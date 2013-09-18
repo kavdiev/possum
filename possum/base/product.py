@@ -204,7 +204,7 @@ class ProduitVendu(models.Model):
         """
         if self.est_un_menu():
             products = []
-            for product in self.contient.all():
+            for product in self.contient.order_by("produit").iterator():
                 tmp = product.produit.nom[:6]
                 if product.cuisson:
                     tmp += product.cuisson.nom_facture
