@@ -54,8 +54,11 @@ class Suivi(models.Model):
     date = models.DateTimeField('depuis le', auto_now_add=True)
 
     def __unicode__(self):
-        return "Facture %s: %s" % (self.facture, self.category.nom)
-
+        if self.facture.table:
+            table = self.facture.table
+        else:
+            table = "T??"
+        return "[%s] Table %s > %s" % (self.date.strftime("%H:%M"), table, self.category.nom)
 
 class Facture(models.Model):
     date_creation = models.DateTimeField('creer le', auto_now_add=True)

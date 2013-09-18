@@ -89,7 +89,7 @@ def home(request):
 def kitchen(request):
     data = get_user(request)
     data['menu_kitchen'] = True
-    data['suivis'] = Suivi.objects.filter(facture__restant_a_payer__gt=0)
+    data['suivis'] = Suivi.objects.filter(facture__restant_a_payer__gt=0).order_by("-date")
     return render_to_response('base/kitchen/view.html',
             data,
             context_instance=RequestContext(request))
@@ -1321,6 +1321,7 @@ def bill_view(request, bill_id):
     data = get_user(request)
     data['facture'] = get_object_or_404(Facture, pk=bill_id)
     data['next'] = data['facture'].something_for_the_kitchen()
+    data['suivis'] = Suivi.objects.filter(facture=data['facture']).order_by("-date")
     data['menu_bills'] = True
     return render_to_response('base/facture.html',
                                 data,

@@ -63,8 +63,19 @@
         {{ vendu.get_menu_resume }}
         </li>
     {% endfor %}
-</ul></br></br>
+</ul></br></br></br></br>
 
+<h3>Suivi en cuisine</h3>
+<ul id="kitchen">
+    {% for suivi in suivis %}
+    <li onclick="window.location='/bill/{{suivi.facture.id}}/'" 
+            style="background:{{suivi.category.couleur.web}};">
+         {{suivi}}
+    </li>
+    {% empty %}
+    <li>Aucun suivi.</li>
+    {% endfor %}
+</ul></br></br></br>
 
 {% endblock %}
 

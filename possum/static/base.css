@@ -362,9 +362,6 @@ li.warning {
     width:120px;
     height:40px;
 }
-#payment_tickets {
-    list-style:none;
-}
 #payment_tickets li {
     width:220px;
     height:40px;
@@ -380,6 +377,9 @@ li.warning {
 #tables li {
     width:30px;
     height:30px;
+}
+#tables li.surtaxe {
+    background-color: #f8bd30;
 }
 #cookings li {
     width:200px;
@@ -421,8 +421,8 @@ li.warning {
     width:220px;
     height:60px;
 }
-.affichage_sans_float {
-    clear: both;
+#kitchen li {
+    width:120px;
+    height:40px;
 }
-
 
