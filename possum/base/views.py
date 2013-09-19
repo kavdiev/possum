@@ -1272,7 +1272,7 @@ def factures(request):
     data = get_user(request)
     data['menu_bills'] = True
     data['factures'] = Facture().non_soldees()
-    return render_to_response('base/home.html',
+    return render_to_response('base/bill/home.html',
                                 data,
                                 context_instance=RequestContext(request))
 
