@@ -24,7 +24,16 @@ os.environ['DJANGO_SETTINGS_MODULE'] = 'possum.settings'
 
 from possum.base.models import Accompagnement, Sauce, Etat, \
     Categorie, Couleur, Cuisson, Facture, Log, LogType, Paiement, \
-    PaiementType, Produit, ProduitVendu, Suivi, Table, Zone
+    PaiementType, Produit, ProduitVendu, Suivi, Table, Zone, VAT
+from django.contrib.auth.models import User
+
+# ajout d'un utilisateur
+user = User(username="toto", 
+        first_name="first name", 
+        last_name="last name", 
+        email="toto@example.net").save()
+user.set_password(passwd)
+user.save()
 
 # on efface tous les produits présents
 Produit.objects.all().delete()
