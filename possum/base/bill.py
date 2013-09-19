@@ -198,6 +198,7 @@ class Facture(models.Model):
             for product in self.produits.filter(contient__made_with=category, sent=False):
                 product.sent = True
                 product.save()
+            result = False
             for printer in Printer.objects.filter(kitchen=True):
                 result = printer.print_list(todolist, "kitchen-%s-%s" % (self.id, category.id))
             suivi = Suivi(category=category, facture=self)
