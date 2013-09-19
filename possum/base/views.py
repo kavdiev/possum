@@ -842,7 +842,7 @@ def printer_select_width(request, printer_id):
     data = get_user(request)
     data['menu_manager'] = True
     data['printer'] = get_object_or_404(Printer, pk=printer_id)
-    data['max'] = range(120)
+    data['max'] = range(14, 120)
     return render_to_response('base/manager/printer_select_width.html',
                                 data,
                                 context_instance=RequestContext(request))
