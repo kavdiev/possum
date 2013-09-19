@@ -292,6 +292,74 @@ def categories_vat_onsite(request, cat_id):
                                 context_instance=RequestContext(request))
 
 @permission_required('base.p7')
+def tables_zone_delete(request, zone_id):
+    data = get_user(request)
+    zone = get_object_or_404(Zone, pk=zone_id)
+    Table.objects.filter(zone=zone).delete()
+    zone.delete()
+    return HttpResponseRedirect('/manager/tables/')
+
+@permission_required('base.p7')
+def tables_table_new(request, zone_id):
+    data = get_user(request)
+    zone = get_object_or_404(Zone, pk=zone_id)
+    table = Table(zone=zone)
+    table.save()
+    return HttpResponseRedirect('/manager/tables/%s/%s/' % (zone.id, table.id))
+
+@permission_required('base.p7')
+def tables_zone_new(request):
+    data = get_user(request)
+    zone = Zone()
+    zone.save()
+    return HttpResponseRedirect('/manager/tables/%s/' % zone.id)
+
+@permission_required('base.p7')
+def tables_table(request, zone_id, table_id):
+    data = get_user(request)
+    data['table'] = get_object_or_404(Table, pk=table_id)
+    data['menu_manager'] = True
+    if request.method == 'POST':
+        name = request.POST.get('name', '').strip()
+        data['table'].nom = name
+        try:
+            data['table'].save()
+        except:
+            messages.add_message(request, messages.ERROR, "Les modifications n'ont pu être enregistrées.")
+        else:
+            return HttpResponseRedirect('/manager/tables/')
+    return render_to_response('base/manager/tables/table.html',
+                                data,
+                                context_instance=RequestContext(request))
+
+@permission_required('base.p7')
+def tables_zone(request, zone_id):
+    data = get_user(request)
+    data['zone'] = get_object_or_404(Zone, pk=zone_id)
+    data['menu_manager'] = True
+    if request.method == 'POST':
+        name = request.POST.get('name', '').strip()
+        data['zone'].nom = name
+        try:
+            data['zone'].save()
+        except:
+            messages.add_message(request, messages.ERROR, "Les modifications n'ont pu être enregistrées.")
+        else:
+            return HttpResponseRedirect('/manager/tables/')
+    return render_to_response('base/manager/tables/zone.html',
+                                data,
+                                context_instance=RequestContext(request))
+
+@permission_required('base.p7')
+def tables(request):
+    data = get_user(request)
+    data['menu_manager'] = True
+    data['zones'] = Zone.objects.all()
+    return render_to_response('base/manager/tables/home.html',
+                                data,
+                                context_instance=RequestContext(request))
+
+@permission_required('base.p7')
 def vats(request):
     data = get_user(request)
     data['vats'] = VAT.objects.all()
@@ -719,7 +787,7 @@ def rapports_common_day_print(request, year, month, day):
 def manager(request):
     data = get_user(request)
     data['menu_manager'] = True
-    return render_to_response('base/manager/manager.html',
+    return render_to_response('base/manager/home.html',
                                 data,
                                 context_instance=RequestContext(request))
 
@@ -1013,7 +1081,7 @@ def table_select(request, bill_id):
     data['menu_bills'] = True
     data['zones'] = Zone.objects.all()
     data['bill_id'] = bill_id
-    return render_to_response('base/tables.html',
+    return render_to_response('base/bill/select_a_table.html',
                                 data,
                                 context_instance=RequestContext(request))
 

@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block content %}
+
+<ul id="back">
+<li onclick="window.location='/manager/'">Retour</li>
+</ul>
+
+<h1>Gestion des tables</h1>
+
+<ul id="zones">
+    <li onclick="window.location='/manager/tables/new/'">Ajouter une zone</li>
+</ul>
+
+{% for zone in zones %}
+    <h2>{{zone.nom}}</h2>
+
+<ul id="zones">
+    <li onclick="window.location='/manager/tables/{{zone.id}}/'">Modifier</li>
+    <li onclick="window.location='/manager/tables/{{zone.id}}/delete/'" class="critical">Supprimer</li>
+</ul>
+    <ul id="tables">
+        <li onclick="window.location='/manager/tables/{{zone.id}}/new/'">+</li>
+        {% for table in zone.tables %}
+        <li onclick="window.location='/manager/tables/{{zone.id}}/{{table.id}}/'"
+            {% if table.zone.surtaxe %}class="surtaxe"{% endif %}>
+            {{table.nom}}
+            </li>
+        {% endfor %}
+    </ul>
+{% endfor %}
+
+{% endblock %}
+

@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block content %}
+
+<ul id="back">
+<li onclick="window.location='/manager/tables/'">Retour tables</li>
+</ul>
+
+<h1>
+    {% if table.nom %}Changement de nom pour: {{table.nom}}
+    {% else %}Nouveau nom:{%endif%}
+</h1>
+
+<form method='post' action='/manager/tables/{{table.zone.id}}/{{table.id}}/'>{% csrf_token %}
+    <input name="name" value="{{ table.nom }}">
+    <input type='submit' value='Modifier'>
+</form>
+
+{% endblock %}
+
