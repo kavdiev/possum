@@ -1093,7 +1093,7 @@ def table_set(request, bill_id, table_id):
     table = get_object_or_404(Table, pk=table_id)
     bill.set_table(table)
     data['facture'] = bill
-    return render_to_response('base/order.html',
+    return render_to_response('base/bill/order.html',
                                 data,
                                 context_instance=RequestContext(request))
 
@@ -1263,7 +1263,7 @@ def couverts_set(request, bill_id, number):
     bill = get_object_or_404(Facture, pk=bill_id)
     bill.set_couverts(number)
     data['facture'] = bill
-    return render_to_response('base/order.html',
+    return render_to_response('base/bill/order.html',
                                 data,
                                 context_instance=RequestContext(request))
 
@@ -1409,7 +1409,7 @@ def bill_view(request, bill_id):
     data['next'] = data['facture'].something_for_the_kitchen()
     data['suivis'] = Suivi.objects.filter(facture=data['facture']).order_by("-date")
     data['menu_bills'] = True
-    return render_to_response('base/order.html',
+    return render_to_response('base/bill/order.html',
                                 data,
                                 context_instance=RequestContext(request))
 
