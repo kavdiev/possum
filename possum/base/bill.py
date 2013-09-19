@@ -820,25 +820,34 @@ class Facture(models.Model):
             self.save()
 
     def print_ticket(self):
+        try:
+            printer = Printer.objects.filter(billing=True)[0]
+        except:
+            return False
         ticket = []
-        if self.table != None:
-            table = self.table
-        else:
-            table = "T--"
-        ticket.append("%s - table: %s" % (self.date_creation.strftime("%d/%m/%Y %H:%M"), table))
-        ticket.append("=======================================")
+        ticket.append("Le %s" % self.date_creation.strftime("%d/%m/%Y %H:%M"))
+        separateur = '-' * printer.width
+        ticket.append(separateur)
         for vendu in self.produits.order_by( \
                             "produit__categorie__priorite").iterator():
             name = vendu.produit.nom_facture[:25]
-            prize = "%.2f" % vendu.produit.prix
-            ticket.append("  1 %-25s %s" % (name, prize))
-        ticket.append("=======================================")
-        ticket.append("  Total            : % 8.2f Eur." % self.total_ttc)
+            prize = "% 3.2f" % vendu.produit.prix
+            # la largeur disponible correspond à la largeur du ticket
+            # sans la 1er partie (" 1 ") et sans la largeur du prix
+            # " 1 largeur_dispo PRIX"
+            largeur_dispo = printer.width - 3 - len(prize)
+            if len(vendu.produit.nom_facture) < largeur_dispo:
+                name = vendu.produit.nom_facture
+            else:
+                longueur_max = largeur_dispo - 2
+                name = vendu.produit.nom_facture[:longueur_max]
+            remplissage = " " * (largeur_dispo - len(name))
+            ticket.append(" 1 %s%s%s" % (name, remplissage, prize))
+        ticket.append(separateur)
+        ticket.append("  Total: % 8.2f Eur." % self.total_ttc)
         for vatonbill in self.vats.all():
-            ticket.append("  dont TVA % 6.2f%% : % 8.2f Eur." % (\
+            ticket.append("  TVA % 5.2f%%: % 6.2f Eur." % (\
                     vatonbill.vat.tax, vatonbill.total))
-        ticket.append("=======================================")
-        for printer in Printer.objects.filter(billing=True):
-            result = printer.print_list(ticket, "bill%s" % self.id, with_header=True)
-        return result
+        ticket.append(separateur)
+        return printer.print_list(ticket, "invoice-%s" % self.id, with_header=True)
 
