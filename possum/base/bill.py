@@ -147,7 +147,7 @@ class Facture(models.Model):
                         categories.append(subproduct.made_with)
                     if subproduct.made_with.id not in products:
                         products[subproduct.made_with.id] = []
-                    name = subproduct.produit.nom
+                    name = subproduct.produit.nom_facture
                     if subproduct.produit.choix_cuisson:
                         name += ": %s" % subproduct.cuisson
                     products[subproduct.made_with.id].append(name)
@@ -156,7 +156,7 @@ class Facture(models.Model):
                     categories.append(product.made_with)
                 if product.made_with.id not in products:
                     products[product.made_with.id] = []
-                name = product.produit.nom
+                name = product.produit.nom_facture
                 if product.produit.choix_cuisson:
                     name += ": %s" % product.cuisson
                 products[product.made_with.id].append(name)
