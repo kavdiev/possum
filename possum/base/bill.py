@@ -206,7 +206,7 @@ class Facture(models.Model):
     def guest_couverts(self):
         """Essaye de deviner le nombre de couverts"""
         nb = {}
-        categories = ["Entrees", "Plats"]
+        categories = Categorie.objects.filter(made_in_kitchen=True)
         for categorie in categories:
             nb[categorie] = 0
         for vendu in self.produits.iterator():
