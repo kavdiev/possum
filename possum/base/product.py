@@ -61,6 +61,9 @@ class Produit(NomDouble):
         else:
             return False
 
+    def get_prize(self):
+        return "%.2f" % self.prix
+
     def set_prize(self, prize):
         """With new prize, we have to create a new product to keep statistics
         and historics.
