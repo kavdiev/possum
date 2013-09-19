@@ -175,21 +175,19 @@ class Facture(models.Model):
         category = self.something_for_the_kitchen()
         if category:
             todolist = []
+            heure = datetime.datetime.now().strftime("%H:%M")
+            todolist.append("[%s] Table %s (%d pers.)" % (heure, self.table, self.couverts))
+            todolist.append(">>> envoye %s" % category.nom)
             if self.produits.filter(sent=True).count() == 0:
                 # on crée le ticket avec la liste des produits et 
                 # des suites
-                first = True
-            else:
-                # on indique seulement qu'il faut la suite de la table
-                first = False
-            heure = datetime.datetime.now().strftime("%H:%M")
-            if first:
-                todolist.append("> Table %s : envoye %s (%s)" % (self.table, category.nom, heure))
+                todolist.append(" ")
                 products = self.get_first_todolist_for_kitchen()
                 if products:
                     todolist += products
-            else:
-                todolist.append("> Table %s : envoye %s (%s)" % (self.table, category.nom, heure))
+            #else:
+            #    # on indique seulement qu'il faut la suite de la table
+            #    todolist.append("> Table %s : envoye %s (%s)" % (self.table, category.nom, heure))
             # les produits standards
             for product in self.produits.filter(made_with=category, sent=False):
                 product.sent = True
