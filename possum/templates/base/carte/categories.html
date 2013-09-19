@@ -12,18 +12,5 @@
     {% endfor %}
 </ul>
 
-<h2>TVA</h2>
-<ul id="vats">
-    <li onclick="window.location='/carte/vats/new/'">
-        Ajouter
-    </li>
-    {% for vat in vats %}
-    <li onclick="window.location='/carte/vats/{{vat.id}}/'">
-        {{vat.name}}</br>
-        {{vat.tax}}%
-        </li>
-    {% endfor %}
-</ul>
-
 {% endblock %}
 

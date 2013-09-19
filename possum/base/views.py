@@ -255,7 +255,7 @@ def categories_vat_takeaway(request, cat_id):
     data['url_vat'] = 'vat_takeaway'
     data['vats'] = VAT.objects.all()
     data['menu_carte'] = True
-    return render_to_response('base/carte/vat.html',
+    return render_to_response('base/carte/categories/select_vat.html',
                                 data,
                                 context_instance=RequestContext(request))
 
@@ -287,16 +287,16 @@ def categories_vat_onsite(request, cat_id):
     data['type_vat'] = 'TVA sur place'
     data['url_vat'] = 'vat_onsite'
     data['vats'] = VAT.objects.all()
-    return render_to_response('base/carte/vat.html',
+    return render_to_response('base/carte/categories/select_vat.html',
                                 data,
                                 context_instance=RequestContext(request))
 
-@permission_required('base.p6')
+@permission_required('base.p7')
 def vats(request):
     data = get_user(request)
     data['vats'] = VAT.objects.all()
-    data['menu_carte'] = True
-    return render_to_response('base/carte/vats.html',
+    data['menu_manager'] = True
+    return render_to_response('base/manager/vats/home.html',
                                 data,
                                 context_instance=RequestContext(request))
 
@@ -309,20 +309,20 @@ def products_view(request, product_id):
                                 data,
                                 context_instance=RequestContext(request))
 
-@permission_required('base.p6')
+@permission_required('base.p7')
 def vats_view(request, vat_id):
     data = get_user(request)
-    data['menu_carte'] = True
+    data['menu_manager'] = True
     data['vat'] = get_object_or_404(VAT, pk=vat_id)
-    return render_to_response('base/carte/vats_view.html',
+    return render_to_response('base/manager/vats/view.html',
                                 data,
                                 context_instance=RequestContext(request))
 
-@permission_required('base.p6')
+@permission_required('base.p7')
 def vats_change(request, vat_id):
     data = get_user(request)
     data['vat'] = get_object_or_404(VAT, pk=vat_id)
-    data['menu_carte'] = True
+    data['menu_manager'] = True
     if request.method == 'POST':
         name = request.POST.get('name', '').strip()
         tax = request.POST.get('tax', '').strip().replace(',','.')
@@ -339,14 +339,14 @@ def vats_change(request, vat_id):
                 except:
                     messages.add_message(request, messages.ERROR, "Les modifications n'ont pu être enregistrées.")
                 else:
-                    return HttpResponseRedirect('/carte/')
+                    return HttpResponseRedirect('/manager/vats/')
 
             else:
                 messages.add_message(request, messages.ERROR, "Vous devez saisir un pourcentage de taxe.")
         else:
             messages.add_message(request, messages.ERROR, "Vous devez entrer un nom.")
 
-    return render_to_response('base/carte/vats_change.html',
+    return render_to_response('base/manager/vats/change.html',
                                 data,
                                 context_instance=RequestContext(request))
 
@@ -384,10 +384,10 @@ def products_new(request, cat_id):
                                 data,
                                 context_instance=RequestContext(request))
 
-@permission_required('base.p6')
+@permission_required('base.p7')
 def vat_new(request):
     data = get_user(request)
-    data['menu_carte'] = True
+    data['menu_manager'] = True
     data['vats'] = VAT.objects.all()
     if request.method == 'POST':
         name = request.POST.get('name', '').strip()
@@ -401,14 +401,14 @@ def vat_new(request):
                 except:
                     messages.add_message(request, messages.ERROR, "Les modifications n'ont pu être enregistrées.")
                 else:
-                    return HttpResponseRedirect('/carte/')
+                    return HttpResponseRedirect('/manager/vats/')
 
             else:
                 messages.add_message(request, messages.ERROR, "Vous devez saisir un pourcentage de taxe.")
         else:
             messages.add_message(request, messages.ERROR, "Vous devez entrer un nom.")
 
-    return render_to_response('base/carte/vat_new.html',
+    return render_to_response('base/manager/vats/new.html',
                                 data,
                                 context_instance=RequestContext(request))
 

@@ -1,9 +1,13 @@
 {% extends "base.html" %}
 {% block content %}
 
+<ul id="back">
+    <li onclick="window.location='/manager/vats/'">Retour TVA</li>
+</ul>
+
 <h1>Modifier la TVA: {{vat.name}}</h1>
 
-<form method='post' action='/carte/vats/{{vat.id}}/change/'>{% csrf_token %}
+<form method='post' action='/manager/vats/{{vat.id}}/change/'>{% csrf_token %}
 <table>
 <tr>
     <td><b>Nom</b></td>

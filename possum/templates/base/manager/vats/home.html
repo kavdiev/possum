@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block content %}
+
+<ul id="back">
+    <li onclick="window.location='/manager/'">Retour</li>
+</ul>
+
+<h1>TVA</h1>
+
+<ul id="vats">
+    <li onclick="window.location='/manager/vats/new/'">
+        Ajouter
+    </li>
+    {% for vat in vats %}
+    <li onclick="window.location='/manager/vats/{{vat.id}}/'">
+        {{vat.name}}</br>
+        {{vat.tax}}%
+        </li>
+    {% endfor %}
+</ul>
+{% endblock %}

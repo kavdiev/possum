@@ -1,14 +1,14 @@
 {% extends "base.html" %}
 {% block content %}
 
-<h1>TVA</h1>
+<h1>{{type_vat}} pour: {{category.nom}}</h1>
 
 <ul id="vats">
-    <li onclick="window.location='/carte/vats/new/'">
+    <li onclick="window.location='/manager/vats/new/'">
         Ajouter
     </li>
     {% for vat in vats %}
-    <li onclick="window.location='/carte/vats/{{vat.id}}/'">
+    <li onclick="window.location='/carte/categories/{{category.id}}/{{url_vat}}/set/{{vat.id}}/'">
         {{vat.name}}</br>
         {{vat.tax}}
         </li>

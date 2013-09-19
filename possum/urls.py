@@ -46,11 +46,6 @@ urlpatterns = patterns('possum.base.views',
     url(r'^carte/products/(?P<product_id>\d+)/enable/$', 'products_enable'),
     url(r'^carte/products/(?P<product_id>\d+)/cooking/$', 'products_cooking'),
 
-    url(r'^carte/vats/new/$', 'vat_new'),
-    url(r'^carte/vats/$', 'vats'),
-    url(r'^carte/vats/(?P<vat_id>\d+)/$', 'vats_view'),
-    url(r'^carte/vats/(?P<vat_id>\d+)/change/$', 'vats_change'),
-
     url(r'^pos/$', 'pos'),
     url(r'^bills/$', 'factures'),
     url(r'^bill/new/$', 'bill_new'),
@@ -112,6 +107,11 @@ urlpatterns = patterns('possum.base.views',
     url(r'^manager/users/(?P<user_id>\d+)/active/$', 'users_active'),
     url(r'^manager/users/(?P<user_id>\d+)/change/$', 'users_change'),
     url(r'^manager/users/(?P<user_id>\d+)/perm/(?P<codename>p\d+)/$', 'users_change_perm'),
+
+    url(r'^manager/vats/new/$', 'vat_new'),
+    url(r'^manager/vats/$', 'vats'),
+    url(r'^manager/vats/(?P<vat_id>\d+)/$', 'vats_view'),
+    url(r'^manager/vats/(?P<vat_id>\d+)/change/$', 'vats_change'),
 
     url(r'^manager/rapports/$', 'rapports'),
     url(r'^manager/rapports/(?P<year>\d{4})/(?P<month>\d+)/(?P<day>\d+)/common/print/$', 'rapports_common_day_print'),

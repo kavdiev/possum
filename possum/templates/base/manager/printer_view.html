@@ -28,10 +28,10 @@
 <h2>Options</h2>
 <form method='post' action='/manager/printer/{{printer.id}}/'>{% csrf_token %}
 <table>
-<tr>
+<!--tr>
     <td><b>options d'impressions</b></td>
     <td><input name="options" value="{{printer.options}}"></td>
-</tr>
+</tr-->
 <tr>
     <td><b>entête du ticket (sans accent)</b></td>
     <td><textarea name="header" rows="10" cols="{{printer.width}}">{{printer.header}}</textarea></td>
