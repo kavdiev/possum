@@ -26,7 +26,7 @@ filename = "/tmp/test-printer"
 
 fd = open(filename, 'w')
 fd.write(u"test unicode :\n")
-fd.write(u"éàè€ùi\n")
+fd.write(u"éàè€ùœç\n")
 fd.close()
 
 if printer:
