@@ -2,6 +2,11 @@
 {% block content %}
 
 <h1>Carte</h1>
+<ul id="carte_options">
+    <li onclick="window.location='/carte/send/'">Envoyer par mail</li>
+    <li onclick="window.location='/carte/print/'">Imprimer</li>
+</ul>
+
 <h2>Catégories</h2>
 <ul id="categories">
     <li onclick="window.location='/carte/categories/add/'">Ajouter</li>

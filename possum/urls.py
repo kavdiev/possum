@@ -11,6 +11,8 @@ urlpatterns = patterns('possum.base.views',
 #    (r'^accueil$', 'accueil'),
 
     url(r'^carte/$', 'categories'),
+    url(r'^carte/print/$', 'categories_print'),
+    url(r'^carte/send/$', 'categories_send'),
     url(r'^carte/categories/$', 'categories'),
     url(r'^carte/categories/add/$', 'categories_add'),
     url(r'^carte/categories/new/$', 'categories_new'),

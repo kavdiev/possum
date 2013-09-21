@@ -81,9 +81,10 @@ def permission_required(perm, **kwargs):
 def home(request):
     data = get_user(request)
 
-    return render_to_response('base/home.html',
-            data,
-            context_instance=RequestContext(request))
+#    return render_to_response('base/home.html',
+#            data,
+#            context_instance=RequestContext(request))
+    return HttpResponseRedirect('/bills/')
 
 @login_required
 def kitchen(request):
@@ -105,11 +106,47 @@ def carte(request):
                                 context_instance=RequestContext(request))
 
 @permission_required('base.p6')
+def categories_send(request):
+    data = get_user(request)
+    result = Produit().get_list_with_all_products()
+    subject = "Carte complete"
+    mail = ""
+    for line in result:
+        mail += "%s\n" % line
+    if request.user.email:
+        try:
+            send_mail(subject, mail, settings.DEFAULT_FROM_EMAIL, [request.user.email], fail_silently=False)
+        except:
+            messages.add_message(request, messages.ERROR, u"Le mail n'a pu être envoyé.")
+        else:
+            messages.add_message(request, messages.SUCCESS, u"Le mail a été envoyé à %s." % request.user.email)
+    else:
+        messages.add_message(request, messages.ERROR, u"Vous n'avez pas d'adresse mail.")
+    return HttpResponseRedirect('/carte/categories/')
+
+@permission_required('base.p6')
+def categories_print(request):
+    data = get_user(request)
+    result = Produit().get_list_with_all_products()
+    if result:
+        printers = Printer.objects.filter(manager=True)
+        if printers:
+            printer = printers[0]
+            if printer.print_list(result, "carte_complete"):
+                messages.add_message(request, messages.SUCCESS, u"L'impression a été envoyée sur %s." % printer.name)
+            else:
+                messages.add_message(request, messages.ERROR, u"L'impression a achouée sur %s." % printer.name)
+        else:
+            messages.add_message(request, messages.ERROR, u"Aucune imprimante type 'manager' disponible.")
+    else:
+        messages.add_message(request, messages.ERROR, "Il n'y a rien dans la carte.")
+    return HttpResponseRedirect('/carte/categories/')
+
+@permission_required('base.p6')
 def categories(request):
     data = get_user(request)
     data['menu_carte'] = True
     data['categories'] = Categorie.objects.order_by('priorite', 'nom')
-    data['vats'] = VAT.objects.all()
     return render_to_response('base/carte/categories.html',
                     data,
                     context_instance=RequestContext(request))
@@ -771,7 +808,7 @@ def rapports_common_day_print(request, year, month, day):
     except:
         messages.add_message(request, messages.ERROR, "Les statistiques n'ont pu être récupérées.")
     else:
-        printers = Printer.objects.filter(billing=True)
+        printers = Printer.objects.filter(manager=True)
         if printers:
             printer = printers[0]
             if printer.print_list(result, "rapport_common_%s" % date):

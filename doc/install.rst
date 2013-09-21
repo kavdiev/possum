@@ -32,7 +32,8 @@ On va maintenant préparer cet environnement:
 ::
 
   source /home/pos/bin/activate 
-  pip install Django south wsgiref sphinx django_extensions Werkzeug ipython pycups
+  pip install Django south wsgiref sphinx django_extensions Werkzeug \
+              ipython pycups django-debug-toolbar
 
 
 Note: il faudra utiliser ''deactivate'' pour sortir du virtualenv Possum une fois toutes
@@ -42,7 +43,7 @@ Impression
 ----------
 
 Possum peut imprimer sur plusieurs imprimantes. Afin de pouvoir les utiliser, il faut avoir
-un cups configurer sur le serveur. Vous pouvez vérifier que les imprimantes sont bien
+un serveur cups configurer sur le serveur. Vous pouvez vérifier que les imprimantes sont bien
 disponibles avec la commande:
 
 ::
@@ -77,6 +78,9 @@ Maintenant, nous devons configurer POSSUM.
 
   cd /home/pos/possum-software/possum
   cp settings.py-sample settings.py
+
+Pour les développeurs, je vous conseille de prendre plutôt le
+fichier ''settings.py-dev''.
 
 La base de données configurée par défaut est Sqlite3. À vous d'adapter le fichier
 de configuration a vos besoins. Il faudrat au minimum modifier la variable ''SECRET_KEY''.

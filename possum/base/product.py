@@ -22,6 +22,7 @@ from possum.base.generic import NomDouble
 from possum.base.category import Categorie
 from possum.base.options import Cuisson, Sauce, Accompagnement
 from decimal import Decimal
+from datetime import datetime
 
 class Produit(NomDouble):
     categorie = models.ForeignKey('Categorie', related_name="produit-categorie")
@@ -126,6 +127,19 @@ class Produit(NomDouble):
                 return self.prix
         else:
             return self.prix
+
+    def get_list_with_all_products(self):
+        result = []
+        result.append(datetime.now().strftime("%d/%m/%Y %H:%M"))
+        for category in Categorie.objects.order_by('priorite', 'nom'):
+            name = "[%s]" % category.nom
+            if category.made_in_kitchen:
+                name += "[K]"
+            result.append(name)
+            for product in Produit.objects.filter(categorie=category, actif=True):
+                result.append("%s: %.2f" % (product.nom_facture, product.prix))
+            result.append(" ")
+        return result
 
 class ProduitVendu(models.Model):
     """le prix sert a affiche correctement les prix pour les surtaxes
