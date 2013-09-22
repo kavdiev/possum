@@ -414,4 +414,8 @@ li.warning {
     width:120px;
     height:40px;
 }
+#date_form li {
+    width:280px;
+    height:30px;
+}
 

@@ -216,19 +216,22 @@ class ProduitVendu(models.Model):
         else:
             return False
 
+    def get_menu_products(self):
+        products = []
+        for product in self.contient.order_by("produit__categorie__priorite").iterator():
+            products.append(product)
+        return products
+
     def get_menu_resume(self):
         """Return a short string with product in menu
         """
-        if self.est_un_menu():
-            products = []
-            for product in self.contient.order_by("produit__categorie__priorite").iterator():
-                tmp = product.produit.nom[:6]
-                if product.cuisson:
-                    tmp += product.cuisson.nom_facture
-                products.append(tmp)
-            return "/".join(products)
-        else:
-            return ""
+        products = []
+        for product in self.get_menu_products():
+            tmp = product.produit.nom[:6]
+            if product.cuisson:
+                tmp += product.cuisson.nom_facture
+            products.append(tmp)
+        return "/".join(products)
 
     def getFreeCategorie(self):
         """Retourne la premiere categorie dans la liste categories_ok

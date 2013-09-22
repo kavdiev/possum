@@ -92,6 +92,9 @@ urlpatterns = patterns('possum.base.views',
     url(r'^manager/$', 'manager'),
     url(r'^manager/credits/$', 'credits'),
 
+    url(r'^manager/archives/$', 'archives'),
+    url(r'^manager/archives/bill/(?P<bill_id>\d+)/$', 'archives_bill'),
+
     url(r'^manager/printers/$', 'printers'),
     url(r'^manager/printer/add/$', 'printer_add'),
     url(r'^manager/printer/add/(?P<name>[a-zA-Z0-9_-]+)/$', 'printer_added'),

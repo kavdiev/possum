@@ -604,8 +604,10 @@ class Facture(models.Model):
         texte.append("%-20s %10.2f" % ("total TVA 19.6:", tva_alcool))
         return texte
 
-    def get_factures_du_jour(self, date):
-        """Retourne la liste des factures soldees du jour 'date'"""
+    def get_bills_for(self, date):
+        """Retourne la liste des factures soldees du jour 'date'
+        date de type datetime
+        """
         date_min = datetime.datetime(date.year, date.month, date.day, 5)
         tmp = date_min + datetime.timedelta(days=1)
         date_max = datetime.datetime(tmp.year, tmp.month, tmp.day, 5)

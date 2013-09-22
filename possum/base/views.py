@@ -33,6 +33,7 @@ from possum.base.category import Categorie
 from possum.base.options import Cuisson, Sauce, Accompagnement
 from possum.base.location import Zone, Table
 from possum.base.vat import VAT
+from possum.base.forms import DateForm
 
 from django.contrib.auth import authenticate, login, logout
 from django.shortcuts import render_to_response, get_object_or_404
@@ -48,6 +49,7 @@ from django.contrib import messages
 from django.utils.functional import wraps
 from django.core.mail import send_mail
 import os
+from datetime import datetime
 
 # Création des répertoires obligatoires
 def create_default_directory():
@@ -1465,4 +1467,39 @@ def bill_onsite(request, bill_id):
     order.save()
     order.compute_total()
     return HttpResponseRedirect('/bill/%s/' % bill_id)
+
+@permission_required('base.p7')
+def archives(request):
+    data = get_user(request)
+    data['menu_manager'] = True
+    if request.method == 'POST':
+        try:
+            year = int(request.POST.get('date_year'))
+            month = int(request.POST.get('date_month'))
+            day = int(request.POST.get('date_day'))
+            date = datetime(year, month, day)
+        except:
+            messages.add_message(request, messages.ERROR, "La date saisie n'est pas valide.")
+            date = datetime.today()
+    else:
+        date = datetime.today()
+    data['date_form'] = DateForm({'date': date, })
+    data['factures'] = Facture().get_bills_for(date)
+    data['date'] = date
+    return render_to_response('base/manager/archives/home.html',
+                                data,
+                                context_instance=RequestContext(request))
+
+@permission_required('base.p7')
+def archives_bill(request, bill_id):
+    data = get_user(request)
+    data['facture'] = get_object_or_404(Facture, pk=bill_id)
+    if not data['facture'].est_soldee():
+        messages.add_message(request, messages.ERROR, "Cette facture n'est pas encore soldée.")
+        return HttpResponseRedirect('/manager/archives/')
+    data['suivis'] = Suivi.objects.filter(facture=data['facture']).order_by("-date")
+    data['menu_manager'] = True
+    return render_to_response('base/manager/archives/invoice.html',
+                                data,
+                                context_instance=RequestContext(request))
 
