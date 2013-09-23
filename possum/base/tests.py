@@ -6,18 +6,16 @@ Replace these with more appropriate tests for your application.
 """
 
 from django.test import TestCase
+from possum.base.models import VAT
+from decimal import Decimal
 
-class SimpleTest(TestCase):
-    def test_basic_addition(self):
+class VATTests(TestCase):
+    def test_set_tax(self):
         """
-        Tests that 1 + 1 always equals 2.
         """
-        self.failUnlessEqual(1 + 1, 2)
+        vat = VAT()
+        vat.set_tax("19.6")
+        self.failUnlessEqual(vat.tax, "19.6")
+        self.failUnlessEqual(vat.value, Decimal("0.196"))
 
-__test__ = {"doctest": """
-Another way to test that 1 + 1 is equal to 2.
-
->>> 1 + 1 == 2
-True
-"""}
 

@@ -550,9 +550,19 @@
   "pk": 3, 
   "model": "base.cuisson", 
   "fields": {
+    "nom_facture": "AP", 
+    "nom": "a point", 
+    "priorite": 20, 
+    "couleur": 1
+  }
+},
+{
+  "pk": 4, 
+  "model": "base.cuisson", 
+  "fields": {
     "nom_facture": "BC", 
     "nom": "bien cuit", 
-    "priorite": 20, 
+    "priorite": 25, 
     "couleur": 1
   }
 },

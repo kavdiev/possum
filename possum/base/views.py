@@ -1137,11 +1137,16 @@ def table_set(request, bill_id, table_id):
                                 context_instance=RequestContext(request))
 
 @permission_required('base.p5')
-def category_select(request, bill_id):
+def category_select(request, bill_id, category_id=None):
     """Select a category to add a new product on a bill."""
     data = get_user(request)
     data['menu_bills'] = True
     data['categories'] = Categorie.objects.order_by('priorite', 'nom')
+    if category_id:
+        category = get_object_or_404(Categorie, pk=category_id)
+    else:
+        category = data['categories'][0]
+    data['products'] = Produit.objects.filter(categorie=category, actif=True)
     data['bill_id'] = bill_id
     return render_to_response('base/bill/categories.html',
                                 data,

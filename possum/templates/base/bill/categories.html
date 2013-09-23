@@ -1,17 +1,31 @@
 {% extends "base.html" %}
 {% block content %}
 
-<h1>Sélection d'une catégorie</h1>
+<h1>Sélection de la catégorie</h1>
 
 <ul id="categories">
     {% for category in categories %}
-    <li onclick="window.location='/bill/{{bill_id}}/product/{{category.id}}/select/'" style="background:{{category.couleur.web}};">
+    <li onclick="window.location='/bill/{{bill_id}}/category/{{category.id}}/'" style="background:{{category.couleur.web}};">
         {{category.nom}}
         </li>
     {% empty %}
         <li>Aucune categorie disponible.</li>
     {% endfor %}
 </ul>
+
+<h2>Sélection du produit</h2>
+
+<ul id="products">
+    {% for product in products %}
+        <li 
+            onclick="window.location='/bill/{{bill_id}}/product/add/{{product.id}}/'" 
+            style="background:{{product.categorie.couleur.web}};">{{product.nom}}
+        </li>
+    {% empty %}
+        <li>Aucun produit disponible.</li>
+    {% endfor %}
+</ul>
+
 
 {% endblock %}
 

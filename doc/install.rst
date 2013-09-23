@@ -146,6 +146,13 @@ Installation d'Apache
 
 Nous devons tout d'abord installer le serveur web Apache et le module mod_wsgi.
 
+CentOS
+^^^^^^
+
+::
+
+  yum install mod_wsgi
+
 Gentoo
 ^^^^^^
 
