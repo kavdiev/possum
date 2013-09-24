@@ -3,6 +3,13 @@
 {% block extrahead %}
 {{ super() }}
 
+{% endblock %}
+
+{% block rootrellink %}
+    <li><a href="http://www.possum-software.org/">Possum</a> &raquo;</li>
+    {{ super() }}
+{% endblock %}
+
 <script type="text/javascript"><!--
     google_ad_client = "ca-pub-8399544817857365";
     /* possum-software-1 */
@@ -14,11 +21,4 @@
 <script type="text/javascript"
     src="//pagead2.googlesyndication.com/pagead/show_ads.js">
 </script>
-
-{% endblock %}
-
-{% block rootrellink %}
-    <li><a href="http://www.possum-software.org/">Possum</a> &raquo;</li>
-    {{ super() }}
-{% endblock %}
 
