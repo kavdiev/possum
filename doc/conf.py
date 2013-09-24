@@ -21,7 +21,8 @@ from datetime import datetime
 #sys.path.append(os.path.abspath('../base'))
 #sys.path.append(os.path.abspath('../src'))
 
-sys.path.append('/home/pos/possum-software/')
+#sys.path.append('/home/pos/possum-software/')
+sys.path.append('..')
 os.environ['DJANGO_SETTINGS_MODULE'] = 'possum.settings'
 
 # -- General configuration -----------------------------------------------------
@@ -107,9 +108,9 @@ html_theme = 'default'
 # further.  For a list of options available for each theme, see the
 # documentation.
 #html_theme_options = {}
-#html_theme_options = {
-#    "stickysidebar": "true",
-#}
+html_theme_options = {
+    "stickysidebar": "true",
+}
 
 # Add any paths that contain custom themes here, relative to this directory.
 #html_theme_path = []
