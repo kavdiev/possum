@@ -26,11 +26,14 @@ Voir `VirtualEnv <https://pypi.python.org/pypi/virtualenv>`_
   su - pos
   virtualenv --prompt=='possum ' --python=python2 /home/pos
 
-On va maintenant préparer cet environnement:
+On va maintenant préparer cet environnement. Pour pouvoir installer pycups, il faut les outils de compilation et
+la bibliothèque libcups2-dev
 
 
 ::
 
+  apt-get install libcups2-dv
+  
   source /home/pos/bin/activate 
   pip install Django south wsgiref sphinx django_extensions Werkzeug \
               ipython pycups django-debug-toolbar
