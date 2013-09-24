@@ -12,7 +12,6 @@ Sommaire
    install
    utilisation
    devs
-   help
    screenshots
    licence
 

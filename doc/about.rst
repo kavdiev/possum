@@ -35,9 +35,7 @@ La 1er facture sortie par POSSUM date du 01/05/2008 à 19:28 au bar / brasserie 
 Dons
 ====
 
-Vous pouvez aider au développement du projet en faisant un don. Vous
-aurez la chance d'apparaître dans la liste ci-dessous des donateurs (si
-vous le souhaitez).
+Vous pouvez aider au développement du projet en faisant un don.
 
 Pourquoi des dons, pourquoi une license GPL ? Tout simplement parce que
 nous croyons à la communauté et cela est notre contribution.
@@ -46,9 +44,6 @@ Nous espérons que si vous utilisez le logiciel et qu'il vous satisfait,
 vous pourrez faire un don afin de nous aider à maintenir une infrastructure
 libre et communautaire.
 
-
-.. raw:: html
-   :file: paypal.html
 
 Les développeurs
 ================

@@ -29,7 +29,8 @@ os.environ['DJANGO_SETTINGS_MODULE'] = 'possum.settings'
 # Add any Sphinx extension module names here, as strings. They can be extensions
 # coming with Sphinx (named 'sphinx.ext.*') or your custom ones.
 #extensions = ['sphinx.ext.autodoc', 'sphinx.ext.doctest', 'sphinx.ext.todo', 'sphinx.ext.coverage', 'sphinx.ext.inheritance_diagram', 'sphinx.ext.viewcode']
-extensions = ['sphinx.ext.autodoc', 'sphinx.ext.doctest', 'sphinx.ext.inheritance_diagram']
+# avant modif DEVS extensions = ['sphinx.ext.autodoc', 'sphinx.ext.doctest', 'sphinx.ext.inheritance_diagram']
+extensions = ['sphinx.ext.autodoc', 'sphinx.ext.doctest', 'sphinx.ext.inheritance_diagram', 'sphinx.ext.todo', 'sphinx.ext.coverage']
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
@@ -126,7 +127,7 @@ html_title = "Documentation"
 # The name of an image file (relative to this directory) to place at the top
 # of the sidebar.
 #html_logo = None
-html_logo = "../possum/images/bandeau-192.png"
+html_logo = "../possum/static/images/bandeau-192.png"
 
 # The name of an image file (within the static path) to use as favicon of the
 # docs.  This file should be a Windows icon file (.ico) being 16x16 or 32x32
