@@ -45,15 +45,6 @@ On peut également se créer un jeu de données avec:
 
   ./manage.py dumpdata --indent=2 --format=json base > possum/base/fixtures/demo1.json
 
-Facture
--------
-
-.. inheritance-diagram:: possum.base.models.Facture
-   :parts: 1
-
-.. autoclass:: possum.base.models.Facture
-   :members:
-
 
 Qualité
 =======
