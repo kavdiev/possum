@@ -6,6 +6,6 @@ then
     # update doc on each update
     source /home/pos/bin/activate
     cd /home/pos/possum-software/doc
-    make html
+    make html > /dev/null 2>&1
 fi
 
