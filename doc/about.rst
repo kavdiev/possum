@@ -35,15 +35,14 @@ La 1er facture sortie par POSSUM date du 01/05/2008 à 19:28 au bar / brasserie 
 Dons
 ====
 
-Vous pouvez aider au développement du projet en faisant un don.
-
-Pourquoi des dons, pourquoi une license GPL ? Tout simplement parce que
-nous croyons à la communauté et cela est notre contribution.
+Vous pouvez aider au développement du projet en participant ou en faisant un don :)
 
 Nous espérons que si vous utilisez le logiciel et qu'il vous satisfait,
 vous pourrez faire un don afin de nous aider à maintenir une infrastructure
 libre et communautaire.
 
+Vous pouvez également faire un mini don en cliquant sur la pub se trouvant sur le site de
+`Possum <http://www.possum-software.org/`_.
 
 Les développeurs
 ================

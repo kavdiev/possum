@@ -34,24 +34,47 @@ user = User(username="toto",
         email="toto@example.net").save()
 user.set_password(passwd)
 user.save()
+# on ajoute les droits d'admin
+user.user_permissions.add(Permission.objects.get(codename="p1"))
+user.save()
 
 # on efface tous les produits présents
 Produit.objects.all().delete()
 Categorie.objects.all().delete()
+VAT.objects.all().delete()
+# les tables et les zones
+StatsJour.objects.all().delete()
 
 # TVA
+vat_alcool = VAT(name="alcool")
+vat_alcool.set_tax("19.6")
+alcool.save()
 vat_onsite = VAT(name="sur place")
-vat_onsite.set_tax("19.6")
+vat_onsite.set_tax("7")
 vat_onsite.save()
 vat_takeaway = VAT(name=u"à emporter")
 vat_takeaway.set_tax("7")
 vat_takeaway.save()
 
 # on entre les nouveaux produits, les prix sont TTC
-cat = Categorie(nom="Entrees", vat_onsite=vat_onsite, vat_takeaway=vat_takeaway)
+couleur = Couleur( !! à modifier)
+cat = Categorie(nom="Entrees", 
+        priorite=5,
+        surtaxable=False,
+        disable_surtaxe=False,
+        couleur=couleur,
+        vat_onsite=vat_onsite, 
+        vat_takeaway=vat_takeaway)
 cat.save()
-Produit(nom="salade", nom_facture="salade", prix="3.40", categorie=cat).save()
-Produit(nom="salade2", nom_facture="salade2", prix="3.40", categorie=cat).save()
+Produit(nom="salade", 
+        nom_facture="salade", 
+        prix="3.40", 
+        choix_cuisson=False,
+        choix_accompagnement=False,
+        choix_sauce=False,
+        categorie=cat).save()
+# pour les menu
+...
 
 # mis a jour des TTC et TVA
 for product in Produit.objects.all():
