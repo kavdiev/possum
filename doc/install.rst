@@ -32,7 +32,7 @@ la bibliothèque libcups2-dev
 
 ::
 
-  apt-get install libcups2-dv
+  apt-get install libcups2-dev
   
   source /home/pos/bin/activate 
   pip install Django south wsgiref sphinx django_extensions Werkzeug \
@@ -67,9 +67,7 @@ stable de POSSUM ici: `GitHub <https://github.com/possum-software/possum/archive
 
   tar xzf possum-software-possum-*.tar.gz
 
-L'autre possibilité est de récupérer la version en développement. Attention,
-il est déconseillé de se servir de cette version dans un environnement
-de production:
+L'autre possibilité est de récupérer la version en développement:
 
 ::
 
@@ -101,8 +99,8 @@ Création de la base pour l'application:
 
   You just installed Django's auth system, which means you don't have any superusers defined.
   Would you like to create one now? (yes/no): yes
-  Username (Leave blank to use 'pos'): my_login
-  E-mail address: my.login@example.org
+  Username (Leave blank to use 'pos'): demo
+  E-mail address: demo@possum-software.org
   Password:
   Password (again):
   Superuser created successfully.
@@ -114,16 +112,18 @@ On mets à jour le schéma de la base de données:
   cd /home/pos/possum-software
   ./manage.py migrate
 
-Il faut ensuite donner les droits minimums à cet utilisateur:
+Il nous faut maintenant définir quelques objets de base en exécutant
+le script: ''possum/utils/init_db.py''. Je vous conseille d'éventuellement
+adapter le contenu de ce fichier.
 
 ::
 
   cd /home/pos/possum-software
-  ./manage.py shell_plus
-  u = User.objects.get(pk=1)
-  u.user_permissions.add(Permission.objects.get(codename="p1"))
-  u.save()
-  quit()
+  possum/utils/init_db.py
+
+Il existe un fichier plus complet d'initialisation qui est utilisé pour le
+`site de démonstration <http://demo.possum-software.org/>`_. Ce fichier est:
+''possum/utils/init_demo.py''.
 
 Avant d'aller plus loin, vous pouvez tester le bon fonctionnement de l'ensemble en utilisant
 le serveur de développement:

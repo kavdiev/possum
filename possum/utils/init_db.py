@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-#    Copyright 2009, 2010, 2011 Sébastien Bonnegent
+#    Copyright 2009-2013 Sébastien Bonnegent
 #
 #    This file is part of POSSUM.
 #
@@ -19,52 +19,62 @@
 #    along with POSSUM.  If not, see <http://www.gnu.org/licenses/>.
 #
 import sys, os
-sys.path.append('/home/pos')
+sys.path.append('/home/pos/possum-software')
 os.environ['DJANGO_SETTINGS_MODULE'] = 'possum.settings'
 
-from possum.base.models import Accompagnement, Sauce, Etat, \
-    Categorie, Couleur, Cuisson, Facture, Log, LogType, Paiement, \
-    PaiementType, Produit, ProduitVendu, Suivi, Table, Zone
+from possum.base.models import Accompagnement, Sauce, \
+    Categorie, Cuisson, Facture, Log, LogType, Paiement, \
+    PaiementType, Produit, ProduitVendu, Suivi, Table, Zone, VAT, \
+    Printer, VATOnBill, StatsJourCategorie, StatsJourGeneral, \
+    StatsJourPaiement, StatsJourProduit
+from django.contrib.auth.models import User, Permission
 
-Couleur(id=1,red=255,green=159,blue=0).save()
-Couleur(id=2,red=102,green=204,blue=153).save()
-Couleur(id=3,red=255,green=200,blue=50).save()
-Couleur(id=4,red=166,green=159,blue=189).save()
-Couleur(id=5,red=184,green=218,blue=42).save()
-Couleur(id=6,red=201,green=161,blue=0).save()
-Couleur(id=7,red=69,green=224,blue=108).save()
-Couleur(id=8,red=255,green=249,blue=160).save()
-Couleur(id=9,red=255,green=249,blue=78).save()
-Couleur(id=10,red=148,green=166,blue=255).save()
-Couleur(id=11,red=255,green=225,blue=33).save()
-Couleur(id=12,red=68,green=179,blue=220).save()
-Couleur(id=13,red=234,green=101,blue=149).save()
-Couleur(id=14,red=255,green=90,blue=109).save()
-Couleur(id=15,red=234,green=151,blue=181).save()
-Couleur(id=16,red=255,green=135,blue=149).save()
-Couleur(id=17,red=29,green=255,blue=165).save()
-Couleur(id=18,red=255,green=53,blue=96).save()
-Couleur(id=19,red=136,green=240,blue=39).save()
-Couleur(id=20,red=63,green=164,blue=172).save()
+# on efface toutes la base
+VAT.objects.all().delete()
+Printer.objects.all().delete()
+VATOnBill.objects.all().delete()
+LogType.objects.all().delete()
+Log.objects.all().delete()
+Categorie.objects.all().delete()
+Cuisson.objects.all().delete()
+Sauce.objects.all().delete()
+Accompagnement.objects.all().delete()
+Produit.objects.all().delete()
+StatsJourCategorie.objects.all().delete()
+StatsJourGeneral.objects.all().delete()
+StatsJourPaiement.objects.all().delete()
+StatsJourProduit.objects.all().delete()
+Suivi.objects.all().delete()
+Facture.objects.all().delete()
+Zone.objects.all().delete()
+Table.objects.all().delete()
+User.objects.all().delete()
+PaiementType.objects.all().delete()
+Paiement.objects.all().delete()
 
-LogType(id=1,nom='Saint Saens Facturation System: ready',description='').save()
-LogType(id=2,nom='Saint Saens Facturation System: shutting down',description='').save()
-LogType(id=3,nom='Database initialized',description='').save()
-LogType(id=4,nom='Rapport generated',description='').save()
-LogType(id=5,nom='Warning',description='').save()
-LogType(id=6,nom='Critical',description='').save()
-LogType(id=7,nom='Nouveau Montant',description='').save()
-LogType(id=8,nom='Version',description='').save()
-LogType(id=9,nom='nb_couverts',description='Nombre de couverts').save()
-LogType(id=10,nom='nb_factures',description='Nombre de factures').save()
-LogType(id=11,nom='nb_bar',description='Nombre de factures pour le bar').save()
-LogType(id=12,nom='ca_resto',description='CA restauration').save()
-LogType(id=13,nom='ca_bar',description='CA bar').save()
-LogType(id=14,nom='montant_alcool',description='Montant Alcool').save()
-LogType(id=15,nom='maj_stats',description='61858').save()
-LogType(id=16,nom='montant_normal',description='Montant Normal').save()
-LogType(id=17,nom='tm_resto',description='TM restauration').save()
-LogType(id=18,nom='ca',description='CA TTC').save()
-LogType(id=19,nom='tm_bar',description='TM bar').save()
-LogType(id=20,nom='tva_alcool',description='TVA Alcool').save()
-LogType(id=21,nom='tva_normal',description='TVA Normal').save()
+# ajout d'un utilisateur
+user = User(username="demo", 
+        first_name="first name", 
+        last_name="last name", 
+        email="demo@possum-software.org")
+user.set_password("demo")
+user.save()
+# on ajoute les droits d'admin
+for i in xrange(1,10):
+    user.user_permissions.add(Permission.objects.get(codename="p%d" % i))
+user.save()
+
+# Cuisson
+Cuisson(nom='bleu', nom_facture='B', color='#ffdd82', priorite='10').save()
+Cuisson(nom='saignant', nom_facture='S', color='#ffdd82', priorite='15').save()
+Cuisson(nom=u'à point', nom_facture='AP', color='#ffdd82', priorite='20').save()
+Cuisson(nom='bien cuit', nom_facture='BC', color='#ffdd82', priorite='25').save()
+
+# Type de paiements
+PaiementType(nom='AMEX', fixed_value=False).save()
+PaiementType(nom='ANCV', fixed_value=True).save()
+PaiementType(nom='CB', fixed_value=False).save()
+PaiementType(nom='Cheque', fixed_value=False).save()
+PaiementType(nom='Espece', fixed_value=False).save()
+PaiementType(nom='Tic. Resto.', fixed_value=True).save()
+
