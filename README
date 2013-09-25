@@ -12,11 +12,11 @@ All source code are under GPLv3 and documentation in FDL. GUI use EFL and all th
 
 Some important links:
 
-* Demo:          http://demo.possum-software.org
-* Documentation: http://www.possum-software.org
-* Issues:        https://github.com/possum-software/possum/issues
-* Jenkins:       http://code.possum-software.org
-* Freecode:      http://freecode.com/projects/possum
+* Demo [demo/demo]:  http://demo.possum-software.org
+* Documentation:     http://www.possum-software.org
+* Issues:            https://github.com/possum-software/possum/issues
+* Jenkins:           http://code.possum-software.org
+* Freecode:          http://freecode.com/projects/possum
 
 The key word: try to keep it simple for the final user.
 
