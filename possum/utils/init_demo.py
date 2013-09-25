@@ -19,7 +19,8 @@
 #    along with POSSUM.  If not, see <http://www.gnu.org/licenses/>.
 #
 import sys, os
-sys.path.append('/home/pos/possum-software')
+#sys.path.append('/home/pos/possum-software')
+sys.path.append('.')
 os.environ['DJANGO_SETTINGS_MODULE'] = 'possum.settings'
 
 from possum.base.models import Accompagnement, Sauce, \
