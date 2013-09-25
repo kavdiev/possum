@@ -139,7 +139,7 @@ class Facture(models.Model):
         """
         categories = []
         products = {}
-        for product in self.produits.filter(sent=False):
+        for product in self.produits.all():
             if product.est_un_menu():
                 for subproduct in product.contient.all():
                     # cas des menus
@@ -176,26 +176,32 @@ class Facture(models.Model):
         if category:
             todolist = []
             heure = datetime.datetime.now().strftime("%H:%M")
-            todolist.append("[%s] Table %s (%d pers.)" % (heure, self.table, self.couverts))
+            todolist.append("[%s] Table %s (%d couv.)" % (heure, self.table, self.couverts))
             todolist.append(">>> envoye %s" % category.nom)
-            if self.produits.filter(sent=True).count() == 0:
-                # on crée le ticket avec la liste des produits et 
-                # des suites
-                todolist.append(" ")
-                products = self.get_first_todolist_for_kitchen()
-                if products:
-                    todolist += products
-            #else:
-            #    # on indique seulement qu'il faut la suite de la table
-            #    todolist.append("> Table %s : envoye %s (%s)" % (self.table, category.nom, heure))
+            todolist.append(" ")
+            nb_products_sent = self.produits.filter(sent=True).count()
+            # liste des produits qui doivent etre envoyés en cuisine
+            products = []
             # les produits standards
             for product in self.produits.filter(made_with=category, sent=False):
                 product.sent = True
+                products.append(product)
                 product.save()
             # les menus
             for product in self.produits.filter(contient__made_with=category, sent=False):
                 product.sent = True
+                products.append(product)
                 product.save()
+            if nb_products_sent == 0:
+                # on crée le ticket avec la liste des produits et 
+                # des suites
+                products = self.get_first_todolist_for_kitchen()
+                if products:
+                    todolist += products
+            else:
+                products.sort()
+                for product in products:
+                    todolist.append(product)
             result = False
             for printer in Printer.objects.filter(kitchen=True):
                 result = printer.print_list(todolist, "kitchen-%s-%s" % (self.id, category.id))

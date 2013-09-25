@@ -42,7 +42,7 @@ vous pourrez faire un don afin de nous aider à maintenir une infrastructure
 libre et communautaire.
 
 Vous pouvez également faire un mini don en cliquant sur la pub se trouvant sur le site de
-`Possum <http://www.possum-software.org/`_.
+`Possum <http://www.possum-software.org/`_ (tout en bas).
 
 Les développeurs
 ================

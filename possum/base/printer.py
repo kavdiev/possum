@@ -39,7 +39,7 @@ class Printer(models.Model):
     options = models.CharField(max_length=120)
     header = models.TextField(default="")
     footer = models.TextField(default="")
-    width = models.PositiveIntegerField(default=80)
+    width = models.PositiveIntegerField(default=27)
     kitchen = models.BooleanField(default=False)
     billing = models.BooleanField(default=False)
     manager = models.BooleanField(default=False)
