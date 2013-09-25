@@ -67,9 +67,4 @@ class Priorite(models.Model):
         self.priorite += number
         self.save()
 
-class Etat(Nom, Priorite):
-    """Etat d'une facture"""
-
-    def __cmp__(self, other):
-        return cmp(self.priorite,other.priorite)
 

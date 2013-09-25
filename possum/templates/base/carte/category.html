@@ -21,8 +21,8 @@
         >></br>
         Priorité + 10</li>
     <li onclick="window.location='/carte/categories/{{category.id}}/color/'" 
-        style="background:{{category.couleur.web}};">
-        Couleur:</br>{{category.couleur.web}}</li>
+        style="background:{{category.color}};">
+        Couleur:</br>{{category.color}}</li>
     <li onclick="window.location='/carte/categories/{{category.id}}/name/'">
         Changement de nom</li>
     <!--li onclick="window.location='/carte/categories/{{category.id}}/surtaxable/'"
@@ -69,7 +69,7 @@
     {% for product in products_enable %}
         <li 
             onclick="window.location='/carte/products/{{product.id}}/'" 
-            style="background:{{category.couleur.web}};">{{product.nom}}
+            style="background:{{category.color}};">{{product.nom}}
         </li>
     {% endfor %}
 </ul>
@@ -79,7 +79,7 @@
     {% for product in products_disable %}
         <li 
             onclick="window.location='/carte/products/{{product.id}}/'" 
-            style="background:{{category.couleur.web}};">{{product.nom}}
+            style="background:{{category.color}};">{{product.nom}}
         </li>
     {% empty %}
         <li>Aucun produit disponible.</li>

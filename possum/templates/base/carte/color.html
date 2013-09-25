@@ -4,7 +4,7 @@
 <h1>Changement de couleur pour: {{category.nom}}</h2>
 
 <form method='post' action='/carte/categories/{{category.id}}/color/set/'>{% csrf_token %}
-    <input name="color" value="{{ category.couleur.web }}">
+    <input name="color" value="{{ category.color }}">
     <input type='submit' value='Modifier'>
 </form>
 
@@ -12,7 +12,7 @@
 
 <ul id="categories">
     {% for category in categories %}
-        <li style="background:{{category.couleur.web}};">{{category.nom}}</li>
+        <li style="background:{{category.color}};">{{category.nom}}</li>
     {% empty %}
         <li>Aucune categorie disponible.</li>
     {% endfor %}

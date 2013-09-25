@@ -19,15 +19,13 @@
 #
 from django.db import models
 from possum.base.generic import Nom, Priorite
-from possum.base.color import Couleur
 from possum.base.vat import VAT
 
 class Categorie(Nom, Priorite):
     surtaxable = models.BooleanField("majoration terrasse", default=False)
     disable_surtaxe = models.BooleanField("peut enlever la surtaxe presente", default=False)
     made_in_kitchen = models.BooleanField(default=False)
-    couleur = models.ForeignKey('Couleur', null=True, blank=True, 
-            related_name="categorie-couleur")
+    color = models.CharField(max_length=8, default="#ffdd82")
     vat_onsite = models.ForeignKey('VAT', null=True, blank=True, 
             related_name="categorie-vat-onsite")
     vat_takeaway = models.ForeignKey('VAT', null=True, blank=True, 

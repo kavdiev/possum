@@ -26,7 +26,7 @@
 
 <ul id="products_sold">
     {% for vendu in facture.produits.all %}
-    <li style="background:{{vendu.produit.categorie.couleur.web}};">
+    <li style="background:{{vendu.produit.categorie.color}};">
     {{vendu}} ({{vendu.produit.get_prize}})</br>
         {% if vendu.cuisson %}({{vendu.cuisson}}){% endif %}
         {{ vendu.get_menu_resume }}
@@ -41,7 +41,7 @@
     <h3>{{vendu}}</h3>
     <ul id="products_sold">
         {% for sub in vendu.get_menu_products %}
-        <li style="background:{{sub.produit.categorie.couleur.web}};">
+        <li style="background:{{sub.produit.categorie.color}};">
         {{sub}}</br>
         {% if sub.cuisson %}({{sub.cuisson}}){% endif %}
         </li>
@@ -70,7 +70,7 @@
 <ul id="kitchen">
     {% for suivi in suivis %}
     <li
-            style="background:{{suivi.category.couleur.web}};">
+            style="background:{{suivi.category.color}};">
          {{suivi}}
     </li>
     {% empty %}

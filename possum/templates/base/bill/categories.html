@@ -5,7 +5,7 @@
 
 <ul id="categories">
     {% for category in categories %}
-    <li onclick="window.location='/bill/{{bill_id}}/category/{{category.id}}/'" style="background:{{category.couleur.web}};">
+    <li onclick="window.location='/bill/{{bill_id}}/category/{{category.id}}/'" style="background:{{category.color}};">
         {{category.nom}}
         </li>
     {% empty %}
@@ -19,7 +19,7 @@
     {% for product in products %}
         <li 
             onclick="window.location='/bill/{{bill_id}}/product/add/{{product.id}}/'" 
-            style="background:{{product.categorie.couleur.web}};">{{product.nom}}
+            style="background:{{product.categorie.color}};">{{product.nom}}
         </li>
     {% empty %}
         <li>Aucun produit disponible.</li>

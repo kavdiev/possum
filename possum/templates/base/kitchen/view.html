@@ -6,7 +6,7 @@
 <ul id="kitchen">
     {% for suivi in suivis %}
     <li onclick="window.location='/bill/{{suivi.facture.id}}/'" 
-        style="background:{{suivi.category.couleur.web}};">
+        style="background:{{suivi.category.color}};">
         {{suivi}}
         </li>
     {% empty %}

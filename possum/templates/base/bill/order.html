@@ -10,7 +10,7 @@
 <ul id="bill_info">
     <li onclick="window.location='/bill/{{facture.id}}/kitchen/'"
     {% if next %}
-        style="background:{{next.couleur.web}};"
+        style="background:{{next.color}};"
         >Cuisine:</br>Envoyé {{next.nom}} ?
     {% else %}
         >Cuisine:</br>Rien à envoyer
@@ -37,7 +37,7 @@
 <ul id="products_sold">
     <li onclick="window.location='/bill/{{facture.id}}/category/select/'">Ajouter</li>
     {% for vendu in facture.produits.all %}
-    <li style="background:{{vendu.produit.categorie.couleur.web}};" onclick="window.location='/bill/{{facture.id}}/sold/{{vendu.id}}/view/'">
+    <li style="background:{{vendu.produit.categorie.color}};" onclick="window.location='/bill/{{facture.id}}/sold/{{vendu.id}}/view/'">
     {{vendu}} ({{vendu.produit.get_prize}})</br>
         {% if vendu.cuisson %}({{vendu.cuisson}}){% endif %}
         {{ vendu.get_menu_resume }}
@@ -67,7 +67,7 @@
 <ul id="kitchen">
     {% for suivi in suivis %}
     <li onclick="window.location='/bill/{{suivi.facture.id}}/'" 
-            style="background:{{suivi.category.couleur.web}};">
+            style="background:{{suivi.category.color}};">
          {{suivi}}
     </li>
     {% empty %}

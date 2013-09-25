@@ -28,7 +28,6 @@ from possum.base.bill import Facture, Suivi
 from possum.base.models import Printer
 from possum.base.product import Produit, ProduitVendu
 from possum.base.payment import PaiementType, Paiement
-from possum.base.color import Couleur
 from possum.base.category import Categorie
 from possum.base.options import Cuisson, Sauce, Accompagnement
 from possum.base.location import Zone, Table
@@ -524,25 +523,13 @@ def categories_set_color(request, cat_id):
     data = get_user(request)
     color = request.POST.get('color', '').strip()
     cat = get_object_or_404(Categorie, pk=cat_id)
-    if not cat.couleur or color != cat.couleur.web():
+    if not cat.color or color != cat.color:
         logging.info("[%s] new categorie color [%s]" % (data['user'].username, cat.nom))
-        c = Couleur()
-        if c.set_from_rgb(color):
-            try:
-                old_color = Couleur.objects.get(red=c.red, green=c.green, blue=c.blue)
-                c = old_color
-            except Couleur.DoesNotExist:
-                c.save()
-            cat.couleur = c
-        else:
-            logging.warning("[%s] invalid color [%s]" % (data['user'].username, color))
-            messages.add_message(request, messages.ERROR, "La nouvelle couleur n'a pu être enregistrée.")
-
-    try:
-        cat.save()
-    except:
-        messages.add_message(request, messages.ERROR, "Les modifications n'ont pu être enregistrées.")
-        logging.warning("[%s] save failed for [%s]" % (data['user'].username, cat.nom))
+        cat.color = color
+        try:
+            cat.save()
+        except:
+            messages.add_message(request, messages.ERROR, "Les modifications n'ont pu être enregistrées.")
     return HttpResponseRedirect('/carte/categories/%s/' % cat_id)
 
 @permission_required('base.p6')

@@ -22,10 +22,33 @@ import sys, os
 sys.path.append('/home/pos/possum-software')
 os.environ['DJANGO_SETTINGS_MODULE'] = 'possum.settings'
 
-from possum.base.models import Accompagnement, Sauce, Etat, \
-    Categorie, Couleur, Cuisson, Facture, Log, LogType, Paiement, \
+from possum.base.models import Accompagnement, Sauce, \
+    Categorie, Cuisson, Facture, Log, LogType, Paiement, \
     PaiementType, Produit, ProduitVendu, Suivi, Table, Zone, VAT
 from django.contrib.auth.models import User
+
+# on efface toutes la base
+VAT.objects.all().delete()
+Printer.objects.all().delete()
+VATOnBill.objects.all().delete()
+LogType.objects.all().delete()
+Log.objects.all().delete()
+Categorie.objects.all().delete()
+Cuisson.objects.all().delete()
+Sauce.objects.all().delete()
+Accompagnement.objects.all().delete()
+Produit.objects.all().delete()
+StatsJourCategorie.objects.all().delete()
+StatsJourGeneral.objects.all().delete()
+StatsJourPaiement.objects.all().delete()
+StatsJourProduit.objects.all().delete()
+Suivi.objects.all().delete()
+Facture.objects.all().delete()
+Zone.objects.all().delete()
+Table.objects.all().delete()
+User.objects.all()delete()
+PaiementType.objects.all()delete()
+Paiement.objects.all()delete()
 
 # ajout d'un utilisateur
 user = User(username="toto", 
@@ -37,13 +60,6 @@ user.save()
 # on ajoute les droits d'admin
 user.user_permissions.add(Permission.objects.get(codename="p1"))
 user.save()
-
-# on efface tous les produits présents
-Produit.objects.all().delete()
-Categorie.objects.all().delete()
-VAT.objects.all().delete()
-# les tables et les zones
-StatsJour.objects.all().delete()
 
 # TVA
 vat_alcool = VAT(name="alcool")
@@ -57,12 +73,11 @@ vat_takeaway.set_tax("7")
 vat_takeaway.save()
 
 # on entre les nouveaux produits, les prix sont TTC
-couleur = Couleur( !! à modifier)
 cat = Categorie(nom="Entrees", 
         priorite=5,
         surtaxable=False,
         disable_surtaxe=False,
-        couleur=couleur,
+        couleur="#ff9f00",
         vat_onsite=vat_onsite, 
         vat_takeaway=vat_takeaway)
 cat.save()

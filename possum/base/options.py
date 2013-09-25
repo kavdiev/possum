@@ -19,20 +19,19 @@
 #
 from django.db import models
 from possum.base.generic import Nom, Priorite, NomDouble
-from possum.base.color import Couleur
 
 class Cuisson(NomDouble, Priorite):
     """Cuisson d'un produit"""
-    couleur = models.ForeignKey('Couleur', null=True, blank=True, related_name="cuisson-couleur")
+    color = models.CharField(max_length=8, default="#ffdd82")
 
     def __cmp__(self, other):
         return cmp(self.priorite, other.priorite)
 
 class Sauce(Nom):
     """Sauce d'un produit"""
-    couleur = models.ForeignKey('Couleur', null=True, blank=True, related_name="sauce-couleur")
+    color = models.CharField(max_length=8, default="#ffdd82")
 
 class Accompagnement(Nom):
     """Accompagnement d'un produit"""
-    couleur = models.ForeignKey('Couleur', null=True, blank=True, related_name="accompagnement-couleur")
+    color = models.CharField(max_length=8, default="#ffdd82")
 

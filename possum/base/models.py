@@ -29,11 +29,10 @@ from possum.base.vatonbill import VATOnBill
 from possum.base.stats import StatsJour, StatsJourGeneral, \
     StatsJourPaiement, StatsJourProduit, StatsJourCategorie
 from possum.base.bill import Facture, Suivi
-from possum.base.generic import Nom, NomDouble, Priorite, Etat
+from possum.base.generic import Nom, NomDouble, Priorite
 from possum.base.log import LogType, Log
 from possum.base.product import Produit, ProduitVendu
 from possum.base.payment import PaiementType, Paiement
-from possum.base.color import Couleur
 from possum.base.category import Categorie
 from possum.base.options import Cuisson, Sauce, Accompagnement
 from possum.base.location import Zone, Table

@@ -14,7 +14,7 @@
         Nom facture:</br>
         {{product.nom_facture}}</li>
     <li onclick="window.location='/carte/products/{{product.id}}/category/'" 
-        style="background:{{product.categorie.couleur.web}};">
+        style="background:{{product.categorie.color}};">
         Catégorie:</br>{{product.categorie}}</li>
     <li onclick="window.location='/carte/products/{{product.id}}/enable/'"
         {% if product.actif %}
@@ -47,7 +47,7 @@ d'abord activer des catégories de produits ici avant de pouvoir activer des pro
 <ul id="categories">
     <li onclick="window.location='/carte/products/{{product.id}}/categories_ok/select/'">Activer une catégorie</li>
     {% for category in product.categories_ok.all %}
-    <li onclick="window.location='/carte/products/{{product.id}}/categories_ok/{{category.id}}/del/'" style="background:{{category.couleur.web}};">
+    <li onclick="window.location='/carte/products/{{product.id}}/categories_ok/{{category.id}}/del/'" style="background:{{category.color}};">
         {{category.nom}}
         </li>
     {% endfor %}
@@ -59,7 +59,7 @@ d'abord activer des catégories de produits ici avant de pouvoir activer des pro
     {% for sub in product.produits_ok.all %}
         <li 
             onclick="window.location='/carte/products/{{product.id}}/produits_ok/{{sub.id}}/del/'" 
-            style="background:{{sub.categorie.couleur.web}};">{{sub.nom}}
+            style="background:{{sub.categorie.color}};">{{sub.nom}}
         </li>
     {% endfor %}
 </ul>
