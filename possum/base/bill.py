@@ -34,18 +34,6 @@ from possum.base.printer import Printer
 from possum.base.log import LogType
 from django.contrib.auth import authenticate
 
-
-def remplissage(nb,  caractere,  largeur):
-    """caractere est le caractere de remplissage"""
-    milieu = caractere
-    # on ajoute len(milieu) a nb
-    nb += 1
-    while nb < largeur:
-        milieu += caractere
-        nb += 1
-    return milieu
-
-
 class Suivi(models.Model):
     """Suivi des envois en cuisine:
     category est la categorie envoyée en cuisine"""
@@ -139,9 +127,9 @@ class Facture(models.Model):
         """
         categories = []
         products = {}
-        for product in self.produits.all():
+        for product in self.produits.iterator():
             if product.est_un_menu():
-                for subproduct in product.contient.all():
+                for subproduct in product.contient.iterator():
                     # cas des menus
                     if subproduct.made_with not in categories:
                         categories.append(subproduct.made_with)
@@ -275,12 +263,12 @@ class Facture(models.Model):
     def compute_total(self):
         self.total_ttc = Decimal("0")
         self.restant_a_payer = Decimal("0")
-        for v in self.vats.all():
+        for v in self.vats.iterator():
             v.total = 0
             v.save()
-        for product in self.produits.all():
+        for product in self.produits.iterator():
             self.add_product_prize(product)
-        for payment in self.paiements.all():
+        for payment in self.paiements.iterator():
             self.restant_a_payer -= payment.montant
         self.save()
 
@@ -379,7 +367,7 @@ class Facture(models.Model):
         c'est qu'il reste certainement une remise, dans
         ce cas on enlève tous les produits.
         """
-        if product in self.produits.all():
+        if product in self.produits.iterator():
             surtaxe = self.est_surtaxe()
             self.produits.remove(product)
             if surtaxe != self.est_surtaxe():
@@ -401,7 +389,7 @@ class Facture(models.Model):
 
     def del_payment(self, payment):
         """On supprime un paiement"""
-        if payment in self.paiements.all():
+        if payment in self.paiements.iterator():
             self.paiements.remove(payment)
             payment.delete()
             self.save()
@@ -538,7 +526,7 @@ class Facture(models.Model):
         Table is surtaxed et il n'y a pas de nourriture.
         """
         if self.onsite:
-            for produit in self.produits.all():
+            for produit in self.produits.iterator():
                 #logging.debug("test with produit: %s and categorie id: %d" % (produit.nom, produit.categorie.id))
                 if produit.produit.categorie.disable_surtaxe:
                     #logging.debug("pas de surtaxe")
@@ -703,7 +691,7 @@ class Facture(models.Model):
         stat = StatsJourGeneral.objects.get_or_create(date=date, type=logtype)[0]
         stat.valeur += self.total_ttc
         stat.save()
-        for vatonbill in self.vats.all():
+        for vatonbill in self.vats.iterator():
             logtype, created = LogType.objects.get_or_create(nom="%s_vat_only" % vatonbill.vat.id)
             if created:
                 logtype.save()
@@ -852,7 +840,7 @@ class Facture(models.Model):
             ticket.append(" 1 %s%s%s" % (name, remplissage, prize))
         ticket.append(separateur)
         ticket.append("  Total: % 8.2f Eur." % self.total_ttc)
-        for vatonbill in self.vats.all():
+        for vatonbill in self.vats.iterator():
             ticket.append("  TVA % 5.2f%%: % 6.2f Eur." % (\
                     vatonbill.vat.tax, vatonbill.total))
         ticket.append(separateur)
