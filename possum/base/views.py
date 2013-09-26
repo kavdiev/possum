@@ -54,7 +54,14 @@ from datetime import datetime
 def create_default_directory():
     if not os.path.exists(settings.PATH_TICKET):
         os.makedirs(settings.PATH_TICKET)
-create_default_directory()
+
+def cache_categories():
+    cache['categories'] = Categorie.objects.order_by('priorite', 'nom')
+
+def cache_products_for_category(category):
+    if 'products' not in cache:
+        cache['products'] = {}
+    cache['products'][category.id] = Produit.objects.filter(categorie=category, actif=True)
 
 def get_user(request):
     data = {}
@@ -62,6 +69,13 @@ def get_user(request):
     data['user'] = request.user
 #    data.update(csrf(request))
     return data
+
+def init_cache_system():
+    cache_categories()
+    for category in cache['categories']:
+        cache_products_for_category(category)
+#    from pprint import pprint
+#    pprint(cache)
 
 def permission_required(perm, **kwargs):
     """This decorator redirect the user to '/'
@@ -147,7 +161,7 @@ def categories_print(request):
 def categories(request):
     data = get_user(request)
     data['menu_carte'] = True
-    data['categories'] = Categorie.objects.order_by('priorite', 'nom')
+    data['categories'] = cache['categories']
     return render_to_response('base/carte/categories.html',
                     data,
                     context_instance=RequestContext(request))
@@ -157,7 +171,7 @@ def categories_delete(request, cat_id):
     data = get_user(request)
     data['menu_carte'] = True
     data['current_cat'] = get_object_or_404(Categorie, pk=cat_id)
-    data['categories'] = Categorie.objects.order_by('priorite', 'nom').exclude(id=cat_id)
+    data['categories'] = cache['categories'].exclude(id=cat_id)
     cat_report_id = request.POST.get('cat_report', '').strip()
     action = request.POST.get('valide', '').strip()
     if action == "Supprimer":
@@ -193,6 +207,8 @@ def categories_delete(request, cat_id):
             stat.delete()
         logging.info("[%s] categorie [%s] deleted" % (data['user'].username, data['current_cat'].nom))
         data['current_cat'].delete()
+        cache_products_for_category(data['current_cat'])
+        cache_categories()
         return HttpResponseRedirect('/carte/categories/')
     elif action == "Annuler":
         return HttpResponseRedirect('/carte/categories/')
@@ -236,6 +252,8 @@ def categories_new(request):
         except:
             logging.warning("[%s] new categorie failed: [%s] [%s]" % (data['user'].username, cat.priorite, cat.nom))
             messages.add_message(request, messages.ERROR, "La nouvelle catégorie n'a pu être créée.")
+        else:
+            cache_categories()
     else:
         messages.add_message(request, messages.ERROR, "Vous devez choisir un nom pour la nouvelle catégorie.")
     return HttpResponseRedirect('/carte/categories/')
@@ -252,7 +270,7 @@ def categories_name(request, cat_id):
 def categories_color(request, cat_id):
     data = get_user(request)
     data['category'] = get_object_or_404(Categorie, pk=cat_id)
-    data['categories'] = Categorie.objects.order_by('priorite', 'nom')
+    data['categories'] = cache['categories']
     return render_to_response('base/carte/color.html',
                                 data,
                                 context_instance=RequestContext(request))
@@ -262,6 +280,7 @@ def categories_less_priority(request, cat_id, nb=1):
     data = get_user(request)
     cat = get_object_or_404(Categorie, pk=cat_id)
     cat.set_less_priority(nb)
+    cache_categories()
     logging.info("[%s] cat [%s] priority - %d" % (data['user'].username, cat.nom, nb))
     return HttpResponseRedirect('/carte/categories/%s/' % cat_id)
 
@@ -270,6 +289,7 @@ def categories_more_priority(request, cat_id, nb=1):
     data = get_user(request)
     cat = get_object_or_404(Categorie, pk=cat_id)
     cat.set_more_priority(nb)
+    cache_categories()
     logging.info("[%s] cat [%s] priority + %d" % (data['user'].username, cat.nom, nb))
     return HttpResponseRedirect('/carte/categories/%s/' % cat_id)
 
@@ -282,6 +302,7 @@ def categories_surtaxable(request, cat_id):
     if cat.surtaxable:
         cat.disable_surtaxe = False
     cat.save()
+    cache_categories()
     logging.info("[%s] cat [%s] surtaxable: %s" % (data['user'].username, cat.nom, cat.surtaxable))
     return HttpResponseRedirect('/carte/categories/%s/' % cat_id)
 
@@ -303,8 +324,10 @@ def categories_set_vat_takeaway(request, cat_id, vat_id):
     category = get_object_or_404(Categorie, pk=cat_id)
     vat = get_object_or_404(VAT, pk=vat_id)
     category.set_vat_takeaway(vat)
+    cache_categories()
     for product in Produit.objects.filter(categorie=category, actif=True):
         product.update_vats()
+    cache_products_for_category(category)
     return HttpResponseRedirect('/carte/categories/%s/' % cat_id)
 
 @permission_required('base.p6')
@@ -313,8 +336,10 @@ def categories_set_vat_onsite(request, cat_id, vat_id):
     category = get_object_or_404(Categorie, pk=cat_id)
     vat = get_object_or_404(VAT, pk=vat_id)
     category.set_vat_onsite(vat)
+    cache_categories()
     for product in Produit.objects.filter(categorie=category, actif=True):
         product.update_vats()
+    cache_products_for_category(category)
     return HttpResponseRedirect('/carte/categories/%s/' % cat_id)
 
 @permission_required('base.p6')
@@ -530,6 +555,8 @@ def categories_set_color(request, cat_id):
             cat.save()
         except:
             messages.add_message(request, messages.ERROR, "Les modifications n'ont pu être enregistrées.")
+        else:
+            cache_categories()
     return HttpResponseRedirect('/carte/categories/%s/' % cat_id)
 
 @permission_required('base.p6')
@@ -546,7 +573,7 @@ def products_category(request, product_id):
     data = get_user(request)
     data['product'] = get_object_or_404(Produit, pk=product_id)
     data['menu_carte'] = True
-    data['categories'] = Categorie.objects.order_by('priorite', 'nom')
+    data['categories'] = cache['categories']
     return render_to_response('base/carte/product_category.html',
                                 data,
                                 context_instance=RequestContext(request))
@@ -607,7 +634,7 @@ def products_select_categories_ok(request, product_id):
     data['product'] = get_object_or_404(Produit, pk=product_id)
     data['menu_carte'] = True
     data['categories'] = []
-    for category in Categorie.objects.order_by('priorite', 'nom'):
+    for category in cache['categories'].iterator():
         if category not in data['product'].categories_ok.all() \
                 and category != data['product'].categorie:
             data['categories'].append(category)
@@ -679,6 +706,8 @@ def categories_set_name(request, cat_id):
     except:
         messages.add_message(request, messages.ERROR, "Les modifications n'ont pu être enregistrées.")
         logging.warning("[%s] save failed for [%s]" % (data['user'].username, cat.nom))
+    else:
+        cache_categories()
     return HttpResponseRedirect('/carte/categories/%s/' % cat_id)
 
 @permission_required('base.p6')
@@ -688,6 +717,7 @@ def categories_set_kitchen(request, cat_id):
     new = not cat.made_in_kitchen
     cat.made_in_kitchen = new
     cat.save()
+    cache_categories()
     return HttpResponseRedirect('/carte/categories/%s/' % cat_id)
 
 @permission_required('base.p6')
@@ -699,7 +729,7 @@ def categories_disable_surtaxe(request, cat_id):
     if cat.disable_surtaxe:
         cat.surtaxable = False
     cat.save()
-    logging.info("[%s] cat [%s] disable_surtaxe: %s" % (data['user'].username, cat.nom, cat.disable_surtaxe))
+    cache_categories()
     return HttpResponseRedirect('/carte/categories/%s/' % cat_id)
 
 @permission_required('base.p5')
@@ -1128,7 +1158,7 @@ def category_select(request, bill_id, category_id=None):
     """Select a category to add a new product on a bill."""
     data = get_user(request)
     data['menu_bills'] = True
-    data['categories'] = Categorie.objects.order_by('priorite', 'nom')
+    data['categories'] = cache['categories']
     if category_id:
         category = get_object_or_404(Categorie, pk=category_id)
     else:
@@ -1502,3 +1532,9 @@ def archives_bill(request, bill_id):
                                 data,
                                 context_instance=RequestContext(request))
 
+create_default_directory()
+
+# Possum Cache System
+cache = {}
+
+init_cache_system()
