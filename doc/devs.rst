@@ -49,8 +49,9 @@ On peut également se créer un jeu de données avec:
 Qualité
 =======
 
-La qualité générale de Possum est mesurée par Pylint.
-La définition de tous les codes est `ici <http://pylint-messages.wikidot.com/all-codes>`_.
+La qualité générale de Possum est auditée grâce à Jenkins et Sonar.
+Les résultats sont consultables respectivement `ici <https://www.possum-software.org/jenkins>`_
+et `ici <https://www.possum-software.org/sonar`_.
 
 Les bugs
 ========
