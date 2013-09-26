@@ -93,31 +93,16 @@ Pour plus d'informations
 reportez vous à la documentation de Django:
 `Installation de Django <http://docs.django-fr.org/intro/install.html>`_
 
-Création de la base pour l'application:
+Création de la base pour l'application et mise à jour des schémas:
 
 ::
 
   cd /home/pos/possum-software
-  ./manage.py syncdb
-
-  You just installed Django's auth system, which means you don't have any superusers defined.
-  Would you like to create one now? (yes/no): yes
-  Username (Leave blank to use 'pos'): demo
-  E-mail address: demo@possum-software.org
-  Password:
-  Password (again):
-  Superuser created successfully.
-
-On mets à jour le schéma de la base de données:
-
-::
-
-  cd /home/pos/possum-software
-  ./manage.py migrate
+  ./manage.py syncdb --noinput --migrate
 
 Il nous faut maintenant définir quelques objets de base en exécutant
-le script: ''possum/utils/init_db.py''. Je vous conseille d'éventuellement
-adapter le contenu de ce fichier.
+le script: ''possum/utils/init_db.py''. Je vous conseille d'adapter
+le contenu de ce fichier (notamment l'utilisateur par défaut).
 
 ::
 
