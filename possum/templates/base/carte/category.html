@@ -6,6 +6,7 @@
 </ul>
 
 <h1>Catégorie: {{category.nom}}</h1>
+<h2>Priorité d'affichage</h2>
 <ul id="category_info">
     <li onclick="window.location='/carte/categories/{{category.id}}/less-10/'">
         <<</br>
@@ -20,6 +21,9 @@
     <li onclick="window.location='/carte/categories/{{category.id}}/more-10/'">
         >></br>
         Priorité + 10</li>
+</ul>
+<h2>Paramètres</h2>
+<ul id="category_info">
     <li onclick="window.location='/carte/categories/{{category.id}}/color/'" 
         style="background:{{category.color}};">
         Couleur:</br>{{category.color}}</li>
