@@ -1253,7 +1253,8 @@ def product_add(request, bill_id, product_id):
         return HttpResponseRedirect('/bill/%s/sold/%s/category/%s/select/' % (bill_id, product_sell.id, category.id))
     if product.choix_cuisson:
         return HttpResponseRedirect('/bill/%s/sold/%s/cooking/' % (bill_id, product_sell.id))
-    return HttpResponseRedirect('/bill/%s/' % bill_id)
+    messages.add_message(request, messages.SUCCESS, "%s ok" % product.nom)
+    return HttpResponseRedirect('/bill/%s/category/%s/' % (bill_id, product.categorie.id))
 
 @permission_required('base.p5')
 def sold_cooking(request, bill_id, sold_id, cooking_id=-1, menu_id=-1):

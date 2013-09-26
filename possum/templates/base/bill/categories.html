@@ -1,6 +1,10 @@
 {% extends "base.html" %}
 {% block content %}
 
+<ul id="back">
+    <li onclick="window.location='/bill/{{bill_id}}/'">Retour</li>
+</ul>
+
 <h1>Sélection de la catégorie</h1>
 
 <ul id="categories">
@@ -25,7 +29,6 @@
         <li>Aucun produit disponible.</li>
     {% endfor %}
 </ul>
-
 
 {% endblock %}
 
