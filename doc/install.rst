@@ -12,35 +12,8 @@ Création de l'utilisateur POS
 
  sudo adduser pos
 
-Création de l'environnement virtuel
------------------------------------
-
 Dans notre exemple, nous allons installer Possum dans le répertoire ''/home/pos''. Vous
 pouvez évidemment choisir un autre répertoire si vous le souhaitez.
-
-Il faut dans un premier temps installer l'outil virtualenv de python si ce n'est déjà fait. 
-Voir `VirtualEnv <https://pypi.python.org/pypi/virtualenv>`_
-
-:: 
-
-  su - pos
-  virtualenv --prompt=='possum ' --python=python2 /home/pos
-
-On va maintenant préparer cet environnement. Pour pouvoir installer pycups, il faut les outils de compilation et
-la bibliothèque libcups2-dev
-
-
-::
-
-  apt-get install libcups2-dev
-  
-  source /home/pos/bin/activate 
-  pip install Django south wsgiref sphinx django_extensions Werkzeug \
-              ipython pycups django-debug-toolbar
-
-
-Note: il faudra utiliser ''deactivate'' pour sortir du virtualenv Possum une fois toutes
-la configuration terminée.
 
 Impression
 ----------
@@ -72,6 +45,36 @@ L'autre possibilité est de récupérer la version en développement:
 ::
 
   git clone https://github.com/possum-software/possum.git possum-software
+
+Prérequis
+^^^^^^^^^
+
+Il faut dans un premier temps installer l'outil virtualenv pour python si ce n'est déjà fait. 
+Voir `VirtualEnv <https://pypi.python.org/pypi/virtualenv>`_
+
+:: 
+
+  su - pos
+  virtualenv --prompt=='possum ' --python=python2 /home/pos
+
+On va maintenant préparer cet environnement. Pour pouvoir installer pycups, il faut les 
+outils de compilation et la bibliothèque ''libcups2-dev''.
+
+
+::
+
+  apt-get install libcups2-dev
+  
+  source /home/pos/bin/activate 
+  pip install -r requirements.txt
+
+
+Note: il faudra utiliser ''deactivate'' pour sortir du virtualenv Possum une fois toute
+la configuration terminée.
+
+
+Configuration
+^^^^^^^^^^^^^
 
 Maintenant, nous devons configurer POSSUM.
 
