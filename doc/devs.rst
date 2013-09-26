@@ -50,8 +50,8 @@ Qualité
 =======
 
 La qualité générale de Possum est auditée grâce à Jenkins et Sonar.
-Les résultats sont consultables respectivement `ici <https://www.possum-software.org/jenkins>`_
-et `ici <https://www.possum-software.org/sonar`_.
+Les résultats sont consultables ici:  `Jenkins <https://www.possum-software.org/jenkins>`_
+et `Sonar <https://www.possum-software.org/sonar>`_.
 
 Les bugs
 ========

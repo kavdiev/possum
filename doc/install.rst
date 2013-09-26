@@ -207,6 +207,14 @@ Ensuite il faut redémarrer le serveur web:
 
   service apache2 restart
 
+Attention, si vous utilisez la base de donnée Sqlite3, il faut que l'utilisateur 
+qui est utilisé pour le serveur web est les droits de modification sur le fichier. Exemple:
+
+::
+
+  chown apache /home/pos/possum.db
+
+
 Mail
 ----
 
@@ -238,25 +246,12 @@ commande suivante:
   date | mail -s test root
 
 
-
-
 L'installation est presque terminée, vous devez maintenant configurer
 la sauvegarde automatique de la base de données. Cette partie dépend du
 type de base que vous avez choisi. La plus simple étant la base sqlite,
 sa sauvegarde se limite à la copie d'un fichier.
 
 Pour accéder à POSSUM, il suffit de lancer un navigateur web.
-
-
-
-Configuration initiale
-----------------------
-
-Malheureusement, il n'y a pas encore d'interface web pour la modification
-et la saisie des produits, cela doit être fait à la main pour le moment.
-
-À partir de la version 0.5 une interface web de gestion sera en place et
-la documentation sera faire à ce moment là.
 
 Exemple de Matériels
 --------------------
