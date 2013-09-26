@@ -1236,7 +1236,7 @@ def subproduct_add(request, bill_id, sold_id, product_id):
     category = menu.getFreeCategorie()
     if category:
         return HttpResponseRedirect('/bill/%s/sold/%s/category/%s/select/' % (bill_id, menu.id, category.id))
-    return HttpResponseRedirect('/bill/%s/' % bill_id)
+    return HttpResponseRedirect('/bill/%s/category/%s/' % (bill_id, menu.produit.categorie.id))
 
 @permission_required('base.p5')
 def product_add(request, bill_id, product_id):
@@ -1264,6 +1264,7 @@ def sold_cooking(request, bill_id, sold_id, cooking_id=-1, menu_id=-1):
     data['bill_id'] = bill_id
     if cooking_id > -1:
         cooking = get_object_or_404(Cuisson, pk=cooking_id)
+        old = data['sold'].cuisson
         data['sold'].cuisson = cooking
         data['sold'].save()
         if menu_id > -1:
@@ -1272,7 +1273,12 @@ def sold_cooking(request, bill_id, sold_id, cooking_id=-1, menu_id=-1):
             category = menu.getFreeCategorie()
             if category:
                 return HttpResponseRedirect('/bill/%s/sold/%s/category/%s/select/' % (bill_id, menu.id, category.id))
-        return HttpResponseRedirect('/bill/%s/' % bill_id)
+        if old == None:
+            # certainement un nouveau produit donc on veut retourner
+            # sur le panneau de saisie des produits
+            return HttpResponseRedirect('/bill/%s/category/%s/' % (bill_id, data['sold'].produit.categorie.id))
+        else:
+            return HttpResponseRedirect('/bill/%s/' % bill_id)
     return render_to_response('base/bill/cooking.html',
                                 data,
                                 context_instance=RequestContext(request))
