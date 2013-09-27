@@ -61,7 +61,7 @@ def create_default_directory():
 ###
 def get_product_or_404(product_id):
     try:
-        product = cache['products_by_id'][product_id]
+        product = cache['products_by_id'][int(product_id)]
     except KeyError:
         raise Http404
     else:
@@ -69,19 +69,26 @@ def get_product_or_404(product_id):
 
 def get_category_or_404(category_id):
     try:
-        category = cache['categories_by_id'][category_id]
+        category = cache['categories_by_id'][int(category_id)]
     except KeyError:
         raise Http404
     else:
         return category
+
+def get_bill_or_404(bill_id):
+    try:
+        bill = cache['bills_by_id'][int(bill_id)]
+    except KeyError:
+        raise Http404
+    else:
+        return bill
 
 def cache_categories():
     if 'categories_by_id' not in cache:
         cache['categories_by_id'] = {}
     cache['categories'] = Categorie.objects.order_by('priorite', 'nom')
     for category in cache['categories']:
-        cache['categories_by_id'][category.id] = category
-        cache['categories_by_id']["%s" % category.id] = category
+        cache['categories_by_id'][int(category.id)] = category
 
 def cache_products():
     for category in cache['categories']:
@@ -98,18 +105,23 @@ def cache_products_for_category(category):
         cache['products_by_id'] = {}
     products = Produit.objects.filter(categorie=category)
     for product in products:
-        cache['products_by_id'][product.id] = product
-        cache['products_by_id']["%s" % product.id] = product
+        cache['products_by_id'][int(product.id)] = product
     enable = products.exclude(actif=False)
-    cache['products'][category.id] = enable
-    cache['products']["%s" % category.id] = enable
+    cache['products'][int(category.id)] = enable
     disable = products.exclude(actif=True)
-    cache['products_disable'][category.id] = disable
-    cache['products_disable']["%s" % category.id] = disable
+    cache['products_disable'][int(category.id)] = disable
+
+def cache_bills():
+    if 'bills_by_id' not in cache:
+        cache['bills_by_id'] = {}
+    cache['bills'] = Facture().non_soldees()
+    for bill in cache['bills']:
+        cache['bills_by_id'][int(bill.id)] = bill
 
 def init_cache_system():
     cache_categories()
     cache_products()
+    cache_bills()
     if settings.DEBUG:
         from pprint import pprint
         pprint(cache)
@@ -265,8 +277,8 @@ def categories_view(request, cat_id):
     data = get_user(request)
     data['category'] = get_category_or_404(cat_id)
     data['menu_carte'] = True
-    data['products_enable'] = cache['products'][cat_id]
-    data['products_disable'] = cache['products_disable'][cat_id]
+    data['products_enable'] = cache['products'][int(cat_id)]
+    data['products_disable'] = cache['products_disable'][int(cat_id)]
     return render_to_response('base/carte/category.html',
                                 data,
                                 context_instance=RequestContext(request))
@@ -368,9 +380,9 @@ def categories_set_vat_takeaway(request, cat_id, vat_id):
     vat = get_object_or_404(VAT, pk=vat_id)
     category.set_vat_takeaway(vat)
     cache_categories()
-    for product in cache['products'][category.id].iterator():
+    for product in cache['products'][int(category.id)].iterator():
         product.update_vats()
-    for product in cache['products_disable'][category.id].iterator():
+    for product in cache['products_disable'][int(category.id)].iterator():
         product.update_vats()
     cache_products_for_category(category)
     return HttpResponseRedirect('/carte/categories/%s/' % cat_id)
@@ -382,9 +394,9 @@ def categories_set_vat_onsite(request, cat_id, vat_id):
     vat = get_object_or_404(VAT, pk=vat_id)
     category.set_vat_onsite(vat)
     cache_categories()
-    for product in cache['products'][category.id].iterator():
+    for product in cache['products'][int(category.id)].iterator():
         product.update_vats()
-    for product in cache['products_disable'][category.id].iterator():
+    for product in cache['products_disable'][int(category.id)].iterator():
         product.update_vats()
     cache_products_for_category(category)
     return HttpResponseRedirect('/carte/categories/%s/' % cat_id)
@@ -400,6 +412,10 @@ def categories_vat_onsite(request, cat_id):
     return render_to_response('base/carte/categories/select_vat.html',
                                 data,
                                 context_instance=RequestContext(request))
+
+###
+# Tables
+###
 
 @permission_required('base.p7')
 def tables_zone_delete(request, zone_id):
@@ -478,15 +494,6 @@ def vats(request):
                                 data,
                                 context_instance=RequestContext(request))
 
-@permission_required('base.p6')
-def products_view(request, product_id):
-    data = get_user(request)
-    data['product'] = get_product_or_404(product_id)
-    data['menu_carte'] = True
-    return render_to_response('base/carte/product.html',
-                                data,
-                                context_instance=RequestContext(request))
-
 @permission_required('base.p7')
 def vats_view(request, vat_id):
     data = get_user(request)
@@ -526,6 +533,19 @@ def vats_change(request, vat_id):
             messages.add_message(request, messages.ERROR, "Vous devez entrer un nom.")
 
     return render_to_response('base/manager/vats/change.html',
+                                data,
+                                context_instance=RequestContext(request))
+
+###
+# Carte
+###
+
+@permission_required('base.p6')
+def products_view(request, product_id):
+    data = get_user(request)
+    data['product'] = get_product_or_404(product_id)
+    data['menu_carte'] = True
+    return render_to_response('base/carte/product.html',
                                 data,
                                 context_instance=RequestContext(request))
 
@@ -644,7 +664,7 @@ def products_select_produits_ok(request, product_id):
     data['menu_carte'] = True
     data['products'] = []
     for category in data['product'].categories_ok.iterator():
-        for sub in cache['products'][category.id]:
+        for sub in cache['products'][int(category.id)]:
             if sub not in data['product'].produits_ok.iterator():
                 data['products'].append(sub)
     return render_to_response('base/carte/product_select_produits_ok.html',
@@ -1151,12 +1171,14 @@ def bill_new(request):
     data['menu_bills'] = True
     bill = Facture()
     bill.save()
+    cache['bills'].append(bill)
+    cache['bills_by_id'][int(bill.id)] = bill
     return HttpResponseRedirect('/bill/%s/' % bill.id)
 
 @permission_required('base.p5')
 def bill_send_kitchen(request, bill_id):
     """Send in the kitchen"""
-    bill = get_object_or_404(Facture, pk=bill_id)
+    bill = get_bill_or_404(bill_id)
     if bill.table:
         if bill.send_in_the_kitchen():
             if bill.table:
@@ -1175,7 +1197,7 @@ def bill_print(request, bill_id):
     """Print the bill"""
     data = get_user(request)
     data['menu_bills'] = True
-    bill = get_object_or_404(Facture, pk=bill_id)
+    bill = get_bill_or_404(bill_id)
     if bill.is_empty():
         messages.add_message(request, messages.ERROR, "La facture est vide.")
     else:
@@ -1203,7 +1225,7 @@ def table_select(request, bill_id):
 def table_set(request, bill_id, table_id):
     """Select/modify table of a bill"""
     data = get_user(request)
-    bill = get_object_or_404(Facture, pk=bill_id)
+    bill = get_bill_or_404(bill_id)
     table = get_object_or_404(Table, pk=table_id)
     bill.set_table(table)
     data['facture'] = bill
@@ -1221,7 +1243,7 @@ def category_select(request, bill_id, category_id=None):
         category = get_category_or_404(category_id)
     else:
         category = data['categories'][0]
-    data['products'] = cache['products'][category.id]
+    data['products'] = cache['products'][int(category.id)]
     data['bill_id'] = bill_id
     return render_to_response('base/bill/categories.html',
                                 data,
@@ -1231,7 +1253,7 @@ def category_select(request, bill_id, category_id=None):
 def product_select_made_with(request, bill_id, product_id):
     data = get_user(request)
     data['menu_bills'] = True
-    data['bill'] = get_object_or_404(Facture, pk=bill_id)
+    data['bill'] = get_bill_or_404(bill_id)
     data['product'] = get_object_or_404(ProduitVendu, pk=product_id)
     data['categories'] = Categorie.objects.filter(made_in_kitchen=True)
     return render_to_response('base/bill/product_select_made_with.html',
@@ -1252,13 +1274,13 @@ def product_select(request, bill_id, category_id):
     """Select a product to add on a bill."""
     data = get_user(request)
     data['menu_bills'] = True
-    bill = get_object_or_404(Facture, pk=bill_id)
+    bill = get_bill_or_404(bill_id)
     category = get_category_or_404(category_id)
     if not category.vat_onsite:
         messages.add_message(request, messages.ERROR, "La TVA sur place n'est pas définie!")
     if not category.vat_takeaway:
         messages.add_message(request, messages.ERROR, "La TVA à emporter n'est pas définie!")
-    data['products'] = cache['products'][category.id]
+    data['products'] = cache['products'][int(category.id)]
     data['bill_id'] = bill_id
     return render_to_response('base/bill/products.html',
                                 data,
@@ -1270,7 +1292,7 @@ def subproduct_select(request, bill_id, sold_id, category_id):
     data = get_user(request)
     data['menu_bills'] = True
     category = get_category_or_404(category_id)
-    data['products'] = cache['products'][category.id]
+    data['products'] = cache['products'][int(category.id)]
     data['bill_id'] = bill_id
     data['sold_id'] = sold_id
     return render_to_response('base/bill/subproducts.html',
@@ -1283,7 +1305,6 @@ def sold_view(request, bill_id, sold_id):
     data['menu_bills'] = True
     data['bill_id'] = bill_id
     data['sold'] = get_object_or_404(ProduitVendu, pk=sold_id)
-    bill = get_object_or_404(Facture, pk=bill_id)
     return render_to_response('base/bill/sold.html',
                                 data,
                                 context_instance=RequestContext(request))
@@ -1291,7 +1312,7 @@ def sold_view(request, bill_id, sold_id):
 @permission_required('base.p5')
 def sold_delete(request, bill_id, sold_id):
     data = get_user(request)
-    bill = get_object_or_404(Facture, pk=bill_id)
+    bill = get_bill_or_404(bill_id)
     sold = get_object_or_404(ProduitVendu, pk=sold_id)
     if sold in bill.produits.all():
         # it is a product
@@ -1312,7 +1333,7 @@ def subproduct_add(request, bill_id, sold_id, product_id):
     """Add a product to a bill. If this product contains others products,
     we have to add them too."""
     data = get_user(request)
-    bill = get_object_or_404(Facture, pk=bill_id)
+    bill = get_bill_or_404(bill_id)
     product = get_product_or_404(product_id)
     product_sell = ProduitVendu(produit=product)
     product_sell.made_with = product_sell.produit.categorie
@@ -1331,7 +1352,7 @@ def product_add(request, bill_id, product_id):
     """Add a product to a bill. If this product contains others products,
     we have to add them too."""
     data = get_user(request)
-    bill = get_object_or_404(Facture, pk=bill_id)
+    bill = get_bill_or_404(bill_id)
     product = get_product_or_404(product_id)
     product_sell = ProduitVendu(produit=product)
     product_sell.save()
@@ -1386,7 +1407,7 @@ def couverts_select(request, bill_id):
 def couverts_set(request, bill_id, number):
     """Set couverts of a bill"""
     data = get_user(request)
-    bill = get_object_or_404(Facture, pk=bill_id)
+    bill = get_bill_or_404(bill_id)
     bill.set_couverts(number)
     data['facture'] = bill
     return render_to_response('base/bill/order.html',
@@ -1397,7 +1418,7 @@ def couverts_set(request, bill_id, number):
 def factures(request):
     data = get_user(request)
     data['menu_bills'] = True
-    data['factures'] = Facture().non_soldees()
+    data['factures'] = cache['bills']
     return render_to_response('base/bill/home.html',
                                 data,
                                 context_instance=RequestContext(request))
@@ -1428,7 +1449,7 @@ def bill_payment_delete(request, bill_id, payment_id):
     data['menu_bills'] = True
     data['bill_id'] = bill_id
     payment = get_object_or_404(Paiement, pk=payment_id)
-    bill = get_object_or_404(Facture, pk=bill_id)
+    bill = get_bill_or_404(bill_id)
     bill.del_payment(payment)
     return HttpResponseRedirect('/bill/%s/' % bill_id)
 
@@ -1448,7 +1469,7 @@ def bill_payment_save(request, bill_id, type_id, left, right, count):
     """
     data = get_user(request)
     type_payment = get_object_or_404(PaiementType, pk=type_id)
-    bill = get_object_or_404(Facture, pk=bill_id)
+    bill = get_bill_or_404(bill_id)
     montant = "%s.%s" % (left, right)
     if type_payment.fixed_value:
         result = bill.add_payment(type_payment, count, montant)
@@ -1500,7 +1521,7 @@ def bill_payment_count(request, bill_id, type_id, left, right):
 @permission_required('base.p3')
 def bill_payment(request, bill_id, type_id=-1, count=-1, left=0, right=0):
     data = get_user(request)
-    bill = get_object_or_404(Facture, pk=bill_id)
+    bill = get_bill_or_404(bill_id)
     if bill.restant_a_payer == 0:
         messages.add_message(request, messages.ERROR, "Il n'y a rien à payer.")
         return HttpResponseRedirect('/bill/%s/' % bill.id)
@@ -1528,7 +1549,7 @@ def bill_payment(request, bill_id, type_id=-1, count=-1, left=0, right=0):
 @permission_required('base.p3')
 def bill_view(request, bill_id):
     data = get_user(request)
-    data['facture'] = get_object_or_404(Facture, pk=bill_id)
+    data['facture'] = get_bill_or_404(bill_id)
     if data['facture'].est_soldee():
         messages.add_message(request, messages.ERROR, "Cette facture a déjà été soldée.")
         return HttpResponseRedirect('/bills/')
@@ -1541,19 +1562,24 @@ def bill_view(request, bill_id):
 
 @permission_required('base.p3')
 def bill_delete(request, bill_id):
-    order = get_object_or_404(Facture, pk=bill_id)
+    order = get_bill_or_404(bill_id)
     order.delete()
+    cache_bills()
     return HttpResponseRedirect('/bills/')
 
 @permission_required('base.p6')
 def bill_onsite(request, bill_id):
     data = get_user(request)
-    order = get_object_or_404(Facture, pk=bill_id)
+    order = get_bill_or_404(bill_id)
     new = not order.onsite
     order.onsite = new
     order.save()
     order.compute_total()
     return HttpResponseRedirect('/bill/%s/' % bill_id)
+
+###
+# Archives
+###
 
 @permission_required('base.p7')
 def archives(request):
