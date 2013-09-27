@@ -6,6 +6,7 @@ South==0.8.2
 Sphinx==1.2b1
 Werkzeug==0.9.4
 coverage==3.6
+django-chartit==0.1
 django-debug-toolbar==0.9.4
 django-extensions==1.2.0
 docutils==0.11
