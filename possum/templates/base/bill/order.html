@@ -36,7 +36,7 @@
 <h2>Produits</h2>
 <ul id="products_sold">
     <li onclick="window.location='/bill/{{facture.id}}/category/select/'">Ajouter</li>
-    {% for vendu in facture.produits.all %}
+    {% for vendu in facture.produits.iterator %}
     <li style="background:{{vendu.produit.categorie.color}};" onclick="window.location='/bill/{{facture.id}}/sold/{{vendu.id}}/view/'">
     {{vendu}} ({{vendu.produit.get_prize}})</br>
         {% if vendu.cuisson %}({{vendu.cuisson}}){% endif %}
@@ -48,7 +48,7 @@
 <h2>Paiements</h2>
 <ul id="paiements">
     <li onclick="window.location='/bill/{{facture.id}}/payment/'">Ajouter</li>
-    {% for payment in facture.paiements.all %}
+    {% for payment in facture.paiements.iterator %}
         <li onclick="window.location='/bill/{{facture.id}}/payment/view/{{payment.id}}/'">
         {{payment.type.nom}} {{payment.montant}}</li>
     {% endfor %}
@@ -56,7 +56,7 @@
 
 <h2>TVA</h2>
 <ul id="vats">
-    {% for vat in facture.vats.all %}
+    {% for vat in facture.vats.iterator %}
     <li>{{vat}}</li>
     {% empty %}
     <li>Aucune TVA</li>
