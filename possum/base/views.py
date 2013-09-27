@@ -1182,7 +1182,9 @@ def bill_print(request, bill_id):
         if Printer.objects.filter(billing=True).count() == 0:
             messages.add_message(request, messages.ERROR, "Aucune imprimante n'est configurée pour la facturation.")
         else:
-            if not bill.print_ticket():
+            if bill.print_ticket():
+                messages.add_message(request, messages.SUCCESS, "Le ticket est imprimé.")
+            else:
                 messages.add_message(request, messages.ERROR, "L'impression a échouée.")
     return HttpResponseRedirect('/bill/%s/' % bill.id)
 
