@@ -24,6 +24,14 @@ import cups
 from django.conf import settings
 from datetime import datetime
 
+import unicodedata
+
+def sans_accent(message):
+    """Enlève les accents qui peuvent poser
+    problème à l'impression."""
+    message = unicodedata.normalize("NFKD", unicode(message)).encode("ascii", "ignore" )
+    return message
+
 class Printer(models.Model):
     """Printer model
     options: options used with pycups.printFile()
@@ -96,7 +104,8 @@ class Printer(models.Model):
         if with_header:
             fd.write(self.header)
         for line in list_to_print:
-            fd.write("%s\n" % line)
+            tmp = sans_accent(line)
+            fd.write("%s\n" % tmp)
         if with_header:
             fd.write(self.footer)
         fd.close()
