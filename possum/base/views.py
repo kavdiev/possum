@@ -83,6 +83,14 @@ def get_bill_or_404(bill_id):
     else:
         return bill
 
+def get_vat_or_404(vat_id):
+    try:
+        vat = cache['vats_by_id'][int(vat_id)]
+    except KeyError:
+        raise Http404
+    else:
+        return vat
+
 def cache_categories():
     if 'categories_by_id' not in cache:
         cache['categories_by_id'] = {}
@@ -118,10 +126,18 @@ def cache_bills():
     for bill in cache['bills']:
         cache['bills_by_id'][int(bill.id)] = bill
 
+def cache_vats():
+    if 'vats_by_id' not in cache:
+        cache['vats_by_id'] = {}
+    cache['vats'] = VAT.objects.order_by('name')
+    for vat in cache['vats']:
+        cache['vats_by_id'][int(vat.id)] = vat
+
 def init_cache_system():
     cache_categories()
     cache_products()
     cache_bills()
+    cache_vats()
     if settings.DEBUG:
         from pprint import pprint
         pprint(cache)
@@ -367,7 +383,7 @@ def categories_vat_takeaway(request, cat_id):
     data['category'] = get_category_or_404(cat_id)
     data['type_vat'] = 'TVA à emporter'
     data['url_vat'] = 'vat_takeaway'
-    data['vats'] = VAT.objects.all()
+    data['vats'] = cache['vats']
     data['menu_carte'] = True
     return render_to_response('base/carte/categories/select_vat.html',
                                 data,
@@ -377,7 +393,7 @@ def categories_vat_takeaway(request, cat_id):
 def categories_set_vat_takeaway(request, cat_id, vat_id):
     data = get_user(request)
     category = get_category_or_404(cat_id)
-    vat = get_object_or_404(VAT, pk=vat_id)
+    vat = get_vat_or_404(vat_id)
     category.set_vat_takeaway(vat)
     cache_categories()
     for product in cache['products'][int(category.id)].iterator():
@@ -391,7 +407,7 @@ def categories_set_vat_takeaway(request, cat_id, vat_id):
 def categories_set_vat_onsite(request, cat_id, vat_id):
     data = get_user(request)
     category = get_category_or_404(cat_id)
-    vat = get_object_or_404(VAT, pk=vat_id)
+    vat = get_vat_or_404(vat_id)
     category.set_vat_onsite(vat)
     cache_categories()
     for product in cache['products'][int(category.id)].iterator():
@@ -408,7 +424,7 @@ def categories_vat_onsite(request, cat_id):
     data['category'] = get_category_or_404(cat_id)
     data['type_vat'] = 'TVA sur place'
     data['url_vat'] = 'vat_onsite'
-    data['vats'] = VAT.objects.all()
+    data['vats'] = cache['vats']
     return render_to_response('base/carte/categories/select_vat.html',
                                 data,
                                 context_instance=RequestContext(request))
@@ -488,7 +504,7 @@ def tables(request):
 @permission_required('base.p7')
 def vats(request):
     data = get_user(request)
-    data['vats'] = VAT.objects.all()
+    data['vats'] = cache['vats']
     data['menu_manager'] = True
     return render_to_response('base/manager/vats/home.html',
                                 data,
@@ -498,7 +514,7 @@ def vats(request):
 def vats_view(request, vat_id):
     data = get_user(request)
     data['menu_manager'] = True
-    data['vat'] = get_object_or_404(VAT, pk=vat_id)
+    data['vat'] = get_vat_or_404(vat_id)
     return render_to_response('base/manager/vats/view.html',
                                 data,
                                 context_instance=RequestContext(request))
@@ -506,7 +522,7 @@ def vats_view(request, vat_id):
 @permission_required('base.p7')
 def vats_change(request, vat_id):
     data = get_user(request)
-    data['vat'] = get_object_or_404(VAT, pk=vat_id)
+    data['vat'] = get_vat_or_404(vat_id)
     data['menu_manager'] = True
     if request.method == 'POST':
         name = request.POST.get('name', '').strip()
@@ -588,7 +604,7 @@ def products_new(request, cat_id):
 def vat_new(request):
     data = get_user(request)
     data['menu_manager'] = True
-    data['vats'] = VAT.objects.all()
+    data['vats'] = cache['vats']
     if request.method == 'POST':
         name = request.POST.get('name', '').strip()
         tax = request.POST.get('tax', '').strip().replace(",",".")
@@ -601,6 +617,7 @@ def vat_new(request):
                 except:
                     messages.add_message(request, messages.ERROR, "Les modifications n'ont pu être enregistrées.")
                 else:
+                    cache_vats()
                     return HttpResponseRedirect('/manager/vats/')
 
             else:
@@ -845,7 +862,7 @@ def rapports(request):
     for name in ['nb_invoices', 'total_ttc']:
         data[name] = StatsJourGeneral().get_data(name, date)
     data['vats'] = []
-    for vat in VAT.objects.all():
+    for vat in cache['vats']:
         name = "%s_vat_only" % vat.id
         valeur = StatsJourGeneral().get_data(name, date)
         data['vats'].append("TVA % 6.2f%% : %.2f" % (vat.tax, valeur))
