@@ -49,6 +49,11 @@ class Suivi(models.Model):
         return "[%s] Table %s > %s" % (self.date.strftime("%H:%M"), table, self.category.nom)
 
 class Facture(models.Model):
+    """
+    overcharge: surtaxe à ajouter par produits par exemple
+        dans le cas d'une terrasse pour laquelle le service
+        est surtaxé
+    """
     date_creation = models.DateTimeField('creer le', auto_now_add=True)
     table = models.ForeignKey('Table', \
             null=True, blank=True, \
@@ -68,19 +73,20 @@ class Facture(models.Model):
             default=0)
     saved_in_stats = models.BooleanField(default=False)
     onsite = models.BooleanField(default=True)
+    overcharge = models.BooleanField(default=False)
 
     class Meta:
         get_latest_by = 'id'
         permissions = (
-            ("p1", "can modify users and permissions"),
-            ("p2", "can play games"),
-            ("p3", "can view all bills"),
-            ("p4", "can modify all bills"),
-            ("p5", "can use POS"),
-            ("p6", "can modify la carte"),
-            ("p7", "can view results"),
-            ("p8", "can change music"),
-            ("p9", "can modify music"),
+            ("p1", "can use manager part"),
+            ("p2", "can use carte part"),
+            ("p3", "can use POS"),
+            ("p4", "can ..."),
+            ("p5", "can ..."),
+            ("p6", "can ..."),
+            ("p7", "can ..."),
+            ("p8", "can ..."),
+            ("p9", "can ..."),
         )
 
     def __unicode__(self):

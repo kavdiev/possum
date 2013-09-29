@@ -17,7 +17,7 @@
     {% endif %}
     </li>
     <li onclick="window.location='/bill/{{facture.id}}/table/select/'"
-        {% if facture.est_surtaxe %}class="warning"{% endif %}>
+        {% if facture.overcharge %}class="warning"{% endif %}>
         Table:</br>{{facture.table.nom}}</li>
     <li onclick="window.location='/bill/{{facture.id}}/couverts/select/'">Couverts:</br>{{facture.couverts}}</li>
     <li onclick="window.location='/bill/{{facture.id}}/onsite/'" 
@@ -51,15 +51,6 @@
     {% for payment in facture.paiements.iterator %}
         <li onclick="window.location='/bill/{{facture.id}}/payment/view/{{payment.id}}/'">
         {{payment.type.nom}} {{payment.montant}}</li>
-    {% endfor %}
-</ul>
-
-<h2>TVA</h2>
-<ul id="vats">
-    {% for vat in facture.vats.iterator %}
-    <li>{{vat}}</li>
-    {% empty %}
-    <li>Aucune TVA</li>
     {% endfor %}
 </ul>
 

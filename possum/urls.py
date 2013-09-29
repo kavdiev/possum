@@ -48,7 +48,6 @@ urlpatterns = patterns('possum.base.views',
     url(r'^carte/products/(?P<product_id>\d+)/enable/$', 'products_enable'),
     url(r'^carte/products/(?P<product_id>\d+)/cooking/$', 'products_cooking'),
 
-    url(r'^pos/$', 'pos'),
     url(r'^bills/$', 'factures'),
     url(r'^bill/new/$', 'bill_new'),
     url(r'^bill/(?P<bill_id>\d+)/table/select/$', 'table_select'),

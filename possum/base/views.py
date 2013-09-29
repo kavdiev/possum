@@ -51,8 +51,6 @@ from django.core.mail import send_mail
 import os
 from datetime import datetime
 
-logger = logging.getLogger(__name__)
-
 # Création des répertoires obligatoires
 def create_default_directory():
     if not os.path.exists(settings.PATH_TICKET):
@@ -213,7 +211,7 @@ def permission_required(perm, **kwargs):
             else:
                 messages.add_message(request, messages.ERROR, "Vous n'avez pas"
                         " les droits nécessaires (%s)." % perm.split('.')[1])
-                return HttpResponseRedirect('/')
+                return HttpResponseRedirect('/kitchen/')
         return wraps(view_func)(_wrapped_view)
     return decorator
 
@@ -235,7 +233,11 @@ def kitchen(request):
             data,
             context_instance=RequestContext(request))
 
-@permission_required('base.p6')
+###
+# Carte
+###
+
+@permission_required('base.p2')
 def carte(request):
     """This is not used.
     """
@@ -245,7 +247,7 @@ def carte(request):
                                 data,
                                 context_instance=RequestContext(request))
 
-@permission_required('base.p6')
+@permission_required('base.p2')
 def categories_send(request):
     data = get_user(request)
     result = Produit().get_list_with_all_products()
@@ -264,7 +266,7 @@ def categories_send(request):
         messages.add_message(request, messages.ERROR, u"Vous n'avez pas d'adresse mail.")
     return HttpResponseRedirect('/carte/categories/')
 
-@permission_required('base.p6')
+@permission_required('base.p2')
 def categories_print(request):
     data = get_user(request)
     result = Produit().get_list_with_all_products()
@@ -281,7 +283,7 @@ def categories_print(request):
         messages.add_message(request, messages.ERROR, "Il n'y a rien dans la carte.")
     return HttpResponseRedirect('/carte/categories/')
 
-@permission_required('base.p6')
+@permission_required('base.p2')
 def categories(request):
     data = get_user(request)
     data['menu_carte'] = True
@@ -290,7 +292,7 @@ def categories(request):
                     data,
                     context_instance=RequestContext(request))
 
-@permission_required('base.p6')
+@permission_required('base.p2')
 def categories_delete(request, cat_id):
     data = get_user(request)
     data['menu_carte'] = True
@@ -340,7 +342,7 @@ def categories_delete(request, cat_id):
                                 data,
                                 context_instance=RequestContext(request))
 
-@permission_required('base.p6')
+@permission_required('base.p2')
 def categories_view(request, cat_id):
     data = get_user(request)
     data['category'] = get_category_or_404(cat_id)
@@ -351,7 +353,7 @@ def categories_view(request, cat_id):
                                 data,
                                 context_instance=RequestContext(request))
 
-@permission_required('base.p6')
+@permission_required('base.p2')
 def categories_add(request):
     data = get_user(request)
     data['menu_carte'] = True
@@ -359,7 +361,7 @@ def categories_add(request):
                                 data,
                                 context_instance=RequestContext(request))
 
-@permission_required('base.p6')
+@permission_required('base.p2')
 def categories_new(request):
     data = get_user(request)
     priority = request.POST.get('priority', '').strip()
@@ -381,7 +383,7 @@ def categories_new(request):
         messages.add_message(request, messages.ERROR, "Vous devez choisir un nom pour la nouvelle catégorie.")
     return HttpResponseRedirect('/carte/categories/')
 
-@permission_required('base.p6')
+@permission_required('base.p2')
 def categories_name(request, cat_id):
     data = get_user(request)
     data['category'] = get_category_or_404(cat_id)
@@ -389,7 +391,7 @@ def categories_name(request, cat_id):
                                 data,
                                 context_instance=RequestContext(request))
 
-@permission_required('base.p6')
+@permission_required('base.p2')
 def categories_color(request, cat_id):
     data = get_user(request)
     data['category'] = get_category_or_404(cat_id)
@@ -398,7 +400,7 @@ def categories_color(request, cat_id):
                                 data,
                                 context_instance=RequestContext(request))
 
-@permission_required('base.p6')
+@permission_required('base.p2')
 def categories_less_priority(request, cat_id, nb=1):
     data = get_user(request)
     cat = get_category_or_404(cat_id)
@@ -407,7 +409,7 @@ def categories_less_priority(request, cat_id, nb=1):
     logging.info("[%s] cat [%s] priority - %d" % (data['user'].username, cat.nom, nb))
     return HttpResponseRedirect('/carte/categories/%s/' % cat_id)
 
-@permission_required('base.p6')
+@permission_required('base.p2')
 def categories_more_priority(request, cat_id, nb=1):
     data = get_user(request)
     cat = get_category_or_404(cat_id)
@@ -416,7 +418,7 @@ def categories_more_priority(request, cat_id, nb=1):
     logging.info("[%s] cat [%s] priority + %d" % (data['user'].username, cat.nom, nb))
     return HttpResponseRedirect('/carte/categories/%s/' % cat_id)
 
-@permission_required('base.p6')
+@permission_required('base.p2')
 def categories_surtaxable(request, cat_id):
     data = get_user(request)
     cat = get_category_or_404(cat_id)
@@ -429,7 +431,7 @@ def categories_surtaxable(request, cat_id):
     logging.info("[%s] cat [%s] surtaxable: %s" % (data['user'].username, cat.nom, cat.surtaxable))
     return HttpResponseRedirect('/carte/categories/%s/' % cat_id)
 
-@permission_required('base.p6')
+@permission_required('base.p2')
 def categories_vat_takeaway(request, cat_id):
     data = get_user(request)
     data['category'] = get_category_or_404(cat_id)
@@ -441,7 +443,7 @@ def categories_vat_takeaway(request, cat_id):
                                 data,
                                 context_instance=RequestContext(request))
 
-@permission_required('base.p6')
+@permission_required('base.p2')
 def categories_set_vat_takeaway(request, cat_id, vat_id):
     data = get_user(request)
     category = get_category_or_404(cat_id)
@@ -455,7 +457,7 @@ def categories_set_vat_takeaway(request, cat_id, vat_id):
     cache_products_for_category(category)
     return HttpResponseRedirect('/carte/categories/%s/' % cat_id)
 
-@permission_required('base.p6')
+@permission_required('base.p2')
 def categories_set_vat_onsite(request, cat_id, vat_id):
     data = get_user(request)
     category = get_category_or_404(cat_id)
@@ -469,7 +471,7 @@ def categories_set_vat_onsite(request, cat_id, vat_id):
     cache_products_for_category(category)
     return HttpResponseRedirect('/carte/categories/%s/' % cat_id)
 
-@permission_required('base.p6')
+@permission_required('base.p2')
 def categories_vat_onsite(request, cat_id):
     data = get_user(request)
     data['menu_carte'] = True
@@ -481,137 +483,7 @@ def categories_vat_onsite(request, cat_id):
                                 data,
                                 context_instance=RequestContext(request))
 
-###
-# Tables
-###
-
-@permission_required('base.p7')
-def tables_zone_delete(request, zone_id):
-    data = get_user(request)
-    zone = get_zone_or_404(zone_id)
-    Table.objects.filter(zone=zone).delete()
-    zone.delete()
-    cache_zones()
-    return HttpResponseRedirect('/manager/tables/')
-
-@permission_required('base.p7')
-def tables_table_new(request, zone_id):
-    data = get_user(request)
-    zone = get_zone_or_404(zone_id)
-    table = Table(zone=zone)
-    table.save()
-    cache_zones()
-    return HttpResponseRedirect('/manager/tables/%s/%s/' % (zone.id, table.id))
-
-@permission_required('base.p7')
-def tables_zone_new(request):
-    data = get_user(request)
-    zone = Zone()
-    zone.save()
-    cache_zones()
-    return HttpResponseRedirect('/manager/tables/%s/' % zone.id)
-
-@permission_required('base.p7')
-def tables_table(request, zone_id, table_id):
-    data = get_user(request)
-    data['table'] = get_object_or_404(Table, pk=table_id)
-    data['menu_manager'] = True
-    if request.method == 'POST':
-        name = request.POST.get('name', '').strip()
-        data['table'].nom = name
-        try:
-            data['table'].save()
-        except:
-            messages.add_message(request, messages.ERROR, "Les modifications n'ont pu être enregistrées.")
-        else:
-            return HttpResponseRedirect('/manager/tables/')
-    return render_to_response('base/manager/tables/table.html',
-                                data,
-                                context_instance=RequestContext(request))
-
-@permission_required('base.p7')
-def tables_zone(request, zone_id):
-    data = get_user(request)
-    data['zone'] = get_zone_or_404(zone_id)
-    data['menu_manager'] = True
-    if request.method == 'POST':
-        name = request.POST.get('name', '').strip()
-        data['zone'].nom = name
-        try:
-            data['zone'].save()
-        except:
-            messages.add_message(request, messages.ERROR, "Les modifications n'ont pu être enregistrées.")
-        else:
-            return HttpResponseRedirect('/manager/tables/')
-    return render_to_response('base/manager/tables/zone.html',
-                                data,
-                                context_instance=RequestContext(request))
-
-@permission_required('base.p7')
-def tables(request):
-    data = get_user(request)
-    data['menu_manager'] = True
-    data['zones'] = cache['zones']
-    return render_to_response('base/manager/tables/home.html',
-                                data,
-                                context_instance=RequestContext(request))
-
-@permission_required('base.p7')
-def vats(request):
-    data = get_user(request)
-    data['vats'] = cache['vats']
-    data['menu_manager'] = True
-    return render_to_response('base/manager/vats/home.html',
-                                data,
-                                context_instance=RequestContext(request))
-
-@permission_required('base.p7')
-def vats_view(request, vat_id):
-    data = get_user(request)
-    data['menu_manager'] = True
-    data['vat'] = get_vat_or_404(vat_id)
-    return render_to_response('base/manager/vats/view.html',
-                                data,
-                                context_instance=RequestContext(request))
-
-@permission_required('base.p7')
-def vats_change(request, vat_id):
-    data = get_user(request)
-    data['vat'] = get_vat_or_404(vat_id)
-    data['menu_manager'] = True
-    if request.method == 'POST':
-        name = request.POST.get('name', '').strip()
-        tax = request.POST.get('tax', '').strip().replace(',','.')
-        if name:
-            if tax:
-                try:
-                    data['vat'].name = name
-                    data['vat'].save()
-                    data['vat'].set_tax(tax)
-                    for product in Produit.objects.filter(categorie__vat_onsite=data['vat']):
-                        product.update_vats()
-                    for product in Produit.objects.filter(categorie__vat_takeaway=data['vat']):
-                        product.update_vats()
-                    cache_products()
-                except:
-                    messages.add_message(request, messages.ERROR, "Les modifications n'ont pu être enregistrées.")
-                else:
-                    return HttpResponseRedirect('/manager/vats/')
-
-            else:
-                messages.add_message(request, messages.ERROR, "Vous devez saisir un pourcentage de taxe.")
-        else:
-            messages.add_message(request, messages.ERROR, "Vous devez entrer un nom.")
-
-    return render_to_response('base/manager/vats/change.html',
-                                data,
-                                context_instance=RequestContext(request))
-
-###
-# Carte
-###
-
-@permission_required('base.p6')
+@permission_required('base.p2')
 def products_view(request, product_id):
     data = get_user(request)
     data['product'] = get_product_or_404(product_id)
@@ -620,7 +492,7 @@ def products_view(request, product_id):
                                 data,
                                 context_instance=RequestContext(request))
 
-@permission_required('base.p6')
+@permission_required('base.p2')
 def products_new(request, cat_id):
     data = get_user(request)
     data['menu_carte'] = True
@@ -655,36 +527,7 @@ def products_new(request, cat_id):
                                 data,
                                 context_instance=RequestContext(request))
 
-@permission_required('base.p7')
-def vat_new(request):
-    data = get_user(request)
-    data['menu_manager'] = True
-    data['vats'] = cache['vats']
-    if request.method == 'POST':
-        name = request.POST.get('name', '').strip()
-        tax = request.POST.get('tax', '').strip().replace(",",".")
-        if name:
-            if tax:
-                try:
-                    vat = VAT(name=name)
-                    vat.set_tax(tax)
-                    vat.save()
-                except:
-                    messages.add_message(request, messages.ERROR, "Les modifications n'ont pu être enregistrées.")
-                else:
-                    cache_vats()
-                    return HttpResponseRedirect('/manager/vats/')
-
-            else:
-                messages.add_message(request, messages.ERROR, "Vous devez saisir un pourcentage de taxe.")
-        else:
-            messages.add_message(request, messages.ERROR, "Vous devez entrer un nom.")
-
-    return render_to_response('base/manager/vats/new.html',
-                                data,
-                                context_instance=RequestContext(request))
-
-@permission_required('base.p6')
+@permission_required('base.p2')
 def categories_set_color(request, cat_id):
     data = get_user(request)
     color = request.POST.get('color', '').strip()
@@ -700,7 +543,7 @@ def categories_set_color(request, cat_id):
             cache_categories()
     return HttpResponseRedirect('/carte/categories/%s/' % cat_id)
 
-@permission_required('base.p6')
+@permission_required('base.p2')
 def products_set_category(request, product_id, cat_id):
     data = get_user(request)
     product = get_product_or_404(product_id)
@@ -709,7 +552,7 @@ def products_set_category(request, product_id, cat_id):
     cache_products_for_category(product.categorie)
     return HttpResponseRedirect('/carte/products/%s/' % product_id)
 
-@permission_required('base.p6')
+@permission_required('base.p2')
 def products_category(request, product_id):
     data = get_user(request)
     data['product'] = get_product_or_404(product_id)
@@ -719,7 +562,7 @@ def products_category(request, product_id):
                                 data,
                                 context_instance=RequestContext(request))
 
-@permission_required('base.p6')
+@permission_required('base.p2')
 def products_del_produits_ok(request, product_id, sub_id):
     data = get_user(request)
     menu = get_product_or_404(product_id)
@@ -729,7 +572,7 @@ def products_del_produits_ok(request, product_id, sub_id):
     cache_products_for_category(menu.categorie)
     return HttpResponseRedirect('/carte/products/%s/' % product_id)
 
-@permission_required('base.p6')
+@permission_required('base.p2')
 def products_select_produits_ok(request, product_id):
     data = get_user(request)
     data['product'] = get_product_or_404(product_id)
@@ -743,7 +586,7 @@ def products_select_produits_ok(request, product_id):
                                 data,
                                 context_instance=RequestContext(request))
 
-@permission_required('base.p6')
+@permission_required('base.p2')
 def products_add_produits_ok(request, product_id, sub_id):
     data = get_user(request)
     menu = get_product_or_404(product_id)
@@ -753,7 +596,7 @@ def products_add_produits_ok(request, product_id, sub_id):
     cache_products_for_category(menu.categorie)
     return HttpResponseRedirect('/carte/products/%s/' % product_id)
 
-@permission_required('base.p6')
+@permission_required('base.p2')
 def products_del_categories_ok(request, product_id, cat_id):
     data = get_user(request)
     product = get_product_or_404(product_id)
@@ -763,7 +606,7 @@ def products_del_categories_ok(request, product_id, cat_id):
     cache_products_for_category(product.categorie)
     return HttpResponseRedirect('/carte/products/%s/' % product_id)
 
-@permission_required('base.p6')
+@permission_required('base.p2')
 def products_add_categories_ok(request, product_id, cat_id):
     data = get_user(request)
     product = get_product_or_404(product_id)
@@ -773,7 +616,7 @@ def products_add_categories_ok(request, product_id, cat_id):
     cache_products_for_category(product.categorie)
     return HttpResponseRedirect('/carte/products/%s/' % product_id)
 
-@permission_required('base.p6')
+@permission_required('base.p2')
 def products_select_categories_ok(request, product_id):
     data = get_user(request)
     data['product'] = get_product_or_404(product_id)
@@ -787,7 +630,7 @@ def products_select_categories_ok(request, product_id):
                                 data,
                                 context_instance=RequestContext(request))
 
-@permission_required('base.p6')
+@permission_required('base.p2')
 def products_cooking(request, product_id):
     data = get_user(request)
     product = get_product_or_404(product_id)
@@ -797,7 +640,7 @@ def products_cooking(request, product_id):
     cache_products_for_category(product.categorie)
     return HttpResponseRedirect('/carte/products/%s/' % product_id)
 
-@permission_required('base.p6')
+@permission_required('base.p2')
 def products_enable(request, product_id):
     data = get_user(request)
     product = get_product_or_404(product_id)
@@ -807,7 +650,7 @@ def products_enable(request, product_id):
     cache_products_for_category(product.categorie)
     return HttpResponseRedirect('/carte/products/%s/' % product_id)
 
-@permission_required('base.p6')
+@permission_required('base.p2')
 def products_change(request, product_id):
     data = get_user(request)
     product = get_product_or_404(product_id)
@@ -840,7 +683,7 @@ def products_change(request, product_id):
                                 data,
                                 context_instance=RequestContext(request))
 
-@permission_required('base.p6')
+@permission_required('base.p2')
 def categories_set_name(request, cat_id):
     data = get_user(request)
     name = request.POST.get('name', '').strip()
@@ -858,7 +701,7 @@ def categories_set_name(request, cat_id):
         cache_categories()
     return HttpResponseRedirect('/carte/categories/%s/' % cat_id)
 
-@permission_required('base.p6')
+@permission_required('base.p2')
 def categories_set_kitchen(request, cat_id):
     data = get_user(request)
     cat = get_category_or_404(pk=cat_id)
@@ -868,7 +711,7 @@ def categories_set_kitchen(request, cat_id):
     cache_categories()
     return HttpResponseRedirect('/carte/categories/%s/' % cat_id)
 
-@permission_required('base.p6')
+@permission_required('base.p2')
 def categories_disable_surtaxe(request, cat_id):
     data = get_user(request)
     cat = get_category_or_404(cat_id)
@@ -880,23 +723,166 @@ def categories_disable_surtaxe(request, cat_id):
     cache_categories()
     return HttpResponseRedirect('/carte/categories/%s/' % cat_id)
 
-@permission_required('base.p5')
-def pos(request):
+###
+# Tables
+###
+
+@permission_required('base.p1')
+def tables_zone_delete(request, zone_id):
     data = get_user(request)
-    data['menu_pos'] = True
-    return render_to_response('base/pos.html',
+    zone = get_zone_or_404(zone_id)
+    Table.objects.filter(zone=zone).delete()
+    zone.delete()
+    cache_zones()
+    return HttpResponseRedirect('/manager/tables/')
+
+@permission_required('base.p1')
+def tables_table_new(request, zone_id):
+    data = get_user(request)
+    zone = get_zone_or_404(zone_id)
+    table = Table(zone=zone)
+    table.save()
+    cache_zones()
+    return HttpResponseRedirect('/manager/tables/%s/%s/' % (zone.id, table.id))
+
+@permission_required('base.p1')
+def tables_zone_new(request):
+    data = get_user(request)
+    zone = Zone()
+    zone.save()
+    cache_zones()
+    return HttpResponseRedirect('/manager/tables/%s/' % zone.id)
+
+@permission_required('base.p1')
+def tables_table(request, zone_id, table_id):
+    data = get_user(request)
+    data['table'] = get_object_or_404(Table, pk=table_id)
+    data['menu_manager'] = True
+    if request.method == 'POST':
+        name = request.POST.get('name', '').strip()
+        data['table'].nom = name
+        try:
+            data['table'].save()
+        except:
+            messages.add_message(request, messages.ERROR, "Les modifications n'ont pu être enregistrées.")
+        else:
+            return HttpResponseRedirect('/manager/tables/')
+    return render_to_response('base/manager/tables/table.html',
                                 data,
                                 context_instance=RequestContext(request))
 
-@login_required
-def jukebox(request):
+@permission_required('base.p1')
+def tables_zone(request, zone_id):
     data = get_user(request)
-    data['menu_jukebox'] = True
-    return render_to_response('base/jukebox.html',
+    data['zone'] = get_zone_or_404(zone_id)
+    data['menu_manager'] = True
+    if request.method == 'POST':
+        name = request.POST.get('name', '').strip()
+        data['zone'].nom = name
+        try:
+            data['zone'].save()
+        except:
+            messages.add_message(request, messages.ERROR, "Les modifications n'ont pu être enregistrées.")
+        else:
+            return HttpResponseRedirect('/manager/tables/')
+    return render_to_response('base/manager/tables/zone.html',
                                 data,
                                 context_instance=RequestContext(request))
 
-@permission_required('base.p7')
+@permission_required('base.p1')
+def tables(request):
+    data = get_user(request)
+    data['menu_manager'] = True
+    data['zones'] = cache['zones']
+    return render_to_response('base/manager/tables/home.html',
+                                data,
+                                context_instance=RequestContext(request))
+
+###
+# VATs
+###
+
+@permission_required('base.p1')
+def vats(request):
+    data = get_user(request)
+    data['vats'] = cache['vats']
+    data['menu_manager'] = True
+    return render_to_response('base/manager/vats/home.html',
+                                data,
+                                context_instance=RequestContext(request))
+
+@permission_required('base.p1')
+def vats_view(request, vat_id):
+    data = get_user(request)
+    data['menu_manager'] = True
+    data['vat'] = get_vat_or_404(vat_id)
+    return render_to_response('base/manager/vats/view.html',
+                                data,
+                                context_instance=RequestContext(request))
+
+@permission_required('base.p1')
+def vats_change(request, vat_id):
+    data = get_user(request)
+    data['vat'] = get_vat_or_404(vat_id)
+    data['menu_manager'] = True
+    if request.method == 'POST':
+        name = request.POST.get('name', '').strip()
+        tax = request.POST.get('tax', '').strip().replace(',','.')
+        if name:
+            if tax:
+                try:
+                    data['vat'].name = name
+                    data['vat'].save()
+                    data['vat'].set_tax(tax)
+                    for product in Produit.objects.filter(categorie__vat_onsite=data['vat']):
+                        product.update_vats()
+                    for product in Produit.objects.filter(categorie__vat_takeaway=data['vat']):
+                        product.update_vats()
+                    cache_products()
+                except:
+                    messages.add_message(request, messages.ERROR, "Les modifications n'ont pu être enregistrées.")
+                else:
+                    return HttpResponseRedirect('/manager/vats/')
+
+            else:
+                messages.add_message(request, messages.ERROR, "Vous devez saisir un pourcentage de taxe.")
+        else:
+            messages.add_message(request, messages.ERROR, "Vous devez entrer un nom.")
+
+    return render_to_response('base/manager/vats/change.html',
+                                data,
+                                context_instance=RequestContext(request))
+
+@permission_required('base.p1')
+def vat_new(request):
+    data = get_user(request)
+    data['menu_manager'] = True
+    data['vats'] = cache['vats']
+    if request.method == 'POST':
+        name = request.POST.get('name', '').strip()
+        tax = request.POST.get('tax', '').strip().replace(",",".")
+        if name:
+            if tax:
+                try:
+                    vat = VAT(name=name)
+                    vat.set_tax(tax)
+                    vat.save()
+                except:
+                    messages.add_message(request, messages.ERROR, "Les modifications n'ont pu être enregistrées.")
+                else:
+                    cache_vats()
+                    return HttpResponseRedirect('/manager/vats/')
+
+            else:
+                messages.add_message(request, messages.ERROR, "Vous devez saisir un pourcentage de taxe.")
+        else:
+            messages.add_message(request, messages.ERROR, "Vous devez entrer un nom.")
+
+    return render_to_response('base/manager/vats/new.html',
+                                data,
+                                context_instance=RequestContext(request))
+
+@permission_required('base.p1')
 def credits(request):
     data = get_user(request)
     data['menu_manager'] = True
@@ -904,7 +890,7 @@ def credits(request):
                                 data,
                                 context_instance=RequestContext(request))
 
-@permission_required('base.p7')
+@permission_required('base.p1')
 def rapports(request):
     """try/except sont là pour le cas où les rapports sont demandés
     alors qu'il n'y a pas encore eu de facture ce jour"""
@@ -942,7 +928,7 @@ def rapports(request):
                                 data,
                                 context_instance=RequestContext(request))
 
-@permission_required('base.p7')
+@permission_required('base.p1')
 def rapports_common_day_send(request, year, month, day):
     date = "%s-%s-%s" % (year, month, day)
     result = StatsJourGeneral().get_common_data(date)
@@ -966,7 +952,7 @@ def rapports_common_day_send(request, year, month, day):
             messages.add_message(request, messages.ERROR, u"Vous n'avez pas d'adresse mail.")
     return HttpResponseRedirect('/manager/rapports/')
 
-@permission_required('base.p7')
+@permission_required('base.p1')
 def rapports_common_day_print(request, year, month, day):
     date = "%s-%s-%s" % (year, month, day)
     result = StatsJourGeneral().get_common_data(date)
@@ -986,7 +972,7 @@ def rapports_common_day_print(request, year, month, day):
     return HttpResponseRedirect('/manager/rapports/')
 
 
-@permission_required('base.p7')
+@permission_required('base.p1')
 def manager(request):
     data = get_user(request)
     data['menu_manager'] = True
@@ -994,7 +980,7 @@ def manager(request):
                                 data,
                                 context_instance=RequestContext(request))
 
-@permission_required('base.p7')
+@permission_required('base.p1')
 def printers(request):
     data = get_user(request)
     data['menu_manager'] = True
@@ -1003,7 +989,7 @@ def printers(request):
                                 data,
                                 context_instance=RequestContext(request))
 
-@permission_required('base.p7')
+@permission_required('base.p1')
 def printer_add(request):
     data = get_user(request)
     data['menu_manager'] = True
@@ -1012,7 +998,7 @@ def printer_add(request):
                                 data,
                                 context_instance=RequestContext(request))
 
-@permission_required('base.p7')
+@permission_required('base.p1')
 def printer_added(request, name):
     """Save new printer"""
     data = get_user(request)
@@ -1021,7 +1007,7 @@ def printer_added(request, name):
     cache_printers()
     return HttpResponseRedirect('/manager/printers/')
 
-@permission_required('base.p7')
+@permission_required('base.p1')
 def printer_view(request, printer_id):
     data = get_user(request)
     data['menu_manager'] = True
@@ -1041,7 +1027,7 @@ def printer_view(request, printer_id):
                                 data,
                                 context_instance=RequestContext(request))
 
-@permission_required('base.p7')
+@permission_required('base.p1')
 def printer_select_width(request, printer_id):
     data = get_user(request)
     data['menu_manager'] = True
@@ -1051,7 +1037,7 @@ def printer_select_width(request, printer_id):
                                 data,
                                 context_instance=RequestContext(request))
 
-@permission_required('base.p7')
+@permission_required('base.p1')
 def printer_set_width(request, printer_id, number):
     data = get_user(request)
     printer = get_printer_or_404(printer_id)
@@ -1059,7 +1045,7 @@ def printer_set_width(request, printer_id, number):
     printer.save()
     return HttpResponseRedirect('/manager/printer/%s/' % printer_id)
 
-@permission_required('base.p7')
+@permission_required('base.p1')
 def printer_test_print(request, printer_id):
     data = get_user(request)
     printer = get_printer_or_404(printer_id)
@@ -1069,7 +1055,7 @@ def printer_test_print(request, printer_id):
         messages.add_message(request, messages.ERROR, "L'impression de test a achouée.")
     return HttpResponseRedirect('/manager/printer/%s/' % printer_id)
 
-@permission_required('base.p7')
+@permission_required('base.p1')
 def printer_change_kitchen(request, printer_id):
     data = get_user(request)
     printer = get_printer_or_404(printer_id)
@@ -1078,7 +1064,7 @@ def printer_change_kitchen(request, printer_id):
     printer.save()
     return HttpResponseRedirect('/manager/printer/%s/' % printer_id)
 
-@permission_required('base.p7')
+@permission_required('base.p1')
 def printer_change_billing(request, printer_id):
     data = get_user(request)
     printer = get_printer_or_404(printer_id)
@@ -1087,7 +1073,7 @@ def printer_change_billing(request, printer_id):
     printer.save()
     return HttpResponseRedirect('/manager/printer/%s/' % printer_id)
 
-@permission_required('base.p7')
+@permission_required('base.p1')
 def printer_change_manager(request, printer_id):
     data = get_user(request)
     printer = get_printer_or_404(printer_id)
@@ -1236,7 +1222,11 @@ def users_change_perm(request, user_id, codename):
         logging.warning("[%s] wrong perm info : [%s]" % (data['user'].username, codename))
     return HttpResponseRedirect('/manager/users/')
 
-@permission_required('base.p5')
+###
+# POS
+###
+
+@permission_required('base.p3')
 def bill_new(request):
     """Create a new bill"""
     data = get_user(request)
@@ -1247,7 +1237,7 @@ def bill_new(request):
     cache['bills_by_id'][int(bill.id)] = bill
     return HttpResponseRedirect('/bill/%s/' % bill.id)
 
-@permission_required('base.p5')
+@permission_required('base.p3')
 def bill_send_kitchen(request, bill_id):
     """Send in the kitchen"""
     bill = get_bill_or_404(bill_id)
@@ -1264,7 +1254,7 @@ def bill_send_kitchen(request, bill_id):
         messages.add_message(request, messages.ERROR, "Vous devez choisir une table.")
     return HttpResponseRedirect('/bill/%s/' % bill.id)
 
-@permission_required('base.p5')
+@permission_required('base.p3')
 def bill_print(request, bill_id):
     """Print the bill"""
     data = get_user(request)
@@ -1282,7 +1272,7 @@ def bill_print(request, bill_id):
                 messages.add_message(request, messages.ERROR, "L'impression a échouée.")
     return HttpResponseRedirect('/bill/%s/' % bill.id)
 
-@permission_required('base.p5')
+@permission_required('base.p3')
 def table_select(request, bill_id):
     """Select/modify table of a bill"""
     data = get_user(request)
@@ -1293,7 +1283,7 @@ def table_select(request, bill_id):
                                 data,
                                 context_instance=RequestContext(request))
 
-@permission_required('base.p5')
+@permission_required('base.p3')
 def table_set(request, bill_id, table_id):
     """Select/modify table of a bill"""
     data = get_user(request)
@@ -1305,7 +1295,7 @@ def table_set(request, bill_id, table_id):
                                 data,
                                 context_instance=RequestContext(request))
 
-@permission_required('base.p5')
+@permission_required('base.p3')
 def category_select(request, bill_id, category_id=None):
     """Select a category to add a new product on a bill."""
     data = get_user(request)
@@ -1321,7 +1311,7 @@ def category_select(request, bill_id, category_id=None):
                                 data,
                                 context_instance=RequestContext(request))
 
-@permission_required('base.p5')
+@permission_required('base.p3')
 def product_select_made_with(request, bill_id, product_id):
     data = get_user(request)
     data['menu_bills'] = True
@@ -1332,7 +1322,7 @@ def product_select_made_with(request, bill_id, product_id):
                                 data,
                                 context_instance=RequestContext(request))
 
-@permission_required('base.p5')
+@permission_required('base.p3')
 def product_set_made_with(request, bill_id, product_id, category_id):
     data = get_user(request)
     product = get_object_or_404(ProduitVendu, pk=product_id)
@@ -1341,7 +1331,7 @@ def product_set_made_with(request, bill_id, product_id, category_id):
     product.save()
     return HttpResponseRedirect('/bill/%s/sold/%s/view/' % (bill_id, product.id))
 
-@permission_required('base.p5')
+@permission_required('base.p3')
 def product_select(request, bill_id, category_id):
     """Select a product to add on a bill."""
     data = get_user(request)
@@ -1358,7 +1348,7 @@ def product_select(request, bill_id, category_id):
                                 data,
                                 context_instance=RequestContext(request))
 
-@permission_required('base.p5')
+@permission_required('base.p3')
 def subproduct_select(request, bill_id, sold_id, category_id):
     """Select a subproduct to a product."""
     data = get_user(request)
@@ -1371,7 +1361,7 @@ def subproduct_select(request, bill_id, sold_id, category_id):
                                 data,
                                 context_instance=RequestContext(request))
 
-@permission_required('base.p5')
+@permission_required('base.p3')
 def sold_view(request, bill_id, sold_id):
     data = get_user(request)
     data['menu_bills'] = True
@@ -1381,7 +1371,7 @@ def sold_view(request, bill_id, sold_id):
                                 data,
                                 context_instance=RequestContext(request))
 
-@permission_required('base.p5')
+@permission_required('base.p3')
 def sold_delete(request, bill_id, sold_id):
     data = get_user(request)
     bill = get_bill_or_404(bill_id)
@@ -1400,7 +1390,7 @@ def sold_delete(request, bill_id, sold_id):
         sold.delete()
         return HttpResponseRedirect('/bill/%s/sold/%s/category/%s/select/' % (bill_id, menu.id, category.id))
 
-@permission_required('base.p5')
+@permission_required('base.p3')
 def subproduct_add(request, bill_id, sold_id, product_id):
     """Add a product to a bill. If this product contains others products,
     we have to add them too."""
@@ -1419,7 +1409,7 @@ def subproduct_add(request, bill_id, sold_id, product_id):
         return HttpResponseRedirect('/bill/%s/sold/%s/category/%s/select/' % (bill_id, menu.id, category.id))
     return HttpResponseRedirect('/bill/%s/category/%s/' % (bill_id, menu.produit.categorie.id))
 
-@permission_required('base.p5')
+@permission_required('base.p3')
 def product_add(request, bill_id, product_id):
     """Add a product to a bill. If this product contains others products,
     we have to add them too."""
@@ -1437,7 +1427,7 @@ def product_add(request, bill_id, product_id):
     messages.add_message(request, messages.SUCCESS, "%s ok" % product.nom)
     return HttpResponseRedirect('/bill/%s/category/%s/' % (bill_id, product.categorie.id))
 
-@permission_required('base.p5')
+@permission_required('base.p3')
 def sold_cooking(request, bill_id, sold_id, cooking_id=-1, menu_id=-1):
     data = get_user(request)
     data['sold'] = get_object_or_404(ProduitVendu, pk=sold_id)
@@ -1464,7 +1454,7 @@ def sold_cooking(request, bill_id, sold_id, cooking_id=-1, menu_id=-1):
                                 data,
                                 context_instance=RequestContext(request))
 
-@permission_required('base.p5')
+@permission_required('base.p3')
 def couverts_select(request, bill_id):
     """List of couverts for a bill"""
     data = get_user(request)
@@ -1475,7 +1465,7 @@ def couverts_select(request, bill_id):
                                 data,
                                 context_instance=RequestContext(request))
 
-@permission_required('base.p5')
+@permission_required('base.p3')
 def couverts_set(request, bill_id, number):
     """Set couverts of a bill"""
     data = get_user(request)
@@ -1641,7 +1631,7 @@ def bill_delete(request, bill_id):
     cache_bills()
     return HttpResponseRedirect('/bills/')
 
-@permission_required('base.p6')
+@permission_required('base.p3')
 def bill_onsite(request, bill_id):
     data = get_user(request)
     order = get_bill_or_404(bill_id)
@@ -1655,7 +1645,7 @@ def bill_onsite(request, bill_id):
 # Archives
 ###
 
-@permission_required('base.p7')
+@permission_required('base.p1')
 def archives(request):
     data = get_user(request)
     data['menu_manager'] = True
@@ -1677,7 +1667,7 @@ def archives(request):
                                 data,
                                 context_instance=RequestContext(request))
 
-@permission_required('base.p7')
+@permission_required('base.p1')
 def archives_bill(request, bill_id):
     data = get_user(request)
     data['facture'] = get_object_or_404(Facture, pk=bill_id)
@@ -1687,6 +1677,14 @@ def archives_bill(request, bill_id):
     data['suivis'] = Suivi.objects.filter(facture=data['facture']).order_by("-date")
     data['menu_manager'] = True
     return render_to_response('base/manager/archives/invoice.html',
+                                data,
+                                context_instance=RequestContext(request))
+
+@login_required
+def jukebox(request):
+    data = get_user(request)
+    data['menu_jukebox'] = True
+    return render_to_response('base/jukebox.html',
                                 data,
                                 context_instance=RequestContext(request))
 

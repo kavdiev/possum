@@ -53,7 +53,7 @@ User.objects.all().delete()
 PaiementType.objects.all().delete()
 Paiement.objects.all().delete()
 
-# ajout d'un utilisateur
+# ajout du manager
 user = User(username="demo", 
         first_name="first name", 
         last_name="last name", 
@@ -63,6 +63,18 @@ user.save()
 # on ajoute les droits d'admin
 for i in xrange(1,10):
     user.user_permissions.add(Permission.objects.get(codename="p%d" % i))
+user.save()
+
+# ajout d'un utilisateur pour la saisie des commandes
+# ajout du manager
+user = User(username="pos", 
+        first_name="", 
+        last_name="", 
+        email="")
+user.set_password("pos")
+user.save()
+# on ajoute les droits d'admin
+user.user_permissions.add(Permission.objects.get(codename="p3"))
 user.save()
 
 # Cuisson
