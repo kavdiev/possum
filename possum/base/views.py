@@ -99,6 +99,14 @@ def get_printer_or_404(printer_id):
     else:
         return printer
 
+def get_type_payment_or_404(type_payment_id):
+    try:
+        type_payment = cache['type_payments_by_id'][int(type_payment_id)]
+    except KeyError:
+        raise Http404
+    else:
+        return type_payment
+
 def get_zone_or_404(zone_id):
     try:
         zone = cache['zones_by_id'][int(zone_id)]
@@ -153,11 +161,18 @@ def cache_bills():
         cache['bills_by_id'][int(bill.id)] = bill
 
 def cache_vats():
+    cache['vats'] = VAT.objects.order_by('name')
     if 'vats_by_id' not in cache:
         cache['vats_by_id'] = {}
-    cache['vats'] = VAT.objects.order_by('name')
     for vat in cache['vats']:
         cache['vats_by_id'][int(vat.id)] = vat
+
+def cache_type_payments():
+    cache['type_payments'] = PaiementType.objects.order_by("nom")
+    if 'type_payments_by_id' not in cache:
+        cache['type_payments_by_id'] = {}
+    for payment in cache['type_payments']:
+        cache['type_payments_by_id'][int(payment.id)] = payment
 
 def cache_zones():
     cache['zones'] = Zone.objects.all()
@@ -173,6 +188,7 @@ def init_cache_system():
     cache_vats()
     cache_printers()
     cache_zones()
+    cache_type_payments()
     if settings.DEBUG:
         from pprint import pprint
         pprint(cache)
@@ -916,7 +932,7 @@ def rapports(request):
         data['categories'].append(category)
     # payments
     data['payments'] = []
-    for payment_type in PaiementType.objects.all():
+    for payment_type in cache["type_payments"]:
         data['payments'].append("%s : %.2f" % (
                 payment_type.nom, 
                 StatsJourPaiement().get_data(payment_type, date)))
@@ -1522,7 +1538,7 @@ def bill_payment_save(request, bill_id, type_id, left, right, count):
     """Enregistre le paiement
     """
     data = get_user(request)
-    type_payment = get_object_or_404(PaiementType, pk=type_id)
+    type_payment = get_type_payment_or_404(type_id)
     bill = get_bill_or_404(bill_id)
     montant = "%s.%s" % (left, right)
     if type_payment.fixed_value:
@@ -1533,6 +1549,7 @@ def bill_payment_save(request, bill_id, type_id, left, right, count):
         messages.add_message(request, messages.ERROR, "Le paiement n'a pu être enregistré.")
     if bill.saved_in_stats:
         messages.add_message(request, messages.SUCCESS, "La facture a été soldée.")
+        cache_bills()
         return HttpResponseRedirect('/bills/')
     else:
         return HttpResponseRedirect('/bill/%s/' % bill_id)
@@ -1580,12 +1597,12 @@ def bill_payment(request, bill_id, type_id=-1, count=-1, left=0, right=0):
         messages.add_message(request, messages.ERROR, "Il n'y a rien à payer.")
         return HttpResponseRedirect('/bill/%s/' % bill.id)
     data['bill_id'] = bill_id
-    data['type_payments'] = PaiementType.objects.all()
+    data['type_payments'] = cache['type_payments']
     data['menu_bills'] = True
     data['left'] = left
     data['right'] = right
     if type_id > -1:
-        data['type_selected'] = get_object_or_404(PaiementType, pk=type_id)
+        data['type_selected'] = get_type_payment_or_404(type_id)
         if data['type_selected'].fixed_value:
             if count > 0:
                 data['tickets_count'] = count

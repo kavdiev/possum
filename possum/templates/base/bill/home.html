@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 {% block content %}
 
+<h1>Commandes ({{factures|length}})</h1>
 <ul id="bills">
     <li onclick="window.location='/bill/new/'">Nouvelle commande</li>
     {% if factures %}

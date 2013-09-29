@@ -525,6 +525,8 @@ class Facture(models.Model):
         """
         Table is surtaxed et il n'y a pas de nourriture.
         """
+        #TODO: gestion de la surtaxe
+        return False
         if self.onsite:
             for produit in self.produits.iterator():
                 #logging.debug("test with produit: %s and categorie id: %d" % (produit.nom, produit.categorie.id))
