@@ -91,6 +91,14 @@ def get_vat_or_404(vat_id):
     else:
         return vat
 
+def get_printer_or_404(printer_id):
+    try:
+        printer = cache['printers_by_id'][int(printer_id)]
+    except KeyError:
+        raise Http404
+    else:
+        return printer
+
 def cache_categories():
     if 'categories_by_id' not in cache:
         cache['categories_by_id'] = {}
@@ -119,6 +127,16 @@ def cache_products_for_category(category):
     disable = products.exclude(actif=True)
     cache['products_disable'][int(category.id)] = disable
 
+def cache_printers():
+    cache['printers'] = Printer.objects.all()
+    cache['manager_printers'] = cache['printers'].filter(manager=True)
+    cache['kitchen_printers'] = cache['printers'].filter(kitchen=True)
+    cache['billing_printers'] = cache['printers'].filter(billing=True)
+    if 'printers_by_id' not in cache:
+        cache['printers_by_id'] = {}
+    for printer in cache['printers']:
+        cache['printers_by_id'][int(printer.id)] = printer
+
 def cache_bills():
     if 'bills_by_id' not in cache:
         cache['bills_by_id'] = {}
@@ -138,6 +156,7 @@ def init_cache_system():
     cache_products()
     cache_bills()
     cache_vats()
+    cache_printers()
     if settings.DEBUG:
         from pprint import pprint
         pprint(cache)
@@ -216,9 +235,8 @@ def categories_print(request):
     data = get_user(request)
     result = Produit().get_list_with_all_products()
     if result:
-        printers = Printer.objects.filter(manager=True)
-        if printers:
-            printer = printers[0]
+        if cache['manager_printers']:
+            printer = cache['manager_printers'][0]
             if printer.print_list(result, "carte_complete"):
                 messages.add_message(request, messages.SUCCESS, u"L'impression a été envoyée sur %s." % printer.name)
             else:
@@ -920,9 +938,8 @@ def rapports_common_day_print(request, year, month, day):
     except:
         messages.add_message(request, messages.ERROR, "Les statistiques n'ont pu être récupérées.")
     else:
-        printers = Printer.objects.filter(manager=True)
-        if printers:
-            printer = printers[0]
+        if cache['manager_printers']:
+            printer = cache['manager_printers'][0]
             if printer.print_list(result, "rapport_common_%s" % date):
                 messages.add_message(request, messages.SUCCESS, u"L'impression a été envoyée sur %s." % printer.name)
             else:
@@ -944,7 +961,7 @@ def manager(request):
 def printers(request):
     data = get_user(request)
     data['menu_manager'] = True
-    data['printers'] = Printer.objects.all()
+    data['printers'] = cache['printers']
     return render_to_response('base/manager/printers.html',
                                 data,
                                 context_instance=RequestContext(request))
@@ -964,13 +981,14 @@ def printer_added(request, name):
     data = get_user(request)
     printer = Printer(name=name)
     printer.save()
+    cache_printers()
     return HttpResponseRedirect('/manager/printers/')
 
 @permission_required('base.p7')
 def printer_view(request, printer_id):
     data = get_user(request)
     data['menu_manager'] = True
-    data['printer'] = get_object_or_404(Printer, pk=printer_id)
+    data['printer'] = get_printer_or_404(printer_id)
     if request.method == 'POST':
         options = request.POST.get('options', '').strip()
         header = request.POST.get('header', '')
@@ -990,7 +1008,7 @@ def printer_view(request, printer_id):
 def printer_select_width(request, printer_id):
     data = get_user(request)
     data['menu_manager'] = True
-    data['printer'] = get_object_or_404(Printer, pk=printer_id)
+    data['printer'] = get_printer_or_404(printer_id)
     data['max'] = range(14, 120)
     return render_to_response('base/manager/printer_select_width.html',
                                 data,
@@ -999,7 +1017,7 @@ def printer_select_width(request, printer_id):
 @permission_required('base.p7')
 def printer_set_width(request, printer_id, number):
     data = get_user(request)
-    printer = get_object_or_404(Printer, pk=printer_id)
+    printer = get_printer_or_404(printer_id)
     printer.width = number
     printer.save()
     return HttpResponseRedirect('/manager/printer/%s/' % printer_id)
@@ -1007,7 +1025,7 @@ def printer_set_width(request, printer_id, number):
 @permission_required('base.p7')
 def printer_test_print(request, printer_id):
     data = get_user(request)
-    printer = get_object_or_404(Printer, pk=printer_id)
+    printer = get_printer_or_404(printer_id)
     if printer.print_test():
         messages.add_message(request, messages.SUCCESS, "L'impression a été acceptée.")
     else:
@@ -1017,7 +1035,7 @@ def printer_test_print(request, printer_id):
 @permission_required('base.p7')
 def printer_change_kitchen(request, printer_id):
     data = get_user(request)
-    printer = get_object_or_404(Printer, pk=printer_id)
+    printer = get_printer_or_404(printer_id)
     new = not printer.kitchen
     printer.kitchen = new
     printer.save()
@@ -1026,7 +1044,7 @@ def printer_change_kitchen(request, printer_id):
 @permission_required('base.p7')
 def printer_change_billing(request, printer_id):
     data = get_user(request)
-    printer = get_object_or_404(Printer, pk=printer_id)
+    printer = get_printer_or_404(printer_id)
     new = not printer.billing
     printer.billing = new
     printer.save()
@@ -1035,7 +1053,7 @@ def printer_change_billing(request, printer_id):
 @permission_required('base.p7')
 def printer_change_manager(request, printer_id):
     data = get_user(request)
-    printer = get_object_or_404(Printer, pk=printer_id)
+    printer = get_printer_or_404(printer_id)
     new = not printer.manager
     printer.manager = new
     printer.save()
@@ -1218,7 +1236,7 @@ def bill_print(request, bill_id):
     if bill.is_empty():
         messages.add_message(request, messages.ERROR, "La facture est vide.")
     else:
-        if Printer.objects.filter(billing=True).count() == 0:
+        if cache['billing_printers'].count() == 0:
             messages.add_message(request, messages.ERROR, "Aucune imprimante n'est configurée pour la facturation.")
         else:
             if bill.print_ticket():
