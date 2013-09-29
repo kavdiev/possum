@@ -99,6 +99,14 @@ def get_printer_or_404(printer_id):
     else:
         return printer
 
+def get_zone_or_404(zone_id):
+    try:
+        zone = cache['zones_by_id'][int(zone_id)]
+    except KeyError:
+        raise Http404
+    else:
+        return zone
+
 def cache_categories():
     if 'categories_by_id' not in cache:
         cache['categories_by_id'] = {}
@@ -151,12 +159,20 @@ def cache_vats():
     for vat in cache['vats']:
         cache['vats_by_id'][int(vat.id)] = vat
 
+def cache_zones():
+    cache['zones'] = Zone.objects.all()
+    if 'zones_by_id' not in cache:
+        cache['zones_by_id'] = {}
+    for zone in cache['zones']:
+        cache['zones_by_id'][int(zone.id)] = zone
+
 def init_cache_system():
     cache_categories()
     cache_products()
     cache_bills()
     cache_vats()
     cache_printers()
+    cache_zones()
     if settings.DEBUG:
         from pprint import pprint
         pprint(cache)
@@ -454,17 +470,19 @@ def categories_vat_onsite(request, cat_id):
 @permission_required('base.p7')
 def tables_zone_delete(request, zone_id):
     data = get_user(request)
-    zone = get_object_or_404(Zone, pk=zone_id)
+    zone = get_zone_or_404(zone_id)
     Table.objects.filter(zone=zone).delete()
     zone.delete()
+    cache_zones()
     return HttpResponseRedirect('/manager/tables/')
 
 @permission_required('base.p7')
 def tables_table_new(request, zone_id):
     data = get_user(request)
-    zone = get_object_or_404(Zone, pk=zone_id)
+    zone = get_zone_or_404(zone_id)
     table = Table(zone=zone)
     table.save()
+    cache_zones()
     return HttpResponseRedirect('/manager/tables/%s/%s/' % (zone.id, table.id))
 
 @permission_required('base.p7')
@@ -472,6 +490,7 @@ def tables_zone_new(request):
     data = get_user(request)
     zone = Zone()
     zone.save()
+    cache_zones()
     return HttpResponseRedirect('/manager/tables/%s/' % zone.id)
 
 @permission_required('base.p7')
@@ -495,7 +514,7 @@ def tables_table(request, zone_id, table_id):
 @permission_required('base.p7')
 def tables_zone(request, zone_id):
     data = get_user(request)
-    data['zone'] = get_object_or_404(Zone, pk=zone_id)
+    data['zone'] = get_zone_or_404(zone_id)
     data['menu_manager'] = True
     if request.method == 'POST':
         name = request.POST.get('name', '').strip()
@@ -514,7 +533,7 @@ def tables_zone(request, zone_id):
 def tables(request):
     data = get_user(request)
     data['menu_manager'] = True
-    data['zones'] = Zone.objects.all()
+    data['zones'] = cache['zones']
     return render_to_response('base/manager/tables/home.html',
                                 data,
                                 context_instance=RequestContext(request))
@@ -1250,7 +1269,7 @@ def table_select(request, bill_id):
     """Select/modify table of a bill"""
     data = get_user(request)
     data['menu_bills'] = True
-    data['zones'] = Zone.objects.all()
+    data['zones'] = cache['zones']
     data['bill_id'] = bill_id
     return render_to_response('base/bill/select_a_table.html',
                                 data,
