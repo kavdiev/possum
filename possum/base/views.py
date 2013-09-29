@@ -51,6 +51,8 @@ from django.core.mail import send_mail
 import os
 from datetime import datetime
 
+logger = logging.getLogger(__name__)
+
 # Création des répertoires obligatoires
 def create_default_directory():
     if not os.path.exists(settings.PATH_TICKET):
@@ -189,9 +191,9 @@ def init_cache_system():
     cache_printers()
     cache_zones()
     cache_type_payments()
-    if settings.DEBUG:
-        from pprint import pprint
-        pprint(cache)
+#    if settings.DEBUG:
+#        from pprint import pprint
+#        pprint(cache)
 
 def get_user(request):
     data = {}
@@ -1619,6 +1621,7 @@ def bill_payment(request, bill_id, type_id=-1, count=-1, left=0, right=0):
 
 @permission_required('base.p3')
 def bill_view(request, bill_id):
+    logging.debug(" ")
     data = get_user(request)
     data['facture'] = get_bill_or_404(bill_id)
     if data['facture'].est_soldee():
