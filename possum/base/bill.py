@@ -166,7 +166,7 @@ class Facture(models.Model):
             todolist = []
             heure = follow.date.strftime("%H:%M")
             #heure = datetime.datetime.now().strftime("%H:%M")
-            todolist.append("[%s] Table %s (%d couv.)" % (heure, self.table, self.couverts))
+            todolist.append("[%s] Table %s (%s couv.)" % (heure, self.table, self.couverts))
             todolist.append(">>> envoye %s" % follow.category.nom)
             todolist.append(" ")
             nb_products_sent = self.produits.filter(sent=True).count()

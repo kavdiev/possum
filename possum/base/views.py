@@ -913,13 +913,26 @@ def credits(request):
 @permission_required('base.p1')
 def rapports(request):
     """try/except sont là pour le cas où les rapports sont demandés
-    alors qu'il n'y a pas encore eu de facture ce jour"""
+    alors qu'il n'y a pas encore eu de facture ce jour
+    
+    Affiche le rapport pour une journée
+    """
     data = get_user(request)
     data['menu_manager'] = True
-    date = get_current_working_day()
-    data['year'] = date.year
-    data['month'] = date.month
-    data['day'] = date.day
+    if request.method == 'POST':
+        try:
+            year = int(request.POST.get('date_year'))
+            month = int(request.POST.get('date_month'))
+            day = int(request.POST.get('date_day'))
+            date = datetime(year, month, day)
+        except:
+            messages.add_message(request, messages.ERROR, "La date saisie n'est pas valide.")
+            date = get_current_working_day()
+    else:
+        date = get_current_working_day()
+    data['date_form'] = DateForm({'date': date, })
+    data['date'] = date
+
     for name in ['nb_invoices', 'total_ttc']:
         data[name] = StatsJourGeneral().get_data(name, date)
     data['vats'] = []
