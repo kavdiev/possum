@@ -210,14 +210,14 @@ class Facture(models.Model):
     def guest_couverts(self):
         """Essaye de deviner le nombre de couverts"""
         nb = {}
-        categories = Categorie.objects.filter(made_in_kitchen=True)
-        for categorie in categories:
-            nb[categorie] = 0
+        #categories = Categorie.objects.filter(made_in_kitchen=True)
+        for categorie in Categorie.objects.filter(made_in_kitchen=True):
+            nb[categorie.nom] = 0
         for vendu in self.produits.iterator():
-            if vendu.produit.categorie.nom in categories:
+            if vendu.produit.categorie.nom in nb:
                 nb[vendu.produit.categorie.nom] += 1
             for sous_produit in vendu.contient.iterator():
-                if sous_produit.produit.categorie.nom in categories:
+                if sous_produit.produit.categorie.nom in nb:
                     nb[sous_produit.produit.categorie.nom] += 1
         return max(nb.values())
 
