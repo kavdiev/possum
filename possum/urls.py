@@ -85,7 +85,9 @@ urlpatterns = patterns('possum.base.views',
     url(r'^bill/(?P<bill_id>\d+)/kitchen/$', 'bill_send_kitchen'),
     url(r'^bill/(?P<bill_id>\d+)/$', 'bill_view'),
     url(r'^jukebox/$', 'jukebox'),
+
     url(r'^kitchen/$', 'kitchen'),
+    url(r'^kitchen/(?P<bill_id>\d+)/$', 'kitchen_for_bill'),
 
     url(r'^profile/$', 'profile'),
 

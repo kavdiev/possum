@@ -68,10 +68,10 @@
 
 <h2>Suivi en cuisine</h2>
 <ul id="kitchen">
-    {% for suivi in suivis %}
+    {% for follow in facture.following.iterator %}
     <li
-            style="background:{{suivi.category.color}};">
-         {{suivi}}
+            style="background:{{follow.category.color}};">
+         {{follow}}
     </li>
     {% empty %}
     <li>Aucun suivi.</li>

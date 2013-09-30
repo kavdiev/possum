@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h1>Cuisine ({{factures|length}})</h1>
+
+<ul id="kitchen">
+    {% for facture in factures %}
+        {% if facture.following %}
+    <li onclick="window.location='/kitchen/{{facture.id}}/'" 
+    style="background:{{facture.following.latest.category.color}};">
+        Table {{facture.table}}</br>
+        {{facture.following.latest}}
+        </li>
+        {% endif %}
+    {% endfor %}
+</ul>
+
+{% endblock %}
+

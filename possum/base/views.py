@@ -24,7 +24,7 @@ from possum.base.stats import StatsJourProduit, StatsJourCategorie
 from possum.base.stats import StatsJourGeneral
 from possum.base.stats import StatsJourPaiement
 from possum.base.stats import get_current_working_day
-from possum.base.bill import Facture, Suivi
+from possum.base.bill import Facture
 from possum.base.models import Printer
 from possum.base.product import Produit, ProduitVendu
 from possum.base.payment import PaiementType, Paiement
@@ -224,11 +224,31 @@ def home(request):
 #            context_instance=RequestContext(request))
     return HttpResponseRedirect('/bills/')
 
+###
+# Kitchen
+###
+
 @login_required
 def kitchen(request):
     data = get_user(request)
     data['menu_kitchen'] = True
-    data['suivis'] = Suivi.objects.filter(facture__restant_a_payer__gt=0).order_by("-date")
+    liste = []
+    for bill in cache['bills']:
+        if bill.following.count():
+            liste.append(bill)
+    data['factures'] = liste
+    return render_to_response('base/kitchen/home.html',
+            data,
+            context_instance=RequestContext(request))
+
+@login_required
+def kitchen_for_bill(request, bill_id):
+    data = get_user(request)
+    data['menu_kitchen'] = True
+    data['facture'] = get_bill_or_404(bill_id)
+    if data['facture'].est_soldee():
+        messages.add_message(request, messages.ERROR, "Cette facture a déjà été soldée.")
+        return HttpResponseRedirect('/kitchen/')
     return render_to_response('base/kitchen/view.html',
             data,
             context_instance=RequestContext(request))
@@ -1329,6 +1349,8 @@ def product_set_made_with(request, bill_id, product_id, category_id):
     category = get_category_or_404(category_id)
     product.made_with = category
     product.save()
+    bill = get_bill_or_404(bill_id)
+    bill.something_for_the_kitchen()
     return HttpResponseRedirect('/bill/%s/sold/%s/view/' % (bill_id, product.id))
 
 @permission_required('base.p3')
@@ -1541,7 +1563,8 @@ def bill_payment_save(request, bill_id, type_id, left, right, count):
         messages.add_message(request, messages.ERROR, "Le paiement n'a pu être enregistré.")
     if bill.saved_in_stats:
         messages.add_message(request, messages.SUCCESS, "La facture a été soldée.")
-        cache_bills()
+        #cache_bills()
+        cache['bills'].remove(bill)
         return HttpResponseRedirect('/bills/')
     else:
         return HttpResponseRedirect('/bill/%s/' % bill_id)
@@ -1617,8 +1640,6 @@ def bill_view(request, bill_id):
     if data['facture'].est_soldee():
         messages.add_message(request, messages.ERROR, "Cette facture a déjà été soldée.")
         return HttpResponseRedirect('/bills/')
-    data['next'] = data['facture'].something_for_the_kitchen()
-    data['suivis'] = Suivi.objects.filter(facture=data['facture']).order_by("-date")
     data['menu_bills'] = True
     return render_to_response('base/bill/order.html',
                                 data,
@@ -1674,7 +1695,6 @@ def archives_bill(request, bill_id):
     if not data['facture'].est_soldee():
         messages.add_message(request, messages.ERROR, "Cette facture n'est pas encore soldée.")
         return HttpResponseRedirect('/manager/archives/')
-    data['suivis'] = Suivi.objects.filter(facture=data['facture']).order_by("-date")
     data['menu_manager'] = True
     return render_to_response('base/manager/archives/invoice.html',
                                 data,

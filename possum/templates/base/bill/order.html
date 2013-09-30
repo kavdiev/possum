@@ -3,17 +3,17 @@
 {% block content %}
 
 <ul id="back">
-    <li onclick="window.location='/bills/'">Retour commandes</li>
+<li onclick="window.location='/bills/'">Retour commandes</li>
 </ul>
 
 <h1>Commande [{{facture}}]</h1>
 <ul id="bill_info">
-    <li onclick="window.location='/bill/{{facture.id}}/kitchen/'"
-    {% if next %}
-        style="background:{{next.color}};"
-        >Cuisine:</br>Envoyé {{next.nom}} ?
+    {% if facture.category_to_follow %}
+        <li onclick="window.location='/bill/{{facture.id}}/kitchen/'"
+        style="background:{{facture.category_to_follow.color}};"
+        >Cuisine:</br>Envoyé {{facture.category_to_follow.nom}} ?
     {% else %}
-        >Cuisine:</br>Rien à envoyer
+        <li>Cuisine:</br>Rien à envoyer
     {% endif %}
     </li>
     <li onclick="window.location='/bill/{{facture.id}}/table/select/'"
@@ -56,10 +56,10 @@
 
 <h2>Suivi en cuisine</h2>
 <ul id="kitchen">
-    {% for suivi in suivis %}
-    <li onclick="window.location='/bill/{{suivi.facture.id}}/'" 
-            style="background:{{suivi.category.color}};">
-         {{suivi}}
+    {% for follow in facture.following.iterator %}
+    <li onclick="window.location='/kitchen/{{facture.id}}/'" 
+            style="background:{{follow.category.color}};">
+         {{follow}}
     </li>
     {% empty %}
     <li>Aucun suivi.</li>

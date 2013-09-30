@@ -32,27 +32,17 @@ from possum.base.stats import StatsJourGeneral, StatsJourPaiement, \
 from possum.base.category import Categorie
 from possum.base.printer import Printer
 from possum.base.log import LogType
+from possum.base.follow import Follow
 from django.contrib.auth import authenticate
-
-class Suivi(models.Model):
-    """Suivi des envois en cuisine:
-    category est la categorie envoyée en cuisine"""
-    facture = models.ForeignKey('base.Facture', related_name="suivi-facture")
-    category = models.ForeignKey('Categorie', related_name="suivi-category")
-    date = models.DateTimeField('depuis le', auto_now_add=True)
-
-    def __unicode__(self):
-        if self.facture.table:
-            table = self.facture.table
-        else:
-            table = "T??"
-        return "[%s] Table %s > %s" % (self.date.strftime("%H:%M"), table, self.category.nom)
 
 class Facture(models.Model):
     """
     overcharge: surtaxe à ajouter par produits par exemple
         dans le cas d'une terrasse pour laquelle le service
         est surtaxé
+    following: liste des envois en cuisine
+    next: si présent, la prochaine catégorie a envoyée en 
+        cuisine
     """
     date_creation = models.DateTimeField('creer le', auto_now_add=True)
     table = models.ForeignKey('Table', \
@@ -74,6 +64,9 @@ class Facture(models.Model):
     saved_in_stats = models.BooleanField(default=False)
     onsite = models.BooleanField(default=True)
     overcharge = models.BooleanField(default=False)
+    following = models.ManyToManyField('Follow', \
+            null=True, blank=True)
+    category_to_follow = models.ForeignKey('Categorie', null=True, blank=True)
 
     class Meta:
         get_latest_by = 'id'
@@ -110,7 +103,7 @@ class Facture(models.Model):
         return cmp(self.date_creation, other.date_creation)
 
     def something_for_the_kitchen(self):
-        """Return, if one, the first category to prepare in the
+        """If one, set the first category to prepare in the
         kitchen. Example: Entree if there are Entree and Plat.
         """
         todolist = [p.made_with for p in self.produits.filter( \
@@ -124,9 +117,10 @@ class Facture(models.Model):
             todolist += menu
         if todolist:
             todolist.sort()
-            return todolist[0]
+            self.category_to_follow = todolist[0]
         else:
-            return None
+            self.category_to_follow = None
+        self.save()
 
     def get_first_todolist_for_kitchen(self):
         """Prepare la liste des produits a envoyer en cuisine
@@ -166,26 +160,33 @@ class Facture(models.Model):
     def send_in_the_kitchen(self):
         """We send the first category available to the kitchen.
         """
-        category = self.something_for_the_kitchen()
-        if category:
+        if self.category_to_follow:
+            follow = Follow(category=self.category_to_follow)
+            follow.save()
             todolist = []
-            heure = datetime.datetime.now().strftime("%H:%M")
+            heure = follow.date.strftime("%H:%M")
+            #heure = datetime.datetime.now().strftime("%H:%M")
             todolist.append("[%s] Table %s (%d couv.)" % (heure, self.table, self.couverts))
-            todolist.append(">>> envoye %s" % category.nom)
+            todolist.append(">>> envoye %s" % follow.category.nom)
             todolist.append(" ")
             nb_products_sent = self.produits.filter(sent=True).count()
             # liste des produits qui doivent etre envoyés en cuisine
             products = []
-            # les produits standards
-            for product in self.produits.filter(made_with=category, sent=False):
-                product.sent = True
-                products.append(product)
-                product.save()
-            # les menus
-            for product in self.produits.filter(contient__made_with=category, sent=False):
-                product.sent = True
-                products.append(product)
-                product.save()
+            for product in self.produits.iterator():
+                if product.est_un_menu():
+                    # on veut les produits du menu
+                    for sub in product.contient.iterator():
+                        if not sub.sent and sub.made_with == follow.category:
+                            sub.sent = True
+                            products.append(sub)
+                            follow.produits.add(sub)
+                            sub.save()
+                else:
+                    if not product.sent and product.made_with == follow.category:
+                        product.sent = True
+                        products.append(product)
+                        follow.produits.add(product)
+                        product.save()
             if nb_products_sent == 0:
                 # on crée le ticket avec la liste des produits et 
                 # des suites
@@ -198,9 +199,12 @@ class Facture(models.Model):
                     todolist.append(product)
             result = False
             for printer in Printer.objects.filter(kitchen=True):
-                result = printer.print_list(todolist, "kitchen-%s-%s" % (self.id, category.id))
-            suivi = Suivi(category=category, facture=self)
-            suivi.save()
+                print printer
+                result = printer.print_list(todolist, "kitchen-%s-%s" % (self.id, follow.category.id))
+                print result
+            follow.save()
+            self.following.add(follow)
+            self.something_for_the_kitchen()
             return result
 
     def guest_couverts(self):
@@ -350,6 +354,23 @@ class Facture(models.Model):
                     self.add_product_prize(vendu)
             else:
                 self.add_product_prize(vendu)
+        first = None
+        if vendu.est_un_menu():
+            # on doit vérifier tous les sous-produits
+            in_the_menu = vendu.get_menu_products()
+            if in_the_menu:
+                first = in_the_menu[0]
+            #else:
+            #   when there are no product selected in this menu
+        else:
+            first = vendu
+        if first and first.made_with.made_in_kitchen:
+            if self.category_to_follow:
+                if first.made_with.priorite < self.category_to_follow.priorite:
+                    self.category_to_follow = first.made_with
+            else:
+                self.category_to_follow = first.made_with
+        self.save()
 
 #        else:
 #            # on a certainement a faire a une reduction
@@ -380,6 +401,7 @@ class Facture(models.Model):
                 self.compute_total()
             else:
                 self.del_product_prize(product)
+            self.something_for_the_kitchen()
         else:
             logging.warning("[%s] on essaye de supprimer un produit "\
                             "qui n'est pas dans la facture" % self)

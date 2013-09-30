@@ -1,18 +1,27 @@
 {% extends "base.html" %}
 {% block content %}
 
-<h1>Cuisine</h1>
+<ul id="back">
+<li onclick="window.location='/kitchen/'">Retour cuisine</li>
+<li onclick="window.location='/bill/{{facture.id}}/'">Retour commande</li>
+</ul>
 
+<h1>Table {{facture.table}} ({{facture}})</h1>
+
+{% for follow in facture.following.iterator %}
+
+<h2>{{follow}}</h2>
 <ul id="kitchen">
-    {% for suivi in suivis %}
-    <li onclick="window.location='/bill/{{suivi.facture.id}}/'" 
-        style="background:{{suivi.category.color}};">
-        {{suivi}}
+    {% for product in follow.produits.iterator %}
+    <li style="background:{{product.produit.categorie.color}};">
+    {{product}}
+    {% if product.cuisson %}({{product.cuisson}}){% endif %}
         </li>
     {% empty %}
-    <li>Aucune table en cours.</li>
+    <li>Aucun produit.</li>
     {% endfor %}
 </ul>
+{% endfor %}
 
 {% endblock %}
 
