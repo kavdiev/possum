@@ -37,5 +37,6 @@ from possum.base.category import Categorie
 from possum.base.options import Cuisson, Sauce, Accompagnement
 from possum.base.location import Zone, Table
 from possum.base.follow import Follow
+from possum.base.config import Config
 
 

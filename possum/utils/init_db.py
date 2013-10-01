@@ -27,7 +27,7 @@ from possum.base.models import Accompagnement, Sauce, \
     Categorie, Cuisson, Facture, Log, LogType, Paiement, \
     PaiementType, Produit, ProduitVendu, Follow, Table, Zone, VAT, \
     Printer, VATOnBill, StatsJourCategorie, StatsJourGeneral, \
-    StatsJourPaiement, StatsJourProduit
+    StatsJourPaiement, StatsJourProduit, Config
 from django.contrib.auth.models import User, Permission
 
 # on efface toutes la base
@@ -52,6 +52,7 @@ Table.objects.all().delete()
 User.objects.all().delete()
 PaiementType.objects.all().delete()
 Paiement.objects.all().delete()
+Config.objects.all().delete()
 
 # ajout du manager
 user = User(username="demo", 
@@ -91,3 +92,7 @@ PaiementType(nom='Cheque', fixed_value=False).save()
 PaiementType(nom='Espece', fixed_value=False).save()
 PaiementType(nom='Tic. Resto.', fixed_value=True).save()
 
+# Type de paiements par défaut pour les remboursements lorsque
+# le paiement dépasse le montant de la facture
+id_type_paiement = PaiementType.objects.get(nom="Espece").id
+Config(key="payment_for_refunds", value=id_type_paiement).save()

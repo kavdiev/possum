@@ -33,6 +33,7 @@ from possum.base.category import Categorie
 from possum.base.printer import Printer
 from possum.base.log import LogType
 from possum.base.follow import Follow
+from possum.base.config import Config
 from django.contrib.auth import authenticate
 
 class Facture(models.Model):
@@ -510,7 +511,8 @@ class Facture(models.Model):
             # regularisation si le montant est superieur au montant du
             if paiement.montant > self.restant_a_payer:
                 monnaie = Paiement()
-                monnaie.type = PaiementType.objects.get(nom="Espece")
+                payment_for_refunds = Config.objects.get(key="payment_for_refunds").value
+                monnaie.type = PaiementType.objects.get(id=payment_for_refunds)
                 monnaie.montant = self.restant_a_payer - paiement.montant
                 monnaie.save()
                 self.paiements.add(monnaie)
