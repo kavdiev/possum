@@ -19,6 +19,7 @@
 #
 
 from django.db import models
+from django.db.models import Max, Avg, Min
 from possum.base.log import LogType
 from possum.base.category import Categorie
 from possum.base.product import Produit
@@ -37,6 +38,16 @@ def get_working_day(date):
         # jour de travail precedent
         return date - datetime.timedelta(days=1)
     else:
+        return date
+
+def get_last_year(date):
+    """Retourne le jour de l'année précédente 
+    afin de comparer les resultats des 2 journées
+    date doit être au format datetime
+    """
+    try:
+        return date - datetime.timedelta(days=364)
+    except:
         return date
 
 def get_current_working_day():

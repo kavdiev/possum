@@ -15,10 +15,68 @@
 
 <h2>Général</h2>
 <ul id="rapports">
-    <li>Nb factures: {{nb_invoices}}</li>
-    <li>Total TTC: {{total_ttc}}€</li>
+    <li {% if nb_invoices > last_nb_invoices %}class="enabled"{% endif %}>
+        Nb factures: {{nb_invoices}}
+        </br>Moy. {{avg_nb_invoices}} / Max. {{max_nb_invoices}}
+    </li>
+    <li {% if total_ttc > last_total_ttc %}class="enabled"{% endif %}>
+        Total TTC: {{total_ttc}}€
+        </br>Moy. {{avg_total_ttc}} / Max. {{max_total_ttc}}
+    </li>
 <li onclick="window.location='/manager/rapports/{{date.year}}/{{date.month}}/{{date.day}}/send/'">Envoyer par mail</li>
 <li onclick="window.location='/manager/rapports/{{date.year}}/{{date.month}}/{{date.day}}/print/'">Imprimer</li>
+</ul>
+
+<h3>L'année dernière</h3>
+<ul id="rapports">
+    <li>Nb factures: {{last_nb_invoices}}</li>
+    <li>Total TTC: {{last_total_ttc}}€</li>
+</ul>
+
+<h2>Restauration</h2>
+<ul id="rapports">
+    <li {% if nb_guests > last_nb_guests %}class="enabled"{% endif %}>
+        Nb de couverts: {{nb_guests}}
+        </br>Moy. {{avg_nb_guests}} / Max. {{max_nb_guests}}
+    </li>
+    <li {% if guests_total_ttc > last_guests_total_ttc %}class="enabled"{% endif %}>
+        Total TTC: {{guests_total_ttc}}€
+        </br>Moy. {{avg_guests_total_ttc}} / Max. {{max_guests_total_ttc}}
+    </li>
+    <li {% if guest_average > last_guest_average %}class="enabled"{% endif %}>
+        TM/couvert: {{guest_average}}€
+        </br>Moy. {{avg_guest_average}} / Max. {{max_guest_average}}
+    </li>
+</ul>
+
+<h3>L'année dernière</h3>
+<ul id="rapports">
+    <li>Nb de couverts: {{last_nb_guests}}</li>
+    <li>Total TTC: {{last_guests_total_ttc}}€</li>
+    <li>Tic. moyen / couvert: {{last_guest_average}}€</li>
+</ul>
+
+<h2>Bar</h2>
+<ul id="rapports">
+    <li {% if nb_bar > last_nb_bar %}class="enabled"{% endif %}>
+        Nb factures: {{nb_bar}}
+        </br>Moy. {{avg_nb_bar}} / Max. {{max_nb_bar}}
+    </li>
+    <li {% if bar_total_ttc > last_bar_total_ttc %}class="enabled"{% endif %}>
+        Total TTC: {{bar_total_ttc}}€
+        </br>Moy. {{avg_bar_total_ttc}} / Max. {{max_bar_total_ttc}}
+    </li>
+    <li {% if bar_average > last_bar_average %}class="enabled"{% endif %}>
+        TM/facture: {{bar_average}}€
+        </br>Moy. {{avg_bar_average}} / Max. {{max_bar_average}}
+    </li>
+</ul>
+
+<h3>L'année dernière</h3>
+<ul id="rapports">
+    <li>Nb factures bar: {{last_nb_bar}}</li>
+    <li>Total TTC: {{last_bar_total_ttc}}€</li>
+    <li>Tic. moyen / facture: {{last_bar_average}}€</li>
 </ul>
 
 <h2>TVA</h2>
@@ -30,20 +88,6 @@
     {% endfor %}
 <li onclick="window.location='/manager/rapports/{{date.year}}/{{date.month}}/{{date.day}}/vats/send/'">Envoyer par mail</li>
 <li onclick="window.location='/manager/rapports/{{date.year}}/{{date.month}}/{{date.day}}/vats/print/'">Imprimer</li>
-</ul>
-
-<h2>Restauration</h2>
-<ul id="rapports">
-    <li>Nb de couverts: {{nb_guests}}</li>
-    <li>Total TTC: {{guests_total_ttc}}€</li>
-    <li>Ticket moyen par couvert: {{guest_average}}€</li>
-</ul>
-
-<h2>Bar</h2>
-<ul id="rapports">
-    <li>Nb factures bar: {{nb_bar}}</li>
-    <li>Total TTC: {{bar_total_ttc}}€</li>
-    <li>Ticket moyen par facture: {{bar_average}}€</li>
 </ul>
 
 <h2>Paiements</h2>

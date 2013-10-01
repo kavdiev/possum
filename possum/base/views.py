@@ -23,7 +23,7 @@ import logging
 from possum.base.stats import StatsJourProduit, StatsJourCategorie
 from possum.base.stats import StatsJourGeneral
 from possum.base.stats import StatsJourPaiement
-from possum.base.stats import get_current_working_day
+from possum.base.stats import get_current_working_day, get_last_year
 from possum.base.bill import Facture
 from possum.base.models import Printer
 from possum.base.product import Produit, ProduitVendu
@@ -983,6 +983,13 @@ def rapports_daily(request):
     data['date_form'] = DateForm({'date': date, })
     data['date'] = date
     data = get_daily_data(data, date)
+    # les stats de l'année précédente
+    last_year = get_last_year(date)
+    for name in ['nb_invoices', 'total_ttc', 'nb_guests', 'guest_average', 
+                'guests_total_ttc', 'nb_bar', 'bar_average', 'bar_total_ttc']:
+        data['last_%s' % name] = StatsJourGeneral().get_data(name, last_year)
+        data['max_%s' % name] = StatsJourGeneral().get_max(name)
+        data['avg_%s' % name] = StatsJourGeneral().get_avg(name)
     return render_to_response('base/manager/rapports/home.html',
                                 data,
                                 context_instance=RequestContext(request))
@@ -1031,6 +1038,46 @@ TM/facture: %s
             messages.add_message(request, messages.SUCCESS, u"Le mail a été envoyé à %s." % request.user.email)
     else:
         messages.add_message(request, messages.ERROR, u"Vous n'avez pas d'adresse mail.")
+    return HttpResponseRedirect('/manager/rapports/')
+
+@permission_required('base.p1')
+def rapports_daily_print(request, year, month, day):
+    date = "%s-%s-%s" % (year, month, day)
+    data = {}
+    data = get_daily_data(data, date)
+
+    result = []
+    result.append("Nb factures: %s" % data['nb_invoices'])
+    result.append("Total TTC: %s" % data['total_ttc'])
+    for vat in data['vats']:
+        result.append(vat)
+    result.append(" ")
+    result.append("Restauration:")
+    result.append("Nb couverts: %s" % data['nb_guests'])
+    result.append("Total TTC: %s" % data['guests_total_ttc'])
+    result.append("TM/couvert: %s" % data['guest_average'])
+    result.append(" ")
+    result.append("Bar:")
+    result.append("Nb factures: %s" % data['nb_bar'])
+    result.append("Total TTC: %s" % data['bar_total_ttc'])
+    result.append("TM/facture: %s" % data['bar_average'])
+    result.append(" ")
+    for payment in data['payments']:
+        result.append(payment)
+    result.append(" ")
+    for category in data['categories']:
+        result.append("%s : %s" % (category.nom, category.nb))
+    result.append(" ")
+    for product in data['products']:
+        result.append("%s : %s" % (product.nom, product.nb))
+    if cache['manager_printers']:
+        printer = cache['manager_printers'][0]
+        if printer.print_list(result, "rapport_daily_%s" % date):
+            messages.add_message(request, messages.SUCCESS, u"L'impression a été envoyée sur %s." % printer.name)
+        else:
+            messages.add_message(request, messages.ERROR, u"L'impression a achouée sur %s." % printer.name)
+    else:
+        messages.add_message(request, messages.ERROR, u"Aucune imprimante type 'manager' disponible.")
     return HttpResponseRedirect('/manager/rapports/')
 
 @permission_required('base.p1')
