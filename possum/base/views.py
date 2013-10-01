@@ -909,9 +909,59 @@ def credits(request):
     return render_to_response('base/manager/credits.html',
                                 data,
                                 context_instance=RequestContext(request))
+###
+# Rapports
+###
+
+def nb_sorted(a, b):
+    """Tri sur les categories et les produits pour avoir les plus vendus en premier
+    """
+    if b.nb < a.nb:
+        return -1
+    elif b.nb > a.nb:
+        return 1
+    else:
+        return 0
+
+def get_daily_data(data, date):
+    """Recupere les donnees pour une date
+    """
+    for name in ['nb_invoices', 'total_ttc']:
+        data[name] = StatsJourGeneral().get_data(name, date)
+    data['vats'] = []
+    for vat in cache['vats']:
+        name = "%s_vat_only" % vat.id
+        valeur = StatsJourGeneral().get_data(name, date)
+        data['vats'].append("TVA % 6.2f%% : %.2f" % (vat.tax, valeur))
+    # restaurant
+    for name in ['nb_guests', 'guest_average', 'guests_total_ttc']:
+        data[name] = StatsJourGeneral().get_data(name, date)
+    # bar
+    for name in ['nb_bar', 'bar_average', 'bar_total_ttc']:
+        data[name] = StatsJourGeneral().get_data(name, date)
+    # categories & products
+    categories = []
+    products = []
+    for category in cache['categories']:
+        category.nb = StatsJourCategorie().get_data(category, date)
+        if category.nb > 0:
+            categories.append(category)
+            for product in cache['products'][int(category.id)]:
+                product.nb = StatsJourProduit().get_data(product, date)
+                if product.nb > 0:
+                    products.append(product)
+    data['categories'] = sorted(categories, cmp=nb_sorted)
+    data['products'] = sorted(products, cmp=nb_sorted)
+    # payments
+    data['payments'] = []
+    for payment_type in cache["type_payments"]:
+        data['payments'].append("%s : %.2f" % (
+                payment_type.nom, 
+                StatsJourPaiement().get_data(payment_type, date)))
+    return data
 
 @permission_required('base.p1')
-def rapports(request):
+def rapports_daily(request):
     """try/except sont là pour le cas où les rapports sont demandés
     alors qu'il n'y a pas encore eu de facture ce jour
     
@@ -932,37 +982,59 @@ def rapports(request):
         date = get_current_working_day()
     data['date_form'] = DateForm({'date': date, })
     data['date'] = date
-
-    for name in ['nb_invoices', 'total_ttc']:
-        data[name] = StatsJourGeneral().get_data(name, date)
-    data['vats'] = []
-    for vat in cache['vats']:
-        name = "%s_vat_only" % vat.id
-        valeur = StatsJourGeneral().get_data(name, date)
-        data['vats'].append("TVA % 6.2f%% : %.2f" % (vat.tax, valeur))
-    # restaurant
-    for name in ['nb_guests', 'guest_average', 'guests_total_ttc']:
-        data[name] = StatsJourGeneral().get_data(name, date)
-    # bar
-    for name in ['nb_bar', 'bar_average', 'bar_total_ttc']:
-        data[name] = StatsJourGeneral().get_data(name, date)
-    # categories
-    data['categories'] = []
-    for category in cache['categories']:
-        category.nb = StatsJourCategorie().get_data(category, date)
-        data['categories'].append(category)
-    # payments
-    data['payments'] = []
-    for payment_type in cache["type_payments"]:
-        data['payments'].append("%s : %.2f" % (
-                payment_type.nom, 
-                StatsJourPaiement().get_data(payment_type, date)))
+    data = get_daily_data(data, date)
     return render_to_response('base/manager/rapports/home.html',
                                 data,
                                 context_instance=RequestContext(request))
 
 @permission_required('base.p1')
-def rapports_common_day_send(request, year, month, day):
+def rapports_daily_send(request, year, month, day):
+    date = "%s-%s-%s" % (year, month, day)
+    data = {}
+    data = get_daily_data(data, date)
+
+    subject = "Rapport journalier du %s" % date
+    mail = """
+Nb factures: %s
+Total TTC: %s
+
+""" % (data['nb_invoices'], data['total_ttc'])
+    for vat in data['vats']:
+        mail += "%s\n" % vat
+    mail += """
+Restauration:
+Nb couverts: %s
+Total TTC: %s
+TM/couvert: %s
+""" % (data['nb_guests'], data['guests_total_ttc'], data['guest_average'])
+    mail += """
+Bar:
+Nb factures: %s
+Total TTC: %s
+TM/facture: %s
+""" % (data['nb_bar'], data['bar_total_ttc'], data['bar_average'])
+    mail += "\n"
+    for payment in data['payments']:
+        mail += "%s\n" % payment
+    mail += "\n"
+    for category in data['categories']:
+        mail += "%s : %s\n" % (category.nom, category.nb)
+    mail += "\n"
+    for product in data['products']:
+        mail += "%s : %s\n" % (product.nom, product.nb)
+    if request.user.email:
+        try:
+            send_mail(subject, mail, settings.DEFAULT_FROM_EMAIL, [request.user.email], fail_silently=False)
+        except:
+            messages.add_message(request, messages.ERROR, u"Le mail n'a pu être envoyé.")
+        else:
+            messages.add_message(request, messages.SUCCESS, u"Le mail a été envoyé à %s." % request.user.email)
+    else:
+        messages.add_message(request, messages.ERROR, u"Vous n'avez pas d'adresse mail.")
+    return HttpResponseRedirect('/manager/rapports/')
+
+@permission_required('base.p1')
+def rapports_daily_vats_send(request, year, month, day):
     date = "%s-%s-%s" % (year, month, day)
     result = StatsJourGeneral().get_common_data(date)
     try:
@@ -986,7 +1058,7 @@ def rapports_common_day_send(request, year, month, day):
     return HttpResponseRedirect('/manager/rapports/')
 
 @permission_required('base.p1')
-def rapports_common_day_print(request, year, month, day):
+def rapports_daily_vats_print(request, year, month, day):
     date = "%s-%s-%s" % (year, month, day)
     result = StatsJourGeneral().get_common_data(date)
     try:

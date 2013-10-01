@@ -163,6 +163,16 @@ class StatsJourProduit(StatsJour):
                                 related_name="statsjour-produit")
     nb = models.PositiveIntegerField(default=0)
 
+    def get_data(self, product, date):
+        try:
+            stats = StatsJourProduit.objects.get(date=date, produit=product).nb
+            if stats:
+                return stats
+            else:
+                return 0
+        except StatsJourProduit.DoesNotExist:
+            return 0
+
 class StatsJourCategorie(StatsJour):
     """Les stats concernent une categorie
     (CA genere par cette categorie)"""

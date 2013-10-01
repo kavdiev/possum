@@ -127,9 +127,11 @@ urlpatterns = patterns('possum.base.views',
     url(r'^manager/tables/(?P<zone_id>\d+)/(?P<table_id>\d+)/$', 'tables_table'),
     url(r'^manager/tables/(?P<zone_id>\d+)/delete/$', 'tables_zone_delete'),
 
-    url(r'^manager/rapports/$', 'rapports'),
-    url(r'^manager/rapports/(?P<year>\d{4})/(?P<month>\d+)/(?P<day>\d+)/common/print/$', 'rapports_common_day_print'),
-    url(r'^manager/rapports/(?P<year>\d{4})/(?P<month>\d+)/(?P<day>\d+)/common/send/$', 'rapports_common_day_send'),
+    url(r'^manager/rapports/$', 'rapports_daily'),
+    url(r'^manager/rapports/(?P<year>\d{4})/(?P<month>\d+)/(?P<day>\d+)/vats/print/$', 'rapports_daily_vats_print'),
+    url(r'^manager/rapports/(?P<year>\d{4})/(?P<month>\d+)/(?P<day>\d+)/vats/send/$', 'rapports_daily_vats_send'),
+    url(r'^manager/rapports/(?P<year>\d{4})/(?P<month>\d+)/(?P<day>\d+)/print/$', 'rapports_daily_print'),
+    url(r'^manager/rapports/(?P<year>\d{4})/(?P<month>\d+)/(?P<day>\d+)/send/$', 'rapports_daily_send'),
 )
 
 urlpatterns += patterns('',

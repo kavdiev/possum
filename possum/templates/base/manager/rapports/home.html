@@ -5,15 +5,31 @@
 <li onclick="window.location='/manager/'">Retour</li>
 </ul>
 
-<h1>Rapports</h1>
+<h1>Rapports du {{date|date:'l d F Y'}}</h1>
+<form method='post' action='/manager/rapports/' name='journalier'>{% csrf_token %}
+<ul id="date_form">
+    {{ date_form.as_ul }}
+    <li><input type='submit' value='Afficher le jour'></li>
+</form>
+</ul>
+
+<h2>Général</h2>
 <ul id="rapports">
     <li>Nb factures: {{nb_invoices}}</li>
     <li>Total TTC: {{total_ttc}}€</li>
+<li onclick="window.location='/manager/rapports/{{date.year}}/{{date.month}}/{{date.day}}/send/'">Envoyer par mail</li>
+<li onclick="window.location='/manager/rapports/{{date.year}}/{{date.month}}/{{date.day}}/print/'">Imprimer</li>
+</ul>
+
+<h2>TVA</h2>
+<ul id="rapports">
     {% for vat in vats %}
     <li>{{vat}}€</li>
+    {% empty %}
+    <li>Aucune TVA</li>
     {% endfor %}
-<li onclick="window.location='/manager/rapports/{{year}}/{{month}}/{{day}}/common/send/'">Envoyer par mail</li>
-<li onclick="window.location='/manager/rapports/{{year}}/{{month}}/{{day}}/common/print/'">Imprimer</li>
+<li onclick="window.location='/manager/rapports/{{date.year}}/{{date.month}}/{{date.day}}/vats/send/'">Envoyer par mail</li>
+<li onclick="window.location='/manager/rapports/{{date.year}}/{{date.month}}/{{date.day}}/vats/print/'">Imprimer</li>
 </ul>
 
 <h2>Restauration</h2>
@@ -41,6 +57,17 @@
 <ul id="rapports">
     {% for category in categories %}
     <li style="background:{{category.color}};">{{category.nom}} : {{category.nb}}</li>
+    {% empty %}
+    <li>Rien à afficher</li>
+    {% endfor %}
+</ul>
+
+<h2>Produits</h2>
+<ul id="rapports">
+    {% for product in products %}
+    <li style="background:{{product.categorie.color}};">{{product.nom}} : {{product.nb}}</li>
+    {% empty %}
+    <li>Rien à afficher</li>
     {% endfor %}
 </ul>
 
