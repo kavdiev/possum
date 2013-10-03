@@ -1637,7 +1637,8 @@ def couverts_set(request, bill_id, number):
 def factures(request):
     data = get_user(request)
     data['menu_bills'] = True
-    data['factures'] = cache['bills']
+    #data['factures'] = cache['bills']
+    data['factures'] = Facture().non_soldees()
     return render_to_response('base/bill/home.html',
                                 data,
                                 context_instance=RequestContext(request))
