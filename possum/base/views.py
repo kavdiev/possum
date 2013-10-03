@@ -1387,7 +1387,10 @@ def bill_new(request):
     bill.save()
     cache['bills'].append(bill)
     cache['bills_by_id'][int(bill.id)] = bill
-    return HttpResponseRedirect('/bill/%s/' % bill.id)
+    data['facture'] = bill
+    return render_to_response('base/bill/order.html',
+                                data,
+                                context_instance=RequestContext(request))
 
 @permission_required('base.p3')
 def bill_send_kitchen(request, bill_id):
