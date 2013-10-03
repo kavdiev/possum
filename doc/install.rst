@@ -63,7 +63,7 @@ outils de compilation et la bibliothèque ''libcups2-dev''.
 
 ::
 
-  apt-get install libcups2-dev
+  apt-get install libcups2-dev libgraphviz-dev
   
   source /home/pos/bin/activate 
   pip install -r requirements.txt
