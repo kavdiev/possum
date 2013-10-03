@@ -724,7 +724,7 @@ def categories_set_name(request, cat_id):
 @permission_required('base.p2')
 def categories_set_kitchen(request, cat_id):
     data = get_user(request)
-    cat = get_category_or_404(pk=cat_id)
+    cat = get_category_or_404(cat_id)
     new = not cat.made_in_kitchen
     cat.made_in_kitchen = new
     cat.save()

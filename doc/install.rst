@@ -55,7 +55,7 @@ Voir `VirtualEnv <https://pypi.python.org/pypi/virtualenv>`_
 :: 
 
   su - pos
-  virtualenv --prompt=='possum ' --python=python2 /home/pos
+  virtualenv --python=python2 /home/pos
 
 On va maintenant préparer cet environnement. Pour pouvoir installer pycups, il faut les 
 outils de compilation et la bibliothèque ''libcups2-dev''.
