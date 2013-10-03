@@ -59,62 +59,6 @@ def create_default_directory():
 ###
 # Cache management
 ###
-def get_product_or_404(product_id):
-    try:
-        product = cache['products_by_id'][int(product_id)]
-    except KeyError:
-        raise Http404
-    else:
-        return product
-
-def get_category_or_404(category_id):
-    try:
-        category = cache['categories_by_id'][int(category_id)]
-    except KeyError:
-        raise Http404
-    else:
-        return category
-
-def get_bill_or_404(bill_id):
-    try:
-        bill = cache['bills_by_id'][int(bill_id)]
-    except KeyError:
-        raise Http404
-    else:
-        return bill
-
-def get_vat_or_404(vat_id):
-    try:
-        vat = cache['vats_by_id'][int(vat_id)]
-    except KeyError:
-        raise Http404
-    else:
-        return vat
-
-def get_printer_or_404(printer_id):
-    try:
-        printer = cache['printers_by_id'][int(printer_id)]
-    except KeyError:
-        raise Http404
-    else:
-        return printer
-
-def get_type_payment_or_404(type_payment_id):
-    try:
-        type_payment = cache['type_payments_by_id'][int(type_payment_id)]
-    except KeyError:
-        raise Http404
-    else:
-        return type_payment
-
-def get_zone_or_404(zone_id):
-    try:
-        zone = cache['zones_by_id'][int(zone_id)]
-    except KeyError:
-        raise Http404
-    else:
-        return zone
-
 def cache_categories():
     if 'categories_by_id' not in cache:
         cache['categories_by_id'] = {}
@@ -233,7 +177,7 @@ def kitchen(request):
     data = get_user(request)
     data['menu_kitchen'] = True
     liste = []
-    for bill in cache['bills']:
+    for bill in Facture().non_soldees():
         if bill.following.count():
             liste.append(bill)
     data['factures'] = liste
@@ -245,7 +189,7 @@ def kitchen(request):
 def kitchen_for_bill(request, bill_id):
     data = get_user(request)
     data['menu_kitchen'] = True
-    data['facture'] = get_bill_or_404(bill_id)
+    data['facture'] = get_object_or_404(Facture, pk=bill_id)
     if data['facture'].est_soldee():
         messages.add_message(request, messages.ERROR, "Cette facture a déjà été soldée.")
         return HttpResponseRedirect('/kitchen/')
@@ -291,8 +235,9 @@ def categories_print(request):
     data = get_user(request)
     result = Produit().get_list_with_all_products()
     if result:
-        if cache['manager_printers']:
-            printer = cache['manager_printers'][0]
+        printers = Printer.objects.filter(manager=True)
+        if printers:
+            printer = printers[0]
             if printer.print_list(result, "carte_complete"):
                 messages.add_message(request, messages.SUCCESS, u"L'impression a été envoyée sur %s." % printer.name)
             else:
@@ -307,7 +252,7 @@ def categories_print(request):
 def categories(request):
     data = get_user(request)
     data['menu_carte'] = True
-    data['categories'] = cache['categories']
+    data['categories'] = Categorie.objects.order_by('priorite', 'nom')
     return render_to_response('base/carte/categories.html',
                     data,
                     context_instance=RequestContext(request))
@@ -316,8 +261,8 @@ def categories(request):
 def categories_delete(request, cat_id):
     data = get_user(request)
     data['menu_carte'] = True
-    data['current_cat'] = get_category_or_404(cat_id)
-    data['categories'] = cache['categories'].exclude(id=cat_id)
+    data['current_cat'] = get_object_or_404(Categorie, pk=cat_id)
+    data['categories'] = Categorie.objects.order_by('priorite', 'nom').exclude(id=cat_id)
     cat_report_id = request.POST.get('cat_report', '').strip()
     action = request.POST.get('valide', '').strip()
     if action == "Supprimer":
@@ -353,8 +298,6 @@ def categories_delete(request, cat_id):
             stat.delete()
         logging.info("[%s] categorie [%s] deleted" % (data['user'].username, data['current_cat'].nom))
         data['current_cat'].delete()
-        cache_products_for_category(data['current_cat'])
-        cache_categories()
         return HttpResponseRedirect('/carte/categories/')
     elif action == "Annuler":
         return HttpResponseRedirect('/carte/categories/')
@@ -365,10 +308,11 @@ def categories_delete(request, cat_id):
 @permission_required('base.p2')
 def categories_view(request, cat_id):
     data = get_user(request)
-    data['category'] = get_category_or_404(cat_id)
+    data['category'] = get_object_or_404(Categorie, pk=cat_id)
     data['menu_carte'] = True
-    data['products_enable'] = cache['products'][int(cat_id)]
-    data['products_disable'] = cache['products_disable'][int(cat_id)]
+    products = Produit.objects.filter(categorie__id=cat_id)
+    data['products_enable'] = products.filter(actif=True)
+    data['products_disable'] = products.filter(actif=False)
     return render_to_response('base/carte/category.html',
                                 data,
                                 context_instance=RequestContext(request))
@@ -397,8 +341,6 @@ def categories_new(request):
         except:
             logging.warning("[%s] new categorie failed: [%s] [%s]" % (data['user'].username, cat.priorite, cat.nom))
             messages.add_message(request, messages.ERROR, "La nouvelle catégorie n'a pu être créée.")
-        else:
-            cache_categories()
     else:
         messages.add_message(request, messages.ERROR, "Vous devez choisir un nom pour la nouvelle catégorie.")
     return HttpResponseRedirect('/carte/categories/')
@@ -406,7 +348,7 @@ def categories_new(request):
 @permission_required('base.p2')
 def categories_name(request, cat_id):
     data = get_user(request)
-    data['category'] = get_category_or_404(cat_id)
+    data['category'] = get_object_or_404(Categorie, pk=cat_id)
     return render_to_response('base/carte/name.html',
                                 data,
                                 context_instance=RequestContext(request))
@@ -414,8 +356,8 @@ def categories_name(request, cat_id):
 @permission_required('base.p2')
 def categories_color(request, cat_id):
     data = get_user(request)
-    data['category'] = get_category_or_404(cat_id)
-    data['categories'] = cache['categories']
+    data['category'] = get_object_or_404(Categorie, pk=cat_id)
+    data['categories'] = Categorie.objects.order_by('priorite', 'nom')
     return render_to_response('base/carte/color.html',
                                 data,
                                 context_instance=RequestContext(request))
@@ -423,41 +365,38 @@ def categories_color(request, cat_id):
 @permission_required('base.p2')
 def categories_less_priority(request, cat_id, nb=1):
     data = get_user(request)
-    cat = get_category_or_404(cat_id)
+    cat = get_object_or_404(Categorie, pk=cat_id)
     cat.set_less_priority(nb)
-    cache_categories()
     logging.info("[%s] cat [%s] priority - %d" % (data['user'].username, cat.nom, nb))
     return HttpResponseRedirect('/carte/categories/%s/' % cat_id)
 
 @permission_required('base.p2')
 def categories_more_priority(request, cat_id, nb=1):
     data = get_user(request)
-    cat = get_category_or_404(cat_id)
+    cat = get_object_or_404(Categorie, pk=cat_id)
     cat.set_more_priority(nb)
-    cache_categories()
     logging.info("[%s] cat [%s] priority + %d" % (data['user'].username, cat.nom, nb))
     return HttpResponseRedirect('/carte/categories/%s/' % cat_id)
 
 @permission_required('base.p2')
 def categories_surtaxable(request, cat_id):
     data = get_user(request)
-    cat = get_category_or_404(cat_id)
+    cat = get_object_or_404(Categorie, pk=cat_id)
     new = not cat.surtaxable
     cat.surtaxable = new
     if cat.surtaxable:
         cat.disable_surtaxe = False
     cat.save()
-    cache_categories()
     logging.info("[%s] cat [%s] surtaxable: %s" % (data['user'].username, cat.nom, cat.surtaxable))
     return HttpResponseRedirect('/carte/categories/%s/' % cat_id)
 
 @permission_required('base.p2')
 def categories_vat_takeaway(request, cat_id):
     data = get_user(request)
-    data['category'] = get_category_or_404(cat_id)
+    data['category'] = get_object_or_404(Categorie, pk=cat_id)
     data['type_vat'] = 'TVA à emporter'
     data['url_vat'] = 'vat_takeaway'
-    data['vats'] = cache['vats']
+    data['vats'] = VAT.objects.order_by('name')
     data['menu_carte'] = True
     return render_to_response('base/carte/categories/select_vat.html',
                                 data,
@@ -466,39 +405,31 @@ def categories_vat_takeaway(request, cat_id):
 @permission_required('base.p2')
 def categories_set_vat_takeaway(request, cat_id, vat_id):
     data = get_user(request)
-    category = get_category_or_404(cat_id)
-    vat = get_vat_or_404(vat_id)
+    category = get_object_or_404(Categorie, pk=cat_id)
+    vat = get_object_or_404(VAT, pk=vat_id)
     category.set_vat_takeaway(vat)
-    cache_categories()
-    for product in cache['products'][int(category.id)].iterator():
+    for product in Produit.objects.filter(categorie=category).iterator():
         product.update_vats()
-    for product in cache['products_disable'][int(category.id)].iterator():
-        product.update_vats()
-    cache_products_for_category(category)
     return HttpResponseRedirect('/carte/categories/%s/' % cat_id)
 
 @permission_required('base.p2')
 def categories_set_vat_onsite(request, cat_id, vat_id):
     data = get_user(request)
-    category = get_category_or_404(cat_id)
-    vat = get_vat_or_404(vat_id)
+    category = get_object_or_404(Categorie, pk=cat_id)
+    vat = get_object_or_404(VAT, pk=vat_id)
     category.set_vat_onsite(vat)
-    cache_categories()
-    for product in cache['products'][int(category.id)].iterator():
+    for product in Produit.objects.filter(categorie=category).iterator():
         product.update_vats()
-    for product in cache['products_disable'][int(category.id)].iterator():
-        product.update_vats()
-    cache_products_for_category(category)
     return HttpResponseRedirect('/carte/categories/%s/' % cat_id)
 
 @permission_required('base.p2')
 def categories_vat_onsite(request, cat_id):
     data = get_user(request)
     data['menu_carte'] = True
-    data['category'] = get_category_or_404(cat_id)
+    data['category'] = get_object_or_404(Categorie, pk=cat_id)
     data['type_vat'] = 'TVA sur place'
     data['url_vat'] = 'vat_onsite'
-    data['vats'] = cache['vats']
+    data['vats'] = VAT.objects.order_by('name')
     return render_to_response('base/carte/categories/select_vat.html',
                                 data,
                                 context_instance=RequestContext(request))
@@ -506,7 +437,7 @@ def categories_vat_onsite(request, cat_id):
 @permission_required('base.p2')
 def products_view(request, product_id):
     data = get_user(request)
-    data['product'] = get_product_or_404(product_id)
+    data['product'] = get_object_or_404(Produit, pk=product_id)
     data['menu_carte'] = True
     return render_to_response('base/carte/product.html',
                                 data,
@@ -516,7 +447,7 @@ def products_view(request, product_id):
 def products_new(request, cat_id):
     data = get_user(request)
     data['menu_carte'] = True
-    data['category'] = get_category_or_404(cat_id)
+    data['category'] = get_object_or_404(Categorie, pk=cat_id)
     if request.method == 'POST':
         name = request.POST.get('name', '').strip()
         billname = request.POST.get('billname', '').strip()
@@ -534,7 +465,6 @@ def products_new(request, cat_id):
                     except:
                         messages.add_message(request, messages.ERROR, "Les modifications n'ont pu être enregistrées.")
                     else:
-                        cache_products_for_category(product.categorie)
                         return HttpResponseRedirect('/carte/categories/%s/' % data['category'].id)
                 else:
                     messages.add_message(request, messages.ERROR, "Vous devez saisir un prix.")
@@ -551,7 +481,7 @@ def products_new(request, cat_id):
 def categories_set_color(request, cat_id):
     data = get_user(request)
     color = request.POST.get('color', '').strip()
-    cat = get_category_or_404(cat_id)
+    cat = get_object_or_404(Categorie, pk=cat_id)
     if not cat.color or color != cat.color:
         logging.info("[%s] new categorie color [%s]" % (data['user'].username, cat.nom))
         cat.color = color
@@ -559,25 +489,22 @@ def categories_set_color(request, cat_id):
             cat.save()
         except:
             messages.add_message(request, messages.ERROR, "Les modifications n'ont pu être enregistrées.")
-        else:
-            cache_categories()
     return HttpResponseRedirect('/carte/categories/%s/' % cat_id)
 
 @permission_required('base.p2')
 def products_set_category(request, product_id, cat_id):
     data = get_user(request)
-    product = get_product_or_404(product_id)
-    category = get_category_or_404(cat_id)
+    product = get_object_or_404(Produit, pk=product_id)
+    category = get_object_or_404(Categorie, pk=cat_id)
     product.set_category(category)
-    cache_products_for_category(product.categorie)
     return HttpResponseRedirect('/carte/products/%s/' % product_id)
 
 @permission_required('base.p2')
 def products_category(request, product_id):
     data = get_user(request)
-    data['product'] = get_product_or_404(product_id)
+    data['product'] = get_object_or_404(Produit, pk=product_id)
     data['menu_carte'] = True
-    data['categories'] = cache['categories']
+    data['categories'] = Categorie.objects.order_by('priorite', 'nom')
     return render_to_response('base/carte/product_category.html',
                                 data,
                                 context_instance=RequestContext(request))
@@ -585,21 +512,20 @@ def products_category(request, product_id):
 @permission_required('base.p2')
 def products_del_produits_ok(request, product_id, sub_id):
     data = get_user(request)
-    menu = get_product_or_404(product_id)
-    sub = get_product_or_404(sub_id)
+    menu = get_object_or_404(Produit, pk=product_id)
+    sub = get_object_or_404(Produit, pk=sub_id)
     menu.produits_ok.remove(sub)
     menu.save()
-    cache_products_for_category(menu.categorie)
     return HttpResponseRedirect('/carte/products/%s/' % product_id)
 
 @permission_required('base.p2')
 def products_select_produits_ok(request, product_id):
     data = get_user(request)
-    data['product'] = get_product_or_404(product_id)
+    data['product'] = get_object_or_404(Produit, pk=product_id)
     data['menu_carte'] = True
     data['products'] = []
     for category in data['product'].categories_ok.iterator():
-        for sub in cache['products'][int(category.id)]:
+        for sub in Produit.objects.filter(categorie=category, actif=True).iterator():
             if sub not in data['product'].produits_ok.iterator():
                 data['products'].append(sub)
     return render_to_response('base/carte/product_select_produits_ok.html',
@@ -609,40 +535,37 @@ def products_select_produits_ok(request, product_id):
 @permission_required('base.p2')
 def products_add_produits_ok(request, product_id, sub_id):
     data = get_user(request)
-    menu = get_product_or_404(product_id)
-    product = get_product_or_404(sub_id)
+    menu = get_object_or_404(Produit, pk=product_id)
+    product = get_object_or_404(Produit, pk=sub_id)
     menu.produits_ok.add(product)
     menu.save()
-    cache_products_for_category(menu.categorie)
     return HttpResponseRedirect('/carte/products/%s/' % product_id)
 
 @permission_required('base.p2')
 def products_del_categories_ok(request, product_id, cat_id):
     data = get_user(request)
-    product = get_product_or_404(product_id)
-    category = get_category_or_404(cat_id)
+    product = get_object_or_404(Produit, pk=product_id)
+    category = get_object_or_404(Categorie, pk=cat_id)
     product.categories_ok.remove(category)
     product.save()
-    cache_products_for_category(product.categorie)
     return HttpResponseRedirect('/carte/products/%s/' % product_id)
 
 @permission_required('base.p2')
 def products_add_categories_ok(request, product_id, cat_id):
     data = get_user(request)
-    product = get_product_or_404(product_id)
-    category = get_category_or_404(cat_id)
+    product = get_object_or_404(Produit, pk=product_id)
+    category = get_object_or_404(Categorie, pk=cat_id)
     product.categories_ok.add(category)
     product.save()
-    cache_products_for_category(product.categorie)
     return HttpResponseRedirect('/carte/products/%s/' % product_id)
 
 @permission_required('base.p2')
 def products_select_categories_ok(request, product_id):
     data = get_user(request)
-    data['product'] = get_product_or_404(product_id)
+    data['product'] = get_object_or_404(Produit, pk=product_id)
     data['menu_carte'] = True
     data['categories'] = []
-    for category in cache['categories'].iterator():
+    for category in Categorie.objects.order_by('priorite', 'nom').iterator():
         if category not in data['product'].categories_ok.iterator() \
                 and category != data['product'].categorie:
             data['categories'].append(category)
@@ -653,27 +576,25 @@ def products_select_categories_ok(request, product_id):
 @permission_required('base.p2')
 def products_cooking(request, product_id):
     data = get_user(request)
-    product = get_product_or_404(product_id)
+    product = get_object_or_404(Produit, pk=product_id)
     new = not product.choix_cuisson
     product.choix_cuisson = new
     product.save()
-    cache_products_for_category(product.categorie)
     return HttpResponseRedirect('/carte/products/%s/' % product_id)
 
 @permission_required('base.p2')
 def products_enable(request, product_id):
     data = get_user(request)
-    product = get_product_or_404(product_id)
+    product = get_object_or_404(Produit, pk=product_id)
     new = not product.actif
     product.actif = new
     product.save()
-    cache_products_for_category(product.categorie)
     return HttpResponseRedirect('/carte/products/%s/' % product_id)
 
 @permission_required('base.p2')
 def products_change(request, product_id):
     data = get_user(request)
-    product = get_product_or_404(product_id)
+    product = get_object_or_404(Produit, pk=product_id)
     data['menu_carte'] = True
     if request.method == 'POST':
         name = request.POST.get('name', '').strip()
@@ -690,7 +611,6 @@ def products_change(request, product_id):
                     except:
                         messages.add_message(request, messages.ERROR, "Les modifications n'ont pu être enregistrées.")
                     else:
-                        cache_products_for_category(product.categorie)
                         return HttpResponseRedirect('/carte/products/%s/' % product.id)
                 else:
                     messages.add_message(request, messages.ERROR, "Vous devez entrer un prix.")
@@ -707,7 +627,7 @@ def products_change(request, product_id):
 def categories_set_name(request, cat_id):
     data = get_user(request)
     name = request.POST.get('name', '').strip()
-    cat = get_category_or_404(cat_id)
+    cat = get_object_or_404(Categorie, pk=cat_id)
     if name != cat.nom:
         logging.info("[%s] new categorie name: [%s] > [%s]" % (data['user'].username, cat.nom, name))
         cat.nom = name
@@ -717,30 +637,26 @@ def categories_set_name(request, cat_id):
     except:
         messages.add_message(request, messages.ERROR, "Les modifications n'ont pu être enregistrées.")
         logging.warning("[%s] save failed for [%s]" % (data['user'].username, cat.nom))
-    else:
-        cache_categories()
     return HttpResponseRedirect('/carte/categories/%s/' % cat_id)
 
 @permission_required('base.p2')
 def categories_set_kitchen(request, cat_id):
     data = get_user(request)
-    cat = get_category_or_404(cat_id)
+    cat = get_object_or_404(Categorie, pk=cat_id)
     new = not cat.made_in_kitchen
     cat.made_in_kitchen = new
     cat.save()
-    cache_categories()
     return HttpResponseRedirect('/carte/categories/%s/' % cat_id)
 
 @permission_required('base.p2')
 def categories_disable_surtaxe(request, cat_id):
     data = get_user(request)
-    cat = get_category_or_404(cat_id)
+    cat = get_object_or_404(Categorie, pk=cat_id)
     new = not cat.disable_surtaxe
     cat.disable_surtaxe = new
     if cat.disable_surtaxe:
         cat.surtaxable = False
     cat.save()
-    cache_categories()
     return HttpResponseRedirect('/carte/categories/%s/' % cat_id)
 
 ###
@@ -750,19 +666,17 @@ def categories_disable_surtaxe(request, cat_id):
 @permission_required('base.p1')
 def tables_zone_delete(request, zone_id):
     data = get_user(request)
-    zone = get_zone_or_404(zone_id)
+    zone = get_object_or_404(Zone, pk=zone_id)
     Table.objects.filter(zone=zone).delete()
     zone.delete()
-    cache_zones()
     return HttpResponseRedirect('/manager/tables/')
 
 @permission_required('base.p1')
 def tables_table_new(request, zone_id):
     data = get_user(request)
-    zone = get_zone_or_404(zone_id)
+    zone = get_object_or_404(Zone, pk=zone_id)
     table = Table(zone=zone)
     table.save()
-    cache_zones()
     return HttpResponseRedirect('/manager/tables/%s/%s/' % (zone.id, table.id))
 
 @permission_required('base.p1')
@@ -770,7 +684,6 @@ def tables_zone_new(request):
     data = get_user(request)
     zone = Zone()
     zone.save()
-    cache_zones()
     return HttpResponseRedirect('/manager/tables/%s/' % zone.id)
 
 @permission_required('base.p1')
@@ -794,7 +707,7 @@ def tables_table(request, zone_id, table_id):
 @permission_required('base.p1')
 def tables_zone(request, zone_id):
     data = get_user(request)
-    data['zone'] = get_zone_or_404(zone_id)
+    data['zone'] = get_object_or_404(Zone, pk=zone_id)
     data['menu_manager'] = True
     if request.method == 'POST':
         name = request.POST.get('name', '').strip()
@@ -813,7 +726,7 @@ def tables_zone(request, zone_id):
 def tables(request):
     data = get_user(request)
     data['menu_manager'] = True
-    data['zones'] = cache['zones']
+    data['zones'] = Zone.objects.all()
     return render_to_response('base/manager/tables/home.html',
                                 data,
                                 context_instance=RequestContext(request))
@@ -825,7 +738,7 @@ def tables(request):
 @permission_required('base.p1')
 def vats(request):
     data = get_user(request)
-    data['vats'] = cache['vats']
+    data['vats'] = VAT.objects.order_by('name')
     data['menu_manager'] = True
     return render_to_response('base/manager/vats/home.html',
                                 data,
@@ -835,7 +748,7 @@ def vats(request):
 def vats_view(request, vat_id):
     data = get_user(request)
     data['menu_manager'] = True
-    data['vat'] = get_vat_or_404(vat_id)
+    data['vat'] = get_object_or_404(VAT, pk=vat_id)
     return render_to_response('base/manager/vats/view.html',
                                 data,
                                 context_instance=RequestContext(request))
@@ -843,7 +756,7 @@ def vats_view(request, vat_id):
 @permission_required('base.p1')
 def vats_change(request, vat_id):
     data = get_user(request)
-    data['vat'] = get_vat_or_404(vat_id)
+    data['vat'] = get_object_or_404(VAT, pk=vat_id)
     data['menu_manager'] = True
     if request.method == 'POST':
         name = request.POST.get('name', '').strip()
@@ -858,7 +771,6 @@ def vats_change(request, vat_id):
                         product.update_vats()
                     for product in Produit.objects.filter(categorie__vat_takeaway=data['vat']):
                         product.update_vats()
-                    cache_products()
                 except:
                     messages.add_message(request, messages.ERROR, "Les modifications n'ont pu être enregistrées.")
                 else:
@@ -877,7 +789,7 @@ def vats_change(request, vat_id):
 def vat_new(request):
     data = get_user(request)
     data['menu_manager'] = True
-    data['vats'] = cache['vats']
+    data['vats'] = VAT.objects.order_by('name')
     if request.method == 'POST':
         name = request.POST.get('name', '').strip()
         tax = request.POST.get('tax', '').strip().replace(",",".")
@@ -890,7 +802,6 @@ def vat_new(request):
                 except:
                     messages.add_message(request, messages.ERROR, "Les modifications n'ont pu être enregistrées.")
                 else:
-                    cache_vats()
                     return HttpResponseRedirect('/manager/vats/')
 
             else:
@@ -929,7 +840,7 @@ def get_daily_data(data, date):
     for name in ['nb_invoices', 'total_ttc']:
         data[name] = StatsJourGeneral().get_data(name, date)
     data['vats'] = []
-    for vat in cache['vats']:
+    for vat in VAT.objects.order_by('name').iterator():
         name = "%s_vat_only" % vat.id
         valeur = StatsJourGeneral().get_data(name, date)
         data['vats'].append("TVA % 6.2f%% : %.2f" % (vat.tax, valeur))
@@ -942,11 +853,11 @@ def get_daily_data(data, date):
     # categories & products
     categories = []
     products = []
-    for category in cache['categories']:
+    for category in Categorie.objects.order_by('priorite', 'nom').iterator():
         category.nb = StatsJourCategorie().get_data(category, date)
         if category.nb > 0:
             categories.append(category)
-            for product in cache['products'][int(category.id)]:
+            for product in Produit.objects.filter(categorie=category, actif=True).iterator():
                 product.nb = StatsJourProduit().get_data(product, date)
                 if product.nb > 0:
                     products.append(product)
@@ -954,7 +865,7 @@ def get_daily_data(data, date):
     data['products'] = sorted(products, cmp=nb_sorted)
     # payments
     data['payments'] = []
-    for payment_type in cache["type_payments"]:
+    for payment_type in PaiementType.objects.order_by("nom").iterator():
         data['payments'].append("%s : %.2f" % (
                 payment_type.nom, 
                 StatsJourPaiement().get_data(payment_type, date)))
@@ -1070,8 +981,9 @@ def rapports_daily_print(request, year, month, day):
     result.append(" ")
     for product in data['products']:
         result.append("%s : %s" % (product.nom, product.nb))
-    if cache['manager_printers']:
-        printer = cache['manager_printers'][0]
+    printers = Printer.objects.filter(manager=True)
+    if printers:
+        printer = printers[0]
         if printer.print_list(result, "rapport_daily_%s" % date):
             messages.add_message(request, messages.SUCCESS, u"L'impression a été envoyée sur %s." % printer.name)
         else:
@@ -1113,8 +1025,9 @@ def rapports_daily_vats_print(request, year, month, day):
     except:
         messages.add_message(request, messages.ERROR, "Les statistiques n'ont pu être récupérées.")
     else:
-        if cache['manager_printers']:
-            printer = cache['manager_printers'][0]
+        printers = Printer.objects.filter(manager=True)
+        if printers:
+            printer = printers[0]
             if printer.print_list(result, "rapport_common_%s" % date):
                 messages.add_message(request, messages.SUCCESS, u"L'impression a été envoyée sur %s." % printer.name)
             else:
@@ -1136,7 +1049,7 @@ def manager(request):
 def printers(request):
     data = get_user(request)
     data['menu_manager'] = True
-    data['printers'] = cache['printers']
+    data['printers'] = Printer.object.all()
     return render_to_response('base/manager/printers.html',
                                 data,
                                 context_instance=RequestContext(request))
@@ -1156,14 +1069,13 @@ def printer_added(request, name):
     data = get_user(request)
     printer = Printer(name=name)
     printer.save()
-    cache_printers()
     return HttpResponseRedirect('/manager/printers/')
 
 @permission_required('base.p1')
 def printer_view(request, printer_id):
     data = get_user(request)
     data['menu_manager'] = True
-    data['printer'] = get_printer_or_404(printer_id)
+    data['printer'] = get_object_or_404(Printer, pk=printer_id)
     if request.method == 'POST':
         options = request.POST.get('options', '').strip()
         header = request.POST.get('header', '')
@@ -1183,7 +1095,7 @@ def printer_view(request, printer_id):
 def printer_select_width(request, printer_id):
     data = get_user(request)
     data['menu_manager'] = True
-    data['printer'] = get_printer_or_404(printer_id)
+    data['printer'] = get_object_or_404(Printer, pk=printer_id)
     data['max'] = range(14, 120)
     return render_to_response('base/manager/printer_select_width.html',
                                 data,
@@ -1192,7 +1104,7 @@ def printer_select_width(request, printer_id):
 @permission_required('base.p1')
 def printer_set_width(request, printer_id, number):
     data = get_user(request)
-    printer = get_printer_or_404(printer_id)
+    printer = get_object_or_404(Printer, pk=printer_id)
     printer.width = number
     printer.save()
     return HttpResponseRedirect('/manager/printer/%s/' % printer_id)
@@ -1200,7 +1112,7 @@ def printer_set_width(request, printer_id, number):
 @permission_required('base.p1')
 def printer_test_print(request, printer_id):
     data = get_user(request)
-    printer = get_printer_or_404(printer_id)
+    printer = get_object_or_404(Printer, pk=printer_id)
     if printer.print_test():
         messages.add_message(request, messages.SUCCESS, "L'impression a été acceptée.")
     else:
@@ -1210,7 +1122,7 @@ def printer_test_print(request, printer_id):
 @permission_required('base.p1')
 def printer_change_kitchen(request, printer_id):
     data = get_user(request)
-    printer = get_printer_or_404(printer_id)
+    printer = get_object_or_404(Printer, pk=printer_id)
     new = not printer.kitchen
     printer.kitchen = new
     printer.save()
@@ -1219,7 +1131,7 @@ def printer_change_kitchen(request, printer_id):
 @permission_required('base.p1')
 def printer_change_billing(request, printer_id):
     data = get_user(request)
-    printer = get_printer_or_404(printer_id)
+    printer = get_object_or_404(Printer, pk=printer_id)
     new = not printer.billing
     printer.billing = new
     printer.save()
@@ -1228,7 +1140,7 @@ def printer_change_billing(request, printer_id):
 @permission_required('base.p1')
 def printer_change_manager(request, printer_id):
     data = get_user(request)
-    printer = get_printer_or_404(printer_id)
+    printer = get_object_or_404(Printer, pk=printer_id)
     new = not printer.manager
     printer.manager = new
     printer.save()
@@ -1385,8 +1297,8 @@ def bill_new(request):
     data['menu_bills'] = True
     bill = Facture()
     bill.save()
-    cache['bills'].append(bill)
-    cache['bills_by_id'][int(bill.id)] = bill
+#    cache['bills'].append(bill)
+#    cache['bills_by_id'][int(bill.id)] = bill
     data['facture'] = bill
     return render_to_response('base/bill/order.html',
                                 data,
@@ -1395,7 +1307,7 @@ def bill_new(request):
 @permission_required('base.p3')
 def bill_send_kitchen(request, bill_id):
     """Send in the kitchen"""
-    bill = get_bill_or_404(bill_id)
+    bill = get_object_or_404(Facture, pk=bill_id)
     if bill.table:
         if bill.send_in_the_kitchen():
             if bill.table:
@@ -1414,11 +1326,12 @@ def bill_print(request, bill_id):
     """Print the bill"""
     data = get_user(request)
     data['menu_bills'] = True
-    bill = get_bill_or_404(bill_id)
+    bill = get_object_or_404(Facture, pk=bill_id)
     if bill.is_empty():
         messages.add_message(request, messages.ERROR, "La facture est vide.")
     else:
-        if cache['billing_printers'].count() == 0:
+        printers = Printer.objects.filter(billing=True)
+        if printers.count() == 0:
             messages.add_message(request, messages.ERROR, "Aucune imprimante n'est configurée pour la facturation.")
         else:
             if bill.print_ticket():
@@ -1432,7 +1345,7 @@ def table_select(request, bill_id):
     """Select/modify table of a bill"""
     data = get_user(request)
     data['menu_bills'] = True
-    data['zones'] = cache['zones']
+    data['zones'] = Zone.objects.all()
     data['bill_id'] = bill_id
     return render_to_response('base/bill/select_a_table.html',
                                 data,
@@ -1442,7 +1355,7 @@ def table_select(request, bill_id):
 def table_set(request, bill_id, table_id):
     """Select/modify table of a bill"""
     data = get_user(request)
-    bill = get_bill_or_404(bill_id)
+    bill = get_object_or_404(Facture, pk=bill_id)
     table = get_object_or_404(Table, pk=table_id)
     bill.set_table(table)
     data['facture'] = bill
@@ -1455,12 +1368,12 @@ def category_select(request, bill_id, category_id=None):
     """Select a category to add a new product on a bill."""
     data = get_user(request)
     data['menu_bills'] = True
-    data['categories'] = cache['categories']
+    data['categories'] = Categorie.objects.order_by('priorite', 'nom')
     if category_id:
-        category = get_category_or_404(category_id)
+        category = get_object_or_404(Categorie, pk=category_id)
     else:
         category = data['categories'][0]
-    data['products'] = cache['products'][int(category.id)]
+    data['products'] = Produit.objects.filter(categorie=category, actif=True)
     data['bill_id'] = bill_id
     return render_to_response('base/bill/categories.html',
                                 data,
@@ -1470,7 +1383,7 @@ def category_select(request, bill_id, category_id=None):
 def product_select_made_with(request, bill_id, product_id):
     data = get_user(request)
     data['menu_bills'] = True
-    data['bill'] = get_bill_or_404(bill_id)
+    data['bill'] = get_object_or_404(Facture, pk=bill_id)
     data['product'] = get_object_or_404(ProduitVendu, pk=product_id)
     data['categories'] = Categorie.objects.filter(made_in_kitchen=True)
     return render_to_response('base/bill/product_select_made_with.html',
@@ -1481,10 +1394,10 @@ def product_select_made_with(request, bill_id, product_id):
 def product_set_made_with(request, bill_id, product_id, category_id):
     data = get_user(request)
     product = get_object_or_404(ProduitVendu, pk=product_id)
-    category = get_category_or_404(category_id)
+    category = get_object_or_404(Categorie, pk=category_id)
     product.made_with = category
     product.save()
-    bill = get_bill_or_404(bill_id)
+    bill = get_object_or_404(Facture, pk=bill_id)
     bill.something_for_the_kitchen()
     return HttpResponseRedirect('/bill/%s/sold/%s/view/' % (bill_id, product.id))
 
@@ -1493,13 +1406,13 @@ def product_select(request, bill_id, category_id):
     """Select a product to add on a bill."""
     data = get_user(request)
     data['menu_bills'] = True
-    bill = get_bill_or_404(bill_id)
-    category = get_category_or_404(category_id)
+    bill = get_object_or_404(Facture, pk=bill_id)
+    category = get_object_or_404(Categorie, pk=category_id)
     if not category.vat_onsite:
         messages.add_message(request, messages.ERROR, "La TVA sur place n'est pas définie!")
     if not category.vat_takeaway:
         messages.add_message(request, messages.ERROR, "La TVA à emporter n'est pas définie!")
-    data['products'] = cache['products'][int(category.id)]
+    data['products'] = Produit.objects.filter(categorie=category, actif=True)
     data['bill_id'] = bill_id
     return render_to_response('base/bill/products.html',
                                 data,
@@ -1510,8 +1423,8 @@ def subproduct_select(request, bill_id, sold_id, category_id):
     """Select a subproduct to a product."""
     data = get_user(request)
     data['menu_bills'] = True
-    category = get_category_or_404(category_id)
-    data['products'] = cache['products'][int(category.id)]
+    category = get_object_or_404(Categorie, pk=category_id)
+    data['products'] = Produit.objects.filter(categorie=category, actif=True)
     data['bill_id'] = bill_id
     data['sold_id'] = sold_id
     return render_to_response('base/bill/subproducts.html',
@@ -1531,7 +1444,7 @@ def sold_view(request, bill_id, sold_id):
 @permission_required('base.p3')
 def sold_delete(request, bill_id, sold_id):
     data = get_user(request)
-    bill = get_bill_or_404(bill_id)
+    bill = get_object_or_404(Facture, pk=bill_id)
     sold = get_object_or_404(ProduitVendu, pk=sold_id)
     if sold in bill.produits.all():
         # it is a product
@@ -1552,8 +1465,8 @@ def subproduct_add(request, bill_id, sold_id, product_id):
     """Add a product to a bill. If this product contains others products,
     we have to add them too."""
     data = get_user(request)
-    bill = get_bill_or_404(bill_id)
-    product = get_product_or_404(product_id)
+    bill = get_object_or_404(Facture, pk=bill_id)
+    product = get_object_or_404(Produit, pk=product_id)
     product_sell = ProduitVendu(produit=product)
     product_sell.made_with = product_sell.produit.categorie
     product_sell.save()
@@ -1571,8 +1484,8 @@ def product_add(request, bill_id, product_id):
     """Add a product to a bill. If this product contains others products,
     we have to add them too."""
     data = get_user(request)
-    bill = get_bill_or_404(bill_id)
-    product = get_product_or_404(product_id)
+    bill = get_object_or_404(Facture, pk=bill_id)
+    product = get_object_or_404(Produit, pk=product_id)
     product_sell = ProduitVendu(produit=product)
     product_sell.save()
     bill.add_product(product_sell)
@@ -1626,7 +1539,7 @@ def couverts_select(request, bill_id):
 def couverts_set(request, bill_id, number):
     """Set couverts of a bill"""
     data = get_user(request)
-    bill = get_bill_or_404(bill_id)
+    bill = get_object_or_404(Facture, pk=bill_id)
     bill.set_couverts(number)
     data['facture'] = bill
     return render_to_response('base/bill/order.html',
@@ -1669,7 +1582,7 @@ def bill_payment_delete(request, bill_id, payment_id):
     data['menu_bills'] = True
     data['bill_id'] = bill_id
     payment = get_object_or_404(Paiement, pk=payment_id)
-    bill = get_bill_or_404(bill_id)
+    bill = get_object_or_404(Facture, pk=bill_id)
     bill.del_payment(payment)
     return HttpResponseRedirect('/bill/%s/' % bill_id)
 
@@ -1688,8 +1601,8 @@ def bill_payment_save(request, bill_id, type_id, left, right, count):
     """Enregistre le paiement
     """
     data = get_user(request)
-    type_payment = get_type_payment_or_404(type_id)
-    bill = get_bill_or_404(bill_id)
+    type_payment = get_object_or_404(PaiementType, pk=type_id)
+    bill = get_object_or_404(Facture, pk=bill_id)
     montant = "%s.%s" % (left, right)
     if type_payment.fixed_value:
         result = bill.add_payment(type_payment, count, montant)
@@ -1699,8 +1612,6 @@ def bill_payment_save(request, bill_id, type_id, left, right, count):
         messages.add_message(request, messages.ERROR, "Le paiement n'a pu être enregistré.")
     if bill.saved_in_stats:
         messages.add_message(request, messages.SUCCESS, "La facture a été soldée.")
-        #cache_bills()
-        cache['bills'].remove(bill)
         return HttpResponseRedirect('/bills/')
     else:
         return HttpResponseRedirect('/bill/%s/' % bill_id)
@@ -1743,17 +1654,17 @@ def bill_payment_count(request, bill_id, type_id, left, right):
 @permission_required('base.p3')
 def bill_payment(request, bill_id, type_id=-1, count=-1, left=0, right=0):
     data = get_user(request)
-    bill = get_bill_or_404(bill_id)
+    bill = get_object_or_404(Facture, pk=bill_id)
     if bill.restant_a_payer == 0:
         messages.add_message(request, messages.ERROR, "Il n'y a rien à payer.")
         return HttpResponseRedirect('/bill/%s/' % bill.id)
     data['bill_id'] = bill_id
-    data['type_payments'] = cache['type_payments']
+    data['type_payments'] = PaiementType.objects.order_by("nom")
     data['menu_bills'] = True
     data['left'] = left
     data['right'] = right
     if type_id > -1:
-        data['type_selected'] = get_type_payment_or_404(type_id)
+        data['type_selected'] = get_object_or_404(PaiementType, pk=type_id)
         if data['type_selected'].fixed_value:
             if count > 0:
                 data['tickets_count'] = count
@@ -1772,7 +1683,7 @@ def bill_payment(request, bill_id, type_id=-1, count=-1, left=0, right=0):
 def bill_view(request, bill_id):
     logging.debug(" ")
     data = get_user(request)
-    data['facture'] = get_bill_or_404(bill_id)
+    data['facture'] = get_object_or_404(Facture, pk=bill_id)
     if data['facture'].est_soldee():
         messages.add_message(request, messages.ERROR, "Cette facture a déjà été soldée.")
         return HttpResponseRedirect('/bills/')
@@ -1783,15 +1694,14 @@ def bill_view(request, bill_id):
 
 @permission_required('base.p3')
 def bill_delete(request, bill_id):
-    order = get_bill_or_404(bill_id)
+    order = get_object_or_404(Facture, pk=bill_id)
     order.delete()
-    cache_bills()
     return HttpResponseRedirect('/bills/')
 
 @permission_required('base.p3')
 def bill_onsite(request, bill_id):
     data = get_user(request)
-    order = get_bill_or_404(bill_id)
+    order = get_object_or_404(Facture, pk=bill_id)
     new = not order.onsite
     order.onsite = new
     order.save()
@@ -1846,7 +1756,3 @@ def jukebox(request):
 
 create_default_directory()
 
-# Possum Cache System
-cache = {}
-
-init_cache_system()
