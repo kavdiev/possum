@@ -30,6 +30,15 @@ D'autre part, l'impression des tickets nécessite la création et la suppression
 fichiers. Je vous recommande donc d'utiliser un système de fichier virtuel type tmpfs pour
 ce répertoire (variable ''PATH_TICKET'' du fichier ''settings.py'').
 
+Par exemple pour le répertoire ''/home/pos/tickets'':
+
+::
+
+  mkdir /home/pos/tickets
+  echo "tmpfs /home/pos/tickets/ tmpfs defaults,nodev,nosuid 0 0" >> /etc/fstab
+  mount /home/pos/tickets
+  chown www-data /home/pos/tickets
+
 Possum
 ------
 

@@ -144,9 +144,6 @@ LOGIN_REDIRECT_URL = '/bills'
 #PATH_TICKET = "/home/pos/possum/data/tickets"
 # tmp est en memoire (tmpfs)
 PATH_TICKET = "/run/possum/tickets"
-POSSUM_DEFAULT_ID_CATEGORIE = 7
-# endroit ou se trouve les vignettes pour les compteurs
-POSSUM_IMAGES_PATH = "images/numbers/orange/"
 
 # list of authorized permissions codename
 PERMS = ['p1', 'p2', 'p3', 'p4', 'p5', 'p6', 'p7', 'p8', 'p9']
