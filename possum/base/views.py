@@ -57,85 +57,8 @@ def create_default_directory():
         os.makedirs(settings.PATH_TICKET)
 
 ###
-# Cache management
+# Permissions
 ###
-def cache_categories():
-    if 'categories_by_id' not in cache:
-        cache['categories_by_id'] = {}
-    cache['categories'] = Categorie.objects.order_by('priorite', 'nom')
-    for category in cache['categories']:
-        cache['categories_by_id'][int(category.id)] = category
-
-def cache_products():
-    for category in cache['categories']:
-        cache_products_for_category(category)
-
-def cache_products_for_category(category):
-    """We maintain a cache with category key as int and str.
-    """
-    if 'products' not in cache:
-        cache['products'] = {}
-    if 'products_disable' not in cache:
-        cache['products_disable'] = {}
-    if 'products_by_id' not in cache:
-        cache['products_by_id'] = {}
-    products = Produit.objects.filter(categorie=category)
-    for product in products:
-        cache['products_by_id'][int(product.id)] = product
-    enable = products.exclude(actif=False)
-    cache['products'][int(category.id)] = enable
-    disable = products.exclude(actif=True)
-    cache['products_disable'][int(category.id)] = disable
-
-def cache_printers():
-    cache['printers'] = Printer.objects.all()
-    cache['manager_printers'] = cache['printers'].filter(manager=True)
-    cache['kitchen_printers'] = cache['printers'].filter(kitchen=True)
-    cache['billing_printers'] = cache['printers'].filter(billing=True)
-    if 'printers_by_id' not in cache:
-        cache['printers_by_id'] = {}
-    for printer in cache['printers']:
-        cache['printers_by_id'][int(printer.id)] = printer
-
-def cache_bills():
-    if 'bills_by_id' not in cache:
-        cache['bills_by_id'] = {}
-    cache['bills'] = Facture().non_soldees()
-    for bill in cache['bills']:
-        cache['bills_by_id'][int(bill.id)] = bill
-
-def cache_vats():
-    cache['vats'] = VAT.objects.order_by('name')
-    if 'vats_by_id' not in cache:
-        cache['vats_by_id'] = {}
-    for vat in cache['vats']:
-        cache['vats_by_id'][int(vat.id)] = vat
-
-def cache_type_payments():
-    cache['type_payments'] = PaiementType.objects.order_by("nom")
-    if 'type_payments_by_id' not in cache:
-        cache['type_payments_by_id'] = {}
-    for payment in cache['type_payments']:
-        cache['type_payments_by_id'][int(payment.id)] = payment
-
-def cache_zones():
-    cache['zones'] = Zone.objects.all()
-    if 'zones_by_id' not in cache:
-        cache['zones_by_id'] = {}
-    for zone in cache['zones']:
-        cache['zones_by_id'][int(zone.id)] = zone
-
-def init_cache_system():
-    cache_categories()
-    cache_products()
-    cache_bills()
-    cache_vats()
-    cache_printers()
-    cache_zones()
-    cache_type_payments()
-#    if settings.DEBUG:
-#        from pprint import pprint
-#        pprint(cache)
 
 def get_user(request):
     data = {}
@@ -1049,7 +972,7 @@ def manager(request):
 def printers(request):
     data = get_user(request)
     data['menu_manager'] = True
-    data['printers'] = Printer.object.all()
+    data['printers'] = Printer.objects.all()
     return render_to_response('base/manager/printers.html',
                                 data,
                                 context_instance=RequestContext(request))
@@ -1297,8 +1220,6 @@ def bill_new(request):
     data['menu_bills'] = True
     bill = Facture()
     bill.save()
-#    cache['bills'].append(bill)
-#    cache['bills_by_id'][int(bill.id)] = bill
     data['facture'] = bill
     return render_to_response('base/bill/order.html',
                                 data,
@@ -1550,7 +1471,6 @@ def couverts_set(request, bill_id, number):
 def factures(request):
     data = get_user(request)
     data['menu_bills'] = True
-    #data['factures'] = cache['bills']
     data['factures'] = Facture().non_soldees()
     return render_to_response('base/bill/home.html',
                                 data,
