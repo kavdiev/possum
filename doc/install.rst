@@ -174,7 +174,7 @@ Voici un exemple avec possum accessible à l'adresse: '/'
 ::
 
   Alias /robots.txt /home/pos/possum-software/possum/static/robots.txt
-  Alias /favicon.ico /home/pos/possum-software/possum/static/favicon.ico
+  Alias /favicon.ico /home/pos/possum-software/possum/static/images/favicon.ico
   Alias /media/ /home/pos/possum-software/possum/media/
   Alias /static/ /home/pos/possum-software/possum/static/
 

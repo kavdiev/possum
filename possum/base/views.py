@@ -23,7 +23,6 @@ import logging
 from possum.base.dailystat import DailyStat
 from possum.base.weeklystat import WeeklyStat
 from possum.base.monthlystat import MonthlyStat
-from possum.base.dailystat import get_current_working_day, get_last_year
 from possum.base.bill import Facture
 from possum.base.models import Printer
 from possum.base.product import Produit, ProduitVendu
@@ -49,12 +48,22 @@ from django.contrib import messages
 from django.utils.functional import wraps
 from django.core.mail import send_mail
 import os
-from datetime import datetime
+import datetime
 
 # Création des répertoires obligatoires
 def create_default_directory():
     if not os.path.exists(settings.PATH_TICKET):
         os.makedirs(settings.PATH_TICKET)
+
+def get_last_year(date):
+    """Retourne le jour de l'année précédente
+    afin de comparer les resultats des 2 journées
+    date doit être au format datetime
+    """
+    try:
+        return date - datetime.timedelta(days=364)
+    except:
+        return date
 
 ###
 # Permissions
@@ -808,17 +817,15 @@ def rapports_daily(request):
     """
     data = get_user(request)
     data['menu_manager'] = True
+    date = datetime.datetime.now()
     if request.method == 'POST':
         try:
             year = int(request.POST.get('date_year'))
             month = int(request.POST.get('date_month'))
             day = int(request.POST.get('date_day'))
-            date = datetime(year, month, day)
+            date = datetime.datetime(year, month, day)
         except:
             messages.add_message(request, messages.ERROR, "La date saisie n'est pas valide.")
-            date = get_current_working_day()
-    else:
-        date = get_current_working_day()
     data['date_form'] = DateForm({'date': date, })
     data['date'] = date
     data = get_daily_data(data, date)
@@ -1643,12 +1650,12 @@ def archives(request):
             year = int(request.POST.get('date_year'))
             month = int(request.POST.get('date_month'))
             day = int(request.POST.get('date_day'))
-            date = datetime(year, month, day)
+            date = datetime.datetime(year, month, day)
         except:
             messages.add_message(request, messages.ERROR, "La date saisie n'est pas valide.")
-            date = datetime.today()
+            date = datetime.datetime.today()
     else:
-        date = datetime.today()
+        date = datetime.datetime.today()
     data['date_form'] = DateForm({'date': date, })
     data['factures'] = Facture().get_bills_for(date)
     data['date'] = date

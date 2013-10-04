@@ -24,31 +24,8 @@ from decimal import Decimal
 import logging
 import datetime
 from possum.base.vat import VAT
-
-def get_working_day(date):
-    """Retourne la journee de travail officiel
-    (qui fini a 5h du matin)
-    date de type datetime.datetime.now()
-    """
-    if date.hour < 5:
-        # jour de travail precedent
-        return date - datetime.timedelta(days=1)
-    else:
-        return date
-
-def get_last_year(date):
-    """Retourne le jour de l'année précédente 
-    afin de comparer les resultats des 2 journées
-    date doit être au format datetime
-    """
-    try:
-        return date - datetime.timedelta(days=364)
-    except:
-        return date
-
-def get_current_working_day():
-    now = datetime.datetime.now()
-    return get_working_day(now)
+from possum.base.weeklystat import WeeklyStat
+from possum.base.monthlystat import MonthlyStat
 
 class DailyStat(models.Model):
     """Daily statistics, full list of keys:
@@ -114,11 +91,11 @@ class DailyStat(models.Model):
         """if necessary, add this bill
         """
         if bill.saved_in_stats:
-            logging.warning("Bill [%s] is already in DailyStat" % bill.id)
+            logging.warning("Bill [%s] is already in stats" % bill.id)
             return False
         else:
             if bill.est_soldee():
-                date = get_working_day(bill.date_creation)
+                date = bill.get_working_day()
                 self.__add_bill_common(bill, date)
                 self.__add_bill_products(bill, date)
                 if bill.est_un_repas():
@@ -128,6 +105,8 @@ class DailyStat(models.Model):
                 self.__add_bill_payments(bill, date)
                 bill.saved_in_stats = True
                 bill.save()
+                WeeklyStat().add_bill(bill)
+                MonthlyStat().add_bill(bill)
                 return True
             else:
                 logging.warning("Bill [%s] is not ended" % bill.id)

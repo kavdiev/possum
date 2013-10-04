@@ -613,3 +613,13 @@ class Facture(models.Model):
         ticket.append(separateur)
         return printer.print_list(ticket, "invoice-%s" % self.id, with_header=True)
 
+    def get_working_day(self):
+        """Retourne la journee de travail officiel
+            (qui fini a 5h du matin)
+            date de type datetime.datetime.now()
+        """
+        if self.date_creation.hour < 5:
+            # jour de travail precedent
+            return self.date_creation - datetime.timedelta(days=1)
+        else:
+            return self.date_creation
