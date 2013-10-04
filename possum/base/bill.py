@@ -27,8 +27,7 @@ from possum.base.payment import Paiement
 from possum.base.payment import PaiementType
 from django.contrib.auth.models import User
 import os
-from possum.base.stats import StatsJourGeneral, StatsJourPaiement, \
-        StatsJourProduit, StatsJourCategorie, get_working_day
+from possum.base.dailystat import DailyStat
 from possum.base.category import Categorie
 from possum.base.printer import Printer
 from possum.base.log import LogType
@@ -519,8 +518,7 @@ class Facture(models.Model):
                 self.restant_a_payer -= monnaie.montant
             self.restant_a_payer -= paiement.montant
             self.save()
-            # if needed, update stats
-            self.update_stats()
+            DailyStat().add_bill(self)
             return True
         else:
             logging.debug("pas de produit, donc rien n'a payer")
@@ -570,66 +568,6 @@ class Facture(models.Model):
         else:
             return False
 
-    def rapport_mois(self, mois):
-        """Retourne dans une liste le rapport du mois 'mois'
-        'mois' est de type datetime.today()
-
-        exemple:
-
-        -- CA mensuel 12/2010 --
-        Cheque               285,05
-        Ticket Resto         723,67
-        Espece              3876,46
-        ANCV                 150,00
-        CB                  3355,60
-        total TTC:          8386,08
-        montant TVA  5,5:    353,26
-        montant TVA 19,6:    263,82
-
-        """
-        logging.debug(mois)
-        date_min = datetime.datetime(mois.year, mois.month, 1, 5)
-        # on est le mois suivant (32 c'est pour etre sur de ne pas
-        # tomber sur le 31 du mois)
-        tmp = date_min + datetime.timedelta(days=32)
-        # modulo pour le cas de decembre + 1 = janvier
-        date_max = datetime.datetime(tmp.year, tmp.month, 1, 5)
-        texte = []
-        texte.append("    -- CA mensuel %s --" % mois.strftime("%m/%Y"))
-        selection = StatsJourPaiement.objects.filter( \
-                            date__gte=date_min, \
-                            date__lt=date_max)
-        for paiement in PaiementType.objects.iterator():
-            total = selection.filter(paiement=paiement).aggregate(Sum('valeur'))['valeur__sum']
-            if total > 0:
-                texte.append("%-20s %10.2f" % (paiement.nom, total))
-        selection = StatsJourGeneral.objects.filter( \
-                            date__gte=date_min, \
-                            date__lt=date_max)
-        ca = selection.filter(type=LogType.objects.get(nom="ca")).aggregate(Sum('valeur'))['valeur__sum']
-        if ca == None:
-            ca = 0.0
-
-        # IMPORTANT:
-        #   ici on ne se sert pas des stats 'tva_normal' et 'tva_alcool'
-        #   car il y a des erreurs d'arrondies à cause des additions
-        #   successives
-        montant_normal = selection.filter(type=LogType.objects.get(nom="montant_normal")).aggregate(Sum('valeur'))['valeur__sum']
-        if montant_normal == None:
-            tva_normal = 0.0
-        else:
-            tva_normal = montant_normal*(Decimal("0.055") / Decimal("1.055"))
-        montant_alcool = selection.filter(type=LogType.objects.get(nom="montant_alcool")).aggregate(Sum('valeur'))['valeur__sum']
-        if montant_alcool == None:
-            tva_alcool = 0.0
-        else:
-            tva_alcool = montant_alcool*(Decimal("0.196") / Decimal("1.196"))
-
-        texte.append("%-20s %10.2f" % ("total TTC:", ca))
-        texte.append("%-20s %10.2f" % ("total TVA  5.5:", tva_normal))
-        texte.append("%-20s %10.2f" % ("total TVA 19.6:", tva_alcool))
-        return texte
-
     def get_bills_for(self, date):
         """Retourne la liste des factures soldees du jour 'date'
         date de type datetime
@@ -642,209 +580,6 @@ class Facture(models.Model):
                                       date_creation__lt=date_max, \
                                       restant_a_payer = 0).exclude(\
                                       produits__isnull = True)
-
-    def rapport_jour(self, date):
-        """Retourne le rapport du jour sous la forme d'une liste
-        'jour' est de type datetime.today()
-
-        exemple:
-        -- 15/12/2010 --
-        Cheque               285,05
-        Ticket Resto         723,67
-        Espece              3876,46
-        ANCV                 150,00
-        CB                  3355,60
-        total TTC:          8386,08
-        montant TVA  5,5:    353,26
-        montant TVA 19,6:    263,82
-
-        Menu E/P :            16
-        Menu P/D :            16
-        Menu Tradition :      16
-
-        Salade cesar :         6
-        ...
-
-        plat ...
-        """
-        logging.debug(date)
-        texte = []
-        if date == None:
-            logging.warning("la date fournie est inconnue")
-            return texte
-        stats = StatsJourGeneral()
-        texte.append("       -- %s --" % date.strftime("%d/%m/%Y"))
-        texte.append("CA TTC (% 4d fact.): %11.2f" % (
-                                    stats.get_data("nb_factures", date),
-                                    stats.get_data("ca", date)))
-        # IMPORTANT:
-        #   ici on ne se sert pas des stats 'tva_normal' et 'tva_alcool'
-        #   car il y a des erreurs d'arrondies à cause des additions
-        #   successives
-        tva_normal = stats.get_data("montant_normal", date)*(Decimal("0.055") / Decimal("1.055"))
-        texte.append("%-20s %11.2f" % ("total TVA  5.5:", tva_normal))
-        tva_alcool = stats.get_data("montant_alcool", date)*(Decimal("0.196") / Decimal("1.196"))
-        texte.append("%-20s %11.2f" % ("total TVA 19.6:", tva_alcool))
-        for stats in StatsJourPaiement.objects.filter(date=date)\
-                                              .order_by("paiement")\
-                                              .iterator():
-            texte.append("%-15s (%d) %11.2f" % (stats.paiement.nom,
-                                                stats.nb,
-                                                stats.valeur))
-        texte.append(" ")
-        for cate in ["Formules", "Entrees", "Plats", "Desserts"]:
-            try:
-                categorie = Categorie.objects.get(nom=cate)
-                stats = StatsJourCategorie.objects.get(date=date,
-                                                    categorie=categorie)
-                texte.append("%-21s %10d" % (cate, stats.nb))
-                for stats in StatsJourProduit.objects.filter(date=date, produit__categorie=categorie).order_by("produit").iterator():
-                    texte.append(" %-20s %10d" % (stats.produit.nom, stats.nb))
-                texte.append(" ")
-            except StatsJourCategorie.DoesNotExist:
-                continue
-        return texte
-
-    def update_common_stats(self, date):
-        """Update common stats
-        nb_invoices : number of invoices
-        total_ttc   : total
-        ID_vat_only : VAT part only for each vat
-        """
-        logtype, created = LogType.objects.get_or_create(nom="nb_invoices")
-        if created:
-            logtype.save()
-        stat = StatsJourGeneral.objects.get_or_create(date=date, type=logtype)[0]
-        stat.valeur += 1
-        stat.save()
-        logtype, created = LogType.objects.get_or_create(nom="total_ttc")
-        if created:
-            logtype.save()
-        stat = StatsJourGeneral.objects.get_or_create(date=date, type=logtype)[0]
-        stat.valeur += self.total_ttc
-        stat.save()
-        for vatonbill in self.vats.iterator():
-            logtype, created = LogType.objects.get_or_create(nom="%s_vat_only" % vatonbill.vat.id)
-            if created:
-                logtype.save()
-            stat = StatsJourGeneral.objects.get_or_create(date=date, type=logtype)[0]
-            stat.valeur += vatonbill.total
-            stat.save()
-            
-    def update_products_stats(self, date):
-        """Update stats on products, for each:
-        nb     : how many
-        valeur : total TTC
-        """
-        for vendu in self.produits.iterator():
-            # produit
-            stat = StatsJourProduit.objects.get_or_create(date=date, produit=vendu.produit)[0]
-            stat.valeur += vendu.prix
-            stat.nb += 1
-            stat.save()
-            for sous_vendu in vendu.contient.iterator():
-                # il n'y a pas de CA donc on ne le compte pas
-                stat = StatsJourProduit.objects.get_or_create(date=date, produit=sous_vendu.produit)[0]
-                stat.nb += 1
-                stat.save()
-                # categorie
-                stat = StatsJourCategorie.objects.get_or_create(date=date, categorie=sous_vendu.produit.categorie)[0]
-                stat.nb += 1
-                stat.save()
-            # categorie
-            stat = StatsJourCategorie.objects.get_or_create(date=date, categorie=vendu.produit.categorie)[0]
-            stat.valeur += vendu.prix
-            stat.nb += 1
-            stat.save()
-
-    def update_guests_stats(self, date):
-        """Update stats on guests, for each:
-        nb_guests        : how many people
-        guest_average    : average TTC by guest
-        guests_total_ttc : total TTC for guests
-        """
-        logtype, created = LogType.objects.get_or_create(nom="nb_guests")
-        if created:
-            logtype.save()
-        stat = StatsJourGeneral.objects.get_or_create(date=date, type=logtype)[0]
-        if self.couverts == 0:
-            # if not, we try to find a number
-            self.couverts = self.guest_couverts()
-            self.save()
-        stat.valeur += self.couverts
-        stat.save()
-        nb_guests = stat.valeur
-        logtype, created = LogType.objects.get_or_create(nom="guests_total_ttc")
-        if created:
-            logtype.save()
-        stat = StatsJourGeneral.objects.get_or_create(date=date, type=logtype)[0]
-        stat.valeur += self.total_ttc
-        stat.save()
-        total_ttc = stat.valeur
-        logtype, created = LogType.objects.get_or_create(nom="guest_average")
-        if created:
-            logtype.save()
-        stat = StatsJourGeneral.objects.get_or_create(date=date, type=logtype)[0]
-        if nb_guests:
-            stat.valeur = total_ttc / nb_guests
-        else:
-            stat.valeur = 0
-        stat.save()
-
-    def update_bar_stats(self, date):
-        """Update stats on bar, for each:
-        nb_bar        : how many invoices
-        bar_average   : average TTC by invoice
-        bar_total_ttc : total TTC for bar activity
-        """
-        logtype, created = LogType.objects.get_or_create(nom="nb_bar")
-        if created:
-            logtype.save()
-        stat = StatsJourGeneral.objects.get_or_create(date=date, type=logtype)[0]
-        stat.valeur += 1
-        stat.save()
-        nb_bar = stat.valeur
-        logtype, created = LogType.objects.get_or_create(nom="bar_total_ttc")
-        if created:
-            logtype.save()
-        stat = StatsJourGeneral.objects.get_or_create(date=date, type=logtype)[0]
-        stat.valeur += self.total_ttc
-        stat.save()
-        total_ttc = stat.valeur
-        logtype, created = LogType.objects.get_or_create(nom="bar_average")
-        if created:
-            logtype.save()
-        stat = StatsJourGeneral.objects.get_or_create(date=date, type=logtype)[0]
-        if nb_bar:
-            stat.valeur = total_ttc / nb_bar
-        else:
-            stat.valeur = 0
-        stat.save()
-
-    def update_payments_stats(self, date):
-        for paiement in self.paiements.iterator():
-            stat = StatsJourPaiement.objects.get_or_create(date=date, paiement=paiement.type)[0]
-            stat.valeur += paiement.montant
-            if paiement.nb_tickets > 0:
-                stat.nb += paiement.nb_tickets
-            else:
-                stat.nb += 1
-            stat.save()
-
-    def update_stats(self):
-        """Calcule les statistiques pour cette facture
-        si elle est soldée"""
-        if self.est_soldee():
-            date = get_working_day(self.date_creation)
-            self.update_common_stats(date)
-            self.update_products_stats(date)
-            if self.est_un_repas():
-                self.update_guests_stats(date)
-            else:
-                self.update_bar_stats(date)
-            self.update_payments_stats(date)
-            self.saved_in_stats = True
-            self.save()
 
     def print_ticket(self):
         try:

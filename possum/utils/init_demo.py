@@ -26,8 +26,7 @@ os.environ['DJANGO_SETTINGS_MODULE'] = 'possum.settings'
 from possum.base.models import Accompagnement, Sauce, \
     Categorie, Cuisson, Facture, Log, LogType, Paiement, \
     PaiementType, Produit, ProduitVendu, Follow, Table, Zone, VAT, \
-    Printer, VATOnBill, StatsJourCategorie, StatsJourGeneral, \
-    StatsJourPaiement, StatsJourProduit, Config
+    Printer, VATOnBill, DailyStat, WeeklyStat, MonthlyStat, Config
 from django.contrib.auth.models import User, Permission
 
 # on efface toutes la base
@@ -41,10 +40,9 @@ Cuisson.objects.all().delete()
 Sauce.objects.all().delete()
 Accompagnement.objects.all().delete()
 Produit.objects.all().delete()
-StatsJourCategorie.objects.all().delete()
-StatsJourGeneral.objects.all().delete()
-StatsJourPaiement.objects.all().delete()
-StatsJourProduit.objects.all().delete()
+DailyStat.objects.all().delete()
+WeeklyStat.objects.all().delete()
+MonthlyStat.objects.all().delete()
 Follow.objects.all().delete()
 Facture.objects.all().delete()
 Zone.objects.all().delete()

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-#    Copyright 2009, 2010, 2011, 2012 Sébastien Bonnegent
+#    Copyright 2009-2013 Sébastien Bonnegent
 #
 #    This file is part of POSSUM.
 #
@@ -20,14 +20,14 @@
 
 from django.db import models
 import logging
-#import io
 
 from django.conf import settings
 from possum.base.vat import VAT
 from possum.base.printer import Printer
 from possum.base.vatonbill import VATOnBill
-from possum.base.stats import StatsJour, StatsJourGeneral, \
-    StatsJourPaiement, StatsJourProduit, StatsJourCategorie
+from possum.base.dailystat import DailyStat
+from possum.base.weeklystat import WeeklyStat
+from possum.base.monthlystat import MonthlyStat
 from possum.base.bill import Facture
 from possum.base.generic import Nom, NomDouble, Priorite
 from possum.base.log import LogType, Log

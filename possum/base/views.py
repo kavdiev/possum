@@ -20,10 +20,10 @@
 
 import logging
 
-from possum.base.stats import StatsJourProduit, StatsJourCategorie
-from possum.base.stats import StatsJourGeneral
-from possum.base.stats import StatsJourPaiement
-from possum.base.stats import get_current_working_day, get_last_year
+from possum.base.dailystat import DailyStat
+from possum.base.weeklystat import WeeklyStat
+from possum.base.monthlystat import MonthlyStat
+from possum.base.dailystat import get_current_working_day, get_last_year
 from possum.base.bill import Facture
 from possum.base.models import Printer
 from possum.base.product import Produit, ProduitVendu
@@ -194,16 +194,21 @@ def categories_delete(request, cat_id):
             try:
                 report = Categorie.objects.get(id=cat_report_id)
                 # we transfert all statistics
-                for stat in StatsJourCategorie.objects.filter(categorie__id=cat_id):
-                    try:
-                        new = StatsJourCategorie.objects.get(date=stat.date, categorie=report)
-                        new.nb += stat.nb
-                        new.valeur += stat.valeur
-                        new.save()
-                        stat.delete()
-                    except StatsJourCategorie.DoesNotExist:
-                        stat.categorie = report
-                        stat.save()
+                #TODO: report on WeeklyStat and MonthlyStat
+                for stat in DailyStat.objects.filter(key="%s_category_nb" % cat_id):
+                    category_nb, created = DailyStat.objects.get_or_create(
+                            date=stat.date, 
+                            key="%s_category_nb" % report.id)
+                    category_nb.value += stat.value
+                    category_nb.save()
+                    stat.delete()
+                for stat in DailyStat.objects.filter(key="%s_category_value" % cat_id):
+                    category_value, created = DailyStat.objects.get_or_create(
+                            date=stat.date, 
+                            key="%s_category_value" % report.id)
+                    category_value.value += stat.value
+                    category_value.save()
+                    stat.delete()
                 # we transfert all products
                 for product in Produit.objects.filter(categorie__id=cat_id):
                     product.categorie = report
@@ -214,11 +219,11 @@ def categories_delete(request, cat_id):
                 return HttpResponseRedirect('/carte/categories/%s/delete/' % cat_id)
         # now, we have to delete the categorie and remove all products remains
         for product in Produit.objects.filter(categorie__id=cat_id):
-            for stat in StatsJourProduit.objects.filter(produit=product):
-                stat.delete()
+            DailyStat.objects.filter(key="%s_product_nb" % product.id).delete()
+            DailyStat.objects.filter(key="%s_product_value" % product.id).delete()
             product.delete()
-        for stat in StatsJourCategorie.objects.filter(categorie__id=cat_id):
-            stat.delete()
+        DailyStat.objects.filter(key="%s_category_nb" % cat_id).delete()
+        DailyStat.objects.filter(key="%s_category_value" % cat_id).delete()
         logging.info("[%s] categorie [%s] deleted" % (data['user'].username, data['current_cat'].nom))
         data['current_cat'].delete()
         return HttpResponseRedirect('/carte/categories/')
@@ -760,28 +765,28 @@ def nb_sorted(a, b):
 def get_daily_data(data, date):
     """Recupere les donnees pour une date
     """
-    for name in ['nb_invoices', 'total_ttc']:
-        data[name] = StatsJourGeneral().get_data(name, date)
+    for key in ['nb_bills', 'total_ttc']:
+        data[key] = DailyStat().get_value(key, date)
     data['vats'] = []
     for vat in VAT.objects.order_by('name').iterator():
-        name = "%s_vat_only" % vat.id
-        valeur = StatsJourGeneral().get_data(name, date)
-        data['vats'].append("TVA % 6.2f%% : %.2f" % (vat.tax, valeur))
+        key = "%s_vat" % vat.id
+        value = DailyStat().get_value(key, date)
+        data['vats'].append("TVA % 6.2f%% : %.2f" % (vat.tax, value))
     # restaurant
-    for name in ['nb_guests', 'guest_average', 'guests_total_ttc']:
-        data[name] = StatsJourGeneral().get_data(name, date)
+    for key in ['guests_nb', 'guests_average', 'guests_total_ttc']:
+        data[key] = DailyStat().get_value(key, date)
     # bar
-    for name in ['nb_bar', 'bar_average', 'bar_total_ttc']:
-        data[name] = StatsJourGeneral().get_data(name, date)
+    for key in ['bar_nb', 'bar_average', 'bar_total_ttc']:
+        data[key] = DailyStat().get_value(key, date)
     # categories & products
     categories = []
     products = []
     for category in Categorie.objects.order_by('priorite', 'nom').iterator():
-        category.nb = StatsJourCategorie().get_data(category, date)
+        category.nb = DailyStat().get_value("%s_category_nb" % category.id, date)
         if category.nb > 0:
             categories.append(category)
             for product in Produit.objects.filter(categorie=category, actif=True).iterator():
-                product.nb = StatsJourProduit().get_data(product, date)
+                product.nb = DailyStat().get_value("%s_product_nb" % product.id, date)
                 if product.nb > 0:
                     products.append(product)
     data['categories'] = sorted(categories, cmp=nb_sorted)
@@ -791,7 +796,7 @@ def get_daily_data(data, date):
     for payment_type in PaiementType.objects.order_by("nom").iterator():
         data['payments'].append("%s : %.2f" % (
                 payment_type.nom, 
-                StatsJourPaiement().get_data(payment_type, date)))
+                DailyStat().get_value("%s_payment_value" % payment_type.id, date)))
     return data
 
 @permission_required('base.p1')
@@ -819,11 +824,11 @@ def rapports_daily(request):
     data = get_daily_data(data, date)
     # les stats de l'année précédente
     last_year = get_last_year(date)
-    for name in ['nb_invoices', 'total_ttc', 'nb_guests', 'guest_average', 
-                'guests_total_ttc', 'nb_bar', 'bar_average', 'bar_total_ttc']:
-        data['last_%s' % name] = StatsJourGeneral().get_data(name, last_year)
-        data['max_%s' % name] = StatsJourGeneral().get_max(name)
-        data['avg_%s' % name] = StatsJourGeneral().get_avg(name)
+    for key in ['nb_bills', 'total_ttc', 'guests_nb', 'guests_average', 
+                'guests_total_ttc', 'bar_nb', 'bar_average', 'bar_total_ttc']:
+        data['last_%s' % key] = DailyStat().get_value(key, last_year)
+        data['max_%s' % key] = DailyStat().get_max(key)
+        data['avg_%s' % key] = DailyStat().get_avg(key)
     return render_to_response('base/manager/rapports/home.html',
                                 data,
                                 context_instance=RequestContext(request))
@@ -839,7 +844,7 @@ def rapports_daily_send(request, year, month, day):
 Nb factures: %s
 Total TTC: %s
 
-""" % (data['nb_invoices'], data['total_ttc'])
+""" % (data['nb_bills'], data['total_ttc'])
     for vat in data['vats']:
         mail += "%s\n" % vat
     mail += """
@@ -847,13 +852,13 @@ Restauration:
 Nb couverts: %s
 Total TTC: %s
 TM/couvert: %s
-""" % (data['nb_guests'], data['guests_total_ttc'], data['guest_average'])
+""" % (data['guests_nb'], data['guests_total_ttc'], data['guests_average'])
     mail += """
 Bar:
 Nb factures: %s
 Total TTC: %s
 TM/facture: %s
-""" % (data['nb_bar'], data['bar_total_ttc'], data['bar_average'])
+""" % (data['bar_nb'], data['bar_total_ttc'], data['bar_average'])
     mail += "\n"
     for payment in data['payments']:
         mail += "%s\n" % payment
@@ -881,18 +886,18 @@ def rapports_daily_print(request, year, month, day):
     data = get_daily_data(data, date)
 
     result = []
-    result.append("Nb factures: %s" % data['nb_invoices'])
+    result.append("Nb factures: %s" % data['nb_bills'])
     result.append("Total TTC: %s" % data['total_ttc'])
     for vat in data['vats']:
         result.append(vat)
     result.append(" ")
     result.append("Restauration:")
-    result.append("Nb couverts: %s" % data['nb_guests'])
+    result.append("Nb couverts: %s" % data['guests_nb'])
     result.append("Total TTC: %s" % data['guests_total_ttc'])
-    result.append("TM/couvert: %s" % data['guest_average'])
+    result.append("TM/couvert: %s" % data['guests_average'])
     result.append(" ")
     result.append("Bar:")
-    result.append("Nb factures: %s" % data['nb_bar'])
+    result.append("Nb factures: %s" % data['bar_nb'])
     result.append("Total TTC: %s" % data['bar_total_ttc'])
     result.append("TM/facture: %s" % data['bar_average'])
     result.append(" ")
@@ -918,12 +923,8 @@ def rapports_daily_print(request, year, month, day):
 @permission_required('base.p1')
 def rapports_daily_vats_send(request, year, month, day):
     date = "%s-%s-%s" % (year, month, day)
-    result = StatsJourGeneral().get_common_data(date)
-    try:
-        result = StatsJourGeneral().get_common_data(date)
-    except:
-        messages.add_message(request, messages.ERROR, "Les statistiques n'ont pu être récupérées.")
-    else:
+    result = DailyStat().get_common(date)
+    if result:
         subject = "Rapport journalier du %s" % date
         mail = ""
         for line in result:
@@ -937,17 +938,16 @@ def rapports_daily_vats_send(request, year, month, day):
                 messages.add_message(request, messages.SUCCESS, u"Le mail a été envoyé à %s." % request.user.email)
         else:
             messages.add_message(request, messages.ERROR, u"Vous n'avez pas d'adresse mail.")
+    else:
+        messages.add_message(request, messages.ERROR, "Les statistiques n'ont pu être récupérées.")
+
     return HttpResponseRedirect('/manager/rapports/')
 
 @permission_required('base.p1')
 def rapports_daily_vats_print(request, year, month, day):
     date = "%s-%s-%s" % (year, month, day)
-    result = StatsJourGeneral().get_common_data(date)
-    try:
-        result = StatsJourGeneral().get_common_data(date)
-    except:
-        messages.add_message(request, messages.ERROR, "Les statistiques n'ont pu être récupérées.")
-    else:
+    result = DailyStat().get_common(date)
+    if result:
         printers = Printer.objects.filter(manager=True)
         if printers:
             printer = printers[0]
@@ -957,6 +957,8 @@ def rapports_daily_vats_print(request, year, month, day):
                 messages.add_message(request, messages.ERROR, u"L'impression a achouée sur %s." % printer.name)
         else:
             messages.add_message(request, messages.ERROR, u"Aucune imprimante type 'manager' disponible.")
+    else:
+        messages.add_message(request, messages.ERROR, "Les statistiques n'ont pu être récupérées.")
     return HttpResponseRedirect('/manager/rapports/')
 
 
