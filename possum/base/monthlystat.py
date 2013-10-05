@@ -23,6 +23,11 @@ from django.db.models import Max, Avg, Min
 from decimal import Decimal
 import logging
 import datetime
+from possum.base.vat import VAT
+from possum.base.category import Categorie
+from possum.base.product import Produit
+from possum.base.payment import PaiementType
+from possum.base.utils import nb_sorted
 
 class MonthlyStat(models.Model):
     """Monthly statistics, full list of keys:
@@ -195,3 +200,42 @@ class MonthlyStat(models.Model):
             result.append("%-20s %11.2f" % (
                     tax, MonthlyStat().get_value(key, year, month)))
         return result
+
+    def get_data(self, data, year, month):
+        """Recupere les donnees pour un mois
+        """
+        for key in ['nb_bills', 'total_ttc']:
+            data[key] = MonthlyStat().get_value(key, year, month)
+        data['vats'] = []
+        for vat in VAT.objects.order_by('name').iterator():
+            key = "%s_vat" % vat.id
+            value = MonthlyStat().get_value(key, year, month)
+            data['vats'].append("TVA % 6.2f%% : %.2f" % (vat.tax, value))
+        # restaurant
+        for key in ['guests_nb', 'guests_average', 'guests_total_ttc']:
+            data[key] = MonthlyStat().get_value(key, year, month)
+        # bar
+        for key in ['bar_nb', 'bar_average', 'bar_total_ttc']:
+            data[key] = MonthlyStat().get_value(key, year, month)
+        # categories & products
+        categories = []
+        products = []
+        for category in Categorie.objects.order_by('priorite', 'nom').iterator():
+            category.nb = MonthlyStat().get_value("%s_category_nb" % category.id, year, month)
+            if category.nb > 0:
+                categories.append(category)
+                for product in Produit.objects.filter(categorie=category, actif=True).iterator():
+                    product.nb = MonthlyStat().get_value("%s_product_nb" % product.id, year, month)
+                    if product.nb > 0:
+                        products.append(product)
+        data['categories'] = sorted(categories, cmp=nb_sorted)
+        data['products'] = sorted(products, cmp=nb_sorted)
+        # payments
+        data['payments'] = []
+        for payment_type in PaiementType.objects.order_by("nom").iterator():
+            data['payments'].append("%s : %.2f" % (
+                    payment_type.nom, 
+                    MonthlyStat().get_value("%s_payment_value" % payment_type.id, year, month)))
+        return data
+
+

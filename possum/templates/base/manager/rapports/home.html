@@ -5,13 +5,31 @@
 <li onclick="window.location='/manager/'">Retour</li>
 </ul>
 
-<h1>Rapports du {{date|date:'l d F Y'}}</h1>
-<form method='post' action='/manager/rapports/' name='journalier'>{% csrf_token %}
+{% if date %}
+<h1>Rapport du {{date|date:'l d F Y'}}</h1>
+<form method='post' action='/manager/rapports/daily/' name='journalier'>{% csrf_token %}
 <ul id="date_form">
     {{ date_form.as_ul }}
     <li><input type='submit' value='Afficher le jour'></li>
 </form>
 </ul>
+{% elif week %}
+<h1>Rapport semaine {{week}}/{{year}}</h1>
+<form method='post' action='/manager/rapports/weekly/' name='hebdomadaire'>{% csrf_token %}
+<ul id="week_form">
+    {{ week_form.as_ul }}
+    <li><input type='submit' value='Afficher la semaine'></li>
+</form>
+</ul>
+{% elif month %}
+<h1>Rapport mois {{month}}/{{year}}</h1>
+<form method='post' action='/manager/rapports/monthly/' name='mensuel'>{% csrf_token %}
+<ul id="month_form">
+    {{ month_form.as_ul }}
+    <li><input type='submit' value='Afficher le mois'></li>
+</form>
+</ul>
+{% endif %}
 
 <h2>Général</h2>
 <ul id="rapports">
@@ -23,8 +41,24 @@
         Total TTC: {{total_ttc}}€
         </br>Moy. {{avg_total_ttc}} / Max. {{max_total_ttc}}
     </li>
-<li onclick="window.location='/manager/rapports/{{date.year}}/{{date.month}}/{{date.day}}/send/'">Envoyer par mail</li>
-<li onclick="window.location='/manager/rapports/{{date.year}}/{{date.month}}/{{date.day}}/print/'">Imprimer</li>
+    <li 
+{% if date %}
+onclick="window.location='/manager/rapports/{{date.year}}/{{date.month}}/{{date.day}}/send/'"
+{% elif week %}
+onclick="window.location='/manager/rapports/weekly/{{year}}/{{week}}/send/'"
+{% elif month %}
+onclick="window.location='/manager/rapports/monthly/{{year}}/{{month}}/send/'"
+{% endif %}
+    >Envoyer par mail</li>
+    <li 
+{% if date %}
+onclick="window.location='/manager/rapports/{{date.year}}/{{date.month}}/{{date.day}}/print/'"
+{% elif week %}
+onclick="window.location='/manager/rapports/weekly/{{year}}/{{week}}/print/'"
+{% elif month %}
+onclick="window.location='/manager/rapports/monthly/{{year}}/{{month}}/print/'"
+{% endif %}
+    >Imprimer</li>
 </ul>
 
 <h3>L'année dernière</h3>
@@ -86,8 +120,24 @@
     {% empty %}
     <li>Aucune TVA</li>
     {% endfor %}
-<li onclick="window.location='/manager/rapports/{{date.year}}/{{date.month}}/{{date.day}}/vats/send/'">Envoyer par mail</li>
-<li onclick="window.location='/manager/rapports/{{date.year}}/{{date.month}}/{{date.day}}/vats/print/'">Imprimer</li>
+    <li 
+{% if date %}
+onclick="window.location='/manager/rapports/{{date.year}}/{{date.month}}/{{date.day}}/vats/send/'"
+{% elif week %}
+onclick="window.location='/manager/rapports/weekly/{{year}}/{{week}}/vats/send/'"
+{% elif month %}
+onclick="window.location='/manager/rapports/monthly/{{year}}/{{month}}/vats/send/'"
+{% endif %}
+    >Envoyer par mail</li>
+    <li 
+{% if date %}
+onclick="window.location='/manager/rapports/{{date.year}}/{{date.month}}/{{date.day}}/vats/print/'"
+{% elif week %}
+onclick="window.location='/manager/rapports/weekly/{{year}}/{{week}}/vats/print/'"
+{% elif month %}
+onclick="window.location='/manager/rapports/monthly/{{year}}/{{month}}/vats/print/'"
+{% endif %}
+    >Imprimer</li>
 </ul>
 
 <h2>Paiements</h2>

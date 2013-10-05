@@ -24,8 +24,12 @@ from decimal import Decimal
 import logging
 import datetime
 from possum.base.vat import VAT
+from possum.base.category import Categorie
+from possum.base.product import Produit
+from possum.base.payment import PaiementType
 from possum.base.weeklystat import WeeklyStat
 from possum.base.monthlystat import MonthlyStat
+from possum.base.utils import nb_sorted
 
 class DailyStat(models.Model):
     """Daily statistics, full list of keys:
@@ -213,3 +217,42 @@ class DailyStat(models.Model):
             result.append("%-20s %11.2f" % (
                     tax, DailyStat().get_value(key, date)))
         return result
+
+    def get_data(self, data, date):
+        """Recupere les donnees pour une date, retourne data
+            data = {}
+        """
+        for key in ['nb_bills', 'total_ttc']:
+            data[key] = DailyStat().get_value(key, date)
+        data['vats'] = []
+        for vat in VAT.objects.order_by('name').iterator():
+            key = "%s_vat" % vat.id
+            value = DailyStat().get_value(key, date)
+            data['vats'].append("TVA % 6.2f%% : %.2f" % (vat.tax, value))
+        # restaurant
+        for key in ['guests_nb', 'guests_average', 'guests_total_ttc']:
+            data[key] = DailyStat().get_value(key, date)
+        # bar
+        for key in ['bar_nb', 'bar_average', 'bar_total_ttc']:
+            data[key] = DailyStat().get_value(key, date)
+        # categories & products
+        categories = []
+        products = []
+        for category in Categorie.objects.order_by('priorite', 'nom').iterator():
+            category.nb = DailyStat().get_value("%s_category_nb" % category.id, date)
+            if category.nb > 0:
+                categories.append(category)
+                for product in Produit.objects.filter(categorie=category, actif=True).iterator():
+                    product.nb = DailyStat().get_value("%s_product_nb" % product.id, date)
+                    if product.nb > 0:
+                        products.append(product)
+        data['categories'] = sorted(categories, cmp=nb_sorted)
+        data['products'] = sorted(products, cmp=nb_sorted)
+        # payments
+        data['payments'] = []
+        for payment_type in PaiementType.objects.order_by("nom").iterator():
+            data['payments'].append("%s : %.2f" % (
+                    payment_type.nom, 
+                    DailyStat().get_value("%s_payment_value" % payment_type.id, date)))
+        return data
+

@@ -31,7 +31,7 @@ from possum.base.category import Categorie
 from possum.base.options import Cuisson, Sauce, Accompagnement
 from possum.base.location import Zone, Table
 from possum.base.vat import VAT
-from possum.base.forms import DateForm
+from possum.base.forms import DateForm, WeekForm, MonthForm
 
 from django.contrib.auth import authenticate, login, logout
 from django.shortcuts import render_to_response, get_object_or_404
@@ -761,58 +761,9 @@ def credits(request):
 # Rapports
 ###
 
-def nb_sorted(a, b):
-    """Tri sur les categories et les produits pour avoir les plus vendus en premier
-    """
-    if b.nb < a.nb:
-        return -1
-    elif b.nb > a.nb:
-        return 1
-    else:
-        return 0
-
-def get_daily_data(data, date):
-    """Recupere les donnees pour une date
-    """
-    for key in ['nb_bills', 'total_ttc']:
-        data[key] = DailyStat().get_value(key, date)
-    data['vats'] = []
-    for vat in VAT.objects.order_by('name').iterator():
-        key = "%s_vat" % vat.id
-        value = DailyStat().get_value(key, date)
-        data['vats'].append("TVA % 6.2f%% : %.2f" % (vat.tax, value))
-    # restaurant
-    for key in ['guests_nb', 'guests_average', 'guests_total_ttc']:
-        data[key] = DailyStat().get_value(key, date)
-    # bar
-    for key in ['bar_nb', 'bar_average', 'bar_total_ttc']:
-        data[key] = DailyStat().get_value(key, date)
-    # categories & products
-    categories = []
-    products = []
-    for category in Categorie.objects.order_by('priorite', 'nom').iterator():
-        category.nb = DailyStat().get_value("%s_category_nb" % category.id, date)
-        if category.nb > 0:
-            categories.append(category)
-            for product in Produit.objects.filter(categorie=category, actif=True).iterator():
-                product.nb = DailyStat().get_value("%s_product_nb" % product.id, date)
-                if product.nb > 0:
-                    products.append(product)
-    data['categories'] = sorted(categories, cmp=nb_sorted)
-    data['products'] = sorted(products, cmp=nb_sorted)
-    # payments
-    data['payments'] = []
-    for payment_type in PaiementType.objects.order_by("nom").iterator():
-        data['payments'].append("%s : %.2f" % (
-                payment_type.nom, 
-                DailyStat().get_value("%s_payment_value" % payment_type.id, date)))
-    return data
-
 @permission_required('base.p1')
 def rapports_daily(request):
-    """try/except sont là pour le cas où les rapports sont demandés
-    alors qu'il n'y a pas encore eu de facture ce jour
-    
+    """
     Affiche le rapport pour une journée
     """
     data = get_user(request)
@@ -828,7 +779,7 @@ def rapports_daily(request):
             messages.add_message(request, messages.ERROR, "La date saisie n'est pas valide.")
     data['date_form'] = DateForm({'date': date, })
     data['date'] = date
-    data = get_daily_data(data, date)
+    data = DailyStat().get_data(data, date)
     # les stats de l'année précédente
     last_year = get_last_year(date)
     for key in ['nb_bills', 'total_ttc', 'guests_nb', 'guests_average', 
@@ -841,12 +792,66 @@ def rapports_daily(request):
                                 context_instance=RequestContext(request))
 
 @permission_required('base.p1')
-def rapports_daily_send(request, year, month, day):
-    date = "%s-%s-%s" % (year, month, day)
-    data = {}
-    data = get_daily_data(data, date)
+def rapports_weekly(request):
+    """
+    Affiche le rapport pour une semaine
+    """
+    data = get_user(request)
+    data['menu_manager'] = True
+    date = datetime.datetime.now()
+    year = date.year
+    week = date.strftime("%U")
+    if request.method == 'POST':
+        try:
+            week = int(request.POST.get('week'))
+            year = int(request.POST.get('year'))
+        except:
+            messages.add_message(request, messages.ERROR, "La date saisie n'est pas valide.")
+    data['week_form'] = WeekForm({'year': year, 'week': week})
+    data['week'] = week
+    data['year'] = year
+    last_year = year - 1
+    data = WeeklyStat().get_data(data, year, week)
+    for key in ['nb_bills', 'total_ttc', 'guests_nb', 'guests_average', 
+                'guests_total_ttc', 'bar_nb', 'bar_average', 'bar_total_ttc']:
+        data['last_%s' % key] = WeeklyStat().get_value(key, last_year, week)
+        data['max_%s' % key] = WeeklyStat().get_max(key)
+        data['avg_%s' % key] = WeeklyStat().get_avg(key)
+    return render_to_response('base/manager/rapports/home.html',
+                                data,
+                                context_instance=RequestContext(request))
 
-    subject = "Rapport journalier du %s" % date
+@permission_required('base.p1')
+def rapports_monthly(request):
+    """
+    Affiche le rapport pour un mois
+    """
+    data = get_user(request)
+    data['menu_manager'] = True
+    date = datetime.datetime.now()
+    year = date.year
+    month = date.month
+    if request.method == 'POST':
+        try:
+            month = int(request.POST.get('month'))
+            year = int(request.POST.get('year'))
+        except:
+            messages.add_message(request, messages.ERROR, "La date saisie n'est pas valide.")
+    data['month_form'] = MonthForm({'year': year, 'month': month})
+    data['month'] = month
+    data['year'] = year
+    last_year = year - 1
+    data = MonthlyStat().get_data(data, year, month)
+    for key in ['nb_bills', 'total_ttc', 'guests_nb', 'guests_average', 
+                'guests_total_ttc', 'bar_nb', 'bar_average', 'bar_total_ttc']:
+        data['last_%s' % key] = MonthlyStat().get_value(key, last_year, month)
+        data['max_%s' % key] = MonthlyStat().get_max(key)
+        data['avg_%s' % key] = MonthlyStat().get_avg(key)
+    return render_to_response('base/manager/rapports/home.html',
+                                data,
+                                context_instance=RequestContext(request))
+
+def rapports_send(request, subject, data, redirect):
     mail = """
 Nb factures: %s
 Total TTC: %s
@@ -884,15 +889,36 @@ TM/facture: %s
             messages.add_message(request, messages.SUCCESS, u"Le mail a été envoyé à %s." % request.user.email)
     else:
         messages.add_message(request, messages.ERROR, u"Vous n'avez pas d'adresse mail.")
-    return HttpResponseRedirect('/manager/rapports/')
+    return HttpResponseRedirect('/manager/rapports/%s/' % redirect)
+    
 
 @permission_required('base.p1')
-def rapports_daily_print(request, year, month, day):
+def rapports_daily_send(request, year, month, day):
     date = "%s-%s-%s" % (year, month, day)
     data = {}
-    data = get_daily_data(data, date)
+    data = DailyStat().get_data(data, date)
 
+    subject = "Rapport du %s" % date
+    rapports_send(request, subject, data, "daily")
+
+@permission_required('base.p1')
+def rapports_weekly_send(request, year, week):
+    data = {}
+    data = WeeklyStat().get_data(data, year, week)
+    subject = "Rapport semaine %s/%s" % (week, year)
+    rapports_send(request, subject, data, "weekly")
+
+@permission_required('base.p1')
+def rapports_monthly_send(request, year, month):
+    data = {}
+    data = MonthlyStat().get_data(data, year, month)
+    subject = "Rapport mensuel %s/%s" % (month, year)
+    rapports_send(request, subject, data, "monthly")
+
+def rapports_print(request, subject, data, redirect):
     result = []
+    result.append(subject)
+    result.append("--")
     result.append("Nb factures: %s" % data['nb_bills'])
     result.append("Total TTC: %s" % data['total_ttc'])
     for vat in data['vats']:
@@ -919,55 +945,110 @@ def rapports_daily_print(request, year, month, day):
     printers = Printer.objects.filter(manager=True)
     if printers:
         printer = printers[0]
-        if printer.print_list(result, "rapport_daily_%s" % date):
+        if printer.print_list(result, "rapports_print"):
             messages.add_message(request, messages.SUCCESS, u"L'impression a été envoyée sur %s." % printer.name)
         else:
             messages.add_message(request, messages.ERROR, u"L'impression a achouée sur %s." % printer.name)
     else:
         messages.add_message(request, messages.ERROR, u"Aucune imprimante type 'manager' disponible.")
-    return HttpResponseRedirect('/manager/rapports/')
+    return HttpResponseRedirect('/manager/rapports/%s/' % redirect)
+
+@permission_required('base.p1')
+def rapports_daily_print(request, year, month, day):
+    date = "%s-%s-%s" % (year, month, day)
+    data = {}
+    data = DailyStat().get_data(data, date)
+    subject = "Rapport du %s" % date
+    rapports_print(request, subject, data, "daily")
+
+@permission_required('base.p1')
+def rapports_weekly_print(request, year, week):
+    data = {}
+    data = WeeklyStat().get_data(data, year, week)
+    subject = "Rapport semaine %s/%s" % (week, year)
+    rapports_print(request, subject, data, "weekly")
+
+@permission_required('base.p1')
+def rapports_monthly_print(request, year, month):
+    data = {}
+    data = MonthlyStat().get_data(data, year, week)
+    subject = "Rapport mensuel %s/%s" % (month, year)
+    rapports_print(request, subject, data, "monthly")
+
+def rapports_vats_send(request, subject, data, redirect):
+    mail = ""
+    for line in data:
+        mail += "%s\n" % line
+    if request.user.email:
+        try:
+            send_mail(subject, mail, settings.DEFAULT_FROM_EMAIL, [request.user.email], fail_silently=False)
+        except:
+            messages.add_message(request, messages.ERROR, u"Le mail n'a pu être envoyé.")
+        else:
+            messages.add_message(request, messages.SUCCESS, u"Le mail a été envoyé à %s." % request.user.email)
+    else:
+        messages.add_message(request, messages.ERROR, u"Vous n'avez pas d'adresse mail.")
+
+    return HttpResponseRedirect('/manager/rapports/%s/' % redirect)
 
 @permission_required('base.p1')
 def rapports_daily_vats_send(request, year, month, day):
     date = "%s-%s-%s" % (year, month, day)
-    result = DailyStat().get_common(date)
-    if result:
-        subject = "Rapport journalier du %s" % date
-        mail = ""
-        for line in result:
-            mail += "%s\n" % line
-        if request.user.email:
-            try:
-                send_mail(subject, mail, settings.DEFAULT_FROM_EMAIL, [request.user.email], fail_silently=False)
-            except:
-                messages.add_message(request, messages.ERROR, u"Le mail n'a pu être envoyé.")
-            else:
-                messages.add_message(request, messages.SUCCESS, u"Le mail a été envoyé à %s." % request.user.email)
-        else:
-            messages.add_message(request, messages.ERROR, u"Vous n'avez pas d'adresse mail.")
+    data = DailyStat().get_common(date)
+    if data:
+        subject = "Rapport du %s" % date
+        rapports_vats_send(request, subject, data, "daily")
     else:
         messages.add_message(request, messages.ERROR, "Les statistiques n'ont pu être récupérées.")
+        return HttpResponseRedirect('/manager/rapports/daily/')
 
-    return HttpResponseRedirect('/manager/rapports/')
+@permission_required('base.p1')
+def rapports_weekly_vats_send(request, year, week):
+    data = WeeklyStat().get_common(year, week)
+    if data:
+        subject = "Rapport semaine %s/%s" % (week, year)
+        rapports_vats_send(request, subject, data, "weekly")
+    else:
+        messages.add_message(request, messages.ERROR, "Les statistiques n'ont pu être récupérées.")
+        return HttpResponseRedirect('/manager/rapports/weekly/')
+
+@permission_required('base.p1')
+def rapports_monthly_vats_send(request, year, month):
+    data = MonthlyStat().get_common(year, month)
+    if data:
+        subject = "Rapport mois %s/%s" % (month, year)
+        rapports_vats_send(request, subject, data, "monthly")
+    else:
+        messages.add_message(request, messages.ERROR, "Les statistiques n'ont pu être récupérées.")
+        return HttpResponseRedirect('/manager/rapports/monthly/')
+
+def rapports_vats_print(request, data, redirect):
+    printers = Printer.objects.filter(manager=True)
+    if printers:
+        printer = printers[0]
+        if printer.print_list(data, "rapport_common"):
+            messages.add_message(request, messages.SUCCESS, u"L'impression a été envoyée sur %s." % printer.name)
+        else:
+            messages.add_message(request, messages.ERROR, u"L'impression a achouée sur %s." % printer.name)
+    else:
+        messages.add_message(request, messages.ERROR, u"Aucune imprimante type 'manager' disponible.")
+    return HttpResponseRedirect('/manager/rapports/%s/' % redirect)
 
 @permission_required('base.p1')
 def rapports_daily_vats_print(request, year, month, day):
     date = "%s-%s-%s" % (year, month, day)
-    result = DailyStat().get_common(date)
-    if result:
-        printers = Printer.objects.filter(manager=True)
-        if printers:
-            printer = printers[0]
-            if printer.print_list(result, "rapport_common_%s" % date):
-                messages.add_message(request, messages.SUCCESS, u"L'impression a été envoyée sur %s." % printer.name)
-            else:
-                messages.add_message(request, messages.ERROR, u"L'impression a achouée sur %s." % printer.name)
-        else:
-            messages.add_message(request, messages.ERROR, u"Aucune imprimante type 'manager' disponible.")
-    else:
-        messages.add_message(request, messages.ERROR, "Les statistiques n'ont pu être récupérées.")
-    return HttpResponseRedirect('/manager/rapports/')
+    data = DailyStat().get_common(date)
+    rapports_vats_print(request, data, "daily")
 
+@permission_required('base.p1')
+def rapports_weekly_vats_print(request, year, week):
+    data = WeeklyStat().get_common(year, week)
+    rapports_vats_print(request, data, "weekly")
+
+@permission_required('base.p1')
+def rapports_monthly_vats_print(request, year, month):
+    data = MonthlyStat().get_common(year, month)
+    rapports_vats_print(request, data, "monthly")
 
 @permission_required('base.p1')
 def manager(request):
