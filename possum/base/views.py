@@ -851,7 +851,7 @@ def rapports_monthly(request):
                                 data,
                                 context_instance=RequestContext(request))
 
-def rapports_send(request, subject, data, redirect):
+def rapports_send(request, subject, data):
     mail = """
 Nb factures: %s
 Total TTC: %s
@@ -889,7 +889,6 @@ TM/facture: %s
             messages.add_message(request, messages.SUCCESS, u"Le mail a été envoyé à %s." % request.user.email)
     else:
         messages.add_message(request, messages.ERROR, u"Vous n'avez pas d'adresse mail.")
-    return HttpResponseRedirect('/manager/rapports/%s/' % redirect)
     
 
 @permission_required('base.p1')
@@ -897,25 +896,27 @@ def rapports_daily_send(request, year, month, day):
     date = "%s-%s-%s" % (year, month, day)
     data = {}
     data = DailyStat().get_data(data, date)
-
     subject = "Rapport du %s" % date
-    rapports_send(request, subject, data, "daily")
+    rapports_send(request, subject, data)
+    return HttpResponseRedirect('/manager/rapports/daily/')
 
 @permission_required('base.p1')
 def rapports_weekly_send(request, year, week):
     data = {}
     data = WeeklyStat().get_data(data, year, week)
     subject = "Rapport semaine %s/%s" % (week, year)
-    rapports_send(request, subject, data, "weekly")
+    rapports_send(request, subject, data)
+    return HttpResponseRedirect('/manager/rapports/weekly/')
 
 @permission_required('base.p1')
 def rapports_monthly_send(request, year, month):
     data = {}
     data = MonthlyStat().get_data(data, year, month)
     subject = "Rapport mensuel %s/%s" % (month, year)
-    rapports_send(request, subject, data, "monthly")
+    rapports_send(request, subject, data)
+    return HttpResponseRedirect('/manager/rapports/monthly/')
 
-def rapports_print(request, subject, data, redirect):
+def rapports_print(request, subject, data):
     result = []
     result.append(subject)
     result.append("--")
@@ -951,7 +952,6 @@ def rapports_print(request, subject, data, redirect):
             messages.add_message(request, messages.ERROR, u"L'impression a achouée sur %s." % printer.name)
     else:
         messages.add_message(request, messages.ERROR, u"Aucune imprimante type 'manager' disponible.")
-    return HttpResponseRedirect('/manager/rapports/%s/' % redirect)
 
 @permission_required('base.p1')
 def rapports_daily_print(request, year, month, day):
@@ -959,23 +959,26 @@ def rapports_daily_print(request, year, month, day):
     data = {}
     data = DailyStat().get_data(data, date)
     subject = "Rapport du %s" % date
-    rapports_print(request, subject, data, "daily")
+    rapports_print(request, subject, data)
+    return HttpResponseRedirect('/manager/rapports/daily/')
 
 @permission_required('base.p1')
 def rapports_weekly_print(request, year, week):
     data = {}
     data = WeeklyStat().get_data(data, year, week)
     subject = "Rapport semaine %s/%s" % (week, year)
-    rapports_print(request, subject, data, "weekly")
+    rapports_print(request, subject, data)
+    return HttpResponseRedirect('/manager/rapports/weekly/')
 
 @permission_required('base.p1')
 def rapports_monthly_print(request, year, month):
     data = {}
     data = MonthlyStat().get_data(data, year, week)
     subject = "Rapport mensuel %s/%s" % (month, year)
-    rapports_print(request, subject, data, "monthly")
+    rapports_print(request, subject, data)
+    return HttpResponseRedirect('/manager/rapports/monthly/')
 
-def rapports_vats_send(request, subject, data, redirect):
+def rapports_vats_send(request, subject, data):
     mail = ""
     for line in data:
         mail += "%s\n" % line
@@ -989,40 +992,29 @@ def rapports_vats_send(request, subject, data, redirect):
     else:
         messages.add_message(request, messages.ERROR, u"Vous n'avez pas d'adresse mail.")
 
-    return HttpResponseRedirect('/manager/rapports/%s/' % redirect)
-
 @permission_required('base.p1')
 def rapports_daily_vats_send(request, year, month, day):
     date = "%s-%s-%s" % (year, month, day)
     data = DailyStat().get_common(date)
-    if data:
-        subject = "Rapport du %s" % date
-        rapports_vats_send(request, subject, data, "daily")
-    else:
-        messages.add_message(request, messages.ERROR, "Les statistiques n'ont pu être récupérées.")
-        return HttpResponseRedirect('/manager/rapports/daily/')
+    subject = "Rapport du %s" % date
+    rapports_vats_send(request, subject, data)
+    return HttpResponseRedirect('/manager/rapports/daily/')
 
 @permission_required('base.p1')
 def rapports_weekly_vats_send(request, year, week):
     data = WeeklyStat().get_common(year, week)
-    if data:
-        subject = "Rapport semaine %s/%s" % (week, year)
-        rapports_vats_send(request, subject, data, "weekly")
-    else:
-        messages.add_message(request, messages.ERROR, "Les statistiques n'ont pu être récupérées.")
-        return HttpResponseRedirect('/manager/rapports/weekly/')
+    subject = "Rapport semaine %s/%s" % (week, year)
+    rapports_vats_send(request, subject, data)
+    return HttpResponseRedirect('/manager/rapports/weekly/')
 
 @permission_required('base.p1')
 def rapports_monthly_vats_send(request, year, month):
     data = MonthlyStat().get_common(year, month)
-    if data:
-        subject = "Rapport mois %s/%s" % (month, year)
-        rapports_vats_send(request, subject, data, "monthly")
-    else:
-        messages.add_message(request, messages.ERROR, "Les statistiques n'ont pu être récupérées.")
-        return HttpResponseRedirect('/manager/rapports/monthly/')
+    subject = "Rapport mois %s/%s" % (month, year)
+    rapports_vats_send(request, subject, data)
+    return HttpResponseRedirect('/manager/rapports/monthly/')
 
-def rapports_vats_print(request, data, redirect):
+def rapports_vats_print(request, data):
     printers = Printer.objects.filter(manager=True)
     if printers:
         printer = printers[0]
@@ -1032,23 +1024,25 @@ def rapports_vats_print(request, data, redirect):
             messages.add_message(request, messages.ERROR, u"L'impression a achouée sur %s." % printer.name)
     else:
         messages.add_message(request, messages.ERROR, u"Aucune imprimante type 'manager' disponible.")
-    return HttpResponseRedirect('/manager/rapports/%s/' % redirect)
 
 @permission_required('base.p1')
 def rapports_daily_vats_print(request, year, month, day):
     date = "%s-%s-%s" % (year, month, day)
     data = DailyStat().get_common(date)
-    rapports_vats_print(request, data, "daily")
+    rapports_vats_print(request, data)
+    return HttpResponseRedirect('/manager/rapports/daily/')
 
 @permission_required('base.p1')
 def rapports_weekly_vats_print(request, year, week):
     data = WeeklyStat().get_common(year, week)
-    rapports_vats_print(request, data, "weekly")
+    rapports_vats_print(request, data)
+    return HttpResponseRedirect('/manager/rapports/weekly/')
 
 @permission_required('base.p1')
 def rapports_monthly_vats_print(request, year, month):
     data = MonthlyStat().get_common(year, month)
-    rapports_vats_print(request, data, "monthly")
+    rapports_vats_print(request, data)
+    return HttpResponseRedirect('/manager/rapports/monthly/')
 
 @permission_required('base.p1')
 def manager(request):
