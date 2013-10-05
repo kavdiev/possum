@@ -973,7 +973,7 @@ def rapports_weekly_print(request, year, week):
 @permission_required('base.p1')
 def rapports_monthly_print(request, year, month):
     data = {}
-    data = MonthlyStat().get_data(data, year, week)
+    data = MonthlyStat().get_data(data, year, month)
     subject = "Rapport mensuel %s/%s" % (month, year)
     rapports_print(request, subject, data)
     return HttpResponseRedirect('/manager/rapports/monthly/')
