@@ -9,6 +9,16 @@ vers les différentes parties qui sont dans l'ordre:
 #. les produits en cours de préparation en cuisine
 #. la partie dédiée au gérant
 
+Gestion des utilisateurs
+------------------------
+
+Les gérants peuvent gérer les utilisateurs dans la partie dédiée aux managers.
+
+Le point important est de ne pas donner le droit de manager à tout le monde, surtout au
+compte utilisé pour la gestion des commandes. Au besoin, il est préférable de créer un utilisateur
+dédié (par exemple: pos). En effet, le droit manager permet d'accéder notamment à tous les 
+résultats, les rapports et à la partie archives des factures.
+
 Fonctionnement des tickets envoyés en cuisine
 ---------------------------------------------
 

@@ -588,6 +588,8 @@ class Facture(models.Model):
             return False
         ticket = []
         ticket.append("Le %s" % self.date_creation.strftime("%d/%m/%Y %H:%M"))
+        if self.table and self.couverts:
+            ticket.append("Table: %s / %s couverts" % (self.table, self.couverts))
         separateur = '-' * printer.width
         ticket.append(separateur)
         for vendu in self.produits.order_by( \
