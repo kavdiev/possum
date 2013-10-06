@@ -106,15 +106,16 @@ class Facture(models.Model):
         """If one, set the first category to prepare in the
         kitchen. Example: Entree if there are Entree and Plat.
         """
-        todolist = [p.made_with for p in self.produits.filter( \
-                produit__categorie__made_in_kitchen=True, 
-                sent=False)]
-        # le cas des menus
-        menu = [p.made_with for p in self.produits.filter( \
-                contient__produit__categorie__made_in_kitchen=True, 
-                sent=False)]
-        if menu:
-            todolist += menu
+        todolist = []
+        for product in self.produits.filter(sent=False).iterator():
+            if product.est_un_menu():
+                for sub in product.contient.filter(
+                        sent=False, 
+                        produit__categorie__made_in_kitchen=True).iterator():
+                    todolist.append(sub.made_with)
+            elif product.produit.categorie.made_in_kitchen:
+                todolist.append(product.made_with)
+
         if todolist:
             todolist.sort()
             self.category_to_follow = todolist[0]
@@ -129,7 +130,7 @@ class Facture(models.Model):
         products = {}
         for product in self.produits.iterator():
             if product.est_un_menu():
-                for subproduct in product.contient.iterator():
+                for subproduct in product.contient.filter(produit__categorie__made_in_kitchen=True).iterator():
                     # cas des menus
                     if subproduct.made_with not in categories:
                         categories.append(subproduct.made_with)
@@ -137,17 +138,18 @@ class Facture(models.Model):
                         products[subproduct.made_with.id] = []
                     name = subproduct.produit.nom_facture
                     if subproduct.produit.choix_cuisson:
-                        name += ": %s" % subproduct.cuisson
+                        name += ": %s" % subproduct.cuisson.nom_facture
                     products[subproduct.made_with.id].append(name)
             else:
-                if product.made_with not in categories:
-                    categories.append(product.made_with)
-                if product.made_with.id not in products:
-                    products[product.made_with.id] = []
-                name = product.produit.nom_facture
-                if product.produit.choix_cuisson:
-                    name += ": %s" % product.cuisson
-                products[product.made_with.id].append(name)
+                if product.produit.categorie.made_in_kitchen:
+                    if product.made_with not in categories:
+                        categories.append(product.made_with)
+                    if product.made_with.id not in products:
+                        products[product.made_with.id] = []
+                    name = product.produit.nom_facture
+                    if product.produit.choix_cuisson:
+                        name += ": %s" % product.cuisson
+                    products[product.made_with.id].append(name)
         categories.sort()
         todolist = []
         for category in categories:
@@ -199,9 +201,7 @@ class Facture(models.Model):
                     todolist.append(product)
             result = False
             for printer in Printer.objects.filter(kitchen=True):
-                print printer
                 result = printer.print_list(todolist, "kitchen-%s-%s" % (self.id, follow.category.id))
-                print result
             follow.save()
             self.following.add(follow)
             self.something_for_the_kitchen()
