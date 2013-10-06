@@ -207,6 +207,7 @@ class DailyStat(models.Model):
         """
         result = []
         result.append("  -- %s --" % date)
+        result.append("Fait le %s" % datetime.datetime.now().strftime("%d/%m/%Y %H:%M"))
         nb_bills = self.get_value("nb_bills", date)
         total_ttc = self.get_value("total_ttc", date)
         result.append("Total TTC (% 4d fact.): %11.2f" % (

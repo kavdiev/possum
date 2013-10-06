@@ -190,6 +190,7 @@ class MonthlyStat(models.Model):
         """
         result = []
         result.append("  -- %s/%s --" % (month, year))
+        result.append("Fait le %s" % datetime.datetime.now().strftime("%d/%m/%Y %H:%M"))
         nb_bills = self.get_value("nb_bills", year, month)
         total_ttc = self.get_value("total_ttc", year, month)
         result.append("Total TTC (% 4d fact.): %11.2f" % (

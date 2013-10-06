@@ -190,6 +190,7 @@ class WeeklyStat(models.Model):
         """
         result = []
         result.append("  -- %s sem. %s --" % (year, week))
+        result.append("Fait le %s" % datetime.datetime.now().strftime("%d/%m/%Y %H:%M"))
         nb_bills = self.get_value("nb_bills", year, week)
         total_ttc = self.get_value("total_ttc", year, week)
         result.append("Total TTC (% 4d fact.): %11.2f" % (

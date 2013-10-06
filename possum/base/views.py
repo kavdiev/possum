@@ -880,6 +880,7 @@ TM/facture: %s
     mail += "\n"
     for product in data['products']:
         mail += "%s : %s\n" % (product.nom, product.nb)
+    mail += "\n\nFait le %s" % datetime.datetime.now().strftime("%d/%m/%Y %H:%M")
     if request.user.email:
         try:
             send_mail(subject, mail, settings.DEFAULT_FROM_EMAIL, [request.user.email], fail_silently=False)
@@ -919,6 +920,7 @@ def rapports_monthly_send(request, year, month):
 def rapports_print(request, subject, data):
     result = []
     result.append(subject)
+    result.append("Fait le %s" % datetime.datetime.now().strftime("%d/%m/%Y %H:%M"))
     result.append("--")
     result.append("Nb factures: %s" % data['nb_bills'])
     result.append("Total TTC: %s" % data['total_ttc'])
@@ -982,6 +984,7 @@ def rapports_vats_send(request, subject, data):
     mail = ""
     for line in data:
         mail += "%s\n" % line
+    mail += "\n\nFait le %s" % datetime.datetime.now().strftime("%d/%m/%Y %H:%M")
     if request.user.email:
         try:
             send_mail(subject, mail, settings.DEFAULT_FROM_EMAIL, [request.user.email], fail_silently=False)
