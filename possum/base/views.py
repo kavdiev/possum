@@ -1305,7 +1305,7 @@ def bill_new(request):
     bill = Facture()
     bill.save()
     data['facture'] = bill
-    return render_to_response('base/bill/order.html',
+    return render_to_response('base/bill/bill.html',
                                 data,
                                 context_instance=RequestContext(request))
 
@@ -1364,7 +1364,7 @@ def table_set(request, bill_id, table_id):
     table = get_object_or_404(Table, pk=table_id)
     bill.set_table(table)
     data['facture'] = bill
-    return render_to_response('base/bill/order.html',
+    return render_to_response('base/bill/bill.html',
                                 data,
                                 context_instance=RequestContext(request))
 
@@ -1374,12 +1374,12 @@ def category_select(request, bill_id, category_id=None):
     data = get_user(request)
     data['menu_bills'] = True
     data['categories'] = Categorie.objects.order_by('priorite', 'nom')
+    data['bill'] = get_object_or_404(Facture, pk=bill_id)
     if category_id:
         category = get_object_or_404(Categorie, pk=category_id)
     else:
         category = data['categories'][0]
     data['products'] = Produit.objects.filter(categorie=category, actif=True)
-    data['bill_id'] = bill_id
     return render_to_response('base/bill/categories.html',
                                 data,
                                 context_instance=RequestContext(request))
@@ -1499,7 +1499,7 @@ def product_add(request, bill_id, product_id):
         return HttpResponseRedirect('/bill/%s/sold/%s/category/%s/select/' % (bill_id, product_sell.id, category.id))
     if product.choix_cuisson:
         return HttpResponseRedirect('/bill/%s/sold/%s/cooking/' % (bill_id, product_sell.id))
-    messages.add_message(request, messages.SUCCESS, "%s ok" % product.nom)
+#    messages.add_message(request, messages.SUCCESS, "%s ok" % product.nom)
     return HttpResponseRedirect('/bill/%s/category/%s/' % (bill_id, product.categorie.id))
 
 @permission_required('base.p3')
@@ -1547,7 +1547,7 @@ def couverts_set(request, bill_id, number):
     bill = get_object_or_404(Facture, pk=bill_id)
     bill.set_couverts(number)
     data['facture'] = bill
-    return render_to_response('base/bill/order.html',
+    return render_to_response('base/bill/bill.html',
                                 data,
                                 context_instance=RequestContext(request))
 
@@ -1692,7 +1692,7 @@ def bill_view(request, bill_id):
         messages.add_message(request, messages.ERROR, "Cette facture a déjà été soldée.")
         return HttpResponseRedirect('/bills/')
     data['menu_bills'] = True
-    return render_to_response('base/bill/order.html',
+    return render_to_response('base/bill/bill.html',
                                 data,
                                 context_instance=RequestContext(request))
 

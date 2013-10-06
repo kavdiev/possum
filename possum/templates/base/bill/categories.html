@@ -2,14 +2,14 @@
 {% block content %}
 
 <ul id="back">
-    <li onclick="window.location='/bill/{{bill_id}}/'">Retour</li>
+    <li onclick="window.location='/bill/{{bill.id}}/'">Retour</li>
 </ul>
 
 <h1>Sélection de la catégorie</h1>
 
 <ul id="categories">
     {% for category in categories %}
-    <li onclick="window.location='/bill/{{bill_id}}/category/{{category.id}}/'" style="background:{{category.color}};">
+    <li onclick="window.location='/bill/{{bill.id}}/category/{{category.id}}/'" style="background:{{category.color}};">
         {{category.nom}}
         </li>
     {% empty %}
@@ -22,11 +22,21 @@
 <ul id="products">
     {% for product in products %}
         <li 
-            onclick="window.location='/bill/{{bill_id}}/product/add/{{product.id}}/'" 
+            onclick="window.location='/bill/{{bill.id}}/product/add/{{product.id}}/'" 
             style="background:{{product.categorie.color}};">{{product.nom}}
         </li>
     {% empty %}
         <li>Aucun produit disponible.</li>
+    {% endfor %}
+</ul>
+
+<h1>Produits présents sur la commande</h1>
+<ul id="products_sold">
+    {% for vendu in bill.produits.iterator %}
+    <li style="background:{{vendu.produit.categorie.color}};" onclick="window.location='/bill/{{bill.id}}/sold/{{vendu.id}}/view/'">{{vendu.produit.nom}}
+    </li>
+    {% empty %}
+    <li>Aucun produit</li>
     {% endfor %}
 </ul>
 
