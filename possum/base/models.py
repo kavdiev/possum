@@ -19,7 +19,6 @@
 #
 
 from django.db import models
-import logging
 
 from django.conf import settings
 from possum.base.vat import VAT

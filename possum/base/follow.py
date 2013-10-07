@@ -19,7 +19,6 @@
 #
 
 from django.db import models
-import logging
 import datetime
 from possum.base.category import Categorie
 from possum.base.product import ProduitVendu

@@ -23,6 +23,8 @@ from possum.base.category import Categorie
 from possum.base.options import Cuisson, Sauce, Accompagnement
 from decimal import Decimal
 from datetime import datetime
+import logging
+logger = logging.getLogger(__name__)
 
 class Produit(NomDouble):
     categorie = models.ForeignKey('Categorie', related_name="produit-categorie")
@@ -195,13 +197,13 @@ class ProduitVendu(models.Model):
         nb_produits = self.contient.count()
         nb_categories = self.produit.categories_ok.count()
         if nb_produits == nb_categories:
-#            logging.debug("product is full")
+            logger.debug("product is full")
             return True
         elif nb_produits > nb_categories:
- #           logging.warning("product id "+str(self.id)+" have more products that categories authorized")
+            logger.warning("product id [%s] have more products that categories authorized" % self.id)
             return True
         else:
-#            logging.debug("product is not full")
+            logger.debug("product is not full")
             return False
 
     def __cmp__(self,other):
@@ -264,6 +266,6 @@ class ProduitVendu(models.Model):
                 if self.contient.filter(produit__categorie=categorie).count() == 0:
                     return categorie
         else:
-            logging.warning("Product "+str(self.id)+" have no categories_ok, return None")
+            logger.warning("Product [%s] have no categories_ok, return None" % self.id)
         return None
 

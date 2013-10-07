@@ -19,6 +19,7 @@
 #
 
 import logging
+logger = logging.getLogger(__name__)
 
 from possum.base.dailystat import DailyStat
 from possum.base.weeklystat import WeeklyStat
@@ -223,7 +224,7 @@ def categories_delete(request, cat_id):
                     product.categorie = report
                     product.save()
             except Categorie.DoesNotExist:
-                logging.warning("[%s] categorie [%s] doesn't exist" % (data['user'].username, cat_report_id))
+                logger.warning("[%s] categorie [%s] doesn't exist" % (data['user'].username, cat_report_id))
                 messages.add_message(request, messages.ERROR, "La catégorie n'existe pas.")
                 return HttpResponseRedirect('/carte/categories/%s/delete/' % cat_id)
         # now, we have to delete the categorie and remove all products remains
@@ -233,7 +234,7 @@ def categories_delete(request, cat_id):
             product.delete()
         DailyStat.objects.filter(key="%s_category_nb" % cat_id).delete()
         DailyStat.objects.filter(key="%s_category_value" % cat_id).delete()
-        logging.info("[%s] categorie [%s] deleted" % (data['user'].username, data['current_cat'].nom))
+        logger.info("[%s] categorie [%s] deleted" % (data['user'].username, data['current_cat'].nom))
         data['current_cat'].delete()
         return HttpResponseRedirect('/carte/categories/')
     elif action == "Annuler":
@@ -274,9 +275,9 @@ def categories_new(request):
             cat.priorite = priority
         try:
             cat.save()
-            logging.info("[%s] new categorie [%s]" % (data['user'].username, name))
+            logger.info("[%s] new categorie [%s]" % (data['user'].username, name))
         except:
-            logging.warning("[%s] new categorie failed: [%s] [%s]" % (data['user'].username, cat.priorite, cat.nom))
+            logger.warning("[%s] new categorie failed: [%s] [%s]" % (data['user'].username, cat.priorite, cat.nom))
             messages.add_message(request, messages.ERROR, "La nouvelle catégorie n'a pu être créée.")
     else:
         messages.add_message(request, messages.ERROR, "Vous devez choisir un nom pour la nouvelle catégorie.")
@@ -304,7 +305,7 @@ def categories_less_priority(request, cat_id, nb=1):
     data = get_user(request)
     cat = get_object_or_404(Categorie, pk=cat_id)
     cat.set_less_priority(nb)
-    logging.info("[%s] cat [%s] priority - %d" % (data['user'].username, cat.nom, nb))
+    logger.info("[%s] cat [%s] priority - %d" % (data['user'].username, cat.nom, nb))
     return HttpResponseRedirect('/carte/categories/%s/' % cat_id)
 
 @permission_required('base.p2')
@@ -312,7 +313,7 @@ def categories_more_priority(request, cat_id, nb=1):
     data = get_user(request)
     cat = get_object_or_404(Categorie, pk=cat_id)
     cat.set_more_priority(nb)
-    logging.info("[%s] cat [%s] priority + %d" % (data['user'].username, cat.nom, nb))
+    logger.info("[%s] cat [%s] priority + %d" % (data['user'].username, cat.nom, nb))
     return HttpResponseRedirect('/carte/categories/%s/' % cat_id)
 
 @permission_required('base.p2')
@@ -324,7 +325,7 @@ def categories_surtaxable(request, cat_id):
     if cat.surtaxable:
         cat.disable_surtaxe = False
     cat.save()
-    logging.info("[%s] cat [%s] surtaxable: %s" % (data['user'].username, cat.nom, cat.surtaxable))
+    logger.info("[%s] cat [%s] surtaxable: %s" % (data['user'].username, cat.nom, cat.surtaxable))
     return HttpResponseRedirect('/carte/categories/%s/' % cat_id)
 
 @permission_required('base.p2')
@@ -420,7 +421,7 @@ def categories_set_color(request, cat_id):
     color = request.POST.get('color', '').strip()
     cat = get_object_or_404(Categorie, pk=cat_id)
     if not cat.color or color != cat.color:
-        logging.info("[%s] new categorie color [%s]" % (data['user'].username, cat.nom))
+        logger.info("[%s] new categorie color [%s]" % (data['user'].username, cat.nom))
         cat.color = color
         try:
             cat.save()
@@ -566,14 +567,14 @@ def categories_set_name(request, cat_id):
     name = request.POST.get('name', '').strip()
     cat = get_object_or_404(Categorie, pk=cat_id)
     if name != cat.nom:
-        logging.info("[%s] new categorie name: [%s] > [%s]" % (data['user'].username, cat.nom, name))
+        logger.info("[%s] new categorie name: [%s] > [%s]" % (data['user'].username, cat.nom, name))
         cat.nom = name
 
     try:
         cat.save()
     except:
         messages.add_message(request, messages.ERROR, "Les modifications n'ont pu être enregistrées.")
-        logging.warning("[%s] save failed for [%s]" % (data['user'].username, cat.nom))
+        logger.warning("[%s] save failed for [%s]" % (data['user'].username, cat.nom))
     return HttpResponseRedirect('/carte/categories/%s/' % cat_id)
 
 @permission_required('base.p2')
@@ -1173,13 +1174,13 @@ def profile(request):
                 data['user'].set_password(new1)
                 data['user'].save()
                 data['success'] = "Le mot de passe a été changé."
-                logging.info('[%s] password changed' % data['user'].username)
+                logger.info('[%s] password changed' % data['user'].username)
             else:
                 data['error'] = "Le nouveau mot de passe n'est pas valide."
-                logging.warning('[%s] new password is not correct' % data['user'].username)
+                logger.warning('[%s] new password is not correct' % data['user'].username)
         else:
             data['error'] = "Le mot de passe fourni n'est pas bon."
-            logging.warning('[%s] check password failed' % data['user'].username)
+            logger.warning('[%s] check password failed' % data['user'].username)
     return render_to_response('base/profile.html',
                                 data,
                                 context_instance=RequestContext(request))
@@ -1212,11 +1213,11 @@ def users_new(request):
         user.email = mail
         try:
             user.save()
-            logging.info("[%s] new user [%s]" % (data['user'].username, login))
+            logger.info("[%s] new user [%s]" % (data['user'].username, login))
             #users(request)
         except:
             #data['error'] = "Le nouvel utilisateur n'a pu être créé."
-            logging.warning("[%s] new user failed: [%s] [%s] [%s] [%s]" % (data['user'].username, login, first_name, last_name, mail))
+            logger.warning("[%s] new user failed: [%s] [%s] [%s] [%s]" % (data['user'].username, login, first_name, last_name, mail))
             messages.add_message(request, messages.ERROR, "Le nouveau compte n'a pu être créé.")
     return HttpResponseRedirect('/manager/users/')
 
@@ -1229,23 +1230,23 @@ def users_change(request, user_id):
     mail = request.POST.get('mail', '').strip()
     user = get_object_or_404(User, pk=user_id)
     if login != user.username:
-        logging.info("[%s] new login: [%s] > [%s]" % (data['user'].username, user.username, login))
+        logger.info("[%s] new login: [%s] > [%s]" % (data['user'].username, user.username, login))
         user.username = login
     if first_name != user.first_name:
-        logging.info("[%s] new first name for [%s]: [%s] > [%s]" % (data['user'].username, user.username, user.first_name, first_name))
+        logger.info("[%s] new first name for [%s]: [%s] > [%s]" % (data['user'].username, user.username, user.first_name, first_name))
         user.first_name = first_name
     if last_name != user.last_name:
-        logging.info("[%s] new last name for [%s]: [%s] > [%s]" % (data['user'].username, user.username, user.last_name, last_name))
+        logger.info("[%s] new last name for [%s]: [%s] > [%s]" % (data['user'].username, user.username, user.last_name, last_name))
         user.last_name = last_name
     if mail != user.email:
-        logging.info("[%s] new mail for [%s]: [%s] > [%s]" % (data['user'].username, user.username, user.email, mail))
+        logger.info("[%s] new mail for [%s]: [%s] > [%s]" % (data['user'].username, user.username, user.email, mail))
         user.email = mail
 
     try:
         user.save()
     except:
         messages.add_message(request, messages.ERROR, "Les modifications n'ont pu être enregistrées.")
-        logging.warning("[%s] save failed for [%s]" % (data['user'].username, user.username))
+        logger.warning("[%s] save failed for [%s]" % (data['user'].username, user.username))
     return HttpResponseRedirect('/manager/users/')
 
 @permission_required('base.p1')
@@ -1256,11 +1257,11 @@ def users_active(request, user_id):
     p1 = Permission.objects.get(codename="p1")
     if not new and p1.user_set.count() == 1 and p1 in user.user_permissions.all():
         messages.add_message(request, messages.ERROR, "Il doit rester au moins un compte actif avec la permission P1.")
-        logging.warning("[%s] we must have at least one active user with P1 permission.")
+        logger.warning("[%s] we must have at least one active user with P1 permission.")
     else:
         user.is_active = new
         user.save()
-        logging.info("[%s] user [%s] active: %s" % (data['user'].username, user.username, user.is_active))
+        logger.info("[%s] user [%s] active: %s" % (data['user'].username, user.username, user.is_active))
     return HttpResponseRedirect('/manager/users/')
 
 @permission_required('base.p1')
@@ -1273,7 +1274,7 @@ def users_passwd(request, user_id):
     user.set_password(passwd)
     user.save()
     messages.add_message(request, messages.SUCCESS, "Le nouveau mot de passe l'utilisateur %s est : %s" % (user.username, passwd))
-    logging.info("[%s] user [%s] new password" % (data['user'].username, user.username))
+    logger.info("[%s] user [%s] new password" % (data['user'].username, user.username))
     return HttpResponseRedirect('/manager/users/')
 
 @permission_required('base.p1')
@@ -1287,16 +1288,16 @@ def users_change_perm(request, user_id, codename):
         if perm in user.user_permissions.all():
             if codename == 'p1' and perm.user_set.count() == 1:
                 # we must have at least one person with this permission
-                logging.info("[%s] user [%s] perm [%s]: at least should have one person" % (data['user'].username, user.username, codename))
+                logger.info("[%s] user [%s] perm [%s]: at least should have one person" % (data['user'].username, user.username, codename))
                 messages.add_message(request, messages.ERROR, "Il doit rester au moins 1 compte avec la permission P1.")
             else:
                 user.user_permissions.remove(perm)
-                logging.info("[%s] user [%s] remove perm: %s" % (data['user'].username, user.username, codename))
+                logger.info("[%s] user [%s] remove perm: %s" % (data['user'].username, user.username, codename))
         else:
             user.user_permissions.add(perm)
-            logging.info("[%s] user [%s] add perm: %s" % (data['user'].username, user.username, codename))
+            logger.info("[%s] user [%s] add perm: %s" % (data['user'].username, user.username, codename))
     else:
-        logging.warning("[%s] wrong perm info : [%s]" % (data['user'].username, codename))
+        logger.warning("[%s] wrong perm info : [%s]" % (data['user'].username, codename))
     return HttpResponseRedirect('/manager/users/')
 
 ###
@@ -1694,7 +1695,7 @@ def bill_payment(request, bill_id, type_id=-1, count=-1, left=0, right=0):
 
 @permission_required('base.p3')
 def bill_view(request, bill_id):
-    logging.debug(" ")
+    logger.debug(" ")
     data = get_user(request)
     data['facture'] = get_object_or_404(Facture, pk=bill_id)
     if data['facture'].est_soldee():

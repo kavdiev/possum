@@ -20,7 +20,6 @@
 
 from django import forms
 from django.forms.extras.widgets import SelectDateWidget
-#from django.forms import widgets
 
 weeks_choice = [(unicode(i), i) for i in range(54)]
 months_choice = [(unicode(i), i) for i in range(1, 13)]

@@ -32,6 +32,8 @@ from possum.base.weeklystat import WeeklyStat
 from possum.base.monthlystat import MonthlyStat
 from possum.base.utils import nb_sorted
 
+logger = logging.getLogger(__name__)
+
 def add_value(values, key, value):
     if key in values:
         values[key] += value
@@ -102,9 +104,9 @@ class DailyStat(models.Model):
     def add_bill(self, bill):
         """if necessary, add this bill
         """
-        logging.debug(" ")
+        logger.debug(" ")
         if bill.saved_in_stats:
-            logging.warning("Bill [%s] is already in stats" % bill.id)
+            logger.warning("Bill [%s] is already in stats" % bill.id)
             return False
         else:
             if bill.est_soldee():
@@ -123,11 +125,11 @@ class DailyStat(models.Model):
                 bill.save()
                 return True
             else:
-                logging.warning("Bill [%s] is not ended" % bill.id)
+                logger.warning("Bill [%s] is not ended" % bill.id)
                 return False
 
     def __add_bill_common(self, bill, date, year, month, week):
-        logging.debug(" ")
+        logger.debug(" ")
         nb_bills, created = DailyStat.objects.get_or_create(date=date, key="nb_bills")
         nb_bills.value += 1
         nb_bills.save()
@@ -166,7 +168,7 @@ class DailyStat(models.Model):
 
         Cela nous permet de regrouper les stats de plusieurs catégories
         """
-        logging.debug(" ")
+        logger.debug(" ")
         values = {}
         # on construit les valeurs
         for product in bill.produits.iterator():
@@ -198,7 +200,7 @@ class DailyStat(models.Model):
             stat.save()
 
     def __add_bill_guests(self, bill, date, year, month, week):
-        logging.debug(" ")
+        logger.debug(" ")
         guests_nb, created = DailyStat.objects.get_or_create(date=date, key="guests_nb")
         if bill.couverts == 0:
             # if not, we try to find a number
@@ -241,7 +243,7 @@ class DailyStat(models.Model):
         guests_average.save()
 
     def __add_bill_bar(self, bill, date, year, month, week):
-        logging.debug(" ")
+        logger.debug(" ")
         bar_nb, created = DailyStat.objects.get_or_create(date=date, key="bar_nb")
         bar_nb.value += 1
         bar_nb.save()
@@ -280,7 +282,7 @@ class DailyStat(models.Model):
         bar_average.save()
 
     def __add_bill_payments(self, bill, date, year, month, week):
-        logging.debug(" ")
+        logger.debug(" ")
         for payment in bill.paiements.iterator():
             key = "%s_payment_nb" % payment.type_id
             payment_nb, created = DailyStat.objects.get_or_create(date=date, key=key)
@@ -306,7 +308,7 @@ class DailyStat(models.Model):
     def get_common(self, date):
         """Return les stats pour date sous forme de liste
         """
-        logging.debug(" ")
+        logger.debug(" ")
         result = []
         result.append("  -- %s --" % date)
         result.append("Fait le %s" % datetime.datetime.now().strftime("%d/%m/%Y %H:%M"))
@@ -324,7 +326,7 @@ class DailyStat(models.Model):
     def update(self):
         """Update statistics with new bills
         """
-        logging.debug(" ")
+        logger.debug(" ")
         for bill in Facture.objects.filter(saved_in_stats=False).iterator():
             DailyStat().add_bill(bill)
 
@@ -332,7 +334,7 @@ class DailyStat(models.Model):
         """Recupere les donnees pour une date, retourne data
             data = {}
         """
-        logging.debug(" ")
+        logger.debug(" ")
         for key in ['nb_bills', 'total_ttc']:
             data[key] = DailyStat().get_value(key, date)
         data['vats'] = []

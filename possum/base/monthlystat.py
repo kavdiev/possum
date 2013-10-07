@@ -21,7 +21,6 @@
 from django.db import models
 from django.db.models import Max, Avg, Min
 from decimal import Decimal
-import logging
 import datetime
 from possum.base.vat import VAT
 from possum.base.category import Categorie

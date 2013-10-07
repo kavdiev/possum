@@ -34,6 +34,8 @@ from possum.base.follow import Follow
 from possum.base.config import Config
 from django.contrib.auth import authenticate
 
+logger = logging.getLogger(__name__)
+
 class Facture(models.Model):
     """
     overcharge: surtaxe à ajouter par produits par exemple
@@ -402,7 +404,7 @@ class Facture(models.Model):
                 self.del_product_prize(product)
             self.something_for_the_kitchen()
         else:
-            logging.warning("[%s] on essaye de supprimer un produit "\
+            logger.warning("[%s] on essaye de supprimer un produit "\
                             "qui n'est pas dans la facture" % self)
 
     def del_all_payments(self):
@@ -422,7 +424,7 @@ class Facture(models.Model):
             self.save()
             self.compute_total()
         else:
-            logging.warning("[%s] on essaye de supprimer un paiement "\
+            logger.warning("[%s] on essaye de supprimer un paiement "\
                             "qui n'est pas dans la facture: %s %s %s %s"\
                             % (self, payment.id, payment.date,\
                             payment.type.nom, payment.montant))
@@ -447,10 +449,10 @@ class Facture(models.Model):
             if user.groups.filter(name='Managers').count() == 1:
                 return True
             else:
-                logging.debug("utilisateur non authorise: %s" % username)
+                logger.debug("utilisateur non authorise: %s" % username)
                 return False
         else:
-            logging.debug("erreur avec: %s / %s" % (username, password))
+            logger.debug("erreur avec: %s / %s" % (username, password))
             return False
 
     def getTvaNormal(self):
@@ -481,9 +483,9 @@ class Facture(models.Model):
         Si le montant est superieur au restant du alors on rembourse en
         espece.
         """
-        logging.debug("Nouveau paiement")
+        logger.debug("Nouveau paiement")
         if self.restant_a_payer <= Decimal("0"):
-            logging.info("[%s] nouveau paiement ignore car restant"\
+            logger.info("[%s] nouveau paiement ignore car restant"\
                             " a payer <= 0 (%5.2f)"
                             % (self, self.restant_a_payer))
             return False
@@ -519,7 +521,7 @@ class Facture(models.Model):
             self.save()
             return True
         else:
-            logging.debug("pas de produit, donc rien n'a payer")
+            logger.debug("pas de produit, donc rien n'a payer")
             return False
 
     def est_soldee(self):
