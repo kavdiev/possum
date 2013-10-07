@@ -768,6 +768,7 @@ def rapports_daily(request):
     """
     data = get_user(request)
     data['menu_manager'] = True
+    DailyStat().update()
     date = datetime.datetime.now()
     if request.method == 'POST':
         try:
@@ -798,6 +799,7 @@ def rapports_weekly(request):
     """
     data = get_user(request)
     data['menu_manager'] = True
+    DailyStat().update()
     date = datetime.datetime.now()
     year = date.year
     week = date.strftime("%U")
@@ -828,6 +830,7 @@ def rapports_monthly(request):
     """
     data = get_user(request)
     data['menu_manager'] = True
+    DailyStat().update()
     date = datetime.datetime.now()
     year = date.year
     month = date.month
@@ -1620,7 +1623,7 @@ def bill_payment_save(request, bill_id, type_id, left, right, count):
         result = bill.add_payment(type_payment, montant)
     if not result:
         messages.add_message(request, messages.ERROR, "Le paiement n'a pu être enregistré.")
-    if bill.saved_in_stats:
+    if bill.est_soldee():
         messages.add_message(request, messages.SUCCESS, "La facture a été soldée.")
         return HttpResponseRedirect('/bills/')
     else:

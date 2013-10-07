@@ -26,10 +26,18 @@ import datetime
 from possum.base.vat import VAT
 from possum.base.category import Categorie
 from possum.base.product import Produit
+from possum.base.bill import Facture
 from possum.base.payment import PaiementType
 from possum.base.weeklystat import WeeklyStat
 from possum.base.monthlystat import MonthlyStat
 from possum.base.utils import nb_sorted
+
+def add_value(values, key, value):
+    if key in values:
+        values[key] += value
+    else:
+        values[key] = value
+    return values
 
 class DailyStat(models.Model):
     """Daily statistics, full list of keys:
@@ -79,87 +87,118 @@ class DailyStat(models.Model):
         stats = DailyStat.objects.filter(key=key).aggregate(
                         Avg('value'))['value__avg']
         if stats:
-            return stats
+            return "%.2f" % stats
         else:
-            return Decimal("0")
+            return "0.00"
 
     def get_max(self, key):
         stats = DailyStat.objects.filter(key=key).aggregate(
                         Max('value'))['value__max']
         if stats:
-            return stats
+            return "%.2f" % stats
         else:
-            return Decimal("0")
+            return "0.00"
 
     def add_bill(self, bill):
         """if necessary, add this bill
         """
+        logging.debug(" ")
         if bill.saved_in_stats:
             logging.warning("Bill [%s] is already in stats" % bill.id)
             return False
         else:
             if bill.est_soldee():
                 date = bill.get_working_day()
-                self.__add_bill_common(bill, date)
-                self.__add_bill_products(bill, date)
+                week = date.strftime("%U")
+                month = date.month
+                year = date.year
+                self.__add_bill_common(bill, date, year, month, week)
+                self.__add_bill_products(bill, date, year, month, week)
                 if bill.est_un_repas():
-                    self.__add_bill_guests(bill, date)
+                    self.__add_bill_guests(bill, date, year, month, week)
                 else:
-                    self.__add_bill_bar(bill, date)
-                self.__add_bill_payments(bill, date)
+                    self.__add_bill_bar(bill, date, year, month, week)
+                self.__add_bill_payments(bill, date, year, month, week)
                 bill.saved_in_stats = True
                 bill.save()
-                WeeklyStat().add_bill(bill)
-                MonthlyStat().add_bill(bill)
                 return True
             else:
                 logging.warning("Bill [%s] is not ended" % bill.id)
                 return False
 
-    def __add_bill_common(self, bill, date):
+    def __add_bill_common(self, bill, date, year, month, week):
+        logging.debug(" ")
         nb_bills, created = DailyStat.objects.get_or_create(date=date, key="nb_bills")
+        nb_bills.value += 1
+        nb_bills.save()
+        nb_bills, created = WeeklyStat.objects.get_or_create(year=year, week=week, key="nb_bills")
+        nb_bills.value += 1
+        nb_bills.save()
+        nb_bills, created = MonthlyStat.objects.get_or_create(year=year, month=month, key="nb_bills")
         nb_bills.value += 1
         nb_bills.save()
         total_ttc, created = DailyStat.objects.get_or_create(date=date, key="total_ttc")
         total_ttc.value += bill.total_ttc
         total_ttc.save()
+        total_ttc, created = WeeklyStat.objects.get_or_create(year=year, week=week, key="total_ttc")
+        total_ttc.value += bill.total_ttc
+        total_ttc.save()
+        total_ttc, created = MonthlyStat.objects.get_or_create(year=year, month=month, key="total_ttc")
+        total_ttc.value += bill.total_ttc
+        total_ttc.save()
         for vatonbill in bill.vats.iterator():
-            key = "%s_vat" % vatonbill.vat_id
-            stat, created = DailyStat.objects.get_or_create(date=date, key=key)    
-            stat.value += vatonbill.total
-            stat.save()
+            if vatonbill.total:
+                key = "%s_vat" % vatonbill.vat_id
+                stat, created = DailyStat.objects.get_or_create(date=date, key=key)    
+                stat.value += vatonbill.total
+                stat.save()
+                stat, created = WeeklyStat.objects.get_or_create(year=year, week=week, key=key)
+                stat.value += vatonbill.total
+                stat.save()
+                stat, created = MonthlyStat.objects.get_or_create(year=year, month=month, key=key)
+                stat.value += vatonbill.total
+                stat.save()
 
-    def __add_bill_products(self, bill, date):
+    def __add_bill_products(self, bill, date, year, month, week):
+        """On fonctionne en deux passages:
+        - en 1er on construit values avec toutes les stats
+        - en 2eme on enregistre les résultats
+
+        Cela nous permet de regrouper les stats de plusieurs catégories
+        """
+        logging.debug(" ")
+        values = {}
+        # on construit les valeurs
         for product in bill.produits.iterator():
             key = "%s_product_nb" % product.produit_id
-            product_nb, created = DailyStat.objects.get_or_create(date=date, key=key)
-            product_nb.value += 1
-            product_nb.save()
+            add_value(values, key, 1)
             key = "%s_product_value" % product.produit_id
-            product_value, created = DailyStat.objects.get_or_create(date=date, key=key)
-            product_value.value += product.prix
-            product_value.save()
+            add_value(values, key, product.prix)
             key = "%s_category_nb" % product.produit.categorie_id
-            category_nb, created = DailyStat.objects.get_or_create(date=date, key=key)
-            category_nb.value += 1
-            category_nb.save()
+            add_value(values, key, 1)
             key = "%s_category_value" % product.produit.categorie_id
-            category_value, created = DailyStat.objects.get_or_create(date=date, key=key)
-            category_value.value += product.prix
-            category_value.save()
+            add_value(values, key, product.prix)
             # products in a menu
             for sub in product.contient.iterator():
                 # il n'y a pas de prix pour les elements dans un menu
                 key = "%s_product_nb" % sub.produit_id
-                product_nb, created = DailyStat.objects.get_or_create(date=date, key=key)
-                product_nb.value += 1
-                product_nb.save()
+                add_value(values, key, 1)
                 key = "%s_category_nb" % sub.produit.categorie_id
-                category_nb, created = DailyStat.objects.get_or_create(date=date, key=key)
-                category_nb.value += 1
-                category_nb.save()
+                add_value(values, key, 1)
+        # on enregistre les stats
+        for key in values.keys():
+            stat, created = DailyStat.objects.get_or_create(date=date, key=key)
+            stat.value += values[key]
+            stat.save()
+            stat, created = WeeklyStat.objects.get_or_create(year=year, week=week, key=key)
+            stat.value += values[key]
+            stat.save()
+            stat, created = MonthlyStat.objects.get_or_create(year=year, month=month, key=key)
+            stat.value += values[key]
+            stat.save()
 
-    def __add_bill_guests(self, bill, date):
+    def __add_bill_guests(self, bill, date, year, month, week):
+        logging.debug(" ")
         guests_nb, created = DailyStat.objects.get_or_create(date=date, key="guests_nb")
         if bill.couverts == 0:
             # if not, we try to find a number
@@ -167,7 +206,19 @@ class DailyStat(models.Model):
             bill.save()
         guests_nb.value += bill.couverts
         guests_nb.save()
+        guests_nb, created = WeeklyStat.objects.get_or_create(year=year, week=week, key="guests_nb")
+        guests_nb.value += bill.couverts
+        guests_nb.save()
+        guests_nb, created = MonthlyStat.objects.get_or_create(year=year, month=month, key="guests_nb")
+        guests_nb.value += bill.couverts
+        guests_nb.save()
         guests_total_ttc, created = DailyStat.objects.get_or_create(date=date, key="guests_total_ttc")
+        guests_total_ttc.value += bill.total_ttc
+        guests_total_ttc.save()
+        guests_total_ttc, created = WeeklyStat.objects.get_or_create(year=year, week=week, key="guests_total_ttc")
+        guests_total_ttc.value += bill.total_ttc
+        guests_total_ttc.save()
+        guests_total_ttc, created = MonthlyStat.objects.get_or_create(year=year, month=month, key="guests_total_ttc")
         guests_total_ttc.value += bill.total_ttc
         guests_total_ttc.save()
         guests_average, created = DailyStat.objects.get_or_create(date=date, key="guests_average")
@@ -176,12 +227,37 @@ class DailyStat(models.Model):
         else:
             guests_average.value = 0
         guests_average.save()
+        guests_average, created = WeeklyStat.objects.get_or_create(year=year, week=week, key="guests_average")
+        if guests_nb.value:
+            guests_average.value = guests_total_ttc.value / guests_nb.value
+        else:
+            guests_average.value = 0
+        guests_average.save()
+        guests_average, created = MonthlyStat.objects.get_or_create(year=year, month=month, key="guests_average")
+        if guests_nb.value:
+            guests_average.value = guests_total_ttc.value / guests_nb.value
+        else:
+            guests_average.value = 0
+        guests_average.save()
 
-    def __add_bill_bar(self, bill, date):
+    def __add_bill_bar(self, bill, date, year, month, week):
+        logging.debug(" ")
         bar_nb, created = DailyStat.objects.get_or_create(date=date, key="bar_nb")
         bar_nb.value += 1
         bar_nb.save()
+        bar_nb, created = WeeklyStat.objects.get_or_create(year=year, week=week, key="bar_nb")
+        bar_nb.value += 1
+        bar_nb.save()
+        bar_nb, created = MonthlyStat.objects.get_or_create(year=year, month=month, key="bar_nb")
+        bar_nb.value += 1
+        bar_nb.save()
         bar_total_ttc, created = DailyStat.objects.get_or_create(date=date, key="bar_total_ttc")
+        bar_total_ttc.value += bill.total_ttc
+        bar_total_ttc.save()
+        bar_total_ttc, created = WeeklyStat.objects.get_or_create(year=year, week=week, key="bar_total_ttc")
+        bar_total_ttc.value += bill.total_ttc
+        bar_total_ttc.save()
+        bar_total_ttc, created = MonthlyStat.objects.get_or_create(year=year, month=month, key="bar_total_ttc")
         bar_total_ttc.value += bill.total_ttc
         bar_total_ttc.save()
         bar_average, created = DailyStat.objects.get_or_create(date=date, key="bar_average")
@@ -190,21 +266,47 @@ class DailyStat(models.Model):
         else:
             bar_average.value = 0
         bar_average.save()
+        bar_average, created = WeeklyStat.objects.get_or_create(year=year, week=week, key="bar_average")
+        if bar_nb.value:
+            bar_average.value = bar_total_ttc.value / bar_nb.value
+        else:
+            bar_average.value = 0
+        bar_average.save()
+        bar_average, created = MonthlyStat.objects.get_or_create(year=year, month=month, key="bar_average")
+        if bar_nb.value:
+            bar_average.value = bar_total_ttc.value / bar_nb.value
+        else:
+            bar_average.value = 0
+        bar_average.save()
 
-    def __add_bill_payments(self, bill, date):
+    def __add_bill_payments(self, bill, date, year, month, week):
+        logging.debug(" ")
         for payment in bill.paiements.iterator():
             key = "%s_payment_nb" % payment.type_id
             payment_nb, created = DailyStat.objects.get_or_create(date=date, key=key)
+            payment_nb.value += 1
+            payment_nb.save()
+            payment_nb, created = WeeklyStat.objects.get_or_create(year=year, week=week, key=key)
+            payment_nb.value += 1
+            payment_nb.save()
+            payment_nb, created = MonthlyStat.objects.get_or_create(year=year, month=month, key=key)
             payment_nb.value += 1
             payment_nb.save()
             key = "%s_payment_value" % payment.type_id
             payment_value, created = DailyStat.objects.get_or_create(date=date, key=key)
             payment_value.value += payment.montant
             payment_value.save()
+            payment_value, created = WeeklyStat.objects.get_or_create(year=year, week=week, key=key)
+            payment_value.value += payment.montant
+            payment_value.save()
+            payment_value, created = MonthlyStat.objects.get_or_create(year=year, month=month, key=key)
+            payment_value.value += payment.montant
+            payment_value.save()
 
     def get_common(self, date):
         """Return les stats pour date sous forme de liste
         """
+        logging.debug(" ")
         result = []
         result.append("  -- %s --" % date)
         result.append("Fait le %s" % datetime.datetime.now().strftime("%d/%m/%Y %H:%M"))
@@ -219,10 +321,18 @@ class DailyStat(models.Model):
                     tax, DailyStat().get_value(key, date)))
         return result
 
+    def update(self):
+        """Update statistics with new bills
+        """
+        logging.debug(" ")
+        for bill in Facture.objects.filter(saved_in_stats=False).iterator():
+            DailyStat().add_bill(bill)
+
     def get_data(self, data, date):
         """Recupere les donnees pour une date, retourne data
             data = {}
         """
+        logging.debug(" ")
         for key in ['nb_bills', 'total_ttc']:
             data[key] = DailyStat().get_value(key, date)
         data['vats'] = []

@@ -27,7 +27,6 @@ from possum.base.payment import Paiement
 from possum.base.payment import PaiementType
 from django.contrib.auth.models import User
 import os
-from possum.base.dailystat import DailyStat
 from possum.base.category import Categorie
 from possum.base.printer import Printer
 from possum.base.log import LogType
@@ -518,7 +517,6 @@ class Facture(models.Model):
                 self.restant_a_payer -= monnaie.montant
             self.restant_a_payer -= paiement.montant
             self.save()
-            DailyStat().add_bill(self)
             return True
         else:
             logging.debug("pas de produit, donc rien n'a payer")
