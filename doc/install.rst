@@ -39,6 +39,21 @@ Par exemple pour le répertoire ''/home/pos/tickets'':
   mount /home/pos/tickets
   chown www-data /home/pos/tickets
 
+Pour finir, il est vivement conseiller d'utiliser un cache au niveau du serveur. Pour cela
+il faut installer ''memcached'' et le configurer. Voici un exemple de configuration pour
+CentOS 6:
+
+::
+
+  PORT="11211"
+  USER="apache"
+  MAXCONN="1024"
+  CACHESIZE="128"
+  OPTIONS="-s /home/pos/memcached.sock -a 700"
+
+Dans ce cas, c'est la socket ''/home/pos/memcached.sock'' qui sera utilisé pour interroger
+le cache. Il faudra reporter ce nom dans le fichier ''settings.py''.
+
 Possum
 ------
 
