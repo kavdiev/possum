@@ -10,6 +10,7 @@ Sommaire
 
    about
    install
+   update
    utilisation
    devs
    screenshots
