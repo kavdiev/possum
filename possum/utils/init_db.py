@@ -24,7 +24,7 @@ sys.path.append('.')
 os.environ['DJANGO_SETTINGS_MODULE'] = 'possum.settings'
 
 from possum.base.models import Accompagnement, Sauce, \
-    Categorie, Cuisson, Facture, Log, LogType, Paiement, \
+    Categorie, Cuisson, Facture, Paiement, \
     PaiementType, Produit, ProduitVendu, Follow, Table, Zone, VAT, \
     Printer, VATOnBill, DailyStat, WeeklyStat, MonthlyStat, Config
 from django.contrib.auth.models import User, Permission
@@ -33,8 +33,6 @@ from django.contrib.auth.models import User, Permission
 VAT.objects.all().delete()
 Printer.objects.all().delete()
 VATOnBill.objects.all().delete()
-LogType.objects.all().delete()
-Log.objects.all().delete()
 Categorie.objects.all().delete()
 Cuisson.objects.all().delete()
 Sauce.objects.all().delete()

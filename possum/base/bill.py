@@ -29,7 +29,6 @@ from django.contrib.auth.models import User
 import os
 from possum.base.category import Categorie
 from possum.base.printer import Printer
-from possum.base.log import LogType
 from possum.base.follow import Follow
 from possum.base.config import Config
 from django.contrib.auth import authenticate
