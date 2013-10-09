@@ -13,6 +13,7 @@
         {% if categories %}class="selected"{% endif %}>Catégories</li>
     {% for cat in cat_list %}
     <li onclick="window.location='/manager/graphics/{{cat.id}}/{{year}}/'"
+        style="background:{{cat.color}};"
     {% if categories %}class="selected"{% endif %}>{{cat.nom}}</li>
     {% endfor %}
 </ul>
