@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block content %}
+
+<ul id="back">
+    <li onclick="window.location='/manager/'">Retour</li>
+    <li onclick="window.location='/manager/graphics/ttc/{{year}}/'"
+        {% if ttc %}class="selected"{% endif %}>TTC</li>
+    <li onclick="window.location='/manager/graphics/bar/{{year}}/'"
+        {% if bar %}class="selected"{% endif %}>Bar</li>
+    <li onclick="window.location='/manager/graphics/guests/{{year}}/'"
+        {% if guests %}class="selected"{% endif %}>Restaurant</li>
+    <li onclick="window.location='/manager/graphics/categories/{{year}}/'"
+        {% if categories %}class="selected"{% endif %}>Catégories</li>
+    {% for cat in cat_list %}
+    <li onclick="window.location='/manager/graphics/{{cat.id}}/{{year}}/'"
+    {% if categories %}class="selected"{% endif %}>{{cat.nom}}</li>
+    {% endfor %}
+</ul>
+
+<h1></h1>
+<div id='chart1'></div>
+<div id='chart2'></div>
+
+{% endblock %}
+

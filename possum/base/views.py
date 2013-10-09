@@ -51,6 +51,18 @@ from django.core.mail import send_mail
 import os
 import datetime
 
+def graphics_monthly(request):
+    data = get_user(request)
+    year = 2013
+    data['chart1'] = MonthlyStat().get_chart_ttc(year)
+    data['year'] = year
+    data['ttc'] = True
+    data['graphics'] = True
+    data['cat_list'] = Categorie.objects.order_by('priorite', 'nom')
+    return render_to_response('base/manager/graphics/home.html',
+                    data,
+                    context_instance=RequestContext(request))
+
 # Création des répertoires obligatoires
 def create_default_directory():
     if not os.path.exists(settings.PATH_TICKET):

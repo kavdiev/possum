@@ -228,3 +228,10 @@ menu.save()
 # mis a jour des TTC et TVA
 for product in Produit.objects.all():
     product.update_vats()
+
+import random
+
+DailyStat(date="2013-10-01", key="total_ttc", value="234").save()
+for key in ['total_ttc', 'guests_total_ttc', 'bar_total_ttc']:
+    for month in xrange(1, 13):
+        MonthlyStat(year=2013, month=month, key=key, value=random.randint(3, 1000)).save()

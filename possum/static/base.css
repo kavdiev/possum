@@ -295,6 +295,10 @@ li.enabled {
 li.warning {
     background-color: #f8bd30;
 }
+li.selected { 
+//    background-color: #00FF00;
+    border: 1px solid #000;
+}
 #printer li {
     width:140px;
     height:40px;

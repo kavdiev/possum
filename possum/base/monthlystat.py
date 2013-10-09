@@ -27,6 +27,10 @@ from possum.base.category import Categorie
 from possum.base.product import Produit
 from possum.base.payment import PaiementType
 from possum.base.utils import nb_sorted
+import logging
+from chartit import PivotDataPool, PivotChart
+
+logger = logging.getLogger(__name__)
 
 class MonthlyStat(models.Model):
     """Monthly statistics, full list of keys:
@@ -143,4 +147,58 @@ class MonthlyStat(models.Model):
                     MonthlyStat().get_value("%s_payment_value" % payment_type.id, year, month)))
         return data
 
+    def get_datapool_ttc(self, year):
+        logger.debug(" ")
+        data = PivotDataPool(
+                series = [
+                    {'options': {
+                        'source': MonthlyStat.objects.filter(year=year, key="total_ttc"),
+                        'categories': ['month']},
+                        'terms': {
+                            'total ttc': Avg('value')
+                            }
+                    },
+                    {'options': {
+                        'source': MonthlyStat.objects.filter(year=year, key="guests_total_ttc"),
+                        'categories': 'month'},
+                        'terms': {
+                            'restauration': Avg('value')
+                            }
+                    },
+                    {'options': {
+                        'source': MonthlyStat.objects.filter(year=year, key="bar_total_ttc"),
+                        'categories': 'month'},
+                        'terms': {
+                            'bar': Avg('value')
+                            }
+                    },
+                ])
+        return data
 
+    def get_chart_ttc(self, year):
+        chart = PivotChart(
+                    datasource = self.get_datapool_ttc(year=year),
+                    series_options = [{
+                        'options': {
+                            'type': 'line',
+                            'stacking': False
+                            },
+                        'terms':[
+                            'total ttc',
+                            'restauration',
+                            'bar']
+                        }],
+                    chart_options = {
+                        'title': {
+                            'text': "Total TTC pour l'année %s" % year},
+                        'credits': {
+                            'enabled': False
+                            },
+                        'xAxis': {
+                            'title': {
+                                'text': 'Mois'}},
+                        'yAxis': {
+                            'title': {
+                                'text': ''}},
+                        })
+        return chart

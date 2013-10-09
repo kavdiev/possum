@@ -15,4 +15,5 @@ Sommaire
    devs
    screenshots
    licence
+   credits
 
