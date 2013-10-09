@@ -39,7 +39,10 @@ Par exemple pour le répertoire ''/home/pos/tickets'':
   mount /home/pos/tickets
   chown www-data /home/pos/tickets
 
-Pour finir, il est vivement conseiller d'utiliser un cache au niveau du serveur. Pour cela
+Cache
+-----
+
+Il est vivement conseiller d'utiliser un cache au niveau du serveur. Pour cela
 il faut installer ''memcached'' et le configurer. Voici un exemple de configuration pour
 CentOS 6:
 
@@ -96,6 +99,17 @@ outils de compilation et la bibliothèque ''libcups2-dev''.
 Note: il faudra utiliser ''deactivate'' pour sortir du virtualenv Possum une fois toute
 la configuration terminée.
 
+Nous devons maintenant installer deux librairies qui seront utilisées pour l'affichage
+des graphiques:
+
+::
+
+  cd /home/pos/possum-software/possum/static/
+  wget http://code.jquery.com/jquery-2.0.3.min.js -O jquery.min.js
+  mkdir highcharts
+  cd highcharts
+  wget http://code.highcharts.com/zips/Highcharts-3.0.6.zip
+  unzip Highcharts-3.0.6.zip
 
 Configuration
 ^^^^^^^^^^^^^
