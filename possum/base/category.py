@@ -19,7 +19,6 @@
 #
 from django.db import models
 from possum.base.generic import Nom, Priorite
-from possum.base.vat import VAT
 
 class Categorie(Nom, Priorite):
     surtaxable = models.BooleanField("majoration terrasse", default=False)

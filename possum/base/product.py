@@ -20,7 +20,6 @@
 from django.db import models
 from possum.base.generic import NomDouble
 from possum.base.category import Categorie
-from possum.base.options import Cuisson, Sauce, Accompagnement
 from decimal import Decimal
 from datetime import datetime
 import logging

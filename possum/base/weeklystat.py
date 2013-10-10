@@ -19,7 +19,7 @@
 #
 
 from django.db import models
-from django.db.models import Max, Avg, Min
+from django.db.models import Max, Avg
 from decimal import Decimal
 import datetime
 from possum.base.vat import VAT

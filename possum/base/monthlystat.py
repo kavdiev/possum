@@ -19,7 +19,7 @@
 #
 
 from django.db import models
-from django.db.models import Max, Avg, Min
+from django.db.models import Max, Avg
 from decimal import Decimal
 import datetime
 from possum.base.vat import VAT
@@ -142,5 +142,3 @@ class MonthlyStat(models.Model):
                     payment_type.nom,
                     MonthlyStat().get_value("%s_payment_value" % payment_type.id, year, month)))
         return data
-
-
