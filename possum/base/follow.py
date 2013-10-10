@@ -19,9 +19,6 @@
 #
 
 from django.db import models
-import datetime
-from possum.base.category import Categorie
-from possum.base.product import ProduitVendu
 
 class Follow(models.Model):
     """Suivi des envois en cuisine:
@@ -36,5 +33,3 @@ class Follow(models.Model):
 
     def __unicode__(self):
         return "[%s] %s" % (self.date.strftime("%H:%M"), self.category.nom)
-
-

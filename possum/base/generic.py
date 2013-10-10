@@ -29,7 +29,7 @@ class Nom(models.Model):
     def __unicode__(self):
         return self.nom
 
-    def __cmp__(self,other):
+    def __cmp__(self, other):
         return cmp(self.nom, other.nom)
 
     class Meta:
@@ -53,7 +53,7 @@ class Priorite(models.Model):
         ordering = ['priorite']
 
     def __cmp__(self, other):
-        return cmp(self.priorite,other.priorite)
+        return cmp(self.priorite, other.priorite)
 
     def set_less_priority(self, number=1):
         tmp = self.priorite - number

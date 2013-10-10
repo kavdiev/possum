@@ -20,7 +20,6 @@
 from django.db import models
 from possum.base.generic import NomDouble
 from possum.base.category import Categorie
-from possum.base.options import Cuisson, Sauce, Accompagnement
 from decimal import Decimal
 from datetime import datetime
 import logging
@@ -44,11 +43,11 @@ class Produit(NomDouble):
     vat_onsite = models.DecimalField(max_digits=7, decimal_places=2, default=0)
     vat_takeaway = models.DecimalField(max_digits=7, decimal_places=2, default=0)
 
-    def __cmp__(self,other):
+    def __cmp__(self, other):
         if self.categorie == other.categorie:
-            return cmp(self.nom,other.nom)
+            return cmp(self.nom, other.nom)
         else:
-            return cmp(self.categorie,other.categorie)
+            return cmp(self.categorie, other.categorie)
 
     class Meta:
         ordering = ['categorie', 'nom']
@@ -104,10 +103,10 @@ class Produit(NomDouble):
         un = Decimal('1')
         if self.categorie.vat_onsite:
             value = self.categorie.vat_onsite.value
-            self.vat_onsite = Decimal(self.prix) / (un+value) * value
+            self.vat_onsite = Decimal(self.prix) / (un + value) * value
         if self.categorie.vat_takeaway:
             value = self.categorie.vat_takeaway.value
-            self.vat_takeaway = Decimal(self.prix) / (un+value) * value
+            self.vat_takeaway = Decimal(self.prix) / (un + value) * value
         self.save()
 
     def get_prize_takeaway(self):
@@ -148,7 +147,7 @@ class ProduitVendu(models.Model):
     """
     date = models.DateTimeField(auto_now_add=True)
 #    facture = models.ForeignKey('Facture', related_name="produitvendu-facture")
-    #facture = models.ForeignKey('Facture', limit_choices_to = {'date_creation__gt': datetime.datetime.today()})
+    # facture = models.ForeignKey('Facture', limit_choices_to = {'date_creation__gt': datetime.datetime.today()})
     produit = models.ForeignKey('Produit', related_name="produitvendu-produit")
     cuisson = models.ForeignKey('Cuisson', null=True, blank=True, related_name="produitvendu-cuisson")
     prix = models.DecimalField(max_digits=7, decimal_places=2, default=0)
@@ -163,7 +162,7 @@ class ProduitVendu(models.Model):
     sent = models.BooleanField(default=False)
 
     class Meta:
-        ordering = ['produit',]
+        ordering = ['produit', ]
 
     def __unicode__(self):
         return u"%s" % self.produit.nom
@@ -206,11 +205,11 @@ class ProduitVendu(models.Model):
             logger.debug("product is not full")
             return False
 
-    def __cmp__(self,other):
+    def __cmp__(self, other):
         if self.produit.categorie == other.produit.categorie:
-            return cmp(self.produit.nom,other.produit.nom)
+            return cmp(self.produit.nom, other.produit.nom)
         else:
-            return cmp(self.produit.categorie,other.produit.categorie)
+            return cmp(self.produit.categorie, other.produit.categorie)
 
     def est_un_menu(self):
         if self.produit.categories_ok.count():

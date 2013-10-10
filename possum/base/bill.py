@@ -51,15 +51,15 @@ class Facture(models.Model):
     couverts = models.PositiveIntegerField("nombre de couverts", default=0)
     produits = models.ManyToManyField('ProduitVendu', \
         related_name="les produits vendus", \
-        limit_choices_to = {'date__gt': datetime.datetime.today()})
-    total_ttc = models.DecimalField(max_digits=9, decimal_places=2, 
+        limit_choices_to={'date__gt': datetime.datetime.today()})
+    total_ttc = models.DecimalField(max_digits=9, decimal_places=2,
             default=0)
     paiements = models.ManyToManyField('Paiement',
         related_name="les paiements",
-        limit_choices_to = {'date__gt': datetime.datetime.today()})
+        limit_choices_to={'date__gt': datetime.datetime.today()})
     vats = models.ManyToManyField('VATOnBill',
         related_name="vat total for each vat on a bill")
-    restant_a_payer = models.DecimalField(max_digits=9, decimal_places=2, 
+    restant_a_payer = models.DecimalField(max_digits=9, decimal_places=2,
             default=0)
     saved_in_stats = models.BooleanField(default=False)
     onsite = models.BooleanField(default=True)
@@ -110,7 +110,7 @@ class Facture(models.Model):
         for product in self.produits.filter(sent=False).iterator():
             if product.est_un_menu():
                 for sub in product.contient.filter(
-                        sent=False, 
+                        sent=False,
                         produit__categorie__made_in_kitchen=True).iterator():
                     todolist.append(sub.made_with)
             elif product.produit.categorie.made_in_kitchen:
@@ -167,7 +167,7 @@ class Facture(models.Model):
             follow.save()
             todolist = []
             heure = follow.date.strftime("%H:%M")
-            #heure = datetime.datetime.now().strftime("%H:%M")
+            # heure = datetime.datetime.now().strftime("%H:%M")
             todolist.append("[%s] Table %s (%s couv.)" % (heure, self.table, self.couverts))
             todolist.append(">>> envoye %s" % follow.category.nom)
             todolist.append(" ")
@@ -210,7 +210,7 @@ class Facture(models.Model):
     def guest_couverts(self):
         """Essaye de deviner le nombre de couverts"""
         nb = {}
-        #categories = Categorie.objects.filter(made_in_kitchen=True)
+        # categories = Categorie.objects.filter(made_in_kitchen=True)
         for categorie in Categorie.objects.filter(made_in_kitchen=True):
             nb[categorie.nom] = 0
         for vendu in self.produits.iterator():
@@ -258,7 +258,7 @@ class Facture(models.Model):
         date_max = datetime.datetime(tmp.year, tmp.month, tmp.day, 5)
         return Facture.objects.filter(date_creation__gt=date_min, \
                                         date_creation__lt=date_max, \
-                                        restant_a_payer=0).exclude( \
+                                        restant_a_payer=0).exclude(\
                                         produits__isnull=True).count()
 
     def non_soldees(self):
@@ -360,7 +360,7 @@ class Facture(models.Model):
             in_the_menu = vendu.get_menu_products()
             if in_the_menu:
                 first = in_the_menu[0]
-            #else:
+            # else:
             #   when there are no product selected in this menu
         else:
             first = vendu
@@ -384,7 +384,7 @@ class Facture(models.Model):
 #                self.montant_normal += vendu.prix
 #            else:
 #                logging.debug("cette remise n'est pas connue")
-        #self.produits.order_by('produit')
+        # self.produits.order_by('produit')
 #        self.save()
 
     def del_product(self, product):
@@ -425,7 +425,7 @@ class Facture(models.Model):
         else:
             logger.warning("[%s] on essaye de supprimer un paiement "\
                             "qui n'est pas dans la facture: %s %s %s %s"\
-                            % (self, payment.id, payment.date,\
+                            % (self, payment.id, payment.date, \
                             payment.type.nom, payment.montant))
 
     def get_users(self):
@@ -460,11 +460,11 @@ class Facture(models.Model):
             On arrondi seulement à 1 parce que les 2 décimals sont dans la partie entière du montant
             # la TVA est sur le HT !!
         """
-        #return self.montant_normal - ((self.montant_normal*100)/Decimal("105.5"))
+        # return self.montant_normal - ((self.montant_normal*100)/Decimal("105.5"))
         return self.montant_normal * (Decimal("0.055") / Decimal("1.055"))
 
     def getTvaAlcool(self):
-        #return self.montant_alcool - ((self.montant_alcool*100)/Decimal("119.6"))
+        # return self.montant_alcool - ((self.montant_alcool*100)/Decimal("119.6"))
         return self.montant_alcool * (Decimal("0.196") / Decimal("1.196"))
 
     def get_resume(self):
@@ -552,13 +552,13 @@ class Facture(models.Model):
         """
         Table is surtaxed et il n'y a pas de nourriture.
         """
-        #TODO: gestion de la surtaxe
+        # TODO: gestion de la surtaxe
         return False
         if self.onsite:
             for produit in self.produits.iterator():
-                #logging.debug("test with produit: %s and categorie id: %d" % (produit.nom, produit.categorie.id))
+                # logging.debug("test with produit: %s and categorie id: %d" % (produit.nom, produit.categorie.id))
                 if produit.produit.categorie.disable_surtaxe:
-                    #logging.debug("pas de surtaxe")
+                    # logging.debug("pas de surtaxe")
                     return False
             if self.table:
                 return self.table.est_surtaxe()
@@ -574,11 +574,11 @@ class Facture(models.Model):
         date_min = datetime.datetime(date.year, date.month, date.day, 5)
         tmp = date_min + datetime.timedelta(days=1)
         date_max = datetime.datetime(tmp.year, tmp.month, tmp.day, 5)
-        return Facture.objects.filter( \
+        return Facture.objects.filter(\
                                       date_creation__gt=date_min, \
                                       date_creation__lt=date_max, \
-                                      restant_a_payer = 0).exclude(\
-                                      produits__isnull = True)
+                                      restant_a_payer=0).exclude(\
+                                      produits__isnull=True)
 
     def print_ticket(self):
         try:
@@ -591,7 +591,7 @@ class Facture(models.Model):
             ticket.append("Table: %s / %s couverts" % (self.table, self.couverts))
         separateur = '-' * printer.width
         ticket.append(separateur)
-        for vendu in self.produits.order_by( \
+        for vendu in self.produits.order_by(\
                             "produit__categorie__priorite").iterator():
             name = vendu.produit.nom_facture[:25]
             prize = "% 3.2f" % vendu.produit.prix

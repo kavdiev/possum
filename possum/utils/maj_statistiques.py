@@ -29,28 +29,28 @@ import logging, logging.handlers
 
 if settings.DEBUG:
     logging.basicConfig(
-        level = logging.DEBUG,
-        format = '[%(asctime)s %(filename)s:%(lineno)d %(funcName)s] '\
+        level=logging.DEBUG,
+        format='[%(asctime)s %(filename)s:%(lineno)d %(funcName)s] '\
                 '%(levelname)-8s %(message)s (%(relativeCreated)dms)',
-        datefmt = '%Y-%m-%d %H:%M:%S'
+        datefmt='%Y-%m-%d %H:%M:%S'
     )
 else:
     logging.basicConfig(
-        level = logging.WARNING,
-        format = '[%(asctime)s %(filename)s:%(lineno)d %(funcName)s] '\
+        level=logging.WARNING,
+        format='[%(asctime)s %(filename)s:%(lineno)d %(funcName)s] '\
                 '%(levelname)-8s %(message)s (%(relativeCreated)dms)',
-        datefmt = '%Y-%m-%d %H:%M:%S')
+        datefmt='%Y-%m-%d %H:%M:%S')
     LOG = logging.getLogger('')
     LOG.addHandler(logging.handlers.SMTPHandler("localhost", \
                    "possum@localhost", ["root@localhost"], "[POSSUM] "))
 
 from possum.base.models import Facture
 
-#for facture in Facture.objects.iterator():
-    #facture.saved_in_stats = False
-    #facture.save()
+# for facture in Facture.objects.iterator():
+    # facture.saved_in_stats = False
+    # facture.save()
 
-#Facture().maj_stats_avec_nouvelles_factures()
+# Facture().maj_stats_avec_nouvelles_factures()
 
 selection = Facture.objects.filter(saved_in_stats=False)
 
