@@ -21,12 +21,13 @@ from django.db import models
 from possum.base.generic import NomDouble
 from possum.base.category import Categorie
 from decimal import Decimal
+from possum.base.options import Cuisson, Sauce, Accompagnement
 from datetime import datetime
 import logging
 logger = logging.getLogger(__name__)
 
 class Produit(NomDouble):
-    categorie = models.ForeignKey('Categorie', related_name="produit-categorie")
+    categorie = models.ForeignKey(Categorie, related_name="produit-categorie")
     choix_cuisson = models.BooleanField(default=False)
     choix_accompagnement = models.BooleanField(default=False)
     choix_sauce = models.BooleanField(default=False)
@@ -148,16 +149,16 @@ class ProduitVendu(models.Model):
     date = models.DateTimeField(auto_now_add=True)
 #    facture = models.ForeignKey('Facture', related_name="produitvendu-facture")
     # facture = models.ForeignKey('Facture', limit_choices_to = {'date_creation__gt': datetime.datetime.today()})
-    produit = models.ForeignKey('Produit', related_name="produitvendu-produit")
-    cuisson = models.ForeignKey('Cuisson', null=True, blank=True, related_name="produitvendu-cuisson")
+    produit = models.ForeignKey(Produit, related_name="produitvendu-produit")
+    cuisson = models.ForeignKey(Cuisson, null=True, blank=True, related_name="produitvendu-cuisson")
     prix = models.DecimalField(max_digits=7, decimal_places=2, default=0)
-    sauce = models.ForeignKey('Sauce', null=True, blank=True, related_name="produitvendu-sauce")
-    accompagnement = models.ForeignKey('Accompagnement', null=True, blank=True, related_name="produitvendu-accompagnement")
+    sauce = models.ForeignKey(Sauce, null=True, blank=True, related_name="produitvendu-sauce")
+    accompagnement = models.ForeignKey(Accompagnement, null=True, blank=True, related_name="produitvendu-accompagnement")
     # dans le cas d'un menu, peut contenir d'autres produits
 #    contient = models.ManyToManyField(Produit, null=True)
     contient = models.ManyToManyField('self')
     # faut-il préparer ce plat avec les entrées ?
-    made_with = models.ForeignKey('Categorie', related_name="produit-kitchen", null=True)
+    made_with = models.ForeignKey(Categorie, related_name="produit-kitchen", null=True)
     # a-t-il été envoyé en cuisine
     sent = models.BooleanField(default=False)
 
