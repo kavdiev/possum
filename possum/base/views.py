@@ -32,7 +32,7 @@ from possum.base.category import Categorie
 from possum.base.options import Cuisson, Sauce, Accompagnement
 from possum.base.location import Zone, Table
 from possum.base.vat import VAT
-from possum.base.forms import DateForm, WeekForm, MonthForm
+from possum.base.forms import DateForm, WeekForm, MonthForm, YearForm
 
 from django.contrib.auth import authenticate, login, logout
 from django.shortcuts import render_to_response, get_object_or_404
@@ -51,14 +51,28 @@ from django.core.mail import send_mail
 import os
 import datetime
 
-def graphics_monthly(request):
+def graphics_year(request, choice='ttc'):
     data = get_user(request)
-    year = 2013
-    data['chart1'] = MonthlyStat().get_chart_ttc(year)
-    data['year'] = year
-    data['ttc'] = True
     data['graphics'] = True
     data['cat_list'] = Categorie.objects.order_by('priorite', 'nom')
+    data['menu_manager'] = True
+    DailyStat().update()
+    year = datetime.datetime.now().year
+    if request.method == 'POST':
+        try:
+            year = int(request.POST.get('year'))
+        except:
+            messages.add_message(request, messages.ERROR, "La date saisie n'est pas valide.")
+    if choice == 'ttc':
+        data['chart1'] = MonthlyStat().get_chart_ttc(year)
+    elif choice == 'bar':
+        data['chart1'] = MonthlyStat().get_chart_bar(year)
+    else:
+        messages.add_message(request, messages.ERROR, "Ce type de graphique n'existe pas.")
+        return HttpResponseRedirect('/manager/')
+    data[choice] = True
+    data['year_form'] = YearForm({'year': year})
+    data['year'] = year
     return render_to_response('base/manager/graphics/home.html',
                     data,
                     context_instance=RequestContext(request))
@@ -106,10 +120,6 @@ def permission_required(perm, **kwargs):
 
 @login_required
 def home(request):
-#    data = get_user(request)
-#    return render_to_response('base/home.html',
-#            data,
-#            context_instance=RequestContext(request))
     return HttpResponseRedirect('/bills/')
 
 # ##

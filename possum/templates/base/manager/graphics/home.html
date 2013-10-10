@@ -3,9 +3,9 @@
 
 <ul id="back">
     <li onclick="window.location='/manager/'">Retour</li>
-    <li onclick="window.location='/manager/graphics/ttc/{{year}}/'"
+    <li onclick="window.location='/manager/graphics/year/ttc/'"
         {% if ttc %}class="selected"{% endif %}>TTC</li>
-    <li onclick="window.location='/manager/graphics/bar/{{year}}/'"
+    <li onclick="window.location='/manager/graphics/year/bar/'"
         {% if bar %}class="selected"{% endif %}>Bar</li>
     <li onclick="window.location='/manager/graphics/guests/{{year}}/'"
         {% if guests %}class="selected"{% endif %}>Restaurant</li>
@@ -16,7 +16,20 @@
         style="background:{{cat.color}};"
     {% if categories %}class="selected"{% endif %}>{{cat.nom}}</li>
     {% endfor %}
+
+{% if month %}
+{% elif week %}
+
+{% else %}
+<form method='post' action='/manager/graphics/year/' name='year'>{% csrf_token %}
+            {{ year_form.as_ul }}
+                <li><input type='submit' value="Afficher l'année"></li>
+            </form>
+
+{% endif %}
+
 </ul>
+
 
 <h1></h1>
 <div id='chart1'></div>

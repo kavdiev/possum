@@ -23,7 +23,7 @@ from django.forms.extras.widgets import SelectDateWidget
 
 weeks_choice = [(unicode(i), i) for i in range(54)]
 months_choice = [(unicode(i), i) for i in range(1, 13)]
-years_choice = [(unicode(i), i) for i in range(2000, 2030)]
+years_choice = [(unicode(i), i) for i in range(2004, 2030)]
 
 class DateForm(forms.Form):
     date = forms.DateField(widget=SelectDateWidget())
@@ -34,6 +34,9 @@ class WeekForm(forms.Form):
 
 class MonthForm(forms.Form):
     month = forms.ChoiceField(label="Mois", choices=months_choice)
+    year = forms.ChoiceField(label="Année", choices=years_choice)
+
+class YearForm(forms.Form):
     year = forms.ChoiceField(label="Année", choices=years_choice)
 
 

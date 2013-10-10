@@ -298,6 +298,7 @@ li.warning {
 li.selected { 
 //    background-color: #00FF00;
     border: 1px solid #000;
+    padding: 4px;
 }
 #printer li {
     width:140px;

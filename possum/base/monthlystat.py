@@ -186,15 +186,16 @@ class MonthlyStat(models.Model):
                             'bar': Avg('value')
                             }
                     },
-#                ], sortf_mapf_mts=(sortf, month_name, True))
-# TODO: passer à False lorsque le bug qui fait remonter les mois en String
-#       au lieu de Integer est résolu
                 ], sortf_mapf_mts=(month_sort, month_name, True))
         return data
 
     def get_chart_ttc(self, year):
+        try:
+            datasource = self.get_datapool_ttc(year=year)
+        except:
+            return False
         chart = PivotChart(
-                    datasource = self.get_datapool_ttc(year=year),
+                    datasource = datasource,
                     series_options = [{
                         'options': {
                             'type': 'line',
@@ -219,3 +220,64 @@ class MonthlyStat(models.Model):
                                 'text': ''}},
                         })
         return chart
+
+    def get_datapool_bar(self, year):
+        logger.debug(" ")
+        data = PivotDataPool(
+                series = [
+                    {'options': {
+                        'source': MonthlyStat.objects.filter(year=year, key="bar_total_ttc"),
+                        'categories': 'month'},
+                        'terms': {
+                            'bar total ttc': Avg('value')
+                            }
+                    },
+                    {'options': {
+                        'source': MonthlyStat.objects.filter(year=year, key="bar_nb"),
+                        'categories': 'month'},
+                        'terms': {
+                            'nb factures': Avg('value')
+                            }
+                    },
+                    {'options': {
+                        'source': MonthlyStat.objects.filter(year=year, key="bar_average"),
+                        'categories': 'month'},
+                        'terms': {
+                            'TM/facture': Avg('value')
+                            }
+                    },
+                ], sortf_mapf_mts=(month_sort, month_name, True))
+        return data
+
+    def get_chart_bar(self, year):
+        try:
+            datasource = self.get_datapool_bar(year=year)
+        except:
+            return False
+        chart = PivotChart(
+                    datasource = datasource,
+                    series_options = [{
+                        'options': {
+                            'type': 'line',
+                            'stacking': False
+                            },
+                        'terms':[
+                            'bar total ttc',
+                            'nb factures',
+                            'TM/facture']
+                        }],
+                    chart_options = {
+                        'title': {
+                            'text': "Activité bar pour l'année %s" % year},
+                        'credits': {
+                            'enabled': False
+                            },
+                        'xAxis': {
+                            'title': {
+                                'text': 'Mois'}},
+                        'yAxis': {
+                            'title': {
+                                'text': ''}},
+                        })
+        return chart
+
