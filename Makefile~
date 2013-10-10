@@ -26,7 +26,6 @@ launch:
 
 test:
 	python manage.py test settings=${SETTINGS}
-	
 model:
 	./manage.py graph_models --output=doc/images/models-base.png -g base
 

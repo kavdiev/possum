@@ -24,7 +24,7 @@ from datetime import datetime, timedelta
 sys.path.append('/home/pos')
 os.environ['DJANGO_SETTINGS_MODULE'] = 'possum.settings'
 
-#from trunk.base.models import Accompagnement, Sauce, Etat, Categorie, Couleur, Cuisson, Facture, Log, LogType, Paiement, PaiementType, Produit, ProduitVendu, Suivi, Table, Zone
+# from trunk.base.models import Accompagnement, Sauce, Etat, Categorie, Couleur, Cuisson, Facture, Log, LogType, Paiement, PaiementType, Produit, ProduitVendu, Suivi, Table, Zone
 from possum.base.models import Facture
 
 debut = datetime.now()
@@ -42,7 +42,7 @@ for f in Facture.objects.filter(couverts=0).iterator():
     guest = f.guest_couverts()
     if guest != 0:
         count += 1
-        #print "[%06d] guest: %d" % (f.id, guest)
+        # print "[%06d] guest: %d" % (f.id, guest)
         fd.write("f = Facture.objects.get(id=%d)\n" % f.id)
         fd.write("f.couverts = %d\n" % guest)
         fd.write("f.save()\n")

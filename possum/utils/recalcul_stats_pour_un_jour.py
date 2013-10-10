@@ -27,7 +27,7 @@ from possum.base.models import Facture, StatsJourPaiement, \
 
 from datetime import datetime, timedelta
 
-date = datetime(2011,1,27)
+date = datetime(2011, 1, 27)
 date_min = date.replace(hour=5)
 date_max = date_min + timedelta(days=1)
 
@@ -52,4 +52,4 @@ for facture in Facture.objects.filter(date_creation__gt=date_min,
                                       date_creation__lt=date_max)\
                                       .iterator():
     facture.maj_stats()
-#Facture().rapport_jour(date)
+# Facture().rapport_jour(date)

@@ -18,21 +18,31 @@
 #    along with POSSUM.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-from django.db import models
+import unittest
 
-from django.conf import settings
-from possum.base.vat import VAT
-from possum.base.printer import Printer
-from possum.base.vatonbill import VATOnBill
-from possum.base.dailystat import DailyStat
-from possum.base.weeklystat import WeeklyStat
-from possum.base.monthlystat import MonthlyStat
-from possum.base.bill import Facture
-from possum.base.generic import Nom, NomDouble, Priorite
-from possum.base.product import Produit, ProduitVendu
-from possum.base.payment import PaiementType, Paiement
-from possum.base.category import Categorie
-from possum.base.options import Cuisson, Sauce, Accompagnement
-from possum.base.location import Zone, Table
-from possum.base.follow import Follow
-from possum.base.config import Config
+class Test_Printer(unittest.TestCase):
+
+    def test_sans_accent(self, message):
+        """Enlève les accents qui peuvent poser
+        problème à l'impression."""
+
+    def test___unicode__(self):
+        pass  # TODO
+
+    def test_get_resume(self):
+        pass  # TODO
+
+    def test_get_available_printers(self):
+        """Return a string list of availables printers
+        """
+        pass  # TODO
+
+    def test_print_file(self, filename):
+        pass  # TODO
+
+    def test_print_list(self, list_to_print, name, with_header=False):
+        pass  # TODO
+
+    def test_print_test(self):
+        pass  # TODO
+

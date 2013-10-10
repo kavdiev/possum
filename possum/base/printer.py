@@ -29,7 +29,7 @@ import unicodedata
 def sans_accent(message):
     """Enlève les accents qui peuvent poser
     problème à l'impression."""
-    message = unicodedata.normalize("NFKD", unicode(message)).encode("ascii", "ignore" )
+    message = unicodedata.normalize("NFKD", unicode(message)).encode("ascii", "ignore")
     return message
 
 class Printer(models.Model):

@@ -19,19 +19,18 @@
 #
 from django.db import models
 from possum.base.generic import Nom, Priorite
-from possum.base.vat import VAT
 
 class Categorie(Nom, Priorite):
     surtaxable = models.BooleanField("majoration terrasse", default=False)
     disable_surtaxe = models.BooleanField("peut enlever la surtaxe presente", default=False)
     made_in_kitchen = models.BooleanField(default=False)
     color = models.CharField(max_length=8, default="#ffdd82")
-    vat_onsite = models.ForeignKey('VAT', null=True, blank=True, 
+    vat_onsite = models.ForeignKey('VAT', null=True, blank=True,
             related_name="categorie-vat-onsite")
-    vat_takeaway = models.ForeignKey('VAT', null=True, blank=True, 
+    vat_takeaway = models.ForeignKey('VAT', null=True, blank=True,
             related_name="categorie-vat-takeaway")
 
-    def __cmp__(self,other):
+    def __cmp__(self, other):
         """
         Classement par priorite_facture (plus la valeur est petite,
         plus elle est prioritaire), puis par nom_ihm en cas d'égalité.
@@ -50,9 +49,9 @@ class Categorie(Nom, Priorite):
         [<Categorie: [0] [nom2]>, <Categorie: [0] [nom1]>, <Categorie: [0] [nom3]>]
         """
         if self.priorite == other.priorite:
-            return cmp(self.nom,other.nom)
+            return cmp(self.nom, other.nom)
         else:
-            return cmp(self.priorite,other.priorite)
+            return cmp(self.priorite, other.priorite)
 
     def set_vat_takeaway(self, vat):
         self.vat_takeaway = vat
