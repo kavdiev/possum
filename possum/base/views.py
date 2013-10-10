@@ -37,7 +37,7 @@ from possum.base.forms import DateForm, WeekForm, MonthForm
 from django.contrib.auth import authenticate, login, logout
 from django.shortcuts import render_to_response, get_object_or_404
 from django.contrib.auth.decorators import login_required
-#from django.views.decorators.csrf import csrf_protect
+# from django.views.decorators.csrf import csrf_protect
 from django.core.context_processors import csrf
 from django.template import RequestContext
 from django.http import HttpResponseForbidden, HttpResponseRedirect
@@ -66,9 +66,9 @@ def get_last_year(date):
     except:
         return date
 
-###
+# ##
 # Permissions
-###
+# ##
 
 def get_user(request):
     data = {}
@@ -94,16 +94,15 @@ def permission_required(perm, **kwargs):
 
 @login_required
 def home(request):
-    data = get_user(request)
-
+#    data = get_user(request)
 #    return render_to_response('base/home.html',
 #            data,
 #            context_instance=RequestContext(request))
     return HttpResponseRedirect('/bills/')
 
-###
+# ##
 # Kitchen
-###
+# ##
 
 @login_required
 def kitchen(request):
@@ -130,9 +129,9 @@ def kitchen_for_bill(request, bill_id):
             data,
             context_instance=RequestContext(request))
 
-###
+# ##
 # Carte
-###
+# ##
 
 @permission_required('base.p2')
 def carte(request):
@@ -204,17 +203,17 @@ def categories_delete(request, cat_id):
             try:
                 report = Categorie.objects.get(id=cat_report_id)
                 # we transfert all statistics
-                #TODO: report on WeeklyStat and MonthlyStat
+                # TODO: report on WeeklyStat and MonthlyStat
                 for stat in DailyStat.objects.filter(key="%s_category_nb" % cat_id):
                     category_nb, created = DailyStat.objects.get_or_create(
-                            date=stat.date, 
+                            date=stat.date,
                             key="%s_category_nb" % report.id)
                     category_nb.value += stat.value
                     category_nb.save()
                     stat.delete()
                 for stat in DailyStat.objects.filter(key="%s_category_value" % cat_id):
                     category_value, created = DailyStat.objects.get_or_create(
-                            date=stat.date, 
+                            date=stat.date,
                             key="%s_category_value" % report.id)
                     category_value.value += stat.value
                     category_value.save()
@@ -395,7 +394,7 @@ def products_new(request, cat_id):
                 if prize:
                     try:
                         product = Produit(
-                                nom=name, 
+                                nom=name,
                                 nom_facture=billname,
                                 prix=prize)
                         product.set_category(data['category'])
@@ -537,7 +536,7 @@ def products_change(request, product_id):
     if request.method == 'POST':
         name = request.POST.get('name', '').strip()
         billname = request.POST.get('billname', '').strip()
-        prize = request.POST.get('prize', '').strip().replace(',','.')
+        prize = request.POST.get('prize', '').strip().replace(',', '.')
         if name:
             if billname:
                 if prize:
@@ -597,9 +596,9 @@ def categories_disable_surtaxe(request, cat_id):
     cat.save()
     return HttpResponseRedirect('/carte/categories/%s/' % cat_id)
 
-###
+# ##
 # Tables
-###
+# ##
 
 @permission_required('base.p1')
 def tables_zone_delete(request, zone_id):
@@ -669,9 +668,9 @@ def tables(request):
                                 data,
                                 context_instance=RequestContext(request))
 
-###
+# ##
 # VATs
-###
+# ##
 
 @permission_required('base.p1')
 def vats(request):
@@ -698,7 +697,7 @@ def vats_change(request, vat_id):
     data['menu_manager'] = True
     if request.method == 'POST':
         name = request.POST.get('name', '').strip()
-        tax = request.POST.get('tax', '').strip().replace(',','.')
+        tax = request.POST.get('tax', '').strip().replace(',', '.')
         if name:
             if tax:
                 try:
@@ -730,7 +729,7 @@ def vat_new(request):
     data['vats'] = VAT.objects.order_by('name')
     if request.method == 'POST':
         name = request.POST.get('name', '').strip()
-        tax = request.POST.get('tax', '').strip().replace(",",".")
+        tax = request.POST.get('tax', '').strip().replace(",", ".")
         if name:
             if tax:
                 try:
@@ -758,9 +757,9 @@ def credits(request):
     return render_to_response('base/manager/credits.html',
                                 data,
                                 context_instance=RequestContext(request))
-###
+# ##
 # Rapports
-###
+# ##
 
 @permission_required('base.p1')
 def rapports_daily(request):
@@ -784,7 +783,7 @@ def rapports_daily(request):
     data = DailyStat().get_data(data, date)
     # les stats de l'année précédente
     last_year = get_last_year(date)
-    for key in ['nb_bills', 'total_ttc', 'guests_nb', 'guests_average', 
+    for key in ['nb_bills', 'total_ttc', 'guests_nb', 'guests_average',
                 'guests_total_ttc', 'bar_nb', 'bar_average', 'bar_total_ttc']:
         data['last_%s' % key] = DailyStat().get_value(key, last_year)
         data['max_%s' % key] = DailyStat().get_max(key)
@@ -815,7 +814,7 @@ def rapports_weekly(request):
     data['year'] = year
     last_year = year - 1
     data = WeeklyStat().get_data(data, year, week)
-    for key in ['nb_bills', 'total_ttc', 'guests_nb', 'guests_average', 
+    for key in ['nb_bills', 'total_ttc', 'guests_nb', 'guests_average',
                 'guests_total_ttc', 'bar_nb', 'bar_average', 'bar_total_ttc']:
         data['last_%s' % key] = WeeklyStat().get_value(key, last_year, week)
         data['max_%s' % key] = WeeklyStat().get_max(key)
@@ -846,7 +845,7 @@ def rapports_monthly(request):
     data['year'] = year
     last_year = year - 1
     data = MonthlyStat().get_data(data, year, month)
-    for key in ['nb_bills', 'total_ttc', 'guests_nb', 'guests_average', 
+    for key in ['nb_bills', 'total_ttc', 'guests_nb', 'guests_average',
                 'guests_total_ttc', 'bar_nb', 'bar_average', 'bar_total_ttc']:
         data['last_%s' % key] = MonthlyStat().get_value(key, last_year, month)
         data['max_%s' % key] = MonthlyStat().get_max(key)
@@ -1214,9 +1213,9 @@ def users_new(request):
         try:
             user.save()
             logger.info("[%s] new user [%s]" % (data['user'].username, login))
-            #users(request)
+            # users(request)
         except:
-            #data['error'] = "Le nouvel utilisateur n'a pu être créé."
+            # data['error'] = "Le nouvel utilisateur n'a pu être créé."
             logger.warning("[%s] new user failed: [%s] [%s] [%s] [%s]" % (data['user'].username, login, first_name, last_name, mail))
             messages.add_message(request, messages.ERROR, "Le nouveau compte n'a pu être créé.")
     return HttpResponseRedirect('/manager/users/')
@@ -1300,9 +1299,9 @@ def users_change_perm(request, user_id, codename):
         logger.warning("[%s] wrong perm info : [%s]" % (data['user'].username, codename))
     return HttpResponseRedirect('/manager/users/')
 
-###
+# ##
 # POS
-###
+# ##
 
 @permission_required('base.p3')
 def bill_new(request):
@@ -1513,7 +1512,7 @@ def product_add(request, bill_id, product_id):
     return HttpResponseRedirect('/bill/%s/category/%s/' % (bill_id, product.categorie.id))
 
 @permission_required('base.p3')
-def sold_cooking(request, bill_id, sold_id, cooking_id=-1, menu_id=-1):
+def sold_cooking(request, bill_id, sold_id, cooking_id= -1, menu_id= -1):
     data = get_user(request)
     data['sold'] = get_object_or_404(ProduitVendu, pk=sold_id)
     data['cookings'] = Cuisson.objects.order_by('priorite', 'nom')
@@ -1586,7 +1585,7 @@ def bill_payment_set_left(request, bill_id, type_id, left, right, number, count)
     data['menu_bills'] = True
     data['bill_id'] = bill_id
     data['type_id'] = type_id
-    result = int(left)*10+int(number)
+    result = int(left) * 10 + int(number)
     return HttpResponseRedirect('/bill/%s/payment/%s/%d.%s/%s/set/' % (
             bill_id, type_id, result, right, count))
 
@@ -1666,7 +1665,7 @@ def bill_payment_count(request, bill_id, type_id, left, right):
                                 context_instance=RequestContext(request))
 
 @permission_required('base.p3')
-def bill_payment(request, bill_id, type_id=-1, count=-1, left=0, right=0):
+def bill_payment(request, bill_id, type_id= -1, count= -1, left=0, right=0):
     data = get_user(request)
     bill = get_object_or_404(Facture, pk=bill_id)
     if bill.restant_a_payer == 0:
@@ -1722,9 +1721,9 @@ def bill_onsite(request, bill_id):
     order.compute_total()
     return HttpResponseRedirect('/bill/%s/' % bill_id)
 
-###
+# ##
 # Archives
-###
+# ##
 
 @permission_required('base.p1')
 def archives(request):

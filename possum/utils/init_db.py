@@ -20,7 +20,7 @@
 #
 import sys, os
 sys.path.append('.')
-#sys.path.append('/home/pos/possum-software')
+# sys.path.append('/home/pos/possum-software')
 os.environ['DJANGO_SETTINGS_MODULE'] = 'possum.settings'
 
 from possum.base.models import Accompagnement, Sauce, \
@@ -51,22 +51,22 @@ Paiement.objects.all().delete()
 Config.objects.all().delete()
 
 # ajout du manager
-user = User(username="demo", 
-        first_name="first name", 
-        last_name="last name", 
+user = User(username="demo",
+        first_name="first name",
+        last_name="last name",
         email="demo@possum-software.org")
 user.set_password("demo")
 user.save()
 # on ajoute les droits d'admin
-for i in xrange(1,10):
+for i in xrange(1, 10):
     user.user_permissions.add(Permission.objects.get(codename="p%d" % i))
 user.save()
 
 # ajout d'un utilisateur pour la saisie des commandes
 # ajout du manager
-user = User(username="pos", 
-        first_name="", 
-        last_name="", 
+user = User(username="pos",
+        first_name="",
+        last_name="",
         email="")
 user.set_password("pos")
 user.save()

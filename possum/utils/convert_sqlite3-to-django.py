@@ -20,7 +20,7 @@
 #
 # a utiliser sous la forme: utils/convert_sqlite3-to-django.py
 
-#DEBUG = True
+# DEBUG = True
 DEBUG = False
 
 if DEBUG:
@@ -42,10 +42,10 @@ from possum.base.models import Accompagnement, Sauce, Etat, \
 
 debut = datetime.datetime.now()
 
-#print "> nettoyage de la base"
-#os.system('su - postgres -c "dropdb possumdb"')
-#os.system('su - postgres -c "createdb possumdb --encoding=UTF-8"')
-#os.system('rm /home/pos/possum/data/django.db')
+# print "> nettoyage de la base"
+# os.system('su - postgres -c "dropdb possumdb"')
+# os.system('su - postgres -c "createdb possumdb --encoding=UTF-8"')
+# os.system('rm /home/pos/possum/data/django.db')
 
 print "> creation de la base"
 os.system('python manage.py syncdb --noinput > /dev/null')
@@ -66,7 +66,7 @@ if User.objects.all().count() == 0:
 
 # base src
 import sqlite3
-#cx = sqlite3.connect("/home/pos/possum/data/database")
+# cx = sqlite3.connect("/home/pos/possum/data/database")
 cx = sqlite3.connect("/home/pos/possum/database-2010")
 cu = cx.cursor()
 
@@ -90,20 +90,20 @@ def convert_prix(montant):
 
 print "> les couleurs"
 cu.execute("select id,red,green,blue from couleurs")
-for id,red,green,blue in cu.fetchall():
+for id, red, green, blue in cu.fetchall():
     couleur = Couleur(id=id, red=red, green=green, blue=blue)
     couleur.save()
 
 Couleur_get = Couleur.objects.get
 print "> les categories et les produits"
 cu.execute("select id,nom_facture,nom_ihm,priorite_facture,majoration_terrasse,id_couleur,is_alcool,override_surtaxe from categories")
-for id,nom_facture,nom_ihm,priorite_facture,majoration_terrasse,id_couleur,is_alcool,override_surtaxe in cu.fetchall():
+for id, nom_facture, nom_ihm, priorite_facture, majoration_terrasse, id_couleur, is_alcool, override_surtaxe in cu.fetchall():
     couleur = Couleur_get(pk=id_couleur)
     categorie = Categorie(id=id, nom=nom_ihm, priorite=priorite_facture, surtaxable=majoration_terrasse, alcool=is_alcool, disable_surtaxe=override_surtaxe, couleur=couleur)
     categorie.save()
 
     cu.execute("select id,nom_facture,nom_ihm,prix_ttc,actif from produits where id_categorie=%s" % categorie.id)
-    for id,nom_facture,nom_ihm,prix_ttc,actif in cu.fetchall():
+    for id, nom_facture, nom_ihm, prix_ttc, actif in cu.fetchall():
         produit = Produit(id=id, nom=nom_ihm, nom_facture=nom_facture, prix=convert_prix(prix_ttc), actif=actif, categorie=categorie)
         produit.save()
 
@@ -111,13 +111,13 @@ Produit_get = Produit.objects.get
 Categorie_get = Categorie.objects.get
 print "> les menus"
 cu.execute("select id_formule,id_categorie from formules_categories")
-for id_formule,id_categorie in cu.fetchall():
+for id_formule, id_categorie in cu.fetchall():
     formule = Produit_get(id=id_formule)
     categorie = Categorie_get(id=id_categorie)
     formule.categories_ok.add(categorie)
     formule.save()
 cu.execute("select id_formule,id_produit from formules_produits")
-for id_formule,id_produit in cu.fetchall():
+for id_formule, id_produit in cu.fetchall():
     formule = Produit_get(id=id_formule)
     produit = Produit_get(id=id_produit)
     formule.produits_ok.add(produit)
@@ -126,7 +126,7 @@ for id_formule,id_produit in cu.fetchall():
 PaiementType_get = PaiementType.objects.get
 print "> les modes de paiements"
 cu.execute("select id,nom_facture,nom_ihm,priorite from modes_paiements")
-for id,nom_facture,nom_ihm,priorite in cu.fetchall():
+for id, nom_facture, nom_ihm, priorite in cu.fetchall():
     if id == 4 or id == 6:
         pass
     else:
@@ -134,13 +134,13 @@ for id,nom_facture,nom_ihm,priorite in cu.fetchall():
         type.save()
 # on ajoute les valeurs des tickets
 cu.execute("select id,nom_facture,nom_ihm,priorite from modes_paiements where id=4")
-id,nom_facture,nom_ihm,priorite = cu.fetchone()
+id, nom_facture, nom_ihm, priorite = cu.fetchone()
 type = PaiementType_get(pk=3)
 type.fixed_value = True
 type.last_value = nom_facture
 type.save()
 cu.execute("select id,nom_facture,nom_ihm,priorite from modes_paiements where id=6")
-id,nom_facture,nom_ihm,priorite = cu.fetchone()
+id, nom_facture, nom_ihm, priorite = cu.fetchone()
 type = PaiementType_get(pk=5)
 type.fixed_value = True
 type.last_value = nom_facture
@@ -151,16 +151,16 @@ cu.execute("select id,nom from log_type")
 pbar = progressbar.ProgressBar(maxval=len(cu.fetchall())).start()
 cu.execute("select id,nom from log_type")
 count = 1
-for id,nom in cu.fetchall():
+for id, nom in cu.fetchall():
     pbar.update(count)
     count += 1
     logtype = LogType(id=id, nom=nom)
     logtype.save()
 
     cu.execute("select id,date from logs where id_log_type=%s" % logtype.id)
-    for id,date in cu.fetchall():
+    for id, date in cu.fetchall():
         olddate = str(date)
-        newdate = "%s-%s-%s %s:%s:%s" % (olddate[0:4],olddate[4:6],olddate[6:8],olddate[8:10],olddate[10:12],olddate[12:14])
+        newdate = "%s-%s-%s %s:%s:%s" % (olddate[0:4], olddate[4:6], olddate[6:8], olddate[8:10], olddate[10:12], olddate[12:14])
         log = Log(id=id, date=newdate, type=logtype)
         log.save()
         log.date = newdate
@@ -169,12 +169,12 @@ pbar.finish()
 
 print "> creation des etages et des tables"
 cu.execute("select id,nom,surtaxe from etages")
-for id,nom,surtaxe in cu.fetchall():
+for id, nom, surtaxe in cu.fetchall():
     zone = Zone(id=id, nom=nom, surtaxe=surtaxe, prix_surtaxe=convert_prix(20))
     zone.save()
 
     cu.execute("select id,nom from tables where id_etage=%s" % zone.id)
-    for id,nom in cu.fetchall():
+    for id, nom in cu.fetchall():
         table = Table(id=id, nom=nom, zone=zone)
         table.save()
 
@@ -225,12 +225,12 @@ cu.execute("select id,date_creation,date_paiement,ttc,ttc_alcool,id_table,nb_cou
 pbar = progressbar.ProgressBar(maxval=len(cu.fetchall())).start()
 cu.execute("select id,date_creation,date_paiement,ttc,ttc_alcool,id_table,nb_couverts from factures %s" % limit)
 count = 1
-for id,date_creation,date_paiement,ttc,ttc_alcool,id_table,nb_couverts in cu.fetchall():
+for id, date_creation, date_paiement, ttc, ttc_alcool, id_table, nb_couverts in cu.fetchall():
     pbar.update(count)
     count += 1
 
     olddate_creation = str(date_creation)
-    newdate_creation = "%s-%s-%s %s:%s:%s" % (olddate_creation[0:4],olddate_creation[4:6],olddate_creation[6:8],olddate_creation[8:10],olddate_creation[10:12],olddate_creation[12:14])
+    newdate_creation = "%s-%s-%s %s:%s:%s" % (olddate_creation[0:4], olddate_creation[4:6], olddate_creation[6:8], olddate_creation[8:10], olddate_creation[10:12], olddate_creation[12:14])
 #    olddate_paiement = str(date_paiement)
 #    newdate_paiement = "%s-%s-%s %s:%s:%s" % (olddate_paiement[0:4],olddate_paiement[4:6],olddate_paiement[6:8],olddate_paiement[8:10],olddate_paiement[10:12],olddate_paiement[12:14])
     if id_table:
@@ -244,9 +244,9 @@ for id,date_creation,date_paiement,ttc,ttc_alcool,id_table,nb_couverts in cu.fet
     facture.date_creation = newdate_creation
 
     cu.execute("select id,id_mode_paiement,valeur_unitaire,date,montant_ttc from paiements where id_facture=%d" % facture.id)
-    for id,id_mode_paiement,valeur_unitaire,date,montant_ttc in cu.fetchall():
+    for id, id_mode_paiement, valeur_unitaire, date, montant_ttc in cu.fetchall():
         olddate = str(date)
-        newdate = "%s-%s-%s %s:%s:%s" % (olddate[0:4],olddate[4:6],olddate[6:8],olddate[8:10],olddate[10:12],olddate[12:14])
+        newdate = "%s-%s-%s %s:%s:%s" % (olddate[0:4], olddate[4:6], olddate[6:8], olddate[8:10], olddate[10:12], olddate[12:14])
         type = PaiementType_get(id=id_mode_paiement)
         paiement = Paiement(id=id, type=type, facture=facture, montant=convert_prix(montant_ttc), date=newdate)
         paiement.save()
@@ -255,8 +255,8 @@ for id,date_creation,date_paiement,ttc,ttc_alcool,id_table,nb_couverts in cu.fet
             # on calcule le nombre de tickets
 #            print paiement.montant
 #            print paiement.valeur_unitaire
-            paiement.valeur_unitaire = valeur_unitaire=convert_prix(valeur_unitaire)
-            paiement.nb_tickets = int( Decimal(paiement.montant) / Decimal(paiement.valeur_unitaire) )
+            paiement.valeur_unitaire = valeur_unitaire = convert_prix(valeur_unitaire)
+            paiement.nb_tickets = int(Decimal(paiement.montant) / Decimal(paiement.valeur_unitaire))
         paiement.save()
         facture.paiements.add(paiement)
 
@@ -291,7 +291,7 @@ for id,date_creation,date_paiement,ttc,ttc_alcool,id_table,nb_couverts in cu.fet
                             deja_pris.append(row2[1])
                 vendu.save()
                 facture.produits.add(vendu)
-                #print "1 produit en plus pour id %d" % facture.id
+                # print "1 produit en plus pour id %d" % facture.id
 #                self.produits.append(product)
 
             except Produit.DoesNotExist:
@@ -311,16 +311,16 @@ for i in ["couleur", "paiementtype", "produit", "categorie", "logtype", "log", "
 transaction.commit_unless_managed()
 
 # \d base_couleur
-#Couleur.objects.raw("SELECT setval('base_couleur_id_seq', max(id)) FROM base_couleur;")
-#PaiementType.objects.raw("SELECT setval('base_paiementtype_id_seq', max(id)) FROM base_paiementtype;")
-#Produit.objects.raw("SELECT setval('base_produit_id_seq', max(id)) FROM base_produit;")
-#Categorie.objects.raw("SELECT setval('base_categorie_id_seq', max(id)) FROM base_categorie;")
-#LogType.objects.raw("SELECT setval('base_logtype_id_seq', max(id)) FROM base_logtype;")
-#Log.objects.raw("SELECT setval('base_log_id_seq', max(id)) FROM base_log;")
-#Zone.objects.raw("SELECT setval('base_zone_id_seq', max(id)) FROM base_zone;")
-#Table.objects.raw("SELECT setval('base_table_id_seq', max(id)) FROM base_table;")
-#Facture.objects.raw("SELECT setval('base_facture_id_seq', max(id)) FROM base_facture;")
-#Paiement.objects.raw("SELECT setval('base_paiement_id_seq', max(id)) FROM base_paiement;")
+# Couleur.objects.raw("SELECT setval('base_couleur_id_seq', max(id)) FROM base_couleur;")
+# PaiementType.objects.raw("SELECT setval('base_paiementtype_id_seq', max(id)) FROM base_paiementtype;")
+# Produit.objects.raw("SELECT setval('base_produit_id_seq', max(id)) FROM base_produit;")
+# Categorie.objects.raw("SELECT setval('base_categorie_id_seq', max(id)) FROM base_categorie;")
+# LogType.objects.raw("SELECT setval('base_logtype_id_seq', max(id)) FROM base_logtype;")
+# Log.objects.raw("SELECT setval('base_log_id_seq', max(id)) FROM base_log;")
+# Zone.objects.raw("SELECT setval('base_zone_id_seq', max(id)) FROM base_zone;")
+# Table.objects.raw("SELECT setval('base_table_id_seq', max(id)) FROM base_table;")
+# Facture.objects.raw("SELECT setval('base_facture_id_seq', max(id)) FROM base_facture;")
+# Paiement.objects.raw("SELECT setval('base_paiement_id_seq', max(id)) FROM base_paiement;")
 
 print "> correction des factures"
 c = Categorie.objects.get(id=1)

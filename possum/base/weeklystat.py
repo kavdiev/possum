@@ -139,7 +139,7 @@ class WeeklyStat(models.Model):
         data['payments'] = []
         for payment_type in PaiementType.objects.order_by("nom").iterator():
             data['payments'].append("%s : %.2f" % (
-                    payment_type.nom, 
+                    payment_type.nom,
                     WeeklyStat().get_value("%s_payment_value" % payment_type.id, year, week)))
         return data
 

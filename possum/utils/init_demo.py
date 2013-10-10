@@ -19,7 +19,7 @@
 #    along with POSSUM.  If not, see <http://www.gnu.org/licenses/>.
 #
 import sys, os
-#sys.path.append('/home/pos/possum-software')
+# sys.path.append('/home/pos/possum-software')
 sys.path.append('.')
 os.environ['DJANGO_SETTINGS_MODULE'] = 'possum.settings'
 
@@ -51,14 +51,14 @@ Paiement.objects.all().delete()
 Config.objects.all().delete()
 
 # ajout d'un utilisateur
-user = User(username="demo", 
-        first_name="first name", 
-        last_name="last name", 
+user = User(username="demo",
+        first_name="first name",
+        last_name="last name",
         email="demo@possum-software.org")
 user.set_password("demo")
 user.save()
 # on ajoute les droits d'admin
-for i in xrange(1,10):
+for i in xrange(1, 10):
     user.user_permissions.add(Permission.objects.get(codename="p%d" % i))
 user.save()
 
@@ -106,109 +106,109 @@ vat_takeaway.set_tax("7")
 vat_takeaway.save()
 
 # on entre les nouveaux produits, les prix sont TTC
-cat = Categorie(nom="Jus", 
+cat = Categorie(nom="Jus",
         priorite=25,
         surtaxable=False,
         disable_surtaxe=False,
         made_in_kitchen=False,
         color="#44b3dc",
-        vat_onsite=vat_onsite, 
+        vat_onsite=vat_onsite,
         vat_takeaway=vat_takeaway)
 cat.save()
-Produit(nom="abricot", 
-        nom_facture="jus abricot", 
-        prix="2.80", 
+Produit(nom="abricot",
+        nom_facture="jus abricot",
+        prix="2.80",
         choix_cuisson=False,
         choix_accompagnement=False,
         choix_sauce=False,
         categorie=cat).save()
-Produit(nom="pomme", 
-        nom_facture="jus pomme", 
-        prix="2.80", 
+Produit(nom="pomme",
+        nom_facture="jus pomme",
+        prix="2.80",
         choix_cuisson=False,
         choix_accompagnement=False,
         choix_sauce=False,
         categorie=cat).save()
 
-cat = Categorie(nom="Bieres", 
+cat = Categorie(nom="Bieres",
         priorite=2,
         surtaxable=False,
         disable_surtaxe=False,
         made_in_kitchen=False,
         color="#ea97b5",
-        vat_onsite=vat_alcool, 
+        vat_onsite=vat_alcool,
         vat_takeaway=vat_alcool)
 cat.save()
-Produit(nom="biere 50cl", 
-        nom_facture="biere", 
-        prix="2.80", 
+Produit(nom="biere 50cl",
+        nom_facture="biere",
+        prix="2.80",
         choix_cuisson=False,
         choix_accompagnement=False,
         choix_sauce=False,
         categorie=cat).save()
 
-cat = Categorie(nom="Entrees", 
+cat = Categorie(nom="Entrees",
         priorite=5,
         surtaxable=False,
         disable_surtaxe=False,
         made_in_kitchen=True,
         color="#ff9f00",
-        vat_onsite=vat_onsite, 
+        vat_onsite=vat_onsite,
         vat_takeaway=vat_takeaway)
 cat.save()
 entree = cat
-Produit(nom="salade normande", 
-        nom_facture="salade", 
-        prix="3.40", 
+Produit(nom="salade normande",
+        nom_facture="salade",
+        prix="3.40",
         choix_cuisson=False,
         choix_accompagnement=False,
         choix_sauce=False,
         categorie=cat).save()
-Produit(nom="buffet", 
-        nom_facture="buffet", 
-        prix="6.40", 
+Produit(nom="buffet",
+        nom_facture="buffet",
+        prix="6.40",
         choix_cuisson=False,
         choix_accompagnement=False,
         choix_sauce=False,
         categorie=cat).save()
 
-cat = Categorie(nom="Plat", 
+cat = Categorie(nom="Plat",
         priorite=10,
         surtaxable=False,
         disable_surtaxe=False,
         made_in_kitchen=True,
         color="#c9a100",
-        vat_onsite=vat_onsite, 
+        vat_onsite=vat_onsite,
         vat_takeaway=vat_takeaway)
 cat.save()
 plat = cat
-Produit(nom="entrecote", 
-        nom_facture="entrecote", 
-        prix="8.40", 
+Produit(nom="entrecote",
+        nom_facture="entrecote",
+        prix="8.40",
         choix_cuisson=True,
         choix_accompagnement=False,
         choix_sauce=False,
         categorie=cat).save()
-Produit(nom=u"pavé de saumon", 
-        nom_facture="pave de saumon", 
-        prix="9.40", 
+Produit(nom=u"pavé de saumon",
+        nom_facture="pave de saumon",
+        prix="9.40",
         choix_cuisson=False,
         choix_accompagnement=False,
         choix_sauce=False,
         categorie=cat).save()
 # pour les menu
-cat = Categorie(nom="Menu", 
+cat = Categorie(nom="Menu",
         priorite=22,
         surtaxable=False,
         disable_surtaxe=False,
         made_in_kitchen=False,
         color="#88f027",
-        vat_onsite=vat_onsite, 
+        vat_onsite=vat_onsite,
         vat_takeaway=vat_takeaway)
 cat.save()
-menu = Produit(nom=u"Entree/Plat", 
-        nom_facture="menu express", 
-        prix="13.40", 
+menu = Produit(nom=u"Entree/Plat",
+        nom_facture="menu express",
+        prix="13.40",
         choix_cuisson=False,
         choix_accompagnement=False,
         choix_sauce=False,

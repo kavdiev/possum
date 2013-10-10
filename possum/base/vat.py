@@ -32,7 +32,7 @@ class VAT(models.Model):
     def __unicode__(self):
         return self.name
 
-    def __cmp__(self,other):
+    def __cmp__(self, other):
         return cmp(self.name, other.name)
 
     class Meta:
@@ -61,7 +61,7 @@ class VAT(models.Model):
         """
         if self.tax:
             if prize:
-                return Decimal(prize) * (1+self.value)
+                return Decimal(prize) * (1 + self.value)
             else:
                 return Decimal('0')
         else:
