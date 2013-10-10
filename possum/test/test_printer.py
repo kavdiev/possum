@@ -22,27 +22,27 @@ import unittest
 
 class Test_Printer(unittest.TestCase):
 
-    def test_sans_accent(self,message):
+    def test_sans_accent(self, message):
         """Enlève les accents qui peuvent poser
         problème à l'impression."""
 
     def test___unicode__(self):
-        pass # TODO
+        pass  # TODO
 
     def test_get_resume(self):
-        pass # TODO
+        pass  # TODO
 
     def test_get_available_printers(self):
         """Return a string list of availables printers
         """
-        pass # TODO
+        pass  # TODO
 
     def test_print_file(self, filename):
-        pass # TODO
+        pass  # TODO
 
     def test_print_list(self, list_to_print, name, with_header=False):
-        pass # TODO
+        pass  # TODO
 
     def test_print_test(self):
-        pass # TODO
+        pass  # TODO
 

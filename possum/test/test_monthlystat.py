@@ -25,20 +25,20 @@ class Test_MonthlyStat(unittest.TestCase):
     def test_get_value(self, key, year, month):
         """Return value if exist and 0 else
         """
-        pass # TODO
+        pass  # TODO
 
     def test_get_avg(self, key):
-        pass # TODO
+        pass  # TODO
 
     def test_get_max(self, key):
-        pass # TODO
+        pass  # TODO
 
     def test_get_common(self, year, month):
         """Return les stats pour date sous forme de liste
         """
-        pass # TODO
+        pass  # TODO
 
     def test_get_data(self, data, year, month):
         """Recupere les donnees pour un mois
         """
-        pass # TODO
+        pass  # TODO

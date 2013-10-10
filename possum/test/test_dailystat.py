@@ -23,7 +23,7 @@ import unittest
 class Test_DailyStat(unittest.TestCase):
 
     def test_add_value(self, values, key, value):
-            pass # TODO
+            pass  # TODO
 
     class Meta:
         get_latest_by = 'date'
@@ -31,21 +31,21 @@ class Test_DailyStat(unittest.TestCase):
     def test_get_value(self, key, date):
         """Return value if exist and 0 else
         """
-        pass # TODO
+        pass  # TODO
 
     def test_get_avg(self, key):
-        pass # TODO
+        pass  # TODO
 
     def test_get_max(self, key):
-        pass # TODO
+        pass  # TODO
 
     def test_add_bill(self, bill):
         """if necessary, add this bill
         """
-        pass # TODO
+        pass  # TODO
 
     def test___add_bill_common(self, bill, date, year, month, week):
-        pass # TODO
+        pass  # TODO
 
     def test___add_bill_products(self, bill, date, year, month, week):
         """On fonctionne en deux passages:
@@ -54,30 +54,30 @@ class Test_DailyStat(unittest.TestCase):
 
         Cela nous permet de regrouper les stats de plusieurs catégories
         """
-        pass # TODO
+        pass  # TODO
 
     def test___add_bill_guests(self, bill, date, year, month, week):
-        pass # TODO
+        pass  # TODO
 
     def test___add_bill_bar(self, bill, date, year, month, week):
-        pass # TODO
+        pass  # TODO
 
     def test___add_bill_payments(self, bill, date, year, month, week):
-        pass # TODO
+        pass  # TODO
 
     def test_get_common(self, date):
         """Return les stats pour date sous forme de liste
         """
-        pass # TODO
+        pass  # TODO
 
     def test_update(self):
         """Update statistics with new bills
         """
-        pass # TODO
+        pass  # TODO
 
     def test_get_data(self, data, date):
         """Recupere les donnees pour une date, retourne data
             data = {}
         """
-        pass # TODO
+        pass  # TODO
 

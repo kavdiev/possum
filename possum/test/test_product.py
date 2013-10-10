@@ -49,7 +49,7 @@ class Test_Produit(unittest.TestCase):
         """With new prize, we have to create a new product to keep statistics
         and historics.
         """
-        pass # TODO
+        pass  # TODO
 
     def test_set_category(self, category):
         self.categorie = category
@@ -58,21 +58,21 @@ class Test_Produit(unittest.TestCase):
     def test_update_vats(self):
         """Update vat_onsite and vat_takeaway with prix in TTC
         """
-        pass # TODO
+        pass  # TODO
 
     def test_get_prize_takeaway(self):
-        pass # TODO
+        pass  # TODO
 
     def test_get_prize_onsite(self):
-        pass # TODO
+        pass  # TODO
 
     def test_get_list_with_all_products(self):
-        pass # TODO
+        pass  # TODO
 
 class Test_ProduitVendu(unittest.TestCase):
 
     def test___unicode__(self):
-        pass # TODO
+        pass  # TODO
 
     def test_isFull(self):
         """
@@ -100,21 +100,21 @@ class Test_ProduitVendu(unittest.TestCase):
         >>> vendu.isFull()
         True
         """
-        pass # TODO
+        pass  # TODO
 
     def test___cmp__(self, other):
-        pass # TODO
+        pass  # TODO
 
     def test_est_un_menu(self):
-        pass # TODO
+        pass  # TODO
 
     def test_get_menu_products(self):
-        pass # TODO
+        pass  # TODO
 
     def test_get_menu_resume(self):
         """Return a short string with product in menu
         """
-        pass # TODO
+        pass  # TODO
 
     def test_getFreeCategorie(self):
         """Retourne la premiere categorie dans la liste categories_ok
@@ -142,5 +142,5 @@ class Test_ProduitVendu(unittest.TestCase):
         >>> vendu.getFreeCategorie()
         0
         """
-        pass # TODO
+        pass  # TODO
 
