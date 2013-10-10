@@ -32,6 +32,13 @@ from chartit import PivotDataPool, PivotChart
 
 logger = logging.getLogger(__name__)
 
+def month_name(*t):
+    names ={1: 'Jan', 2: 'Fev', 3: 'Mar', 4: 'Avr', 
+            5: 'Mai', 6: 'Jui', 7: 'Jui', 8: 'Aou', 
+            9: 'Sep', 10: 'Oct', 11: 'Nov', 12: 'Dec'}
+    month_num = t[0]
+    return (names[month_num], )
+
 class MonthlyStat(models.Model):
     """Monthly statistics, full list of keys:
     # Common
@@ -149,6 +156,7 @@ class MonthlyStat(models.Model):
 
     def get_datapool_ttc(self, year):
         logger.debug(" ")
+        sortf = lambda *x: (-1*x[0],) 
         data = PivotDataPool(
                 series = [
                     {'options': {
@@ -160,19 +168,19 @@ class MonthlyStat(models.Model):
                     },
                     {'options': {
                         'source': MonthlyStat.objects.filter(year=year, key="guests_total_ttc"),
-                        'categories': 'month'},
+                        'categories': ['month']},
                         'terms': {
                             'restauration': Avg('value')
                             }
                     },
                     {'options': {
                         'source': MonthlyStat.objects.filter(year=year, key="bar_total_ttc"),
-                        'categories': 'month'},
+                        'categories': ['month']},
                         'terms': {
                             'bar': Avg('value')
                             }
                     },
-                ])
+                ], sortf_mapf_mts=(sortf, month_name, False))
         return data
 
     def get_chart_ttc(self, year):
