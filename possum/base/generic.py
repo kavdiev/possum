@@ -18,13 +18,11 @@
 #    along with POSSUM.  If not, see <http://www.gnu.org/licenses/>.
 #
 from django.db import models
-
-LONGUEUR_FACTURE = 35
-LONGUEUR_IHM = 60
+from django.conf import settings
 
 # les classes generiques
 class Nom(models.Model):
-    nom = models.CharField(max_length=LONGUEUR_IHM)
+    nom = models.CharField(max_length=settings.LONGUEUR_IHM)
 
     def __unicode__(self):
         return self.nom
@@ -37,7 +35,7 @@ class Nom(models.Model):
         ordering = ['nom']
 
 class NomDouble(Nom):
-    nom_facture = models.CharField(max_length=LONGUEUR_FACTURE)
+    nom_facture = models.CharField(max_length=settings.LONGUEUR_FACTURE)
 
     class Meta:
         abstract = True
