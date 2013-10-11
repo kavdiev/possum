@@ -33,6 +33,8 @@ from possum.base.options import Cuisson, Sauce, Accompagnement
 from possum.base.location import Zone, Table
 from possum.base.vat import VAT
 from possum.base.forms import DateForm, WeekForm, MonthForm, YearForm
+from possum.base.charts import get_chart_year_ttc, get_chart_year_bar,\
+        get_chart_year_guests
 
 from django.contrib.auth import authenticate, login, logout
 from django.shortcuts import render_to_response, get_object_or_404
@@ -64,9 +66,11 @@ def graphics_year(request, choice='ttc'):
         except:
             messages.add_message(request, messages.ERROR, "La date saisie n'est pas valide.")
     if choice == 'ttc':
-        data['chart1'] = MonthlyStat().get_chart_ttc(year)
+        data['chart1'] = get_chart_year_ttc(year)
     elif choice == 'bar':
-        data['chart1'] = MonthlyStat().get_chart_bar(year)
+        data['chart1'] = get_chart_year_bar(year)
+    elif choice == 'guests':
+        data['chart1'] = get_chart_year_guests(year)
     else:
         messages.add_message(request, messages.ERROR, "Ce type de graphique n'existe pas.")
         return HttpResponseRedirect('/manager/')
