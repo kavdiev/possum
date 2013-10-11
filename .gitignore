@@ -1,2 +1,8 @@
 *.pyc
+*.log
+*~
+.virtualenv
+.project
+.pydevproject
+.settings
 possum/settings.py
