@@ -1,3 +1,2 @@
 #!/bin/bash
-pip install Django south wsgiref sphinx django_extensions Werkzeug ipython pycups
-
+pip --proxy=$1 install --requirement requirements.txt
