@@ -214,24 +214,28 @@ def products_change(request, product_id):
         name = request.POST.get('name', '').strip()
         billname = request.POST.get('billname', '').strip()
         prize = request.POST.get('prize', '').strip().replace(',', '.')
-        if name:
-            if billname:
-                if prize:
-                    product = product.set_prize(prize)
-                    product.nom = name
-                    product.nom_facture = billname
-                    try:
-                        product.save()
-                    except:
-                        messages.add_message(request, messages.ERROR, "Les modifications n'ont pu être enregistrées.")
-                    else:
-                        return HttpResponseRedirect('/carte/products/%s/' % product.id)
-                else:
-                    messages.add_message(request, messages.ERROR, "Vous devez entrer un prix.")
-            else:
-                messages.add_message(request, messages.ERROR, "Vous devez saisir un nom pour la facture.")
+        messages_erreur = []
+        if not name :
+            messages_erreur.append("Vous devez saisir un nom.")
+        if not billname :
+            messages_erreur.append("Vous devez saisir un nom pour la facture.")
+        if not prize :
+            messages_erreur.append("Vous devez entrer un prix.")
+        if len(messages_erreur) == 0 :
+            product = product.set_prize(prize)
+            product.nom = name
+            product.nom_facture = billname
+            try:
+                product.save()
+            except:
+                messages.add_message(request, messages.ERROR,
+                                     "Les modifications n'ont pu être enregistrées.")
+                return HttpResponseRedirect('/carte/products/%s/' % product.id)
         else:
-            messages.add_message(request, messages.ERROR, "Vous devez saisir un nom.")
+            message_erreur = ""
+            for message in messages_erreur :
+                message_erreur += message
+            messages.add_message(request, messages.ERROR, message_erreur)
     data['product'] = product
     return render_to_response('base/carte/product_change.html',
                                 data,
