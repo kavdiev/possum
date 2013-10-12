@@ -9,6 +9,8 @@
         {% if bar %}class="selected"{% endif %}>Bar</li>
     <li onclick="window.location='/manager/graphics/year/guests/'"
         {% if guests %}class="selected"{% endif %}>Restaurant</li>
+    <li onclick="window.location='/manager/graphics/year/payments/'"
+        {% if payments %}class="selected"{% endif %}>Paiements</li>
     <li onclick="window.location='/manager/graphics/categories/{{year}}/'"
         {% if categories %}class="selected"{% endif %}>Catégories</li>
     {% for cat in cat_list %}

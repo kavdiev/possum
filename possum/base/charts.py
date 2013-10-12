@@ -49,9 +49,10 @@ def month_sort(*x):
 def get_datapool_year(year, keys):
     logger.debug(" ")
     series = []
+    objects = MonthlyStat.objects.filter(year=year)
     for key in keys.keys():
         series.append({'options': {
-            'source': MonthlyStat.objects.filter(year=year, key=key),
+            'source': objects.filter(key=key),
             'categories': 'month'},
             'terms': {keys[key]: Avg('value')}
             })
