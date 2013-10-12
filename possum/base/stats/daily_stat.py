@@ -28,8 +28,8 @@ from possum.base.category import Categorie
 from possum.base.product import Produit
 from possum.base.bill import Facture
 from possum.base.payment import PaiementType
-from possum.base.weeklystat import WeeklyStat
-from possum.base.monthlystat import MonthlyStat
+from possum.base.stats import WeeklyStat
+from possum.base.stats import MonthlyStat
 from possum.base.utils import nb_sorted
 
 logger = logging.getLogger(__name__)

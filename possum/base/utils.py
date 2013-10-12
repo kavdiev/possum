@@ -20,7 +20,10 @@
 
 from django.conf import settings
 import datetime
+import logging
 import os
+
+logger = logging.getLogger(__name__)
 
 def nb_sorted(a, b):
     """Tri sur les categories et les produits pour avoir les plus vendus en premier
@@ -32,8 +35,8 @@ def nb_sorted(a, b):
     else:
         return 0
 
-# Création des répertoires obligatoires
 def create_default_directory():
+    ''' Création des répertoires obligatoires '''
     if not os.path.exists(settings.PATH_TICKET):
         os.makedirs(settings.PATH_TICKET)
         
@@ -46,3 +49,17 @@ def get_last_year(date):
         return date - datetime.timedelta(days=364)
     except:
         return date
+
+def month_name(*t):
+    """ Sert à trier les mois."""
+    logger.debug(t)
+    names = {1: 'Jan', 2: 'Fev', 3: 'Mar', 4: 'Avr', 
+            5: 'Mai', 6: 'Jui', 7: 'Jui', 8: 'Aou', 
+            9: 'Sep', 10: 'Oct', 11: 'Nov', 12: 'Dec'}
+    month_num = int(t[0][0])
+    logger.debug("names[%d] > [%s]" % (month_num, names[month_num]))
+    return (names[month_num], )
+
+def month_sort(*x):
+    logger.debug(x)
+    return (int(x[0][1][0]),)

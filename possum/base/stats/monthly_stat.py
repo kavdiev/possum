@@ -29,22 +29,9 @@ from possum.base.payment import PaiementType
 from possum.base.utils import nb_sorted
 import logging
 from chartit import PivotDataPool, PivotChart
+from possum.base.utils import month_name, month_sort
 
 logger = logging.getLogger(__name__)
-
-def month_name(*t):
-    """Sert à trier les mois."""
-    logger.debug(t)
-    names = {1: 'Jan', 2: 'Fev', 3: 'Mar', 4: 'Avr', 
-            5: 'Mai', 6: 'Jui', 7: 'Jui', 8: 'Aou', 
-            9: 'Sep', 10: 'Oct', 11: 'Nov', 12: 'Dec'}
-    month_num = int(t[0][0])
-    logger.debug("names[%d] > [%s]" % (month_num, names[month_num]))
-    return (names[month_num], )
-
-def month_sort(*x):
-    logger.debug(x)
-    return (int(x[0][1][0]),)
 
 class MonthlyStat(models.Model):
     """Monthly statistics, full list of keys:
