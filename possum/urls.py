@@ -115,7 +115,7 @@ urlpatterns += patterns('possum.base.views.manager.archives',
 )
 
 urlpatterns += patterns('possum.base.views.manager.printers',
-    url(r'^manager/printers/$', 'printers'),
+    url(r'^manager/printers/$', 'home'),
     url(r'^manager/printer/add/$', 'printer_add'),
     url(r'^manager/printer/add/(?P<name>[a-zA-Z0-9_-]+)/$', 'printer_added'),
     url(r'^manager/printer/(?P<printer_id>\d+)/$', 'printer_view'),
@@ -177,8 +177,8 @@ urlpatterns += patterns('possum.base.views.manager.rapports',
     url(r'^manager/rapports/monthly/(?P<year>\d{4})/(?P<month>\d+)/send/$', 'rapports_monthly_send'),
 )
 
-urlpatterns += patterns('possum.base.views.manager.graphics',
-    url(r'^manager/graphics/year/(?P<choice>[a-zA-Z0-9_-]+)/$', 'graphics_year'),
+urlpatterns += patterns('possum.base.views.manager.charts',
+    url(r'^manager/charts/year/(?P<choice>[a-zA-Z0-9_-]+)/$', 'charts_year'),
 )
 
 if settings.DEBUG:
