@@ -50,20 +50,25 @@ def bill_new(request):
 def bill_send_kitchen(request, bill_id):
     """Send in the kitchen"""
     bill = get_object_or_404(Facture, pk=bill_id)
-    if bill.table:
-        if bill.couverts:
-            if bill.send_in_the_kitchen():
-                if bill.table:
-                    msg = u"%s envoyée" % bill.table
-                else:
-                    msg = u"Envoyé en cuisine"
-                messages.add_message(request, messages.SUCCESS, msg)
-            else:
-                messages.add_message(request, messages.ERROR, "Erreur dans l'envoi (imprimante ok?).")
+    messages_erreur = []
+    if not bill.table:
+        messages_erreur.append("Vous devez choisir une table.")
+    if not bill.couverts:
+        messages_erreur.append("Vous devez indiquer le nombre de couverts.")
+    if not bill.send_in_the_kitchen():
+        messages_erreur.append("Erreur dans l'envoi (imprimante ok?).")
+    if len(messages_erreur) == 0 :
+        if bill.table:
+            message = u"%s envoyée" % bill.table
         else:
-            messages.add_message(request, messages.ERROR, "Vous devez indiquer le nombre de couverts.")
+            message = u"Envoyé en cuisine"
+        messages.add_message(request, messages.SUCCESS, message)
     else:
-        messages.add_message(request, messages.ERROR, "Vous devez choisir une table.")
+        message_erreur = ""
+        for message in messages_erreur :
+            message_erreur += message
+        messages.add_message(request, messages.ERROR, message_erreur)
+    messages.add_message(request, messages.ERROR, message_erreur)
     return HttpResponseRedirect('/bill/%s/' % bill.id)
 
 @permission_required('base.p3')
