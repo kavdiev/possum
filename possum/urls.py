@@ -1,15 +1,20 @@
 from django.conf.urls import patterns, include, url
-
-# from django.conf.urls.defaults import *
 from django.conf import settings
+
 # Uncomment the next two lines to enable the admin:
 # from django.contrib import admin
 # admin.autodiscover()
+# Uncomment the admin/doc line below to enable admin documentation:
+# url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
+# Uncomment the next line to enable the admin:
+# url(r'^admin/', include(admin.site.urls)),
 
 urlpatterns = patterns('possum.base.views',
     url(r'^$', 'home', name='home'),
-#    (r'^accueil$', 'accueil'),
+    url(r'^accueil$', 'home'),
+)
 
+urlpatterns += patterns('possum.base.views.carte.categories',
     url(r'^carte/$', 'categories'),
     url(r'^carte/print/$', 'categories_print'),
     url(r'^carte/send/$', 'categories_send'),
@@ -33,8 +38,10 @@ urlpatterns = patterns('possum.base.views',
     url(r'^carte/categories/(?P<cat_id>\d+)/delete/$', 'categories_delete'),
     url(r'^carte/categories/(?P<cat_id>\d+)/disable_surtaxe/$', 'categories_disable_surtaxe'),
     url(r'^carte/categories/(?P<cat_id>\d+)/kitchen/$', 'categories_set_kitchen'),
-    url(r'^carte/categories/(?P<cat_id>\d+)/product/new/$', 'products_new'),
+)
 
+urlpatterns += patterns('possum.base.views.carte',
+    url(r'^carte/categories/(?P<cat_id>\d+)/product/new/$', 'products_new'),
     url(r'^carte/products/(?P<product_id>\d+)/$', 'products_view'),
     url(r'^carte/products/(?P<product_id>\d+)/change/$', 'products_change'),
     url(r'^carte/products/(?P<product_id>\d+)/category/$', 'products_category'),
@@ -47,7 +54,9 @@ urlpatterns = patterns('possum.base.views',
     url(r'^carte/products/(?P<product_id>\d+)/category/(?P<cat_id>\d+)/set/$', 'products_set_category'),
     url(r'^carte/products/(?P<product_id>\d+)/enable/$', 'products_enable'),
     url(r'^carte/products/(?P<product_id>\d+)/cooking/$', 'products_cooking'),
+)
 
+urlpatterns += patterns('possum.base.views.bill',
     url(r'^bills/$', 'factures'),
     url(r'^bill/new/$', 'bill_new'),
     url(r'^bill/(?P<bill_id>\d+)/table/select/$', 'table_select'),
@@ -84,19 +93,28 @@ urlpatterns = patterns('possum.base.views',
     url(r'^bill/(?P<bill_id>\d+)/print/$', 'bill_print'),
     url(r'^bill/(?P<bill_id>\d+)/kitchen/$', 'bill_send_kitchen'),
     url(r'^bill/(?P<bill_id>\d+)/$', 'bill_view'),
-    url(r'^jukebox/$', 'jukebox'),
+)
 
+urlpatterns += patterns('possum.base.views.jukebox',
+    url(r'^jukebox/$', 'jukebox'),
+)
+                        
+urlpatterns += patterns('possum.base.views.kitchen',
     url(r'^kitchen/$', 'kitchen'),
     url(r'^kitchen/(?P<bill_id>\d+)/$', 'kitchen_for_bill'),
+)
 
-    url(r'^profile/$', 'profile'),
-
+urlpatterns += patterns('possum.base.views.manager',
     url(r'^manager/$', 'manager'),
     url(r'^manager/credits/$', 'credits'),
+)
 
+urlpatterns += patterns('possum.base.views.manager.archives',
     url(r'^manager/archives/$', 'archives'),
     url(r'^manager/archives/bill/(?P<bill_id>\d+)/$', 'archives_bill'),
+)
 
+urlpatterns += patterns('possum.base.views.manager.printers',
     url(r'^manager/printers/$', 'printers'),
     url(r'^manager/printer/add/$', 'printer_add'),
     url(r'^manager/printer/add/(?P<name>[a-zA-Z0-9_-]+)/$', 'printer_added'),
@@ -107,26 +125,40 @@ urlpatterns = patterns('possum.base.views',
     url(r'^manager/printer/(?P<printer_id>\d+)/width/$', 'printer_select_width'),
     url(r'^manager/printer/(?P<printer_id>\d+)/test/$', 'printer_test_print'),
     url(r'^manager/printer/(?P<printer_id>\d+)/width/set/(?P<number>\d+)/$', 'printer_set_width'),
+)
 
+urlpatterns += patterns('possum.base.views.manager.user',
+    url(r'^profile/$', 'profile'),
     url(r'^manager/users/$', 'users'),
     url(r'^manager/users/new/$', 'users_new'),
     url(r'^manager/users/(?P<user_id>\d+)/passwd/$', 'users_passwd'),
     url(r'^manager/users/(?P<user_id>\d+)/active/$', 'users_active'),
     url(r'^manager/users/(?P<user_id>\d+)/change/$', 'users_change'),
     url(r'^manager/users/(?P<user_id>\d+)/perm/(?P<codename>p\d+)/$', 'users_change_perm'),
+)
 
+urlpatterns += patterns('',
+    url(r'^users/login/$', 'django.contrib.auth.views.login', {'template_name': 'login.html'}),
+    url(r'^users/logout/$', 'django.contrib.auth.views.logout_then_login'),
+)
+
+urlpatterns += patterns('possum.base.views.manager.vats',
     url(r'^manager/vats/new/$', 'vat_new'),
     url(r'^manager/vats/$', 'vats'),
     url(r'^manager/vats/(?P<vat_id>\d+)/$', 'vats_view'),
     url(r'^manager/vats/(?P<vat_id>\d+)/change/$', 'vats_change'),
+)
 
+urlpatterns += patterns('possum.base.views.manager.tables',
     url(r'^manager/tables/$', 'tables'),
     url(r'^manager/tables/new/$', 'tables_zone_new'),
     url(r'^manager/tables/(?P<zone_id>\d+)/$', 'tables_zone'),
     url(r'^manager/tables/(?P<zone_id>\d+)/new/$', 'tables_table_new'),
     url(r'^manager/tables/(?P<zone_id>\d+)/(?P<table_id>\d+)/$', 'tables_table'),
     url(r'^manager/tables/(?P<zone_id>\d+)/delete/$', 'tables_zone_delete'),
+)
 
+urlpatterns += patterns('possum.base.views.manager.rapports',
     url(r'^manager/rapports/$', 'rapports_daily'),
     url(r'^manager/rapports/daily/$', 'rapports_daily'),
     url(r'^manager/rapports/(?P<year>\d{4})/(?P<month>\d+)/(?P<day>\d+)/vats/print/$', 'rapports_daily_vats_print'),
@@ -143,21 +175,15 @@ urlpatterns = patterns('possum.base.views',
     url(r'^manager/rapports/monthly/(?P<year>\d{4})/(?P<month>\d+)/vats/send/$', 'rapports_monthly_vats_send'),
     url(r'^manager/rapports/monthly/(?P<year>\d{4})/(?P<month>\d+)/print/$', 'rapports_monthly_print'),
     url(r'^manager/rapports/monthly/(?P<year>\d{4})/(?P<month>\d+)/send/$', 'rapports_monthly_send'),
-
-    url(r'^manager/graphics/year/(?P<choice>[a-zA-Z0-9_-]+)/$', 'graphics_year'),
 )
 
-urlpatterns += patterns('',
-    url(r'^users/login/$', 'django.contrib.auth.views.login', {'template_name': 'login.html'}),
-    url(r'^users/logout/$', 'django.contrib.auth.views.logout_then_login'),
-    # Uncomment the admin/doc line below to enable admin documentation:
-    # url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
-
-    # Uncomment the next line to enable the admin:
-    # url(r'^admin/', include(admin.site.urls)),
+urlpatterns += patterns('possum.base.views.manager.graphics',
+    url(r'^manager/graphics/year/(?P<choice>[a-zA-Z0-9_-]+)/$', 'graphics_year'),
 )
 
 if settings.DEBUG:
     urlpatterns += patterns('',
-            url(r'^static/(?P<path>.*)$', 'django.views.static.serve', {'document_root': settings.MEDIA_ROOT}),
+            url(r'^static/(?P<path>.*)$', 
+                'django.views.static.serve', 
+                {'document_root': settings.MEDIA_ROOT}),
     )

@@ -1,4 +1,5 @@
 # Django settings for base project.
+from common_settings import *
 
 DEBUG = False
 TEMPLATE_DEBUG = DEBUG
@@ -12,7 +13,7 @@ MANAGERS = ADMINS
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
-        'NAME': '/var/lib/jenkins/workspace/Possum/possum.db',                      # Or path to database file if using sqlite3.
+        'NAME': '/home/pos/possum.db',                      # Or path to database file if using sqlite3.
         # The following settings are not used with sqlite3:
         'USER': '',
         'PASSWORD': '',
@@ -20,6 +21,14 @@ DATABASES = {
         'PORT': '',                      # Set to empty string for default.
     }
 }
+
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.memcached.MemcachedCache',
+        'LOCATION': 'unix:/home/pos/memcached.sock',
+    }
+}
+
 
 # Hosts/domain names that are valid for this site; required if DEBUG is False
 # See https://docs.djangoproject.com/en/1.5/ref/settings/#allowed-hosts
@@ -54,7 +63,7 @@ DEFAULT_FROM_EMAIL = "noreply@example.org"
 
 # Absolute filesystem path to the directory that will hold user-uploaded files.
 # Example: "/var/www/example.com/media/"
-MEDIA_ROOT = '/var/lib/jenkins/workspace/Possum/possum/media/'
+MEDIA_ROOT = '/home/pos/possum-software/possum/media/'
 
 # URL that handles the media served from MEDIA_ROOT. Make sure to use a
 # trailing slash.
@@ -76,7 +85,7 @@ STATICFILES_DIRS = (
     # Put strings here, like "/home/html/static" or "C:/www/django/static".
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
-    "/var/lib/jenkins/workspace/Possum/possum/static/",
+    "/home/pos/possum-software/possum/static/",
 )
 
 # List of finder classes that know how to find static files in
@@ -88,7 +97,7 @@ STATICFILES_FINDERS = (
 )
 
 # Make this unique, and don't share it with anybody.
-SECRET_KEY = 'i!36_s7ms-#og__S_SdGFb=@9%456&69!4d-mZzhTo7h73+#5u'
+SECRET_KEY = 'i!fd_s1ms-#ogdsStSdgwb=@9%vyq&69!yd-mr9hco7h73+#5u'
 
 # List of callables that know how to import templates from various sources.
 TEMPLATE_LOADERS = (
@@ -116,7 +125,7 @@ TEMPLATE_DIRS = (
     # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
-    '/var/lib/jenkins/workspace/Possum/possum/templates',
+    '/home/pos/possum-software/possum/templates',
 )
 
 INSTALLED_APPS = (
@@ -140,8 +149,83 @@ LOGIN_REDIRECT_URL = '/bills'
 # Configuration de POSSUM
 #PATH_TICKET = "/home/pos/possum/data/tickets"
 # tmp est en memoire (tmpfs)
-PATH_TICKET = "/tmp/possum/tickets"
+PATH_TICKET = "/home/pos/tickets"
 
 # list of authorized permissions codename
 PERMS = ['p1', 'p2', 'p3', 'p4', 'p5', 'p6', 'p7', 'p8', 'p9']
+
+# A sample logging configuration. The only tangible logging
+# performed by this configuration is to send an email to
+# the site admins on every HTTP 500 error when DEBUG=False.
+# See http://docs.djangoproject.com/en/dev/topics/logging for
+# more details on how to customize your logging configuration.
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': True,
+    'formatters': {
+        'verbose': {
+            'format': '[%(asctime)s %(module)s:%(lineno)d %(funcName)s] %(levelname)-8s %(message)s',
+            'datefmt': '%H:%M:%S'
+        },
+        'simple': {
+            'format': '%(levelname)s %(message)s'
+        },
+        'syslog': {
+            'format': 'POSSUM: %(levelname)s %(message)s'
+        },
+    },
+    'filters': {
+         'require_debug_false': {
+             '()': 'django.utils.log.RequireDebugFalse'
+         }
+    },
+    'handlers': {
+        'null': {
+            'level': 'DEBUG',
+            'class': 'django.utils.log.NullHandler',
+        },
+        'console':{
+            'level': 'DEBUG',
+            'class': 'logging.StreamHandler',
+            'formatter': 'verbose'
+        },
+        'syslog': {
+            'level': 'INFO',
+            'class': 'logging.handlers.SysLogHandler',
+            'address': '/dev/log',
+            'formatter': 'syslog',
+            'filters': ['require_debug_false'],
+        },
+        'mail_admins': {
+            'level': 'ERROR',
+            'class': 'django.utils.log.AdminEmailHandler',
+            'filters': ['require_debug_false'],
+        },
+        'mail_bugwatch': {
+            'level': 'ERROR',
+            'class': 'logging.handlers.SMTPHandler',
+            'filters': ['require_debug_false'],
+            'mailhost': 'localhost',
+            'fromaddr': DEFAULT_FROM_EMAIL,
+            'toaddrs': ['bugwatch@possum-software.org'],
+            'subject': '[BUG] Houston, we have a problem.',
+        }
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['null'],
+            'propagate': True,
+            'level': 'INFO',
+        },
+        'django.request': {
+            'handlers': ['mail_admins'],
+            'level': 'ERROR',
+            'propagate': False,
+        },
+        'possum.base': {
+            'handlers': ['console', 'mail_admins', 'syslog', 'mail_bugwatch'],
+            'level': 'DEBUG',
+        }
+    }
+}
 

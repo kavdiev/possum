@@ -18,6 +18,10 @@
 #    along with POSSUM.  If not, see <http://www.gnu.org/licenses/>.
 #
 
+from django.conf import settings
+import datetime
+import os
+
 def nb_sorted(a, b):
     """Tri sur les categories et les produits pour avoir les plus vendus en premier
     """
@@ -28,4 +32,17 @@ def nb_sorted(a, b):
     else:
         return 0
 
-
+# Création des répertoires obligatoires
+def create_default_directory():
+    if not os.path.exists(settings.PATH_TICKET):
+        os.makedirs(settings.PATH_TICKET)
+        
+def get_last_year(date):
+    """Retourne le jour de l'année précédente
+    afin de comparer les resultats des 2 journées
+    date doit être au format datetime
+    """
+    try:
+        return date - datetime.timedelta(days=364)
+    except:
+        return date
