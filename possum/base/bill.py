@@ -460,55 +460,60 @@ class Facture(models.Model):
     def get_montant(self):
         return self.montant_normal + self.montant_alcool
 
-    def add_payment(self, type_payment, montant, valeur_unitaire="1.0"):
-        """
-        type_payment est un TypePaiement
-        montant et valeur_unitaire sont des chaines de caracteres
-        qui seront converti en Decimal
-
-        Si le montant est superieur au restant du alors on rembourse en
-        espece.
-        """
-        logger.debug("Nouveau paiement")
+    def is_valid_payment(self, montant):
+        ''' Vérifie un paiement avant add_payment '''
         if self.restant_a_payer <= Decimal("0"):
             logger.info("[%s] nouveau paiement ignore car restant"\
                             " a payer <= 0 (%5.2f)"
                             % (self, self.restant_a_payer))
             return False
-
+        if not self.produits:
+            logger.debug("Pas de produit, donc rien a payer")
+            return False
+        if float(montant) == 0.0:
+            logger.debug("Le montant n'est pas indique.")
+            return False
+        return True
+    
+    def add_payment(self, type_payment, montant, valeur_unitaire="1.0"):
+        """
+        :param type_payment: Un TypePaiement
+        :param montant: String convertissable en décimal
+        :param valeur_unitaire : String convertissable en décimal
+        :return: Boolean
+        """
+        if not self.is_valid_payment(montant) :
+            return False
         paiement = Paiement()
         paiement.type = type_payment
         paiement.valeur_unitaire = Decimal(valeur_unitaire)
-        if self.produits:
-            # le montant est-il indique ?
-            if float(montant) == 0.0:
-                return False
-            else:
-                # le montant est indique
-                if type_payment.fixed_value:
-                    # dans ce cas le montant est le nombre de ticket
-                    paiement.nb_tickets = int(montant)
-                    paiement.montant = paiement.nb_tickets * paiement.valeur_unitaire
-                else:
-                    paiement.montant = Decimal(montant)
-                # on enregistre ce paiement
-                paiement.save()
-                self.paiements.add(paiement)
-            # regularisation si le montant est superieur au montant du
-            if paiement.montant > self.restant_a_payer:
-                monnaie = Paiement()
-                payment_for_refunds = Config.objects.get(key="payment_for_refunds").value
-                monnaie.type = PaiementType.objects.get(id=payment_for_refunds)
-                monnaie.montant = self.restant_a_payer - paiement.montant
-                monnaie.save()
-                self.paiements.add(monnaie)
-                self.restant_a_payer -= monnaie.montant
-            self.restant_a_payer -= paiement.montant
-            self.save()
-            return True
+        logger.debug("Création d'un nouveau paiement : {0}".format(paiement))
+        if type_payment.fixed_value:
+            # Dans ce cas le montant est le nombre de ticket
+            paiement.nb_tickets = int(montant)
+            paiement.montant = paiement.nb_tickets * paiement.valeur_unitaire
         else:
-            logger.debug("pas de produit, donc rien n'a payer")
-            return False
+            paiement.montant = Decimal(montant)
+        # On enregistre ce paiement
+        paiement.save()
+        self.paiements.add(paiement)
+        if paiement.montant > self.restant_a_payer:
+            #  Si le montant est superieur au restant du alors on rembourse en 
+            # espece.
+            self.rendre_monnaie(paiement)
+        self.restant_a_payer -= paiement.montant
+        self.save()
+        return True
+
+    def rendre_monnaie(self,paiement):
+        ''' Regularisation si le montant payé est superieur au montant de la facture '''
+        monnaie = Paiement()
+        payment_for_refunds = Config.objects.get(key="payment_for_refunds").value
+        monnaie.type = PaiementType.objects.get(id=payment_for_refunds)
+        monnaie.montant = self.restant_a_payer - paiement.montant
+        monnaie.save()
+        self.paiements.add(monnaie)
+        self.restant_a_payer -= monnaie.montant
 
     def est_soldee(self):
         """La facture a été utilisée et soldée"""
