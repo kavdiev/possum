@@ -454,19 +454,6 @@ class Facture(models.Model):
             logger.debug("erreur avec: %s / %s" % (username, password))
             return False
 
-    def getTvaNormal(self):
-        """
-            calcul la TVA
-            On arrondi seulement à 1 parce que les 2 décimals sont dans la partie entière du montant
-            # la TVA est sur le HT !!
-        """
-        # return self.montant_normal - ((self.montant_normal*100)/Decimal("105.5"))
-        return self.montant_normal * (Decimal("0.055") / Decimal("1.055"))
-
-    def getTvaAlcool(self):
-        # return self.montant_alcool - ((self.montant_alcool*100)/Decimal("119.6"))
-        return self.montant_alcool * (Decimal("0.196") / Decimal("1.196"))
-
     def get_resume(self):
         return "%s %s %d" % (self.table.nom, self.date_creation, self.montant)
 
