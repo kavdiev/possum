@@ -329,9 +329,28 @@ class Facture(models.Model):
             product.save()
         self.compute_total()
 
+    def add_priced_product(self, vendu):
+        ''' Traitement réalisé uniquement pour les produits ayant un prix.
+        :param vendu: TODO Définir le type de l'entrée '''
+        self.produits.add(vendu)
+        self.save()
+        if self.est_surtaxe():
+            if vendu.produit.categorie.disable_surtaxe:
+                # on doit enlever la surtaxe pour tous les produits
+                # concernés
+                self.remove_surtaxe()
+            else:
+                if vendu.produit.categorie.surtaxable:
+                    vendu.prix += self.table.zone.prix_surtaxe
+                    vendu.save()
+                self.add_product_prize(vendu)
+        else:
+            self.add_product_prize(vendu)
+            
     def add_product(self, vendu):
         """Ajout d'un produit à la facture.
         Si c'est le premier produit alors on modifie la date de creation
+        :param vendu: TODO Définir le type de l'entrée
         """
         if self.produits.count() == 0:
             self.date_creation = datetime.datetime.now()
@@ -340,20 +359,7 @@ class Facture(models.Model):
         vendu.made_with = vendu.produit.categorie
         vendu.save()
         if vendu.prix:
-            self.produits.add(vendu)
-            self.save()
-            if self.est_surtaxe():
-                if vendu.produit.categorie.disable_surtaxe:
-                    # on doit enlever la surtaxe pour tous les produits
-                    # concernés
-                    self.remove_surtaxe()
-                else:
-                    if vendu.produit.categorie.surtaxable:
-                        vendu.prix += self.table.zone.prix_surtaxe
-                        vendu.save()
-                    self.add_product_prize(vendu)
-            else:
-                self.add_product_prize(vendu)
+            self.add_priced_product(vendu)
         first = None
         if vendu.est_un_menu():
             # on doit vérifier tous les sous-produits
