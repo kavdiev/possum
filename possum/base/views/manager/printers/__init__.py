@@ -25,7 +25,7 @@ from possum.base.dailystat import DailyStat
 from possum.base.weeklystat import WeeklyStat
 from possum.base.monthlystat import MonthlyStat
 from possum.base.bill import Facture
-from possum.base.models import Printer
+from possum.base.printer import Printer
 from possum.base.product import Produit, ProduitVendu
 from possum.base.payment import PaiementType, Paiement
 from possum.base.category import Categorie
@@ -53,7 +53,7 @@ import datetime
 from possum.base.views import get_user, permission_required
 
 @permission_required('base.p1')
-def printers(request):
+def home(request):
     data = get_user(request)
     data['menu_manager'] = True
     data['printers'] = Printer.objects.all()

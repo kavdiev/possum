@@ -3,16 +3,18 @@
 
 <ul id="back">
     <li onclick="window.location='/manager/'">Retour</li>
-    <li onclick="window.location='/manager/graphics/year/ttc/'"
+    <li onclick="window.location='/manager/charts/year/ttc/'"
         {% if ttc %}class="selected"{% endif %}>TTC</li>
-    <li onclick="window.location='/manager/graphics/year/bar/'"
+    <li onclick="window.location='/manager/charts/year/bar/'"
         {% if bar %}class="selected"{% endif %}>Bar</li>
-    <li onclick="window.location='/manager/graphics/guests/{{year}}/'"
+    <li onclick="window.location='/manager/charts/year/guests/'"
         {% if guests %}class="selected"{% endif %}>Restaurant</li>
-    <li onclick="window.location='/manager/graphics/categories/{{year}}/'"
+    <li onclick="window.location='/manager/charts/year/payments/'"
+        {% if payments %}class="selected"{% endif %}>Paiements</li>
+    <li onclick="window.location='/manager/charts/categories/{{year}}/'"
         {% if categories %}class="selected"{% endif %}>Catégories</li>
     {% for cat in cat_list %}
-    <li onclick="window.location='/manager/graphics/{{cat.id}}/{{year}}/'"
+    <li onclick="window.location='/manager/charts/{{cat.id}}/{{year}}/'"
         style="background:{{cat.color}};"
     {% if categories %}class="selected"{% endif %}>{{cat.nom}}</li>
     {% endfor %}
@@ -21,7 +23,7 @@
 {% elif week %}
 
 {% else %}
-<form method='post' action='/manager/graphics/year/' name='year'>{% csrf_token %}
+<form method='post' action='/manager/charts/year/' name='year'>{% csrf_token %}
             {{ year_form.as_ul }}
                 <li><input type='submit' value="Afficher l'année"></li>
             </form>
@@ -32,7 +34,7 @@
 
 
 <h1></h1>
-<div id='chart1'></div>
+<div id='chart1'><p>Aucune donnée à afficher.</div>
 <div id='chart2'></div>
 
 {% endblock %}
