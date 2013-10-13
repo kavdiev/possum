@@ -18,18 +18,17 @@
 #    along with POSSUM.  If not, see <http://www.gnu.org/licenses/>.
 #
 
+from chartit import PivotDataPool, PivotChart
+from decimal import Decimal
 from django.db import models
 from django.db.models import Max, Avg
-from decimal import Decimal
-import datetime
-from possum.base.vat import VAT
 from possum.base.category import Categorie
-from possum.base.product import Produit
 from possum.base.payment import PaiementType
-from possum.base.utils import nb_sorted
+from possum.base.product import Produit
+from possum.base.utils import month_name, month_sort, nb_sorted
+from possum.base.vat import VAT
+import datetime
 import logging
-from chartit import PivotDataPool, PivotChart
-from possum.base.utils import month_name, month_sort
 
 logger = logging.getLogger(__name__)
 
