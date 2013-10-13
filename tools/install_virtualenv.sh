@@ -1,2 +1,3 @@
 #!/bin/bash
-pip --proxy=$1 install --requirement requirements.txt
+source .virtualenv/bin/activate
+pip install --requirement requirements.txt
