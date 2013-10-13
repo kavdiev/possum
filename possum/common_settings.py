@@ -141,7 +141,7 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 )
 
-ROOT_URLCONF = normpath(join(DJANGO_ROOT, SITE_NAME, 'urls'))
+ROOT_URLCONF = 'possum.urls'
 
 # Python dotted path to the WSGI application used by Django's runserver.
 WSGI_APPLICATION = 'possum.wsgi.application'
