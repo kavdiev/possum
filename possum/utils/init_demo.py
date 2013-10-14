@@ -102,7 +102,7 @@ vat_onsite = VAT(name="sur place")
 vat_onsite.set_tax("7")
 vat_onsite.save()
 vat_takeaway = VAT(name=u"à emporter")
-vat_takeaway.set_tax("7")
+vat_takeaway.set_tax("5")
 vat_takeaway.save()
 
 # on entre les nouveaux produits, les prix sont TTC
@@ -229,10 +229,15 @@ menu.save()
 for product in Produit.objects.all():
     product.update_vats()
 
+# on ajoute des données pour avoir des jolies graphiques de démonstrations
 import random
-
 DailyStat(date="2013-10-01", key="total_ttc", value="234").save()
 for month in xrange(1, 13):
     MonthlyStat(year=2013, month=month, key='total_ttc', value=100*month).save()
     MonthlyStat(year=2013, month=month, key='bar_total_ttc', value=40*month).save()
     MonthlyStat(year=2013, month=month, key='guests_total_ttc', value=60*month).save()
+    MonthlyStat(year=2013, month=month, key='nb_bills', value=random.randint(50, 500)).save()
+    MonthlyStat(year=2013, month=month, key='guests_nb', value=random.randint(50, 500)).save()
+    MonthlyStat(year=2013, month=month, key='guests_average', value=random.randint(50, 500)).save()
+    MonthlyStat(year=2013, month=month, key='bar_nb', value=random.randint(50, 500)).save()
+    MonthlyStat(year=2013, month=month, key='bar_average', value=random.randint(50, 500)).save()
