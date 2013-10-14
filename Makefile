@@ -9,7 +9,7 @@ ifeq ($(DEV),YES)
 endif
 ifeq ($(DEV),NO)
   ifeq ($(TEST),NO)
-    SETTINGS = possum.settings_sample
+    SETTINGS = possum.settings_production
   endif
 endif
 

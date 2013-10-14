@@ -56,7 +56,6 @@ except IOError as e :
         raise Exception('Cannot open file `%s` for writing. (%s)' % (SECRET_FILE, e))
 ########## END KEY CONFIGURATION
 
-
 ADMINS = (
     # ('Your Name', 'your_email@example.com'),
 )
@@ -131,9 +130,6 @@ STATICFILES_FINDERS = (
 #    'django.contrib.staticfiles.finders.DefaultStorageFinder',
 )
 
-# Make this unique, and don't share it with anybody.
-SECRET_KEY = 'i!fd_s1ms-#ogdsStSdgwb=@9%vyq&69!yd-mr9hco7h73+#5u'
-
 # List of callables that know how to import templates from various sources.
 TEMPLATE_LOADERS = (
     'django.template.loaders.filesystem.Loader',
@@ -178,3 +174,74 @@ INSTALLED_APPS = (
     # Uncomment the next line to enable admin documentation:
     # 'django.contrib.admindocs',
 )
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': True,
+    'formatters': {
+        'verbose': {
+            'format': '[%(asctime)s %(module)s:%(lineno)d %(funcName)s] %(levelname)-8s %(message)s',
+            'datefmt': '%H:%M:%S'
+        },
+        'simple': {
+            'format': '%(levelname)s %(message)s'
+        },
+        'syslog': {
+            'format': 'POSSUM: %(levelname)s %(message)s'
+        },
+    },
+    'filters': {
+         'require_debug_false': {
+             '()': 'django.utils.log.RequireDebugFalse'
+         }
+    },
+    'handlers': {
+        'null': {
+            'level': 'DEBUG',
+            'class': 'django.utils.log.NullHandler',
+        },
+        'console':{
+            'level': 'DEBUG',
+            'class': 'logging.StreamHandler',
+            'formatter': 'verbose'
+        },
+        'syslog': {
+            'level': 'INFO',
+            'class': 'logging.handlers.SysLogHandler',
+            'address': '/dev/log',
+            'formatter': 'syslog',
+            'filters': ['require_debug_false'],
+        },
+        'mail_admins': {
+            'level': 'ERROR',
+            'class': 'django.utils.log.AdminEmailHandler',
+            'filters': ['require_debug_false'],
+        },
+        'mail_bugwatch': {
+            'level': 'ERROR',
+            'class': 'logging.handlers.SMTPHandler',
+            'filters': ['require_debug_false'],
+            'mailhost': 'localhost',
+            'fromaddr': 'bugwatch@possum-software.org',
+            'toaddrs': ['bugwatch@possum-software.org'],
+            'subject': '[BUG] Houston, we have a problem.',
+        }
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['null'],
+            'propagate': True,
+            'level': 'INFO',
+        },
+        'django.request': {
+            'handlers': ['mail_admins'],
+            'level': 'ERROR',
+            'propagate': False,
+        },
+        'possum.base': {
+            'handlers': ['console', 'mail_admins', 'syslog', 'mail_bugwatch'],
+            'level': 'DEBUG',
+        }
+    }
+}
+
