@@ -5,8 +5,7 @@
     <li onclick="window.location='/bill/{{bill.id}}/'">Retour</li>
 </ul>
 
-<h1>Sélection de la catégorie</h1>
-
+<h1>Ajout de produits</h1>
 <ul id="categories">
     {% for category in categories %}
     <li onclick="window.location='/bill/{{bill.id}}/category/{{category.id}}/'" style="background:{{category.color}};">
@@ -17,8 +16,7 @@
     {% endfor %}
 </ul>
 
-<h2>Sélection du produit</h2>
-
+<h2><!--Sélection du produit--></h2>
 <ul id="products">
     {% for product in products %}
         <li 
