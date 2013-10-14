@@ -27,6 +27,8 @@ from possum.base.product import Produit
 from possum.base.payment import PaiementType
 from possum.base.utils import nb_sorted
 from possum.base.monthlystat import MonthlyStat
+from possum.base.vat import VAT
+from possum.base.payment import PaiementType
 import logging
 from chartit import PivotDataPool, PivotChart
 
@@ -117,4 +119,82 @@ def get_chart_year_guests(year):
     except:
         return False
     return get_chart(datasource, 'line', keys, "Activité restaurant pour l'année %s" % year, "Mois")
+
+def get_chart_year_vats(year):
+    keys = {}
+    for vat in VAT.objects.iterator():
+        key = "%s_vat" % vat.id
+        keys[key] = vat.name
+    try:
+        datasource = get_datapool_year(year, keys)
+    except:
+        return False
+    return get_chart(datasource, 'line', keys, "TVA pour l'année %s" % year, "Mois")
+
+def get_chart_year_payments(year):
+    charts = []
+    keys_nb = {}
+    keys_value = {}
+    for payment in PaiementType.objects.iterator():
+        key = "%s_payment_nb" % payment.id
+        keys_nb[key] = payment.nom
+        key = "%s_payment_value" % payment.id
+        keys_value[key] = payment.nom
+    try:
+        datasource = get_datapool_year(year, keys_nb)
+    except:
+        return False
+    charts.append(get_chart(datasource, 'line', keys_nb, "Nombre de paiements par type pour l'année %s" % year, "Mois"))
+    try:
+        datasource = get_datapool_year(year, keys_value)
+    except:
+        return False
+    charts.append(get_chart(datasource, 'line', keys_value, "Valeur des paiements par type pour l'année %s" % year, "Mois"))
+    return charts
+
+def get_chart_year_categories(year):
+    charts = []
+    keys_nb = {}
+    keys_value = {}
+    for cat in Categorie.objects.iterator():
+        key = "%s_category_nb" % cat.id
+        keys_nb[key] = cat.nom
+        key = "%s_category_value" % cat.id
+        keys_value[key] = cat.nom
+    try:
+        datasource = get_datapool_year(year, keys_nb)
+    except:
+        return False
+    title = "Nombre de vente par catégorie pour l'année %s" % year
+    charts.append(get_chart(datasource, 'line', keys_nb, title, "Mois"))
+    try:
+        datasource = get_datapool_year(year, keys_value)
+    except:
+        return False
+    title = "Valeur des ventes par catégorie pour l'année %s" % year
+    charts.append(get_chart(datasource, 'line', keys_value, title, "Mois"))
+    return charts
+
+def get_chart_year_products(year, category):
+    charts = []
+    keys_nb = {}
+    keys_value = {}
+    for product in Produit.objects.filter(categorie=category).iterator():
+        key = "%s_product_nb" % product.id
+        keys_nb[key] = product.nom
+        key = "%s_product_value" % product.id
+        keys_value[key] = product.nom
+    try:
+        datasource = get_datapool_year(year, keys_nb)
+    except:
+        return False
+    title = u"Nombre de vente pour la catégorie [%s] en %s" % (category.nom, year)
+    charts.append(get_chart(datasource, 'line', keys_nb, title, "Mois"))
+    try:
+        datasource = get_datapool_year(year, keys_value)
+    except:
+        return False
+    title = u"Valeur des ventes pour la catégorie [%s] en %s" % (category.nom, year)
+    charts.append(get_chart(datasource, 'line', keys_value, title, "Mois"))
+    return charts
 

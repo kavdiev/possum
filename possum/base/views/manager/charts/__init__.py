@@ -51,12 +51,15 @@ from django.core.mail import send_mail
 import os
 import datetime
 from possum.base.views import get_user
-from possum.base.charts import get_chart_year_ttc, get_chart_year_bar,\
-                get_chart_year_guests
+from possum.base.charts import *
 
 def charts_year(request, choice='ttc'):
+    """
+    chart1: pour un seul graphique
+    chart2: pour 2 graphiques
+    """
     data = get_user(request)
-    data['charts'] = True
+#    data['charts'] = True
     data['cat_list'] = Categorie.objects.order_by('priorite', 'nom')
     data['menu_manager'] = True
     DailyStat().update()
@@ -72,10 +75,22 @@ def charts_year(request, choice='ttc'):
         data['chart1'] = get_chart_year_bar(year)
     elif choice == 'guests':
         data['chart1'] = get_chart_year_guests(year)
+    elif choice == 'vats':
+        data['chart1'] = get_chart_year_vats(year)
+    elif choice == 'payments':
+        data['chart2'] = get_chart_year_payments(year)
+    elif choice == 'categories':
+        data['chart2'] = get_chart_year_categories(year)
     else:
-        messages.add_message(request, messages.ERROR, "Ce type de graphique n'existe pas.")
-        return HttpResponseRedirect('/manager/')
+        try:
+            cat = Categorie.objects.get(pk=choice)
+        except Categorie.DoesNotExist:
+            messages.add_message(request, messages.ERROR, "Ce type de graphique n'existe pas.")
+            return HttpResponseRedirect('/manager/')
+        else:
+            data['chart2'] = get_chart_year_products(year, cat)
     data[choice] = True
+    data['choice'] = choice
     data['year_form'] = YearForm({'year': year})
     data['year'] = year
     return render_to_response('base/manager/charts/home.html',
