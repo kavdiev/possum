@@ -19,20 +19,14 @@
 #
 
 from django.db import models
+from django.db.models import Max, Avg, Min
+import logging
+logger = logging.getLogger(__name__)
 
-from django.conf import settings
-from possum.base.vat import VAT
-from possum.base.printer import Printer
-from possum.base.vatonbill import VATOnBill
-from possum.base.stats import DailyStat
-from possum.base.stats import WeeklyStat
-from possum.base.stats import MonthlyStat
-from possum.base.bill import Facture
-from possum.base.generic import Nom, NomDouble, Priorite
-from possum.base.product import Produit, ProduitVendu
-from possum.base.payment import PaiementType, Paiement
-from possum.base.category import Categorie
-from possum.base.options import Cuisson, Sauce, Accompagnement
-from possum.base.location import Zone, Table
-from possum.base.follow import Follow
-from possum.base.config import Config
+class GenericStat(models.Model):
+    
+    key = models.CharField(max_length=32)
+    value = models.DecimalField(max_digits=9, decimal_places=2, default=0)
+    
+    # TODO Comprendre ce qui est généralisable dans les autres classes de stats
+    # Et le mettre ici

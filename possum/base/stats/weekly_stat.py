@@ -18,15 +18,15 @@
 #    along with POSSUM.  If not, see <http://www.gnu.org/licenses/>.
 #
 
+from decimal import Decimal
 from django.db import models
 from django.db.models import Max, Avg
-from decimal import Decimal
-import datetime
-from possum.base.vat import VAT
 from possum.base.category import Categorie
-from possum.base.product import Produit
 from possum.base.payment import PaiementType
+from possum.base.product import Produit
 from possum.base.utils import nb_sorted
+from possum.base.vat import VAT
+import datetime
 
 class WeeklyStat(models.Model):
     """Weekly statistics, full list of keys:

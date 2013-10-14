@@ -21,9 +21,7 @@
 import logging
 logger = logging.getLogger(__name__)
 
-from possum.base.dailystat import DailyStat
-from possum.base.weeklystat import WeeklyStat
-from possum.base.monthlystat import MonthlyStat
+from possum.base.stats import DailyStat, WeeklyStat, MonthlyStat
 from possum.base.bill import Facture
 from possum.base.models import Printer
 from possum.base.product import Produit, ProduitVendu
@@ -62,6 +60,19 @@ def carte(request):
                                 data,
                                 context_instance=RequestContext(request))
 
+def is_valid_product(name, billname, prize):
+    erreur = False
+    if not name :
+        erreur = True
+        messages.add_message(request, messages.ERROR, "Vous devez saisir un nom.")
+    if not billname :
+        erreur = True
+        messages.add_message(request, messages.ERROR, "Vous devez saisir un nom pour la facture.")
+    if not prize :
+        erreur = True
+        messages.add_message(request, messages.ERROR, "Vous devez entrer un prix.")
+    return not erreur
+
 @permission_required('base.p2')
 def products_view(request, product_id):
     data = get_user(request)
@@ -71,36 +82,27 @@ def products_view(request, product_id):
                                 data,
                                 context_instance=RequestContext(request))
 
+def treat_product_new(request, cat_id):
+    name = request.POST.get('name', '').strip()
+    billname = request.POST.get('billname', '').strip()
+    prize = request.POST.get('prize', '').strip()
+    if is_valid_product(name, billname, prize) :
+        try:
+            product = Produit(nom=name, nom_facture=billname, prix=prize)
+            product.set_category(data['category'])
+            product.save()
+        except:
+            messages.add_message(request, messages.ERROR, "Les modifications n'ont pu être enregistrées.")
+        else:
+            return HttpResponseRedirect('/carte/categories/%s/' % data['category'].id)
+        
 @permission_required('base.p2')
 def products_new(request, cat_id):
     data = get_user(request)
     data['menu_carte'] = True
     data['category'] = get_object_or_404(Categorie, pk=cat_id)
     if request.method == 'POST':
-        name = request.POST.get('name', '').strip()
-        billname = request.POST.get('billname', '').strip()
-        prize = request.POST.get('prize', '').strip()
-        if name:
-            if billname:
-                if prize:
-                    try:
-                        product = Produit(
-                                nom=name,
-                                nom_facture=billname,
-                                prix=prize)
-                        product.set_category(data['category'])
-                        product.save()
-                    except:
-                        messages.add_message(request, messages.ERROR, "Les modifications n'ont pu être enregistrées.")
-                    else:
-                        return HttpResponseRedirect('/carte/categories/%s/' % data['category'].id)
-                else:
-                    messages.add_message(request, messages.ERROR, "Vous devez saisir un prix.")
-            else:
-                messages.add_message(request, messages.ERROR, "Vous devez saisir un nom pour la facture.")
-        else:
-            messages.add_message(request, messages.ERROR, "Vous devez entrer un nom.")
-
+        treat_product_new(request, cat_id)
     return render_to_response('base/carte/product_new.html',
                                 data,
                                 context_instance=RequestContext(request))
@@ -205,33 +207,28 @@ def products_enable(request, product_id):
     product.save()
     return HttpResponseRedirect('/carte/products/%s/' % product_id)
 
+def treat_products_change(request, product_id):
+    name = request.POST.get('name', '').strip()
+    billname = request.POST.get('billname', '').strip()
+    prize = request.POST.get('prize', '').strip().replace(',', '.')
+    if is_valid_product(name, billname, prize) :
+        product = product.set_prize(prize)
+        product.nom = name
+        product.nom_facture = billname
+        try:
+            product.save()
+        except:
+            messages.add_message(request, messages.ERROR,
+                                 "Les modifications n'ont pu être enregistrées.")
+            return HttpResponseRedirect('/carte/products/%s/' % product.id)
+
 @permission_required('base.p2')
 def products_change(request, product_id):
     data = get_user(request)
     product = get_object_or_404(Produit, pk=product_id)
     data['menu_carte'] = True
     if request.method == 'POST':
-        name = request.POST.get('name', '').strip()
-        billname = request.POST.get('billname', '').strip()
-        prize = request.POST.get('prize', '').strip().replace(',', '.')
-        if name:
-            if billname:
-                if prize:
-                    product = product.set_prize(prize)
-                    product.nom = name
-                    product.nom_facture = billname
-                    try:
-                        product.save()
-                    except:
-                        messages.add_message(request, messages.ERROR, "Les modifications n'ont pu être enregistrées.")
-                    else:
-                        return HttpResponseRedirect('/carte/products/%s/' % product.id)
-                else:
-                    messages.add_message(request, messages.ERROR, "Vous devez entrer un prix.")
-            else:
-                messages.add_message(request, messages.ERROR, "Vous devez saisir un nom pour la facture.")
-        else:
-            messages.add_message(request, messages.ERROR, "Vous devez saisir un nom.")
+        treat_product_change(request, product_id)
     data['product'] = product
     return render_to_response('base/carte/product_change.html',
                                 data,

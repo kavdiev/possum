@@ -6,3 +6,5 @@
 .pydevproject
 .settings
 possum/settings.py
+possum/secret_key
+possum/possum.db

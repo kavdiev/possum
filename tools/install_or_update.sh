@@ -8,6 +8,8 @@
 JQUERY="jquery-2.0.3.min.js"
 HIGHCHARTS="Highcharts-3.0.6.zip"
 
+# You must have graphviz-dev and libcups2-dev
+
 if [ "$0" != "tools/install_or_update.sh" ]
 then
     echo "Must be execute as: tools/install_or_update.sh !"

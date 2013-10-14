@@ -18,19 +18,19 @@
 #    along with POSSUM.  If not, see <http://www.gnu.org/licenses/>.
 #
 
+from decimal import Decimal
 from django.db import models
 from django.db.models import Max, Avg
-from decimal import Decimal
-import logging
-import datetime
-from possum.base.vat import VAT
-from possum.base.category import Categorie
-from possum.base.product import Produit
+from monthly_stat import MonthlyStat
 from possum.base.bill import Facture
+from possum.base.category import Categorie
 from possum.base.payment import PaiementType
-from possum.base.weeklystat import WeeklyStat
-from possum.base.monthlystat import MonthlyStat
+from possum.base.product import Produit
 from possum.base.utils import nb_sorted
+from possum.base.vat import VAT
+from weekly_stat import WeeklyStat
+import datetime
+import logging
 
 logger = logging.getLogger(__name__)
 
