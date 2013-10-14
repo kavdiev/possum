@@ -21,7 +21,6 @@
 import logging
 logger = logging.getLogger(__name__)
 
-from possum.base.stats import DailyStat, WeeklyStat, MonthlyStat
 from possum.base.bill import Facture
 from possum.base.printer import Printer
 from possum.base.product import Produit, ProduitVendu

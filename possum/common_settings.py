@@ -1,4 +1,5 @@
 from os.path import abspath, basename, dirname, join, normpath, exists
+import os
 import random
 import sys
 
@@ -36,12 +37,20 @@ SECRET_FILE = normpath(join(DJANGO_ROOT, SITE_NAME, 'secret_key'))
 # Try to load the SECRET_KEY from our SECRET_FILE. If that fails, then generate
 # a random SECRET_KEY and save it into our SECRET_FILE for future loading. If
 # everything fails, then just raise an exception.
+def create_secret_key():
+    secret_key_text = ""
+    with open(abspath(SECRET_FILE), 'w') as f:
+        secret_key_text = "".join([random.choice("abcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*(-_=+)") for i in range(50)])
+        f.write(secret_key_text)
+    return secret_key_text
+
 try:
-    secret_key_text = open(SECRET_FILE).read()
-    if not secret_key_text :
-        with open(abspath(SECRET_FILE), 'w') as f:
-            secret_key_text = "".join([random.choice("abcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*(-_=+)") for i in range(50)])
-            f.write(secret_key_text)
+    if os.path.isfile(SECRET_FILE):
+        secret_key_text = open(SECRET_FILE).read()
+        if not secret_key_text :
+            secret_key_text = create_secret_key()
+    else:
+        secret_key_text = create_secret_key()
     SECRET_KEY = secret_key_text 
 except IOError as e :
         raise Exception('Cannot open file `%s` for writing. (%s)' % (SECRET_FILE, e))

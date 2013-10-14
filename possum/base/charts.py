@@ -27,7 +27,7 @@ from possum.base.payment import PaiementType
 from possum.base.utils import nb_sorted
 from possum.base.vat import VAT
 from possum.base.payment import PaiementType
-from possum.base.stats import MonthlyStat
+from possum.base.monthly_stat import MonthlyStat
 import logging
 from chartit import PivotDataPool, PivotChart
 from possum.base.utils import month_name, month_sort
