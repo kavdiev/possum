@@ -22,7 +22,7 @@ from django.conf import settings
 
 # les classes generiques
 class Nom(models.Model):
-    nom = models.CharField(max_length=settings.LONGUEUR_IHM)
+    nom = models.CharField(max_length=60)
 
     def __unicode__(self):
         return self.nom
@@ -35,7 +35,7 @@ class Nom(models.Model):
         ordering = ['nom']
 
 class NomDouble(Nom):
-    nom_facture = models.CharField(max_length=settings.LONGUEUR_FACTURE)
+    nom_facture = models.CharField(max_length=35)
 
     class Meta:
         abstract = True

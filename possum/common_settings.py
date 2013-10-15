@@ -19,8 +19,6 @@ sys.path.append(normpath(join(DJANGO_ROOT, SITE_NAME, 'base')))
 ########## END PATH CONFIGURATION
 
 ########## Configuration de POSSUM
-LONGUEUR_FACTURE = 35
-LONGUEUR_IHM = 60
 LOGIN_URL = '/users/login/'
 LOGIN_REDIRECT_URL = '/bills'
 # tmp est en memoire (tmpfs)
@@ -64,21 +62,9 @@ MANAGERS = ADMINS
 CACHES = {
     'default': {
         'BACKEND': 'django.core.cache.backends.memcached.MemcachedCache',
-        'LOCATION': 'unix:/home/pos/memcached.sock',  # TODO normpath(join(DJANGO_ROOT ,'memcached.sock'))
+        'LOCATION': '127.0.0.1:11211',
     }
 }
-
-# Local time zone for this installation. Choices can be found here:
-# http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
-# although not all choices may be available on all operating systems.
-# In a Windows environment this must be set to your system time zone.
-# TIME_ZONE = 'America/Chicago'
-TIME_ZONE = 'Europe/Paris'
-
-# Language code for this installation. All choices can be found here:
-# http://www.i18nguy.com/unicode/language-identifiers.html
-# LANGUAGE_CODE = 'en-us'
-LANGUAGE_CODE = 'fr-fr'
 
 SITE_ID = 1
 
@@ -92,8 +78,6 @@ USE_L10N = True
 
 # If you set this to False, Django will not use timezone-aware datetimes.
 USE_TZ = True
-
-DEFAULT_FROM_EMAIL = "noreply@example.org"
 
 # Absolute filesystem path to the directory that will hold user-uploaded files.
 # Example: "/var/www/example.com/media/"
