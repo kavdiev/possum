@@ -95,27 +95,6 @@ LOGGING = {
             'level': 'DEBUG',
             'class': 'logging.StreamHandler',
             'formatter': 'verbose'
-        },
-        'syslog': {
-            'level': 'INFO',
-            'class': 'logging.handlers.SysLogHandler',
-            'address': '/dev/log',
-            'formatter': 'syslog',
-            'filters': ['require_debug_false'],
-        },
-        'mail_admins': {
-            'level': 'ERROR',
-            'class': 'django.utils.log.AdminEmailHandler',
-            'filters': ['require_debug_false'],
-        },
-        'mail_bugwatch': {
-            'level': 'ERROR',
-            'class': 'logging.handlers.SMTPHandler',
-            'filters': ['require_debug_false'],
-            'mailhost': 'localhost',
-            'fromaddr': 'bugwatch@possum-software.org',
-            'toaddrs': ['bugwatch@possum-software.org'],
-            'subject': '[BUG] Houston, we have a problem.',
         }
     },
     'loggers': {
@@ -124,19 +103,10 @@ LOGGING = {
             'propagate': True,
             'level': 'INFO',
         },
-        'django.request': {
-            'handlers': ['mail_admins'],
-            'level': 'ERROR',
-            'propagate': False,
-        },
         'possum.base': {
             'handlers': ['console', ],
             'level': 'DEBUG',
         },
-        'possum.base': {
-            'handlers': ['mail_admins', 'syslog', 'mail_bugwatch'],
-            'level': 'WARNING',
-        }
     }
 }
 

@@ -50,18 +50,8 @@ function tests {
     coverage xml --omit=${OMIT}
 }
 
-function update {
-    echo "Host must be connected to Internet for this step."
-    echo "And you must have some packages installed:"
-    echo "Debian/Ubuntu> apt-get install graphviz-dev libcups2-dev memcached python-virtualenv"
-    if [ ! -d .virtualenv ]
-    then
-        # For the moment, we stay with python2.
-        virtualenv --prompt=="POSSUM" --python=python2 .virtualenv
-    fi
-    enter_virtualenv
-    pip install --proxy=${http_proxy} --requirement requirements.txt
-
+function update_js {
+    # update javascript part
     if [ ! -e possum/static/jquery.min.js ]
     then
         echo "Download and install JQuery..."
@@ -85,6 +75,34 @@ function update {
         popd >/dev/null
     fi
 
+    if [ ! -d possum/static/chartit ]
+    then
+        mkdir -pv possum/static/chartit/js
+    fi
+    if [ ! -d possum/static/chartit/js ]
+    then
+        mkdir -pv possum/static/chartit/js
+    fi
+    if [ ! -e possum/static/chartit/js/chartloader.js ]
+    then
+        find .virtualenv/ -name chartloader.js -exec cp {} possum/static/chartit/js/chartloader.js \;
+    fi
+}
+
+function update {
+    echo
+    echo "Host must be connected to Internet for this step."
+    echo "And you must have some packages installed:"
+    echo "Debian/Ubuntu> apt-get install graphviz-dev libcups2-dev memcached python-virtualenv"
+    echo
+    if [ ! -d .virtualenv ]
+    then
+        # For the moment, we stay with python2.
+        virtualenv --prompt=="POSSUM" --python=python2 .virtualenv
+    fi
+    enter_virtualenv
+    pip install --proxy=${http_proxy} --requirement requirements.txt
+    update_js
     if [ ! -e possum/settings.py ]
     then
         # default conf is production
