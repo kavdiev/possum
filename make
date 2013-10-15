@@ -75,7 +75,7 @@ function update {
     if [ ! -e possum/static/highcharts/${HIGHCHARTS} ]
     then
         echo "Download HighCharts..."
-        wget http://code.highcharts.com/zips/${HIGHCHARTS} -O possum/static/highcharts/
+        wget http://code.highcharts.com/zips/${HIGHCHARTS} -O possum/static/highcharts/${HIGHCHARTS}
     fi
     if [ ! -e possum/static/highcharts/js/highcharts.js ]
     then
