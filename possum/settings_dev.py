@@ -57,7 +57,7 @@ DEBUG_TOOLBAR_CONFIG = {
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',  # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
-        'NAME': normpath(join(DJANGO_ROOT, SITE_NAME, 'possum.db')),  # Or path to database file if using sqlite3.
+        'NAME': normpath(join(DJANGO_ROOT, 'possum.db')),  # Or path to database file if using sqlite3.
         # The following settings are not used with sqlite3:
         'USER': '',
         'PASSWORD': '',
