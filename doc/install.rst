@@ -1,7 +1,7 @@
 Installation
 ============
 
-Cette documentation est écrite pour GNU/Linux, et devrait fonctionner avec toutes les distributions (Ubuntu, Gentoo, ...).
+Cette documentation est écrite pour Debian, et devrait fonctionner avec toutes les distributions (Ubuntu, Gentoo, ...).
 
 Vous devez avoir python et virtualenv installés sur votre système.
 
@@ -28,7 +28,7 @@ disponibles avec la commande:
 
 D'autre part, l'impression des tickets nécessite la création et la suppression de nombreux
 fichiers. Je vous recommande donc d'utiliser un système de fichier virtuel type tmpfs pour
-ce répertoire (variable ''PATH_TICKET'' du fichier ''settings.py'').
+le répertoire ''tickets'' qui se trouve par défaut dans le répertoire ''possum-software''.
 
 Par exemple pour le répertoire ''/home/pos/tickets'':
 
