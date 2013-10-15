@@ -66,3 +66,78 @@ DATABASES = {
     }
 }
 
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': True,
+    'formatters': {
+        'verbose': {
+            'format': '[%(asctime)s %(module)s:%(lineno)d %(funcName)s] %(levelname)-8s %(message)s',
+            'datefmt': '%H:%M:%S'
+        },
+        'simple': {
+            'format': '%(levelname)s %(message)s'
+        },
+        'syslog': {
+            'format': 'POSSUM: %(levelname)s %(message)s'
+        },
+    },
+    'filters': {
+         'require_debug_false': {
+             '()': 'django.utils.log.RequireDebugFalse'
+         }
+    },
+    'handlers': {
+        'null': {
+            'level': 'DEBUG',
+            'class': 'django.utils.log.NullHandler',
+        },
+        'console':{
+            'level': 'DEBUG',
+            'class': 'logging.StreamHandler',
+            'formatter': 'verbose'
+        },
+        'syslog': {
+            'level': 'INFO',
+            'class': 'logging.handlers.SysLogHandler',
+            'address': '/dev/log',
+            'formatter': 'syslog',
+            'filters': ['require_debug_false'],
+        },
+        'mail_admins': {
+            'level': 'ERROR',
+            'class': 'django.utils.log.AdminEmailHandler',
+            'filters': ['require_debug_false'],
+        },
+        'mail_bugwatch': {
+            'level': 'ERROR',
+            'class': 'logging.handlers.SMTPHandler',
+            'filters': ['require_debug_false'],
+            'mailhost': 'localhost',
+            'fromaddr': 'bugwatch@possum-software.org',
+            'toaddrs': ['bugwatch@possum-software.org'],
+            'subject': '[BUG] Houston, we have a problem.',
+        }
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['null'],
+            'propagate': True,
+            'level': 'INFO',
+        },
+        'django.request': {
+            'handlers': ['mail_admins'],
+            'level': 'ERROR',
+            'propagate': False,
+        },
+        'possum.base': {
+            'handlers': ['console', ],
+            'level': 'DEBUG',
+        },
+        'possum.base': {
+            'handlers': ['mail_admins', 'syslog', 'mail_bugwatch'],
+            'level': 'WARNING',
+        }
+    }
+}
+
+

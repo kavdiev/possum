@@ -51,7 +51,7 @@ try:
             secret_key_text = create_secret_key()
     else:
         secret_key_text = create_secret_key()
-    SECRET_KEY = secret_key_text 
+    SECRET_KEY = secret_key_text
 except IOError as e :
         raise Exception('Cannot open file `%s` for writing. (%s)' % (SECRET_FILE, e))
 ########## END KEY CONFIGURATION
@@ -60,13 +60,6 @@ ADMINS = (
     # ('Your Name', 'your_email@example.com'),
 )
 MANAGERS = ADMINS
-
-CACHES = {
-    'default': {
-        'BACKEND': 'django.core.cache.backends.memcached.MemcachedCache',
-        'LOCATION': '127.0.0.1:11211',
-    }
-}
 
 SITE_ID = 1
 
@@ -186,11 +179,6 @@ LOGGING = {
             'level': 'DEBUG',
             'class': 'django.utils.log.NullHandler',
         },
-        'console':{
-            'level': 'DEBUG',
-            'class': 'logging.StreamHandler',
-            'formatter': 'verbose'
-        },
         'syslog': {
             'level': 'INFO',
             'class': 'logging.handlers.SysLogHandler',
@@ -225,8 +213,8 @@ LOGGING = {
             'propagate': False,
         },
         'possum.base': {
-            'handlers': ['console', 'mail_admins', 'syslog', 'mail_bugwatch'],
-            'level': 'DEBUG',
+            'handlers': ['mail_admins', 'syslog', 'mail_bugwatch'],
+            'level': 'WARNING',
         }
     }
 }
