@@ -7,6 +7,7 @@ function my_help {
     usage: ./make [a command]
 
 List of commands:
+    demo  :   erase database with data of demonstration
     doc   :   make the documentation in html
     help  :   this help
     model :   generate doc/images/models-base.png
@@ -111,6 +112,10 @@ then
 fi
 
 case "$1" in
+demo)
+    enter_virtualenv
+    possum/utils/init_demo.py
+    ;;
 doc)
     doc
     ;;
