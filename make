@@ -7,14 +7,16 @@ function my_help {
     usage: ./make [a command]
 
 List of commands:
-    demo  :   erase database with data of demonstration
-    doc   :   make the documentation in html
-    help  :   this help
-    model :   generate doc/images/models-base.png
-    sh    :   run ./manage.py shell_plus in virtualenv
-    run   :   run ./manage.py runserver_plus in virtualenv
-    tests :   make tests and coverage
-    update:   install/update Possum environnement
+    demo           :  erase database with data of demonstration
+    doc            :  make the documentation in html
+    help           :  this help
+    install_debian :  install required packages on Debian/Ubuntu
+    init_mine      :  run possum/utils/init_mine.py in virtualenv 
+    model          :  generate doc/images/models-base.png
+    sh             :  run ./manage.py shell_plus in virtualenv
+    run            :  run ./manage.py runserver_plus in virtualenv
+    tests          :  make tests and coverage
+    update         :  install/update Possum environnement
 
 Note: If you need to define a proxy, set $http_proxy.
 Example: export http_proxy="http://proxy.possum-software.org:8080/"
@@ -93,7 +95,7 @@ function update {
     echo
     echo "Host must be connected to Internet for this step."
     echo "And you must have some packages installed:"
-    echo "Debian/Ubuntu> apt-get install graphviz-dev libcups2-dev memcached python-virtualenv"
+    echo "Debian/Ubuntu> ./make install_debian"
     echo
     if [ ! -d .virtualenv ]
     then
@@ -113,15 +115,23 @@ function update {
 To use Possum, copy and adapt possum/utils/init_db.py.
 
 Example:
-  cp possum/utils/init_db.py possum/utils/init_yours.py
+  cp possum/utils/init_db.py possum/utils/init_mine.py
   # adapt possum/utils/init_yours.py file
   # and execute it
-  source .virtualenv/bin/activate
-  python possum/utils/init_yours.py
+  ./make init_mine
 
 EOF
     fi
     ./manage.py migrate base
+}
+
+function install_debian {
+    echo
+    echo "You must be Root to install, if fail try with sudo:"
+    echo
+    apt-get install graphviz-dev libcups2-dev memcached \
+        python-virtualenv apache2 libapache2-mod-wsgi
+    a2enmod wsgi
 }
 
 if [ ! $# -eq 1 ]
@@ -130,9 +140,16 @@ then
 fi
 
 case "$1" in
+init_mine)
+    enter_virtualenv
+    possum/utils/init_mine.py
+    ;;
 demo)
     enter_virtualenv
     possum/utils/init_demo.py
+    ;;
+install_debian)
+    install_debian
     ;;
 doc)
     doc

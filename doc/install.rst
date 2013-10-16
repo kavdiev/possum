@@ -3,60 +3,6 @@ Installation
 
 Cette documentation est écrite pour Debian, et devrait fonctionner avec toutes les distributions (Ubuntu, Gentoo, ...).
 
-Vous devez avoir python et virtualenv installés sur votre système.
-
-Création de l'utilisateur POS
------------------------------
-
-::
-
- sudo adduser pos
-
-Dans notre exemple, nous allons installer Possum dans le répertoire ''/home/pos''. Vous
-pouvez évidemment choisir un autre répertoire si vous le souhaitez.
-
-Impression
-----------
-
-Possum peut imprimer sur plusieurs imprimantes. Afin de pouvoir les utiliser, il faut avoir
-un serveur cups configurer sur le serveur. Vous pouvez vérifier que les imprimantes sont bien
-disponibles avec la commande:
-
-::
-
-  lpstat -v
-
-D'autre part, l'impression des tickets nécessite la création et la suppression de nombreux
-fichiers. Je vous recommande donc d'utiliser un système de fichier virtuel type tmpfs pour
-le répertoire ''tickets'' qui se trouve par défaut dans le répertoire ''possum-software''.
-
-Par exemple pour le répertoire ''/home/pos/tickets'':
-
-::
-
-  mkdir /home/pos/tickets
-  echo "tmpfs /home/pos/tickets/ tmpfs defaults,nodev,nosuid 0 0" >> /etc/fstab
-  mount /home/pos/tickets
-  chown www-data /home/pos/tickets
-
-Cache
------
-
-Il est vivement conseiller d'utiliser un cache au niveau du serveur. Pour cela
-il faut installer ''memcached'' et le configurer. Voici un exemple de configuration pour
-CentOS 6:
-
-::
-
-  PORT="11211"
-  USER="apache"
-  MAXCONN="1024"
-  CACHESIZE="128"
-  OPTIONS="-s /home/pos/memcached.sock -a 700"
-
-Dans ce cas, c'est la socket ''/home/pos/memcached.sock'' qui sera utilisé pour interroger
-le cache. Il faudra reporter ce nom dans le fichier ''settings.py''.
-
 Possum
 ------
 
@@ -73,177 +19,103 @@ L'autre possibilité est de récupérer la version en développement:
 
   git clone https://github.com/possum-software/possum.git possum-software
 
+Remarque: il est recommandé d'utiliser la version dernière version stable.
+
 Prérequis
-^^^^^^^^^
+---------
 
-Il faut dans un premier temps installer l'outil virtualenv pour python si ce n'est déjà fait. 
-Voir `VirtualEnv <https://pypi.python.org/pypi/virtualenv>`_
-
-:: 
-
-  su - pos
-  virtualenv --python=python2 /home/pos
-
-On va maintenant préparer cet environnement. Pour pouvoir installer pycups, il faut les 
-outils de compilation et la bibliothèque ''libcups2-dev''.
-
+Possum nécessite l'installation de quelques paquets, pour simplifier l'installation
+il suffit d'utiliser la commande ''./make'' dans le répertoire de Possum:
 
 ::
 
-  apt-get install libcups2-dev libgraphviz-dev
-  
-  source /home/pos/bin/activate 
-  pip install -r requirements.txt
+  sudo ./make install_debian
 
-
-Note: il faudra utiliser ''deactivate'' pour sortir du virtualenv Possum une fois toute
-la configuration terminée.
-
-Nous devons maintenant installer deux librairies qui seront utilisées pour l'affichage
-des graphiques:
+Ensuite pour l'installation ou les mises à jours, nous allons encore utiliser la
+commande ''./make'':
 
 ::
 
-  cd /home/pos/possum-software/possum/static/
-  wget http://code.jquery.com/jquery-2.0.3.min.js -O jquery.min.js
-  mkdir highcharts
-  cd highcharts
-  wget http://code.highcharts.com/zips/Highcharts-3.0.6.zip
-  unzip Highcharts-3.0.6.zip
+  ./make update
 
-Configuration
-^^^^^^^^^^^^^
+Cette opération va installer et configurer tout l'environnement virtuel nécessaire
+à Possum.
 
-Maintenant, nous devons configurer POSSUM.
+Il nous reste maintenant à initialiser les données, pour cela il est recommandé
+de copier le fichier d'initialisation ''possum/utils/init_db.py''. Pour un exemple
+plus complet, vous pouvez vous inspirer du fichier ''possum/utils/init_demo.py'':
 
 ::
 
-  cd /home/pos/possum-software/possum
-  cp settings.py-sample settings.py
+  cp possum/utils/init_db.py possum/utils/init_mine.py
+  # adapt file possum/utils/init_mine.py and run it:
+  ./make init_mine
 
-Pour les développeurs, je vous conseille de prendre plutôt le
-fichier ''settings.py-dev''.
+Impression
+----------
 
-La base de données configurée par défaut est Sqlite3. À vous d'adapter le fichier
-de configuration a vos besoins. Il faudrat au minimum modifier la variable ''SECRET_KEY''.
-
-Pour plus d'informations
-reportez vous à la documentation de Django:
-`Installation de Django <http://docs.django-fr.org/intro/install.html>`_
-
-Création de la base pour l'application et mise à jour des schémas:
+Possum peut imprimer sur plusieurs imprimantes. Afin de pouvoir les utiliser, il faut avoir
+un serveur cups configurer sur le serveur. Vous pouvez vérifier que les imprimantes sont bien
+disponibles avec la commande:
 
 ::
 
-  cd /home/pos/possum-software
-  ./manage.py syncdb --noinput --migrate
+  lpstat -v
 
-Il nous faut maintenant définir quelques objets de base en exécutant
-le script: ''possum/utils/init_db.py''. Je vous conseille d'adapter
-le contenu de ce fichier (notamment l'utilisateur par défaut).
+D'autre part, l'impression des tickets nécessite la création et la suppression de nombreux
+fichiers. Je vous recommande donc d'utiliser un système de fichier virtuel type tmpfs pour
+le répertoire ''tickets'' qui se trouve par défaut dans le répertoire ''possum-software''.
+
+Par exemple, si le chemin absolu vers votre répertoire ''tickets' est ''/home/pos/possum-software/tickets/'', il faudra ajouter la ligne suivante dans votre fichier ''/etc/fstab'':
+
+::
+  tmpfs /home/pos/possum-software/tickets/ tmpfs defaults,nodev,nosuid 0 0
+
+
+Cela peut être fait avec les commandes suivantes (en étant root):
 
 ::
 
-  cd /home/pos/possum-software
-  possum/utils/init_db.py
+  echo "tmpfs /home/pos/possum-software/tickets/ tmpfs defaults,nodev,nosuid 0 0" >> /etc/fstab
+  mount /home/pos/possum-software/tickets/
+  chown www-data /home/pos/possum-software/tickets/
 
-Il existe un fichier plus complet d'initialisation qui est utilisé pour le
-`site de démonstration <http://demo.possum-software.org/>`_. Ce fichier est:
-''possum/utils/init_demo.py''.
+Le dernière commande donne les droits sur le répertoire au serveur web Apache.
 
-Avant d'aller plus loin, vous pouvez tester le bon fonctionnement de l'ensemble en utilisant
-le serveur de développement:
+Documentation
+-------------
 
-::
-
-  cd /home/pos/possum-software
-  ./manage.py runserver_plus 0.0.0.0:8000
-
-Vous devez pouvoir accèder à l'interface web. 
-
-À ce stade, vous pouvez également générer la documentation au format HTML dans le 
-répertoire ''/home/pos/possum-software/doc/_build/html/'':
+Vous pouvez générer la documentation en html avec la commande suivante:
 
 ::
 
-  cd /home/pos/possum-software/doc
-  make html
+  ./make doc
 
-
-Installation d'Apache
----------------------
-
-Nous devons tout d'abord installer le serveur web Apache et le module mod_wsgi.
-
-CentOS
-^^^^^^
-
-::
-
-  yum install mod_wsgi
-
-Gentoo
-^^^^^^
-
-::
-
-  emerge -av www-servers/apache www-apache/mod_wsgi
-
-Ubuntu
-^^^^^^
-
-::
-
-  sudo apt-get install apache2 libapache2-mod-wsgi
-  sudo a2enmod wsgi
-
-Il faut éditer le fichier de configuration du serveur web pour activer
-POSSUM. Le fichier par défaut doit être /etc/apache2/sites-enabled/default.
+Sinon elle est également disponible sur le site officiel: `Documentation <http://www.possum-software.org>`.
 
 Configuration d'Apache
 ----------------------
 
-Nous allons maintenant configurer le serveur web.
-Vous trouverez la documentation officiel de Django 
-`ici <https://docs.djangoproject.com/en/1.5/howto/deployment/wsgi/modwsgi/>`_
+Nous avons besoin ici du serveur web Apache et du module mod_wsgi, normalement
+ces paquets ont déjà été installés par la commande ''./make update''.
 
-Voici un exemple avec possum accessible à l'adresse: '/'
+Il faut éditer le fichier de configuration du serveur web pour activer
+POSSUM. Une configuration d'exemple pour Possum est fournie dans le répertoire
+''possum/utils/''.
 
-::
-
-  Alias /robots.txt /home/pos/possum-software/possum/static/robots.txt
-  Alias /favicon.ico /home/pos/possum-software/possum/static/images/favicon.ico
-  Alias /media/ /home/pos/possum-software/possum/media/
-  Alias /static/ /home/pos/possum-software/possum/static/
-
-  <Directory /home/pos/possum-software/possum/static>
-      Order deny,allow
-      Allow from all
-  </Directory>
-
-  <Directory /home/pos/possum-software/possum/media>
-      Order deny,allow
-      Allow from all
-  </Directory>
-
-  WSGIScriptAlias / /home/pos/possum-software/possum/wsgi.py
-  WSGIPythonPath /home/pos/possum-software:/home/pos/lib/python2.7/site-packages
-  #WSGIDaemonProcess possum python-path=/home/pos/possum-software:/home/pos/lib/python2.7/site-packages
-  #WSGIProcessGroup possum
-
-  <Directory /home/pos/possum-software/possum>
-      <Files wsgi.py>
-          Order deny,allow
-          Require all granted
-      </Files>
-  </Directory>
-
-
-Ensuite il faut redémarrer le serveur web:
+Il faut l'utiliser comme base:
 
 ::
 
+  cp possum/utils/apache2.conf /etc/apache2/site-availables/possum
+  a2ensite possum
+  # modifier le fichier /etc/apache2/site-availables/possum
+  # on enlève la configuration par défaut
+  a2dissite default 
+  # on redémarre le serveur web
   service apache2 restart
+
+
 
 Attention, si vous utilisez la base de donnée Sqlite3, il faut que l'utilisateur 
 qui est utilisé pour le serveur web est les droits de modification sur le fichier. Exemple:
