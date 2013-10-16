@@ -134,7 +134,8 @@ function install_debian {
     apt-get install graphviz-dev graphviz libcups2-dev memcached \
         python-virtualenv apache2 libapache2-mod-wsgi unzip \
         pkg-config python-dev cups-client cups
-    a2enmod wsgi
+    a2dismod status cgid autoindex
+    a2enmod wsgi ssl
 }
 
 if [ ! $# -eq 1 ]
