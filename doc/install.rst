@@ -116,17 +116,11 @@ Il faut l'utiliser comme base:
   # modifier le fichier /etc/apache2/site-availables/possum
   # on enlève la configuration par défaut
   a2dissite default 
+  # on donne les droits nécessaires au serveur web sur le répertoire
+  # possum-software (en considérant que l'on se trouve dans ce répertoire)
+  chown -R www-data .
   # on redémarre le serveur web
   service apache2 restart
-
-
-
-Attention, si vous utilisez la base de donnée Sqlite3, il faut que l'utilisateur 
-qui est utilisé pour le serveur web est les droits de modification sur le fichier. Exemple:
-
-::
-
-  chown www-data possum.db
 
 
 Mail

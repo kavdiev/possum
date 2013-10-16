@@ -51,17 +51,10 @@ Le projet est ouvert à toutes contributions, le plus simple est de nous contact
 de diffusion et de jeter un coup d'oeil au travail qu'il reste à faire: `Github <https://github.com/possum-software/possum/issues>`_.
 
 - Créateur, développeur principal et dictateur: Bonnegent Sébastien
-- Conception graphique du logo: Romon Hélène
+- Conception graphique du logo et des icônes: Romon Hélène
 
 
 Special thanks à Benoist Yvon pour le nom du projet.
-
-Nous remercions également les logiciels libres suivant sans lesquelles ce logiciel
-n'aurait pu exister:
-
-- `Django <http://www.djangoproject.com/>`_
-- `EFL <http://www.enlightenment.org/>`_
-- `PostgreSQL <http://www.postgresql.org/>`_
 
 Les utilisateurs
 ================
@@ -72,8 +65,9 @@ Autres produits du même type
 ============================
 
 - `Lemon POS <http://lemonpos.org/>`_
-- `Openbravo <http://www.openbravo.com/>`_
 - `nTPV <http://www.ntpv.org/>`_
+- `Openbravo <http://www.openbravo.com/>`_
+- `Pasteque <http://www.pasteque-logiciel.fr/>`_
 - `Projet-POS <http://www.projetpos.fr/>`_
 - `TuxShop <http://tuxshop.sourceforge.net/>`_
 
