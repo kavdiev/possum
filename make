@@ -4,13 +4,14 @@ HIGHCHARTS="Highcharts-3.0.6.zip"
 
 function my_help {
     cat << 'EOF'
-    usage: ./make [a command]
+
+Usage: ./make [a command]
 
 List of commands:
-    demo           :  erase database with data of demonstration
     doc            :  make the documentation in html
     help           :  this help
     install_debian :  install required packages on Debian/Ubuntu
+    init_demo      :  erase database with data of demonstration
     init_mine      :  run possum/utils/init_mine.py in virtualenv 
     model          :  generate doc/images/models-base.png
     sh             :  run ./manage.py shell_plus in virtualenv
@@ -112,6 +113,7 @@ function update {
         ./manage.py syncdb --noinput --migrate
         possum/utils/init_db.py
         cat << 'EOF'
+-------------------------------------------------------
 To use Possum, copy and adapt possum/utils/init_db.py.
 
 Example:
@@ -119,7 +121,7 @@ Example:
   # adapt possum/utils/init_yours.py file
   # and execute it
   ./make init_mine
-
+-------------------------------------------------------
 EOF
     fi
     ./manage.py migrate base
@@ -129,8 +131,9 @@ function install_debian {
     echo
     echo "You must be Root to install, if fail try with sudo:"
     echo
-    apt-get install graphviz-dev libcups2-dev memcached \
-        python-virtualenv apache2 libapache2-mod-wsgi
+    apt-get install graphviz-dev graphviz libcups2-dev memcached \
+        python-virtualenv apache2 libapache2-mod-wsgi unzip \
+        pkg-config python-dev cups-client cups
     a2enmod wsgi
 }
 
@@ -144,7 +147,7 @@ init_mine)
     enter_virtualenv
     possum/utils/init_mine.py
     ;;
-demo)
+init_demo)
     enter_virtualenv
     possum/utils/init_demo.py
     ;;

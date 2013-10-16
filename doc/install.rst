@@ -29,7 +29,8 @@ il suffit d'utiliser la commande ''./make'' dans le répertoire de Possum:
 
 ::
 
-  sudo ./make install_debian
+  # il faut les droits root pour cette commande
+  ./make install_debian
 
 Ensuite pour l'installation ou les mises à jours, nous allons encore utiliser la
 commande ''./make'':
@@ -61,6 +62,9 @@ disponibles avec la commande:
 ::
 
   lpstat -v
+
+Vous pouvez configurer le serveur d'impression via une interface web, en général à l'adresse
+suivante: `Cups <http://localhost:631>`
 
 D'autre part, l'impression des tickets nécessite la création et la suppression de nombreux
 fichiers. Je vous recommande donc d'utiliser un système de fichier virtuel type tmpfs pour
@@ -107,7 +111,7 @@ Il faut l'utiliser comme base:
 
 ::
 
-  cp possum/utils/apache2.conf /etc/apache2/site-availables/possum
+  cp possum/utils/apache2.conf /etc/apache2/site-available/possum
   a2ensite possum
   # modifier le fichier /etc/apache2/site-availables/possum
   # on enlève la configuration par défaut
@@ -122,7 +126,7 @@ qui est utilisé pour le serveur web est les droits de modification sur le fichi
 
 ::
 
-  chown apache /home/pos/possum.db
+  chown www-data possum.db
 
 
 Mail
