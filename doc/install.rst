@@ -83,7 +83,6 @@ Cela peut être fait avec les commandes suivantes (en étant root):
 
   echo "tmpfs /home/pos/possum-software/tickets/ tmpfs defaults,nodev,nosuid 0 0" >> /etc/fstab
   mount /home/pos/possum-software/tickets/
-  chown www-data /home/pos/possum-software/tickets/
 
 Le dernière commande donne les droits sur le répertoire au serveur web Apache.
 
@@ -123,9 +122,9 @@ Ici, le serveur s'appelle ''possum''.
 
 ::
 
-  cp possum/utils/apache2-ssl.conf /etc/apache2/site-available/possum
+  cp possum/utils/apache2-ssl.conf /etc/apache2/sites-available/possum
   a2ensite possum
-  # modifier le fichier /etc/apache2/site-availables/possum
+  # modifier le fichier /etc/apache2/sites-availables/possum
   # on enlève la configuration par défaut
   a2dissite default 
   # on donne les droits nécessaires au serveur web sur le répertoire
