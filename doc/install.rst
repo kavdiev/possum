@@ -73,6 +73,7 @@ le répertoire ''tickets'' qui se trouve par défaut dans le répertoire ''possu
 Par exemple, si le chemin absolu vers votre répertoire ''tickets' est ''/home/pos/possum-software/tickets/'', il faudra ajouter la ligne suivante dans votre fichier ''/etc/fstab'':
 
 ::
+
   tmpfs /home/pos/possum-software/tickets/ tmpfs defaults,nodev,nosuid 0 0
 
 
