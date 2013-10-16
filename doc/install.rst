@@ -107,11 +107,22 @@ Il faut éditer le fichier de configuration du serveur web pour activer
 POSSUM. Une configuration d'exemple pour Possum est fournie dans le répertoire
 ''possum/utils/''.
 
-Il faut l'utiliser comme base:
+Il faut l'utiliser comme base. La configuration conseillée utilise du ''https'' afin
+de sécuriser les échanges avec le serveur. Pour utiliser cette configuration, le 
+fichier ''/etc/hosts'' doit être correctement configuré. 
+
+Exemple:
 
 ::
 
-  cp possum/utils/apache2.conf /etc/apache2/site-available/possum
+  # hostname
+  possum
+
+Ici, le serveur s'appelle ''possum''.
+
+::
+
+  cp possum/utils/apache2-ssl.conf /etc/apache2/site-available/possum
   a2ensite possum
   # modifier le fichier /etc/apache2/site-availables/possum
   # on enlève la configuration par défaut
@@ -119,9 +130,13 @@ Il faut l'utiliser comme base:
   # on donne les droits nécessaires au serveur web sur le répertoire
   # possum-software (en considérant que l'on se trouve dans ce répertoire)
   chown -R www-data .
+  # création des certificats SSL
+  make-ssl-cert generate-default-snakeoil --force-overwrite
   # on redémarre le serveur web
   service apache2 restart
 
+Note: il y a également un exemple de configuration Apache sans utilisation
+du SSL dans le fichier ''possum/utils/apache2.conf''.
 
 Mail
 ----
