@@ -25,7 +25,7 @@ from django.db.models import Max, Avg
 from possum.base.category import Categorie
 from possum.base.payment import PaiementType
 from possum.base.product import Produit
-from possum.base.utils import month_name, month_sort, nb_sorted
+from possum.base.utils import nb_sorted
 from possum.base.vat import VAT
 import datetime
 import logging
