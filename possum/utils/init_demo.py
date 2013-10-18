@@ -106,7 +106,7 @@ vat_takeaway.set_tax("5")
 vat_takeaway.save()
 
 # on entre les nouveaux produits, les prix sont TTC
-cat = Categorie(nom="Jus",
+jus = Categorie(nom="Jus",
         priorite=25,
         surtaxable=False,
         disable_surtaxe=False,
@@ -114,23 +114,25 @@ cat = Categorie(nom="Jus",
         color="#44b3dc",
         vat_onsite=vat_onsite,
         vat_takeaway=vat_takeaway)
-cat.save()
-Produit(nom="abricot",
+jus.save()
+abricot = Produit(nom="abricot",
         nom_facture="jus abricot",
         prix="2.80",
         choix_cuisson=False,
         choix_accompagnement=False,
         choix_sauce=False,
-        categorie=cat).save()
-Produit(nom="pomme",
+        categorie=jus)
+abricot.save()
+pomme = Produit(nom="pomme",
         nom_facture="jus pomme",
         prix="2.80",
         choix_cuisson=False,
         choix_accompagnement=False,
         choix_sauce=False,
-        categorie=cat).save()
+        categorie=jus)
+pomme.save()
 
-cat = Categorie(nom="Bieres",
+bieres = Categorie(nom="Bieres",
         priorite=2,
         surtaxable=False,
         disable_surtaxe=False,
@@ -138,16 +140,17 @@ cat = Categorie(nom="Bieres",
         color="#ea97b5",
         vat_onsite=vat_alcool,
         vat_takeaway=vat_alcool)
-cat.save()
-Produit(nom="biere 50cl",
+bieres.save()
+biere = Produit(nom="biere 50cl",
         nom_facture="biere",
         prix="2.80",
         choix_cuisson=False,
         choix_accompagnement=False,
         choix_sauce=False,
-        categorie=cat).save()
+        categorie=bieres)
+biere.save()
 
-cat = Categorie(nom="Entrees",
+entrees = Categorie(nom="Entrees",
         priorite=5,
         surtaxable=False,
         disable_surtaxe=False,
@@ -155,24 +158,25 @@ cat = Categorie(nom="Entrees",
         color="#ff9f00",
         vat_onsite=vat_onsite,
         vat_takeaway=vat_takeaway)
-cat.save()
-entree = cat
-Produit(nom="salade normande",
+entrees.save()
+salade = Produit(nom="salade normande",
         nom_facture="salade",
         prix="3.40",
         choix_cuisson=False,
         choix_accompagnement=False,
         choix_sauce=False,
-        categorie=cat).save()
-Produit(nom="buffet",
+        categorie=entrees)
+salade.save()
+buffet = Produit(nom="buffet",
         nom_facture="buffet",
         prix="6.40",
         choix_cuisson=False,
         choix_accompagnement=False,
         choix_sauce=False,
-        categorie=cat).save()
+        categorie=entrees)
+buffet.save()
 
-cat = Categorie(nom="Plat",
+plat = Categorie(nom="Plat",
         priorite=10,
         surtaxable=False,
         disable_surtaxe=False,
@@ -180,24 +184,26 @@ cat = Categorie(nom="Plat",
         color="#c9a100",
         vat_onsite=vat_onsite,
         vat_takeaway=vat_takeaway)
-cat.save()
-plat = cat
-Produit(nom="entrecote",
+plat.save()
+entrecote = Produit(nom="entrecote",
         nom_facture="entrecote",
         prix="8.40",
         choix_cuisson=True,
         choix_accompagnement=False,
         choix_sauce=False,
-        categorie=cat).save()
-Produit(nom=u"pavé de saumon",
+        categorie=plat)
+entrecote.save()
+pave = Produit(nom=u"pavé de saumon",
         nom_facture="pave de saumon",
         prix="9.40",
         choix_cuisson=False,
         choix_accompagnement=False,
         choix_sauce=False,
-        categorie=cat).save()
+        categorie=plat)
+pave.save()
+
 # pour les menu
-cat = Categorie(nom="Menu",
+menu = Categorie(nom="Menu",
         priorite=22,
         surtaxable=False,
         disable_surtaxe=False,
@@ -205,25 +211,21 @@ cat = Categorie(nom="Menu",
         color="#88f027",
         vat_onsite=vat_onsite,
         vat_takeaway=vat_takeaway)
-cat.save()
-menu = Produit(nom=u"Entree/Plat",
+menu.save()
+entree_plat = Produit(nom=u"Entree/Plat",
         nom_facture="menu express",
         prix="13.40",
         choix_cuisson=False,
         choix_accompagnement=False,
         choix_sauce=False,
-        categorie=cat)
-menu.save()
-menu.categories_ok.add(entree)
-menu.categories_ok.add(plat)
-for nom in ["salade normande", "entrecote", u"pavé de saumon"]:
-    try:
-        produit = Produit.objects.get(nom=nom)
-    except Produit.DoesNotExist:
-        print "Le produit [%s] n'existe pas !" % nom
-        sys.exit()
-    menu.produits_ok.add(produit)
-menu.save()
+        categorie=menu)
+entree_plat.save()
+entree_plat.categories_ok.add(entrees)
+entree_plat.categories_ok.add(plat)
+entree_plat.produits_ok.add(salade)
+entree_plat.produits_ok.add(entrecote)
+entree_plat.produits_ok.add(pave)
+entree_plat.save()
 
 # mis a jour des TTC et TVA
 for product in Produit.objects.all():
@@ -241,3 +243,25 @@ for month in xrange(1, 13):
     MonthlyStat(year=2013, month=month, key='guests_average', value=random.randint(50, 500)).save()
     MonthlyStat(year=2013, month=month, key='bar_nb', value=random.randint(50, 500)).save()
     MonthlyStat(year=2013, month=month, key='bar_average', value=random.randint(50, 500)).save()
+
+# Création d'une dizaine de facture
+for i in xrange(15):
+    table = 'T%d' % random.randint(10, 25)
+    f = Facture(table=Table.objects.get(nom=table),
+            couverts=random.randint(1, 15))
+    f.save()
+    for produit in [salade, buffet, entrecote, pave, biere]:
+        for j in xrange(3):
+            p = ProduitVendu(produit=produit)
+            p.save()
+            f.add_product(p)
+    nouveau_menu = ProduitVendu(produit=entree_plat)
+    nouveau_menu.save()
+    for produit in [salade, pave]:
+        p = ProduitVendu(produit=produit)
+        p.save()
+        nouveau_menu.contient.add(p)
+    nouveau_menu.save()
+    if i % 2:
+        f.send_in_the_kitchen()
+
