@@ -284,7 +284,7 @@ class Facture(models.Model):
 
     def add_product_prize(self, product):
         """Ajoute le prix d'un ProduitVendu sur la facture."""
-        ttc = product.produit.prix
+        ttc = Decimal(product.produit.prix)
         self.total_ttc += ttc
         self.restant_a_payer += ttc
         self.save()
