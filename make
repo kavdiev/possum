@@ -10,7 +10,7 @@ Usage: ./make [a command]
 List of commands:
     doc            :  make the documentation in html
     help           :  this help
-    install_debian :  install required packages on Debian/Ubuntu
+    deb_install    :  install required packages on Debian/Ubuntu
     init_demo      :  erase database with data of demonstration
     init_mine      :  run possum/utils/init_mine.py in virtualenv 
     model          :  generate doc/images/models-base.png
@@ -96,7 +96,7 @@ function update {
     echo
     echo "Host must be connected to Internet for this step."
     echo "And you must have some packages installed:"
-    echo "Debian/Ubuntu> ./make install_debian"
+    echo "Debian/Ubuntu> ./make deb_install"
     echo
     if [ ! -d .virtualenv ]
     then
@@ -127,15 +127,26 @@ EOF
     ./manage.py migrate base
 }
 
-function install_debian {
+function deb_install_apache {
+    apt-get install apache2-mpm-worker libapache2-mod-wsgi
+    a2dismod status cgid autoindex auth_basic cgi dir env
+    a2dismod authn_file deflate setenvif reqtimeout negotiation
+    a2dismod authz_groupfile authz_user authz_default
+    a2enmod wsgi ssl
+}
+
+function deb_install_nginx {
+    apt-get install nginx-light supervisor
+}
+
+function deb_install {
     echo
     echo "You must be Root to install, if fail try with sudo:"
     echo
     apt-get install graphviz-dev graphviz libcups2-dev memcached \
-        python-virtualenv apache2 libapache2-mod-wsgi unzip \
+        python-virtualenv unzip \
         pkg-config python-dev cups-client cups
-    a2dismod status cgid autoindex
-    a2enmod wsgi ssl
+    deb_install_apache
 }
 
 if [ ! $# -eq 1 ]
@@ -152,8 +163,8 @@ init_demo)
     enter_virtualenv
     possum/utils/init_demo.py
     ;;
-install_debian)
-    install_debian
+deb_install)
+    deb_install
     ;;
 doc)
     doc
