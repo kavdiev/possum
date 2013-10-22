@@ -55,25 +55,25 @@ function tests {
 
 function update_js {
     # update javascript part
-    if [ ! -e possum/static/jquery.min.js ]
+    if [ ! -e possum/base/static/jquery.min.js ]
     then
         echo "Download and install JQuery..."
-        wget http://code.jquery.com/${JQUERY} -O possum/static/jquery.min.js
+        wget http://code.jquery.com/${JQUERY} -O possum/base/static/jquery.min.js
     fi
 
-    if [ ! -d possum/static/highcharts ]
+    if [ ! -d possum/base/static/highcharts ]
     then
-        mkdir -v possum/static/highcharts
+        mkdir -v possum/base/static/highcharts
     fi
-    if [ ! -e possum/static/highcharts/${HIGHCHARTS} ]
+    if [ ! -e possum/base/static/highcharts/${HIGHCHARTS} ]
     then
         echo "Download HighCharts..."
-        wget http://code.highcharts.com/zips/${HIGHCHARTS} -O possum/static/highcharts/${HIGHCHARTS}
+        wget http://code.highcharts.com/zips/${HIGHCHARTS} -O possum/base/static/highcharts/${HIGHCHARTS}
     fi
-    if [ ! -e possum/static/highcharts/js/highcharts.js ]
+    if [ ! -e possum/base/static/highcharts/js/highcharts.js ]
     then
         echo "Unzip HighCharts..."
-        pushd possum/static/highcharts/ >/dev/null
+        pushd possum/base/static/highcharts/ >/dev/null
         unzip Highcharts-3.0.6.zip
         popd >/dev/null
     fi
