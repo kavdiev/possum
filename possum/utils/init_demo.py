@@ -91,7 +91,7 @@ for i in xrange(1, 15):
     Table(nom="T%02d" % i, zone=z).save()
 z = Zone(nom='Terrasse', surtaxe=True, prix_surtaxe='0.2')
 z.save()
-for i in xrange(15, 25):
+for i in xrange(15, 26):
     Table(nom="T%02d" % i, zone=z).save()
 
 # TVA
