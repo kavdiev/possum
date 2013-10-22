@@ -77,19 +77,20 @@ function update_js {
         unzip Highcharts-3.0.6.zip
         popd >/dev/null
     fi
-
-    if [ ! -d possum/static/chartit ]
-    then
-        mkdir -pv possum/static/chartit/js
-    fi
-    if [ ! -d possum/static/chartit/js ]
-    then
-        mkdir -pv possum/static/chartit/js
-    fi
-    if [ ! -e possum/static/chartit/js/chartloader.js ]
-    then
-        find .virtualenv/ -name chartloader.js -exec cp {} possum/static/chartit/js/chartloader.js \;
-    fi
+    enter_virtualenv
+    ./manage.py collectstatic --noinput --no-post-process
+#    if [ ! -d possum/static/chartit ]
+#    then
+#        mkdir -pv possum/static/chartit/js
+#    fi
+#    if [ ! -d possum/static/chartit/js ]
+#    then
+#        mkdir -pv possum/static/chartit/js
+#    fi
+#    if [ ! -e possum/static/chartit/js/chartloader.js ]
+#    then
+#        find .virtualenv/ -name chartloader.js -exec cp {} possum/static/chartit/js/chartloader.js \;
+#    fi
 }
 
 function update {

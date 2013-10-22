@@ -13,6 +13,7 @@ Sommaire
    update
    utilisation
    devs
+   materiels
    screenshots
    licence
    credits

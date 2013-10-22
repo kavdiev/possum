@@ -176,24 +176,3 @@ sa sauvegarde se limite à la copie d'un fichier.
 
 Pour accéder à POSSUM, il suffit de lancer un navigateur web.
 
-Exemple de Matériels
---------------------
-
-Pour finir, voici un exemple de matériels utilisés et qui fonctionne:
-
-PC:
-
-* carte Mini ITX VIA M6000G
-* Asus EEE PC
-* Shuttle SD11G5
-
-Écran tactile:
-
-* ELo Touch 1515L
-
-À noter que le support de la part de EloTouch est plutôt
-moyen. Je vous conseille ce site: `EloTouchScreen <https://help.ubuntu.com/community/EloTouchScreen>`_
-
-Imprimante à ticket:
-
-* Epson MT M88 iv
