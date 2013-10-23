@@ -16,8 +16,8 @@ des ventes.
 Il est également possible de gérer des listes de lecture, ceci vous permettra d'utiliser
 Possum comme un jukebox pour diffuser de la musique dans l'établissement.
 
-Tout le code source est sous GPLv3 et la documentation sous FDL. L'interface 
-graphique utilise la librairie EFL et tout le backend utilise Python / Django.
+Tout le code source est sous GPLv3 et la documentation sous FDL. Possum utilise
+le framework Django.
 
 Le maître mot: essayer de rester simple pour l'utilisateur.
 
