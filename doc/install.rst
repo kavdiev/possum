@@ -3,6 +3,12 @@ Installation
 
 Cette documentation est écrite pour Debian, et devrait fonctionner avec toutes les distributions (Ubuntu, Gentoo, ...).
 
+Voici le schéma général des différentes briques logiciels:
+
+.. image:: images/overview.png
+    :scale: 50
+    :alt: Overview
+
 Possum
 ------
 
@@ -30,7 +36,7 @@ il suffit d'utiliser la commande ''./make'' dans le répertoire de Possum:
 ::
 
   # il faut les droits root pour cette commande
-  ./make install_debian
+  ./make deb_install
 
 Ensuite pour l'installation ou les mises à jours, nous allons encore utiliser la
 commande ''./make'':
@@ -97,18 +103,34 @@ Vous pouvez générer la documentation en html avec la commande suivante:
 
 Sinon elle est également disponible sur le site officiel: `Documentation <http://www.possum-software.org>`.
 
-Configuration d'Apache
-----------------------
+Configuration du serveur Web
+----------------------------
 
-Nous avons besoin ici du serveur web Apache et du module mod_wsgi, normalement
-ces paquets ont déjà été installés par la commande ''./make update''.
+Nous avons besoin maintenant d'un serveur web. Il y a plusieurs possibilités,
+celle conseillée ici est la plus performante mais vous pouvez tout à fait choisir
+une autre solution (''./make deb_install_apache'' installera par exemple les paquets
+nécessaires à l'utilisation du serveur web Apache).
 
-Il faut éditer le fichier de configuration du serveur web pour activer
-POSSUM. Une configuration d'exemple pour Possum est fournie dans le répertoire
-''possum/utils/''.
+La solution préconisée à base de `NGinx <http://nginx.org/>`, `Gunicorn <http://gunicorn.org/>` 
+et `Supervisor <http://supervisord.org/>` semble à première
+vue compliquée mais c'est la plus performante dans le cas de Possum (peu de clients
+connectés à l'interface web).
 
-Il faut l'utiliser comme base. La configuration conseillée utilise du ''https'' afin
-de sécuriser les échanges avec le serveur. Pour utiliser cette configuration, le 
+Commençons par installer les paquets nécessaires:
+
+::
+
+  ./make deb_install_nginx
+
+
+Il reste la configuration à faire. Pour cela, il y a des configurations type dans 
+le répertoire ''possum/utils/''. La commande ci-dessus devrait vous donner les 
+instructions à suivre.
+
+
+La configuration conseillée utilise du ''https'' afin
+de sécuriser les échanges entre les clients et le serveur. Pour utiliser 
+cette configuration, le 
 fichier ''/etc/hosts'' doit être correctement configuré. 
 
 Exemple:
@@ -122,21 +144,12 @@ Ici, le serveur s'appelle ''possum''.
 
 ::
 
-  cp possum/utils/apache2-ssl.conf /etc/apache2/sites-available/possum
-  a2ensite possum
-  # modifier le fichier /etc/apache2/sites-availables/possum
-  # on enlève la configuration par défaut
-  a2dissite default 
   # on donne les droits nécessaires au serveur web sur le répertoire
   # possum-software (en considérant que l'on se trouve dans ce répertoire)
   chown -R www-data .
   # création des certificats SSL
   make-ssl-cert generate-default-snakeoil --force-overwrite
-  # on redémarre le serveur web
-  service apache2 restart
 
-Note: il y a également un exemple de configuration Apache sans utilisation
-du SSL dans le fichier ''possum/utils/apache2.conf''.
 
 Mail
 ----

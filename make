@@ -8,19 +8,23 @@ function my_help {
 Usage: ./make [a command]
 
 List of commands:
-    doc            :  make the documentation in html
-    help           :  this help
-    deb_install    :  install required packages on Debian/Ubuntu
-    init_demo      :  erase database with data of demonstration
-    init_mine      :  run possum/utils/init_mine.py in virtualenv 
-    model          :  generate doc/images/models-base.png
-    sh             :  run ./manage.py shell_plus in virtualenv
-    run            :  run ./manage.py runserver_plus in virtualenv
-    tests          :  make tests and coverage
-    update         :  install/update Possum environnement
+    doc                :  make the documentation in html
+    help               :  this help
+    deb_install        :  install required packages on Debian/Ubuntu (*)
+    deb_install_apache :  install apache on Debian/Ubuntu (*)
+    deb_install_nginx  :  install nginx on Debian/Ubuntu (*)
+    init_demo          :  erase database with data of demonstration
+    init_mine          :  run possum/utils/init_mine.py in virtualenv 
+    model              :  generate doc/images/models-base.png
+    sh                 :  run ./manage.py shell_plus in virtualenv
+    run                :  run ./manage.py runserver_plus in virtualenv
+    tests              :  make tests and coverage
+    update             :  install/update Possum environnement
 
 Note: If you need to define a proxy, set $http_proxy.
 Example: export http_proxy="http://proxy.possum-software.org:8080/"
+
+Note2: (*) must be root to do it
 
 EOF
     exit 1
@@ -134,20 +138,34 @@ function deb_install_apache {
     a2dismod authn_file deflate setenvif reqtimeout negotiation
     a2dismod authz_groupfile authz_user authz_default
     a2enmod wsgi ssl
+    echo 
+    echo "Config example for http in: possum/utils/apache2.conf"
+    echo "Config example for https in: possum/utils/apache2-ssl.conf"
+    echo "To use one:"
+    echo "  cp possum/utils/apache2-ssl.conf /etc/apache2/sites-available/possum"
+    echo "  a2dissite default"
+    echo "  a2ensite possum"
+    echo
 }
 
 function deb_install_nginx {
     apt-get install nginx-light supervisor
+    echo 
+    echo "Config example for Supervisor: possum/utils/supervisor.conf"
+    echo "  cp possum/utils/supervisor.conf /etc/supervisor/conf.d/possum.conf"
+    echo "  /etc/init.d/supervisor restart"
+    echo
+    echo "Config example for NGinx: possum/utils/nginx-ssl.conf"
+    echo "  cp possum/utils/nginx-ssl.conf /etc/nginx/sites-enabled/default"
+    echo "  /etc/init.d/nginx restart"
+    echo
 }
 
 function deb_install {
-    echo
-    echo "You must be Root to install, if fail try with sudo:"
-    echo
     apt-get install graphviz-dev graphviz libcups2-dev memcached \
         python-virtualenv unzip \
         pkg-config python-dev cups-client cups
-    deb_install_apache
+#    deb_install_apache
 }
 
 if [ ! $# -eq 1 ]
@@ -166,6 +184,12 @@ init_demo)
     ;;
 deb_install)
     deb_install
+    ;;
+deb_install_apache)
+    deb_install_apache
+    ;;
+deb_install_nginx)
+    deb_install_nginx
     ;;
 doc)
     doc

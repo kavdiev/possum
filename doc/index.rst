@@ -15,6 +15,7 @@ Sommaire
    devs
    materiels
    screenshots
+   releases
    licence
    credits
 
