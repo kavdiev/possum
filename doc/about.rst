@@ -66,6 +66,7 @@ Autres produits du même type
 
 - `Lemon POS <http://lemonpos.org/>`_
 - `nTPV <http://www.ntpv.org/>`_
+- `OpenERP <https://www.openerp.com/>`_
 - `Openbravo <http://www.openbravo.com/>`_
 - `Pasteque <http://www.pasteque-logiciel.fr/>`_
 - `Projet-POS <http://www.projetpos.fr/>`_
