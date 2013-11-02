@@ -31,7 +31,6 @@ from possum.base.category import Categorie
 from possum.base.printer import Printer
 from possum.base.follow import Follow
 from possum.base.config import Config
-from django.contrib.auth import authenticate
 
 logger = logging.getLogger(__name__)
 
@@ -247,20 +246,6 @@ class Facture(models.Model):
                 # la nouvelle table est surtaxée
                 self.add_surtaxe()
 
-    def nb_soldee_jour(self, date):
-        """Nombre de facture soldee le jour 'date'"""
-        if date.hour > 5:
-            date_min = datetime.datetime(date.year, date.month, date.day, 5)
-        else:
-            tmp = date - datetime.timedelta(days=1)
-            date_min = datetime.datetime(tmp.year, tmp.month, tmp.day, 5)
-        tmp = date_min + datetime.timedelta(days=1)
-        date_max = datetime.datetime(tmp.year, tmp.month, tmp.day, 5)
-        return Facture.objects.filter(date_creation__gt=date_min, \
-                                        date_creation__lt=date_max, \
-                                        restant_a_payer=0).exclude(\
-                                        produits__isnull=True).count()
-
     def non_soldees(self):
         """Retourne la liste des factures non soldees"""
         liste = []
@@ -412,15 +397,6 @@ class Facture(models.Model):
             logger.warning("[%s] on essaye de supprimer un produit "\
                             "qui n'est pas dans la facture" % self)
 
-    def del_all_payments(self):
-        """On supprime tous les paiements"""
-        if self.paiements.count():
-            for paiement in self.paiements.iterator():
-                paiement.delete()
-            self.paiements.clear()
-            self.restant_a_payer = self.total_ttc
-            self.save()
-
     def del_payment(self, payment):
         """On supprime un paiement"""
         if payment in self.paiements.iterator():
@@ -433,38 +409,6 @@ class Facture(models.Model):
                             "qui n'est pas dans la facture: %s %s %s %s"\
                             % (self, payment.id, payment.date, \
                             payment.type.nom, payment.montant))
-
-    def get_users(self):
-        """Donne la liste des noms d'utilisateurs"""
-        users = []
-        for user in User.objects.order_by('username').iterator():
-            if user.is_active:
-                users.append(user.username)
-        return users
-
-    def get_last_connected(self):
-        try:
-            return User.objects.order_by('last_login')[0].username
-        except:
-            return "aucun utilisateur"
-
-    def authenticate(self, username, password):
-        user = authenticate(username=username, password=password)
-        if user is not None:
-            if user.groups.filter(name='Managers').count() == 1:
-                return True
-            else:
-                logger.debug("utilisateur non authorise: %s" % username)
-                return False
-        else:
-            logger.debug("erreur avec: %s / %s" % (username, password))
-            return False
-
-    def get_resume(self):
-        return "%s %s %d" % (self.table.nom, self.date_creation, self.montant)
-
-    def get_montant(self):
-        return self.montant_normal + self.montant_alcool
 
     def is_valid_payment(self, montant):
         ''' Vérifie un paiement avant add_payment '''
