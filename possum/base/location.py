@@ -41,7 +41,7 @@ class Zone(Nom):
         return Table.objects.filter(zone=self)
 
 class Table(Nom):
-    zone = models.ForeignKey('Zone', related_name="table-zone")
+    zone = models.ForeignKey(Zone, related_name="table-zone")
 
     def est_surtaxe(self):
         if self.zone:

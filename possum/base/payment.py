@@ -28,9 +28,7 @@ class PaiementType(Nom):
 class Paiement(models.Model):
     """valeur_unitaire: pour gerer les montants des tickets restos"""
     # facture = models.ForeignKey('Facture', related_name="paiement-facture")
-    type = models.ForeignKey('PaiementType', related_name="paiement-type")
-#    montant = models.IntegerField("TTC")
-#    valeur_unitaire = models.PositiveIntegerField(default=1)
+    type = models.ForeignKey(PaiementType, related_name="paiement-type")
     montant = models.DecimalField(max_digits=9, decimal_places=2, default=0)
     valeur_unitaire = models.DecimalField(max_digits=9, decimal_places=2, default=1)
     date = models.DateTimeField('encaisser le', auto_now_add=True)
@@ -49,7 +47,4 @@ class Paiement(models.Model):
 
     def __cmp__(self, other):
         return cmp(self.date.date, other.date.date)
-
-    def show(self):
-        return str(self)
 

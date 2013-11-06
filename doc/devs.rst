@@ -16,6 +16,14 @@ La convention de codage utilisée pour le projet suit le
 Modèles
 =======
 
+Voici le diagramme des classes:
+
+.. image:: images/diagramme_des_classes.png
+   :height: 100
+   :width: 200
+   :scale: 50
+   :alt: Diagramme des classes
+
 Voici le schèma général des différentes classes utilisées.
 
 .. image:: images/models-base.png
@@ -26,7 +34,7 @@ Voici le schèma général des différentes classes utilisées.
 
 À nouveau les différentes classes avec leurs héritages.
 
-.. inheritance-diagram:: possum.base.models
+.. inheritance-diagram:: possum.base.models.facture
    :parts: 1
 
 La classe centrale, et donc la plus importante, est la classe Facture_.
