@@ -1,8 +1,11 @@
-POSSUM is a software for point of sales (POS) type restaurant / bar / brasserie.
+POSSUM is a software for point of sales (POS)
+=============================================
 
-<a href='https://www.possum-software.org/jenkins/job/possum-dev/'><img src='https://www.possum-software.org/jenkins/buildStatus/icon?job=possum-dev'></a>
+.. image:: https://www.possum-software.org/jenkins/buildStatus/icon?job=possum-dev
+    :target: https://www.possum-software.org/jenkins/job/possum-dev/
+    :alt: Build Status
 
-[![Build Status](https://www.possum-software.org/jenkins/job/possum-dev/badge/icon)](https://www.possum-software.org/jenkins/job/possum-dev/)
+POSSUM is designed for restaurant / bar / brasserie.
 
 It is advisable to use at least a ticket printer and a touch screen.
 
@@ -14,9 +17,10 @@ POSSUM is a french project, nevertheless we try to write up in English.
 
 All source code are under GPLv3 and documentation in FDL. GUI use EFL and all the backend is developped with Python / Django.
 
-Some important links:
+Some important links
+--------------------
 
-* Demo [demo/demo]:  http://demo.possum-software.org
+* .. _Demo [demo/demo]: http://demo.possum-software.org
 * Documentation:     http://www.possum-software.org
 * Freecode:          http://freecode.com/projects/possum
 * Google+:           https://plus.google.com/113982636103042531268/posts
