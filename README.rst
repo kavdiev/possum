@@ -1,11 +1,11 @@
-POSSUM is a software for point of sales (POS)
-=============================================
+POSSUM
+======
 
 .. image:: https://www.possum-software.org/jenkins/buildStatus/icon?job=possum-dev
     :target: https://www.possum-software.org/jenkins/job/possum-dev/
     :alt: Build Status
 
-POSSUM is designed for restaurant / bar / brasserie.
+POSSUM is a software for point of sales (POS) specially designed for restaurant / bar / brasserie.
 
 It is advisable to use at least a ticket printer and a touch screen.
 
@@ -19,15 +19,19 @@ All source code are under GPLv3 and documentation in FDL. GUI use EFL and all th
 
 The key word: try to keep it simple for the final user.
 
-Some important links
---------------------
+You can test the demonstration with login/password (demo/demo) 
+`here <http://demo.possum-software.org>`_
 
-* Demo [demo/demo]: `demo.possum-software.org <http://demo.possum-software.org>`_
+
 * Documentation:     http://www.possum-software.org
 * Freecode:          http://freecode.com/projects/possum
-* Issues:            https://github.com/possum-software/possum/issues
-* Jenkins:           https://www.possum-software.org/jenkins/view/Tous/
-* Sonar:             https://www.possum-software.org/sonar/
+
+Devs
+----
+
+* `Issues <https://github.com/possum-software/possum/issues>`_
+* `Jenkins <https://www.possum-software.org/jenkins/view/Tous/>`_
+* `Sonar <https://www.possum-software.org/sonar/>`_
 
 RSS
 ---
@@ -39,5 +43,5 @@ Social
 
 * `Google+ <https://plus.google.com/113982636103042531268/posts>`_
 * `Twitter releases <https://twitter.com/possum_software>`_
-* `Twitter commits <https://twitter.com/possum_commits`_
+* `Twitter commits <https://twitter.com/possum_commits>`_
 
