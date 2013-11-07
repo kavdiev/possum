@@ -19,12 +19,16 @@ All source code are under GPLv3 and documentation in FDL. GUI use EFL and all th
 
 The key word: try to keep it simple for the final user.
 
-You can test the demonstration with login/password (demo/demo) 
-`here <http://demo.possum-software.org>`_
-
 
 * Documentation:     http://www.possum-software.org
 * Freecode:          http://freecode.com/projects/possum
+
+
+Demo
+----
+
+You can test POSSUM on the demo site with login/password (demo/demo) 
+`here <http://demo.possum-software.org>`_.
 
 Devs
 ----
