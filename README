@@ -1,5 +1,7 @@
 POSSUM is a software for point of sales (POS) type restaurant / bar / brasserie.
 
+[![Build Status](https://www.possum-software.org/jenkins/buildStatus/icon?job=possum-dev)](https://www.possum-software.org/jenkins/job/possum-dev/)
+
 It is advisable to use at least a ticket printer and a touch screen.
 
 POSSUM can be used to provide billing and presents different statistical (Sales, VAT amount, total payments by payment type, settings, average ticket per table, ...). These statistics are calculated per day and per month and help the manager to know the trade trend sales.
@@ -20,7 +22,9 @@ Some important links:
 * Jenkins:           https://www.possum-software.org/jenkins/view/Tous/
 * RSS:               http://freecode.com/projects/possum/releases.atom
 * Sonar:             https://www.possum-software.org/sonar/
-* Twitter:           https://twitter.com/possum_software
+* Twitter:           
+    releases:        https://twitter.com/possum_software
+    commits:         https://twitter.com/possum_commits
 
 The key word: try to keep it simple for the final user.
 
