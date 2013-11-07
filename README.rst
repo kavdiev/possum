@@ -23,6 +23,12 @@ The key word: try to keep it simple for the final user.
 * Documentation:     http://www.possum-software.org
 * Freecode:          http://freecode.com/projects/possum
 
+Community
+---------
+
+* `Google+ <https://plus.google.com/113982636103042531268/posts>`_
+* `Twitter releases <https://twitter.com/possum_software>`_
+* `Twitter commits <https://twitter.com/possum_commits>`_
 
 Demo
 ----
@@ -41,11 +47,4 @@ RSS
 ---
 
 * `Releases <http://freecode.com/projects/possum/releases.atom>`_
-
-Social
-------
-
-* `Google+ <https://plus.google.com/113982636103042531268/posts>`_
-* `Twitter releases <https://twitter.com/possum_software>`_
-* `Twitter commits <https://twitter.com/possum_commits>`_
 
