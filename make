@@ -50,6 +50,11 @@ function doc {
 
 function tests {
     enter_virtualenv
+    for f in `find . -name '*.py'|egrep -v '/test/|.virtualenv/'`
+    do
+        pylint --output-format=parseable --reports=y $f >> pylint.log
+        pep8 $f >> pep8.log
+    done || :
     OMIT="django_extensions,django,*migrations*,*.virtualenv*"
     coverage run --source=. manage.py test --verbosity=2 --traceback
     coverage report --omit=${OMIT}
