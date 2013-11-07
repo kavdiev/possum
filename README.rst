@@ -17,23 +17,27 @@ POSSUM is a french project, nevertheless we try to write up in English.
 
 All source code are under GPLv3 and documentation in FDL. GUI use EFL and all the backend is developped with Python / Django.
 
+The key word: try to keep it simple for the final user.
+
 Some important links
 --------------------
 
-* .. _Demo [demo/demo]: http://demo.possum-software.org
+* Demo [demo/demo]: `demo.possum-software.org <http://demo.possum-software.org>`_
 * Documentation:     http://www.possum-software.org
 * Freecode:          http://freecode.com/projects/possum
-* Google+:           https://plus.google.com/113982636103042531268/posts
 * Issues:            https://github.com/possum-software/possum/issues
 * Jenkins:           https://www.possum-software.org/jenkins/view/Tous/
-* RSS:               http://freecode.com/projects/possum/releases.atom
 * Sonar:             https://www.possum-software.org/sonar/
-* Twitter:           
-    releases:        https://twitter.com/possum_software
-    commits:         https://twitter.com/possum_commits
 
-The key word: try to keep it simple for the final user.
+RSS
+---
 
+* `Releases <http://freecode.com/projects/possum/releases.atom>`_
 
+Social
+------
 
+* `Google+ <https://plus.google.com/113982636103042531268/posts>`_
+* `Twitter releases <https://twitter.com/possum_software>`_
+* `Twitter commits <https://twitter.com/possum_commits`_
 
