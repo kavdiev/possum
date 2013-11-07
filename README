@@ -1,6 +1,6 @@
 POSSUM is a software for point of sales (POS) type restaurant / bar / brasserie.
 
-[![Build Status](https://www.possum-software.org/jenkins/buildStatus/icon?job=possum-dev)](https://www.possum-software.org/jenkins/job/possum-dev/)
+https://www.possum-software.org/jenkins/buildStatus/icon?job=possum-dev
 
 It is advisable to use at least a ticket printer and a touch screen.
 
