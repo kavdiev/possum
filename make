@@ -49,6 +49,11 @@ function doc {
 }
 
 function tests {
+    # pip install django-jenkins
+    if [ ! -e possum/settings.py ]
+    then
+        cp possum/settings_tests.py possum/settings.py
+    fi
     enter_virtualenv
     for f in `find possum/ -name '*.py'|egrep -v 'possum/test/|possum/base/migrations/'`
     do
