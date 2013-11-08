@@ -45,7 +45,7 @@ INSTALLED_APPS += (
     'django_jenkins',
 )
 
-PROJECT_APPS = ['possum.base',]
+#PROJECT_APPS = ['possum.base',]
 
 JENKINS_TASKS = (
     'django_jenkins.tasks.run_pylint',

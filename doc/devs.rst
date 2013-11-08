@@ -34,7 +34,7 @@ Voici le schèma général des différentes classes utilisées.
 
 À nouveau les différentes classes avec leurs héritages.
 
-.. inheritance-diagram:: possum.base.models.facture
+.. inheritance-diagram:: possum.base.models.bill.Facture
    :parts: 1
 
 La classe centrale, et donc la plus importante, est la classe Facture_.
