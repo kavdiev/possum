@@ -49,7 +49,7 @@ function doc {
 }
 
 function tests {
-    # pip install django-jenkins pep8
+    # pip install django-jenkins pep8 pyflakes
     enter_virtualenv
     ./manage.py jenkins
 #    for f in `find possum/ -name '*.py'|egrep -v 'possum/test/|possum/base/migrations/'`
@@ -57,11 +57,11 @@ function tests {
 #        pylint --output-format=parseable --reports=y $f >> pylint.log
 #        pep8 $f >> pep8.log
 #    done || :
-    OMIT="django_extensions,django,*migrations*,*.virtualenv*"
-    coverage run --source=. manage.py test --verbosity=2 --traceback
+#    OMIT="django_extensions,django,*migrations*,*.virtualenv*"
+#    coverage run --source=. manage.py test --verbosity=2 --traceback
 #    coverage report --omit=${OMIT}
 #    coverage html --omit=${OMIT}
-    coverage xml --omit=${OMIT}
+#    coverage xml --omit=${OMIT}
 }
 
 function update_js {
