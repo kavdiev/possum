@@ -49,17 +49,14 @@ function doc {
 }
 
 function tests {
-    # pip install django-jenkins
-    if [ ! -e possum/settings.py ]
-    then
-        cp possum/settings_tests.py possum/settings.py
-    fi
+    # pip install django-jenkins pep8
     enter_virtualenv
-    for f in `find possum/ -name '*.py'|egrep -v 'possum/test/|possum/base/migrations/'`
-    do
-        pylint --output-format=parseable --reports=y $f >> pylint.log
-        pep8 $f >> pep8.log
-    done || :
+    ./manage.py jenkins
+#    for f in `find possum/ -name '*.py'|egrep -v 'possum/test/|possum/base/migrations/'`
+#    do
+#        pylint --output-format=parseable --reports=y $f >> pylint.log
+#        pep8 $f >> pep8.log
+#    done || :
     OMIT="django_extensions,django,*migrations*,*.virtualenv*"
     coverage run --source=. manage.py test --verbosity=2 --traceback
 #    coverage report --omit=${OMIT}
@@ -213,6 +210,12 @@ update)
     update
     ;;
 tests)
+# TODO: diff sur le settings.py et backup de securite
+#    if [ ! -e possum/settings.py ]
+#    then
+#    cp possum/settings_tests.py possum/settings.py
+#    fi
+    cp possum/settings_tests.py possum/settings.py
     update
     tests
     doc
