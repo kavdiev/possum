@@ -84,19 +84,20 @@ def products_view(request, product_id):
                                 data,
                                 context_instance=RequestContext(request))
 
-def treat_product_new(request, cat_id):
+def treat_product_new(request, category):
     name = request.POST.get('name', '').strip()
     billname = request.POST.get('billname', '').strip()
     prize = request.POST.get('prize', '').strip()
     if is_valid_product(name, billname, prize) :
         try:
             product = Produit(nom=name, nom_facture=billname, prix=prize)
-            product.set_category(data['category'])
+            print str(product)
+            product.set_category(category)
             product.save()
-        except:
+        except Exception as e:
             messages.add_message(request, messages.ERROR, "Les modifications n'ont pu être enregistrées.")
         else:
-            return HttpResponseRedirect('/carte/categories/%s/' % data['category'].id)
+            return HttpResponseRedirect('/carte/categories/%s/' % category.id)
         
 @permission_required('base.p2')
 def products_new(request, cat_id):
@@ -104,7 +105,7 @@ def products_new(request, cat_id):
     data['menu_carte'] = True
     data['category'] = get_object_or_404(Categorie, pk=cat_id)
     if request.method == 'POST':
-        treat_product_new(request, cat_id)
+        treat_product_new(request, data['category'])
     return render_to_response('base/carte/product_new.html',
                                 data,
                                 context_instance=RequestContext(request))

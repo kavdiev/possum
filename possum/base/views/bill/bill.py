@@ -117,10 +117,12 @@ def category_select(request, bill_id, category_id=None):
     data['menu_bills'] = True
     data['categories'] = Categorie.objects.order_by('priorite', 'nom')
     data['bill'] = get_object_or_404(Facture, pk=bill_id)
+    category = None
     if category_id:
         category = get_object_or_404(Categorie, pk=category_id)
     else:
-        category = data['categories'][0]
+        if data['categories'] : 
+            category = data['categories'][0]
     data['products'] = Produit.objects.filter(categorie=category, actif=True)
     return render_to_response('base/bill/categories.html',
                                 data,
