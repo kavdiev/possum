@@ -1,44 +1,44 @@
 {% extends "template.html" %}
 {% block page %}
-
-<ul id="menu">
-    <li class="icon" onclick="window.location='/bills/'">
-    {% if menu_bills %}
-        <img src="/static/images/order_color.jpg">
-    {% else %}
-        <img src="/static/images/order_bw.jpg">
-    {% endif %}
-    </li>
-    <li class="icon" onclick="window.location='/carte/categories/'">
-    {% if menu_carte %}
-        <img src="/static/images/carte_color.jpg">
-    {% else %}
-        <img src="/static/images/carte_bw.jpg">
-    {% endif %}
-    </li>
-    <li class="icon" onclick="window.location='/kitchen/'">
-    {% if menu_kitchen %}
-        <img src="/static/images/kitchen_color.jpg">
-    {% else %}
-        <img src="/static/images/kitchen_bw.jpg">
-    {% endif %}
-    </li>
-    <li class="icon" onclick="window.location='/manager/'">
-    {% if menu_manager %}
-        <img src="/static/images/manager_color.jpg">
-    {% else %}
-        <img src="/static/images/manager_bw.jpg">
-    {% endif %}
-    </li>
-    <li><div id="myclock"><script type="text/javascript">window.onload = date_heure('myclock');</script></div></li>
-    {% if user.is_authenticated %}
-    <li class="{% if menu_profile %}menuSelected{% endif %}" onclick="window.location='/profile/'"><a href="/profile/">{% if user.get_full_name %}{{ user.get_full_name }}{%else%}{{user.username}}{%endif%}</a></li>
-    <li><a href="/users/logout/">Déconnexion</a></li>
-    {% else %}
-    <li><a href="/users/login/">Connexion</a></li>
-    {% endif %}
-</ul>
-
+  {% block menu %}
+  <ul id="menu">
+      <li class="icon" onclick="window.location='/bills/'">
+      {% if menu_bills %}
+          <img src="/static/images/order_color.jpg">
+      {% else %}
+          <img src="/static/images/order_bw.jpg">
+      {% endif %}
+      </li>
+      <li class="icon" onclick="window.location='/carte/categories/'">
+      {% if menu_carte %}
+          <img src="/static/images/carte_color.jpg">
+      {% else %}
+          <img src="/static/images/carte_bw.jpg">
+      {% endif %}
+      </li>
+      <li class="icon" onclick="window.location='/kitchen/'">
+      {% if menu_kitchen %}
+          <img src="/static/images/kitchen_color.jpg">
+      {% else %}
+          <img src="/static/images/kitchen_bw.jpg">
+      {% endif %}
+      </li>
+      <li class="icon" onclick="window.location='/manager/'">
+      {% if menu_manager %}
+          <img src="/static/images/manager_color.jpg">
+      {% else %}
+          <img src="/static/images/manager_bw.jpg">
+      {% endif %}
+      </li>
+      <li><div id="myclock"><script type="text/javascript">window.onload = date_heure('myclock');</script></div></li>
+      {% if user.is_authenticated %}
+      <li class="{% if menu_profile %}menuSelected{% endif %}" onclick="window.location='/profile/'"><a href="/profile/">{% if user.get_full_name %}{{ user.get_full_name }}{%else%}{{user.username}}{%endif%}</a></li>
+      <li><a href="/users/logout/">Déconnexion</a></li>
+      {% else %}
+      <li><a href="/users/login/">Connexion</a></li>
+      {% endif %}
+  </ul>
+  {% endblock %}
         <div id="content">
             {% if messages %}
             <ul id="messages">
