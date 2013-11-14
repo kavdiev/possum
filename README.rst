@@ -41,7 +41,6 @@ Devs
 
 * `Issues <https://github.com/possum-software/possum/issues>`_
 * `Jenkins <https://www.possum-software.org/jenkins/view/Tous/>`_
-* `Sonar <https://www.possum-software.org/sonar/>`_
 
 RSS
 ---
