@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+
+{% block menu %}
+<ul id="menu">
+    <li><div id="myclock"><script type="text/javascript">window.onload = date_heure('myclock');</script></div></li>
+    {% if user.is_authenticated %}
+    <li class="{% if menu_profile %}menuSelected{% endif %}" onclick="window.location='/profile/'"><a href="/profile/">{% if user.get_full_name %}{{ user.get_full_name }}{%else%}{{user.username}}{%endif%}</a></li>
+    <li><a href="/users/logout/">Déconnexion</a></li>
+    {% else %}
+    <li><a href="/users/login/">Connexion</a></li>
+    {% endif %}
+</ul>
+{% endblock %}
