@@ -216,9 +216,9 @@ tests)
 #    cp possum/settings_tests.py possum/settings.py
 #    fi
     cp possum/settings_tests.py possum/settings.py
-    update
+    update >/dev/null
     tests
-    doc
+    doc >/dev/null
     ;;
 sh)
     enter_virtualenv
