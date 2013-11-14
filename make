@@ -53,12 +53,13 @@ function tests {
     # pip install django-jenkins pep8 pyflakes clonedigger
     enter_virtualenv
     ./manage.py jenkins
-    rm -f reports/pylint.report
+    rm -f reports/{pylint.report,pep8.report}
     for f in `find possum/ -name '*.py'|egrep -v 'possum/test/|possum/base/migrations/'`
     do
-        pylint --output-format=parseable --reports=y --rcfile=possum/utils/pylint.rc $f >> reports/pylint.report
+        pylint --output-format=parseable --reports=y --rcfile=possum/utils/pylint.rc $f >> reports/pylint.report 2>/dev/null
 #        pylint --output-format=parseable --reports=y $f >> pylint.log
 #        pep8 $f >> pep8.log
+        pep8 $f >> reports/pep8.report
     done || :
 #    OMIT="django_extensions,django,*migrations*,*.virtualenv*"
 #    coverage run --source=. manage.py test --verbosity=2 --traceback
