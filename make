@@ -49,7 +49,8 @@ function doc {
 }
 
 function tests {
-    # pip install django-jenkins pep8 pyflakes
+    # prerequis: sloccount
+    # pip install django-jenkins pep8 pyflakes clonedigger
     enter_virtualenv
     ./manage.py jenkins
 #    for f in `find possum/ -name '*.py'|egrep -v 'possum/test/|possum/base/migrations/'`
@@ -62,6 +63,7 @@ function tests {
 #    coverage report --omit=${OMIT}
 #    coverage html --omit=${OMIT}
 #    coverage xml --omit=${OMIT}
+    sloccount --duplicates --wide --details possum | fgrep -v .git | fgrep -v '/migrations/' | fgrep -v '/static/highcharts/' > reports/soccount.sc
 }
 
 function update_js {
