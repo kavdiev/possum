@@ -66,6 +66,7 @@ function tests {
 #    coverage report --omit=${OMIT}
 #    coverage html --omit=${OMIT}
 #    coverage xml --omit=${OMIT}
+    clonedigger --cpd-output -o reports/clonedigger.xml $(find possum -name "*.py" | fgrep -v '/migrations/' | fgrep -v '/test/' | xargs echo )
     sloccount --duplicates --wide --details possum | fgrep -v .git | fgrep -v '/migrations/' | fgrep -v '/static/highcharts/' > reports/soccount.sc
 }
 
