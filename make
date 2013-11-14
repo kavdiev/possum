@@ -226,7 +226,7 @@ sh)
     ;;
 run)
     enter_virtualenv
-    ./manage.py runserver_plus
+    ./manage.py runserver
     ;;
 *)
     my_help
