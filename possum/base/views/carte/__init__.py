@@ -91,7 +91,6 @@ def treat_product_new(request, category):
     if is_valid_product(name, billname, prize) :
         try:
             product = Produit(nom=name, nom_facture=billname, prix=prize)
-            print str(product)
             product.set_category(category)
             product.save()
         except Exception as e:
