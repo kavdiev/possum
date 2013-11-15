@@ -42,4 +42,3 @@ class MonthForm(forms.Form):
 
 class YearForm(forms.Form):
     year = forms.ChoiceField(label="Année", choices=years_choice)
-

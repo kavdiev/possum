@@ -24,34 +24,18 @@ logger = logging.getLogger(__name__)
 from possum.base.daily_stat import DailyStat
 from possum.base.weekly_stat import WeeklyStat
 from possum.base.monthly_stat import MonthlyStat
-from possum.base.bill import Facture
 from possum.base.models import Printer
-from possum.base.product import Produit, ProduitVendu
-from possum.base.payment import PaiementType, Paiement
-from possum.base.category import Categorie
-from possum.base.options import Cuisson, Sauce, Accompagnement
-from possum.base.location import Zone, Table
-from possum.base.vat import VAT
-from possum.base.forms import DateForm, WeekForm, MonthForm, YearForm
-
-from django.contrib.auth import authenticate, login, logout
-from django.shortcuts import render_to_response, get_object_or_404
-from django.contrib.auth.decorators import login_required
-# from django.views.decorators.csrf import csrf_protect
-from django.core.context_processors import csrf
+from possum.base.forms import DateForm, WeekForm, MonthForm
+from django.shortcuts import render_to_response
 from django.template import RequestContext
-from django.http import HttpResponseForbidden, HttpResponseRedirect
-from django.http import Http404
-from django.contrib.auth.context_processors import PermWrapper
-from django.contrib.auth.models import User, UserManager, Permission
+from django.http import HttpResponseRedirect
 from django.conf import settings
 from django.contrib import messages
-from django.utils.functional import wraps
 from django.core.mail import send_mail
-import os
 import datetime
 from possum.base.views import get_user, permission_required
 from possum.base.utils import get_last_year
+
 
 @permission_required('base.p1')
 def rapports_daily(request):
@@ -84,6 +68,7 @@ def rapports_daily(request):
                                 data,
                                 context_instance=RequestContext(request))
 
+
 @permission_required('base.p1')
 def rapports_weekly(request):
     """
@@ -115,6 +100,7 @@ def rapports_weekly(request):
                                 data,
                                 context_instance=RequestContext(request))
 
+
 @permission_required('base.p1')
 def rapports_monthly(request):
     """
@@ -145,6 +131,7 @@ def rapports_monthly(request):
     return render_to_response('base/manager/rapports/home.html',
                                 data,
                                 context_instance=RequestContext(request))
+
 
 def rapports_send(request, subject, data):
     mail = """
@@ -185,7 +172,7 @@ TM/facture: %s
             messages.add_message(request, messages.SUCCESS, u"Le mail a été envoyé à %s." % request.user.email)
     else:
         messages.add_message(request, messages.ERROR, u"Vous n'avez pas d'adresse mail.")
-    
+
 
 @permission_required('base.p1')
 def rapports_daily_send(request, year, month, day):
@@ -196,6 +183,7 @@ def rapports_daily_send(request, year, month, day):
     rapports_send(request, subject, data)
     return HttpResponseRedirect('/manager/rapports/daily/')
 
+
 @permission_required('base.p1')
 def rapports_weekly_send(request, year, week):
     data = {}
@@ -204,6 +192,7 @@ def rapports_weekly_send(request, year, week):
     rapports_send(request, subject, data)
     return HttpResponseRedirect('/manager/rapports/weekly/')
 
+
 @permission_required('base.p1')
 def rapports_monthly_send(request, year, month):
     data = {}
@@ -211,6 +200,7 @@ def rapports_monthly_send(request, year, month):
     subject = "Rapport mensuel %s/%s" % (month, year)
     rapports_send(request, subject, data)
     return HttpResponseRedirect('/manager/rapports/monthly/')
+
 
 def rapports_print(request, subject, data):
     result = []
@@ -250,6 +240,7 @@ def rapports_print(request, subject, data):
     else:
         messages.add_message(request, messages.ERROR, u"Aucune imprimante type 'manager' disponible.")
 
+
 @permission_required('base.p1')
 def rapports_daily_print(request, year, month, day):
     date = "%s-%s-%s" % (year, month, day)
@@ -259,6 +250,7 @@ def rapports_daily_print(request, year, month, day):
     rapports_print(request, subject, data)
     return HttpResponseRedirect('/manager/rapports/daily/')
 
+
 @permission_required('base.p1')
 def rapports_weekly_print(request, year, week):
     data = {}
@@ -267,6 +259,7 @@ def rapports_weekly_print(request, year, week):
     rapports_print(request, subject, data)
     return HttpResponseRedirect('/manager/rapports/weekly/')
 
+
 @permission_required('base.p1')
 def rapports_monthly_print(request, year, month):
     data = {}
@@ -274,6 +267,7 @@ def rapports_monthly_print(request, year, month):
     subject = "Rapport mensuel %s/%s" % (month, year)
     rapports_print(request, subject, data)
     return HttpResponseRedirect('/manager/rapports/monthly/')
+
 
 def rapports_vats_send(request, subject, data):
     mail = ""
@@ -290,6 +284,7 @@ def rapports_vats_send(request, subject, data):
     else:
         messages.add_message(request, messages.ERROR, u"Vous n'avez pas d'adresse mail.")
 
+
 @permission_required('base.p1')
 def rapports_daily_vats_send(request, year, month, day):
     date = "%s-%s-%s" % (year, month, day)
@@ -298,6 +293,7 @@ def rapports_daily_vats_send(request, year, month, day):
     rapports_vats_send(request, subject, data)
     return HttpResponseRedirect('/manager/rapports/daily/')
 
+
 @permission_required('base.p1')
 def rapports_weekly_vats_send(request, year, week):
     data = WeeklyStat().get_common(year, week)
@@ -305,12 +301,14 @@ def rapports_weekly_vats_send(request, year, week):
     rapports_vats_send(request, subject, data)
     return HttpResponseRedirect('/manager/rapports/weekly/')
 
+
 @permission_required('base.p1')
 def rapports_monthly_vats_send(request, year, month):
     data = MonthlyStat().get_common(year, month)
     subject = "Rapport mois %s/%s" % (month, year)
     rapports_vats_send(request, subject, data)
     return HttpResponseRedirect('/manager/rapports/monthly/')
+
 
 def rapports_vats_print(request, data):
     printers = Printer.objects.filter(manager=True)
@@ -323,6 +321,7 @@ def rapports_vats_print(request, data):
     else:
         messages.add_message(request, messages.ERROR, u"Aucune imprimante type 'manager' disponible.")
 
+
 @permission_required('base.p1')
 def rapports_daily_vats_print(request, year, month, day):
     date = "%s-%s-%s" % (year, month, day)
@@ -330,11 +329,13 @@ def rapports_daily_vats_print(request, year, month, day):
     rapports_vats_print(request, data)
     return HttpResponseRedirect('/manager/rapports/daily/')
 
+
 @permission_required('base.p1')
 def rapports_weekly_vats_print(request, year, week):
     data = WeeklyStat().get_common(year, week)
     rapports_vats_print(request, data)
     return HttpResponseRedirect('/manager/rapports/weekly/')
+
 
 @permission_required('base.p1')
 def rapports_monthly_vats_print(request, year, month):

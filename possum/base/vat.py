@@ -20,6 +20,7 @@
 from django.db import models
 from decimal import Decimal
 
+
 class VAT(models.Model):
     """name is a symbolic name
     tax is for example '19.6' for 19.6%
@@ -40,7 +41,7 @@ class VAT(models.Model):
 
     def set_tax(self, tax):
         self.tax = tax
-        self.value = Decimal(tax) / 100 
+        self.value = Decimal(tax) / 100
         self.save()
 
     def get_tax_for(self, prize):
@@ -66,4 +67,3 @@ class VAT(models.Model):
                 return Decimal('0')
         else:
             return prize
-

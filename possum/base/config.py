@@ -19,6 +19,7 @@
 #
 from django.db import models
 
+
 class Config(models.Model):
     """Possum Configuration
     """
@@ -33,5 +34,3 @@ class Config(models.Model):
 
     class Meta:
         ordering = ['key']
-
-
