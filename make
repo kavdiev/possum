@@ -53,12 +53,13 @@ function tests {
     # pip install django-jenkins pep8 pyflakes clonedigger flake8 flake8-todo
     enter_virtualenv
     ./manage.py jenkins
-    rm -f reports/{pylint.report,pep8.report}
-    for f in `find possum/ -name '*.py'|egrep -v 'possum/test/|possum/base/migrations/'`
-    do
-        pylint --output-format=parseable --reports=y --rcfile=possum/utils/pylint.rc $f >> reports/pylint.report 2>/dev/null
-        pep8 $f >> reports/pep8.report
-    done || :
+    csslint possum/base/static/ --format=lint-xml --exclude-list=jquery.min.js,highcharts > reports/csslint.report
+    #rm -f reports/{pylint.report,pep8.report}
+    #for f in `find possum/ -name '*.py'|egrep -v 'possum/test/|possum/base/migrations/'`
+    #do
+    #    pylint --output-format=parseable --reports=y --rcfile=possum/utils/pylint.rc $f >> reports/pylint.report 2>/dev/null
+    #    pep8 $f >> reports/pep8.report
+    #done || :
     # flake8 for pep8, pyflakes and complexity
     flake8 --exclude=migrations --max-complexity 12 possum > reports/flake8.report
 #    OMIT="django_extensions,django,*migrations*,*.virtualenv*"

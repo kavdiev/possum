@@ -24,11 +24,11 @@ from django.shortcuts import render_to_response, get_object_or_404
 from django.template import RequestContext
 from possum.base.bill import Facture
 from possum.base.payment import PaiementType, Paiement
-from possum.base.vat import VAT
 from possum.base.views import get_user, permission_required
 import logging
 
 logger = logging.getLogger(__name__)
+
 
 @permission_required('base.p3')
 def bill_payment_set_right(request, bill_id, type_id, left, right, number, count):
@@ -40,6 +40,7 @@ def bill_payment_set_right(request, bill_id, type_id, left, right, number, count
     return HttpResponseRedirect('/bill/%s/payment/%s/%s.%s/%s/set/right/' % (
             bill_id, type_id, left, result, count))
 
+
 @permission_required('base.p3')
 def bill_payment_set_left(request, bill_id, type_id, left, right, number, count):
     data = get_user(request)
@@ -49,6 +50,7 @@ def bill_payment_set_left(request, bill_id, type_id, left, right, number, count)
     result = int(left) * 10 + int(number)
     return HttpResponseRedirect('/bill/%s/payment/%s/%d.%s/%s/set/' % (
             bill_id, type_id, result, right, count))
+
 
 @permission_required('base.p3')
 def bill_payment_delete(request, bill_id, payment_id):
@@ -60,6 +62,7 @@ def bill_payment_delete(request, bill_id, payment_id):
     bill.del_payment(payment)
     return HttpResponseRedirect('/bill/%s/' % bill_id)
 
+
 @permission_required('base.p3')
 def bill_payment_view(request, bill_id, payment_id):
     data = get_user(request)
@@ -70,11 +73,11 @@ def bill_payment_view(request, bill_id, payment_id):
                                 data,
                                 context_instance=RequestContext(request))
 
+
 @permission_required('base.p3')
 def bill_payment_save(request, bill_id, type_id, left, right, count):
     """Enregistre le paiement
     """
-    data = get_user(request)
     type_payment = get_object_or_404(PaiementType, pk=type_id)
     bill = get_object_or_404(Facture, pk=bill_id)
     montant = "%s.%s" % (left, right)
@@ -89,6 +92,7 @@ def bill_payment_save(request, bill_id, type_id, left, right, count):
         return HttpResponseRedirect('/bills/')
     else:
         return HttpResponseRedirect('/bill/%s/' % bill_id)
+
 
 @permission_required('base.p3')
 def bill_payment_set(request, bill_id, type_id, left, right, count, part="left"):
@@ -112,6 +116,7 @@ def bill_payment_set(request, bill_id, type_id, left, right, count, part="left")
                                 data,
                                 context_instance=RequestContext(request))
 
+
 @permission_required('base.p3')
 def bill_payment_count(request, bill_id, type_id, left, right):
     data = get_user(request)
@@ -125,8 +130,9 @@ def bill_payment_count(request, bill_id, type_id, left, right):
                                 data,
                                 context_instance=RequestContext(request))
 
+
 @permission_required('base.p3')
-def bill_payment(request, bill_id, type_id= -1, count= -1, left=0, right=0):
+def bill_payment(request, bill_id, type_id=-1, count=-1, left=0, right=0):
     data = get_user(request)
     bill = get_object_or_404(Facture, pk=bill_id)
     if bill.restant_a_payer == 0:
@@ -152,3 +158,4 @@ def bill_payment(request, bill_id, type_id= -1, count= -1, left=0, right=0):
     return render_to_response('base/bill/payment.html',
                                 data,
                                 context_instance=RequestContext(request))
+
