@@ -34,6 +34,7 @@ import logging
 
 logger = logging.getLogger(__name__)
 
+
 def add_value(values, key, value):
     if key in values:
         values[key] += value
@@ -41,13 +42,14 @@ def add_value(values, key, value):
         values[key] = value
     return values
 
+
 class DailyStat(models.Model):
     """Daily statistics, full list of keys:
     # Common
     nb_bills      : number of invoices
     total_ttc        : total TTC
     ID_vat           : VAT part for vat ID
-    
+
     # Products
     ID_product_nb    : how many product
     ID_product_value : total TTC for product ID
