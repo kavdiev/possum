@@ -5,7 +5,7 @@
 #    This file is part of POSSUM.
 #
 #    POSSUM is free software: you can redistribute it and/or modify
-#    it under the terms of the GNU General Public License as published 
+#    it under the terms of the GNU General Public License as published
 #    the Free Software Foundation, either version 3 of the License, or
 #    (at your option) any later version.
 #
@@ -26,6 +26,7 @@ from datetime import datetime
 import logging
 logger = logging.getLogger(__name__)
 
+
 class Produit(NomDouble):
     categorie = models.ForeignKey(Categorie, related_name="produit-categorie")
     choix_cuisson = models.BooleanField(default=False)
@@ -42,7 +43,8 @@ class Produit(NomDouble):
     # ici: 2 chiffres après la virgule et 5 chiffres pour la partie entière
     prix = models.DecimalField(max_digits=7, decimal_places=2, default=0)
     vat_onsite = models.DecimalField(max_digits=7, decimal_places=2, default=0)
-    vat_takeaway = models.DecimalField(max_digits=7, decimal_places=2, default=0)
+    vat_takeaway = models.DecimalField(max_digits=7, decimal_places=2,
+                                       default=0)
 
     def __cmp__(self, other):
         if self.categorie == other.categorie:
@@ -138,24 +140,26 @@ class Produit(NomDouble):
             if category.made_in_kitchen:
                 name += "[K]"
             result.append(name)
-            for product in Produit.objects.filter(categorie=category, actif=True):
+            for product in Produit.objects.filter(categorie=category, 
+                                                  actif=True):
                 result.append("%s: %.2f" % (product.nom_facture, product.prix))
             result.append(" ")
         return result
+
 
 class ProduitVendu(models.Model):
     """le prix sert a affiche correctement les prix pour les surtaxes
     """
     date = models.DateTimeField(auto_now_add=True)
-#    facture = models.ForeignKey('Facture', related_name="produitvendu-facture")
-    # facture = models.ForeignKey('Facture', limit_choices_to = {'date_creation__gt': datetime.datetime.today()})
     produit = models.ForeignKey(Produit, related_name="produitvendu-produit")
-    cuisson = models.ForeignKey(Cuisson, null=True, blank=True, related_name="produitvendu-cuisson")
+    cuisson = models.ForeignKey(Cuisson, null=True, blank=True, 
+                                related_name="produitvendu-cuisson")
     prix = models.DecimalField(max_digits=7, decimal_places=2, default=0)
-    sauce = models.ForeignKey(Sauce, null=True, blank=True, related_name="produitvendu-sauce")
-    accompagnement = models.ForeignKey(Accompagnement, null=True, blank=True, related_name="produitvendu-accompagnement")
+    sauce = models.ForeignKey(Sauce, null=True, blank=True, 
+                              related_name="produitvendu-sauce")
+    accompagnement = models.ForeignKey(Accompagnement, null=True, blank=True, 
+                                       related_name="produitvendu-accompagnement")
     # dans le cas d'un menu, peut contenir d'autres produits
-#    contient = models.ManyToManyField(Produit, null=True)
     contient = models.ManyToManyField('self')
     # faut-il préparer ce plat avec les entrées ?
     made_with = models.ForeignKey(Categorie, related_name="produit-kitchen", null=True)
@@ -170,8 +174,8 @@ class ProduitVendu(models.Model):
 
     def isFull(self):
         """
-        True si tous les élèments sous présents (les sous produits pour les formules)
-        et False sinon.
+        True si tous les élèments sous présents (les sous produits pour 
+        les formules) et False sinon.
 
         >>> vendu = ProduitVendu()
         >>> vendu.save()
@@ -268,4 +272,3 @@ class ProduitVendu(models.Model):
         else:
             logger.warning("Product [%s] have no categories_ok, return None" % self.id)
         return None
-
