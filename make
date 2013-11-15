@@ -53,7 +53,7 @@ function tests {
     # pip install django-jenkins pep8 pyflakes clonedigger flake8 flake8-todo
     enter_virtualenv
     ./manage.py jenkins
-    csslint possum/base/static/ --format=lint-xml --exclude-list=jquery.min.js,highcharts > reports/csslint.report
+    csslint possum/base/static/ --format=lint-xml --exclude-list=possum/base/static/jquery.min.js,possum/base/static/highcharts > reports/csslint.report
     #rm -f reports/{pylint.report,pep8.report}
     #for f in `find possum/ -name '*.py'|egrep -v 'possum/test/|possum/base/migrations/'`
     #do

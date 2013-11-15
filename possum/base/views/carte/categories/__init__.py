@@ -22,35 +22,18 @@ import logging
 logger = logging.getLogger(__name__)
 
 from possum.base.daily_stat import DailyStat
-from possum.base.weekly_stat import WeeklyStat
-from possum.base.monthly_stat import MonthlyStat
-from possum.base.bill import Facture
 from possum.base.models import Printer
-from possum.base.product import Produit, ProduitVendu
-from possum.base.payment import PaiementType, Paiement
 from possum.base.category import Categorie
-from possum.base.options import Cuisson, Sauce, Accompagnement
-from possum.base.location import Zone, Table
 from possum.base.vat import VAT
-from possum.base.forms import DateForm, WeekForm, MonthForm, YearForm
 
-from django.contrib.auth import authenticate, login, logout
 from django.shortcuts import render_to_response, get_object_or_404
-from django.contrib.auth.decorators import login_required
-# from django.views.decorators.csrf import csrf_protect
-from django.core.context_processors import csrf
 from django.template import RequestContext
-from django.http import HttpResponseForbidden, HttpResponseRedirect
-from django.http import Http404
-from django.contrib.auth.context_processors import PermWrapper
-from django.contrib.auth.models import User, UserManager, Permission
+from django.http import HttpResponseRedirect
 from django.conf import settings
 from django.contrib import messages
-from django.utils.functional import wraps
 from django.core.mail import send_mail
-import os
-import datetime
 from possum.base.views import get_user, permission_required
+
 
 @permission_required('base.p2')
 def categories_send(request):
@@ -71,6 +54,7 @@ def categories_send(request):
         messages.add_message(request, messages.ERROR, u"Vous n'avez pas d'adresse mail.")
     return HttpResponseRedirect('/carte/categories/')
 
+
 @permission_required('base.p2')
 def categories_print(request):
     data = get_user(request)
@@ -89,6 +73,7 @@ def categories_print(request):
         messages.add_message(request, messages.ERROR, "Il n'y a rien dans la carte.")
     return HttpResponseRedirect('/carte/categories/')
 
+
 @permission_required('base.p2')
 def categories(request):
     data = get_user(request)
@@ -97,6 +82,7 @@ def categories(request):
     return render_to_response('base/carte/categories.html',
                     data,
                     context_instance=RequestContext(request))
+
 
 @permission_required('base.p2')
 def categories_delete(request, cat_id):
@@ -151,6 +137,7 @@ def categories_delete(request, cat_id):
                                 data,
                                 context_instance=RequestContext(request))
 
+
 @permission_required('base.p2')
 def categories_view(request, cat_id):
     data = get_user(request)
@@ -163,6 +150,7 @@ def categories_view(request, cat_id):
                                 data,
                                 context_instance=RequestContext(request))
 
+
 @permission_required('base.p2')
 def categories_add(request):
     data = get_user(request)
@@ -170,6 +158,7 @@ def categories_add(request):
     return render_to_response('base/carte/categories_add.html',
                                 data,
                                 context_instance=RequestContext(request))
+
 
 @permission_required('base.p2')
 def categories_new(request):
@@ -191,6 +180,7 @@ def categories_new(request):
         messages.add_message(request, messages.ERROR, "Vous devez choisir un nom pour la nouvelle catégorie.")
     return HttpResponseRedirect('/carte/categories/')
 
+
 @permission_required('base.p2')
 def categories_name(request, cat_id):
     data = get_user(request)
@@ -198,6 +188,7 @@ def categories_name(request, cat_id):
     return render_to_response('base/carte/name.html',
                                 data,
                                 context_instance=RequestContext(request))
+
 
 @permission_required('base.p2')
 def categories_color(request, cat_id):
@@ -208,6 +199,7 @@ def categories_color(request, cat_id):
                                 data,
                                 context_instance=RequestContext(request))
 
+
 @permission_required('base.p2')
 def categories_less_priority(request, cat_id, nb=1):
     data = get_user(request)
@@ -216,6 +208,7 @@ def categories_less_priority(request, cat_id, nb=1):
     logger.info("[%s] cat [%s] priority - %d" % (data['user'].username, cat.nom, nb))
     return HttpResponseRedirect('/carte/categories/%s/' % cat_id)
 
+
 @permission_required('base.p2')
 def categories_more_priority(request, cat_id, nb=1):
     data = get_user(request)
@@ -223,6 +216,7 @@ def categories_more_priority(request, cat_id, nb=1):
     cat.set_more_priority(nb)
     logger.info("[%s] cat [%s] priority + %d" % (data['user'].username, cat.nom, nb))
     return HttpResponseRedirect('/carte/categories/%s/' % cat_id)
+
 
 @permission_required('base.p2')
 def categories_surtaxable(request, cat_id):
@@ -236,6 +230,7 @@ def categories_surtaxable(request, cat_id):
     logger.info("[%s] cat [%s] surtaxable: %s" % (data['user'].username, cat.nom, cat.surtaxable))
     return HttpResponseRedirect('/carte/categories/%s/' % cat_id)
 
+
 @permission_required('base.p2')
 def categories_vat_takeaway(request, cat_id):
     data = get_user(request)
@@ -248,6 +243,7 @@ def categories_vat_takeaway(request, cat_id):
                                 data,
                                 context_instance=RequestContext(request))
 
+
 @permission_required('base.p2')
 def categories_set_vat_takeaway(request, cat_id, vat_id):
     data = get_user(request)
@@ -258,6 +254,7 @@ def categories_set_vat_takeaway(request, cat_id, vat_id):
         product.update_vats()
     return HttpResponseRedirect('/carte/categories/%s/' % cat_id)
 
+
 @permission_required('base.p2')
 def categories_set_vat_onsite(request, cat_id, vat_id):
     data = get_user(request)
@@ -267,6 +264,7 @@ def categories_set_vat_onsite(request, cat_id, vat_id):
     for product in Produit.objects.filter(categorie=category).iterator():
         product.update_vats()
     return HttpResponseRedirect('/carte/categories/%s/' % cat_id)
+
 
 @permission_required('base.p2')
 def categories_vat_onsite(request, cat_id):
@@ -279,6 +277,7 @@ def categories_vat_onsite(request, cat_id):
     return render_to_response('base/carte/categories/select_vat.html',
                                 data,
                                 context_instance=RequestContext(request))
+
 
 @permission_required('base.p2')
 def categories_set_color(request, cat_id):
@@ -293,6 +292,7 @@ def categories_set_color(request, cat_id):
         except:
             messages.add_message(request, messages.ERROR, "Les modifications n'ont pu être enregistrées.")
     return HttpResponseRedirect('/carte/categories/%s/' % cat_id)
+
 
 @permission_required('base.p2')
 def categories_set_name(request, cat_id):
@@ -310,6 +310,7 @@ def categories_set_name(request, cat_id):
         logger.warning("[%s] save failed for [%s]" % (data['user'].username, cat.nom))
     return HttpResponseRedirect('/carte/categories/%s/' % cat_id)
 
+
 @permission_required('base.p2')
 def categories_set_kitchen(request, cat_id):
     data = get_user(request)
@@ -318,6 +319,7 @@ def categories_set_kitchen(request, cat_id):
     cat.made_in_kitchen = new
     cat.save()
     return HttpResponseRedirect('/carte/categories/%s/' % cat_id)
+
 
 @permission_required('base.p2')
 def categories_disable_surtaxe(request, cat_id):
