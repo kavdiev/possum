@@ -18,34 +18,33 @@
 #    along with POSSUM.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-from django.db.models import Max, Avg
-from decimal import Decimal
-import datetime
+from django.db.models import Avg
 from possum.base.category import Categorie
 from possum.base.product import Produit
 from possum.base.payment import PaiementType
-from possum.base.utils import nb_sorted
 from possum.base.vat import VAT
-from possum.base.payment import PaiementType
 from possum.base.monthly_stat import MonthlyStat
 import logging
 from chartit import PivotDataPool, PivotChart
 
 logger = logging.getLogger(__name__)
 
+
 def month_name(*t):
     """ Sert à trier les mois."""
     logger.debug(t)
-    names = {1: 'Jan', 2: 'Fev', 3: 'Mar', 4: 'Avr', 
-            5: 'Mai', 6: 'Jui', 7: 'Jui', 8: 'Aou', 
-            9: 'Sep', 10: 'Oct', 11: 'Nov', 12: 'Dec'}
+    names = {1: 'Jan', 2: 'Fev', 3: 'Mar', 4: 'Avr', 5: 'Mai', 6: 'Jui',
+             7: 'Jui', 8: 'Aou', 9: 'Sep', 10: 'Oct', 11: 'Nov',
+             12: 'Dec'}
     month_num = int(t[0][0])
     logger.debug("names[%d] > [%s]" % (month_num, names[month_num]))
     return (names[month_num], )
 
+
 def month_sort(*x):
     logger.debug(x)
     return (int(x[0][1][0]),)
+
 
 def get_datapool_year(year, keys):
     logger.debug(" ")
@@ -60,6 +59,7 @@ def get_datapool_year(year, keys):
     return PivotDataPool(
             series = series,
             sortf_mapf_mts=(month_sort, month_name, True))
+
 
 def get_chart(datasource, graph, keys, title, xaxis):
     """
@@ -89,6 +89,7 @@ def get_chart(datasource, graph, keys, title, xaxis):
                             'text': ''}},
                     })
 
+
 def get_chart_year_ttc(year):
     keys = {"total_ttc": 'total ttc',
             "guests_total_ttc": 'restauration',
@@ -98,6 +99,7 @@ def get_chart_year_ttc(year):
     except:
         return False
     return get_chart(datasource, 'line', keys, "Total TTC pour l'année %s" % year, "Mois")
+
 
 def get_chart_year_bar(year):
     keys = {"bar_average": 'TM/facture',
@@ -109,6 +111,7 @@ def get_chart_year_bar(year):
         return False
     return get_chart(datasource, 'line', keys, "Activité bar pour l'année %s" % year, "Mois")
 
+
 def get_chart_year_guests(year):
     keys = {"guests_average": 'TM/couvert',
             "guests_nb": 'nb couverts',
@@ -118,6 +121,7 @@ def get_chart_year_guests(year):
     except:
         return False
     return get_chart(datasource, 'line', keys, "Activité restaurant pour l'année %s" % year, "Mois")
+
 
 def get_chart_year_vats(year):
     keys = {}
@@ -129,6 +133,7 @@ def get_chart_year_vats(year):
     except:
         return False
     return get_chart(datasource, 'line', keys, "TVA pour l'année %s" % year, "Mois")
+
 
 def get_chart_year_payments(year):
     charts = []
@@ -148,8 +153,10 @@ def get_chart_year_payments(year):
         datasource = get_datapool_year(year, keys_value)
     except:
         return False
-    charts.append(get_chart(datasource, 'line', keys_value, "Valeur des paiements par type pour l'année %s" % year, "Mois"))
+    charts.append(get_chart(datasource, 'line', keys_value, 
+                  "Valeur des paiements par type pour l'année %s" % year, "Mois"))
     return charts
+
 
 def get_chart_year_categories(year):
     charts = []
@@ -174,6 +181,7 @@ def get_chart_year_categories(year):
     charts.append(get_chart(datasource, 'line', keys_value, title, "Mois"))
     return charts
 
+
 def get_chart_year_products(year, category):
     charts = []
     keys_nb = {}
@@ -187,13 +195,14 @@ def get_chart_year_products(year, category):
         datasource = get_datapool_year(year, keys_nb)
     except:
         return False
-    title = u"Nombre de vente pour la catégorie [%s] en %s" % (category.nom, year)
+    title = u"Nombre de vente pour la catégorie [%s] en %s" % (category.nom,
+                                                               year)
     charts.append(get_chart(datasource, 'line', keys_nb, title, "Mois"))
     try:
         datasource = get_datapool_year(year, keys_value)
     except:
         return False
-    title = u"Valeur des ventes pour la catégorie [%s] en %s" % (category.nom, year)
+    title = u"Valeur des ventes pour la catégorie [%s] en %s" % (category.nom,
+                                                                 year)
     charts.append(get_chart(datasource, 'line', keys_value, title, "Mois"))
     return charts
-

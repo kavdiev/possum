@@ -22,34 +22,16 @@ import logging
 logger = logging.getLogger(__name__)
 
 from possum.base.daily_stat import DailyStat
-from possum.base.bill import Facture
-from possum.base.models import Printer
-from possum.base.product import Produit, ProduitVendu
-from possum.base.payment import PaiementType, Paiement
 from possum.base.category import Categorie
-from possum.base.options import Cuisson, Sauce, Accompagnement
-from possum.base.location import Zone, Table
-from possum.base.vat import VAT
-from possum.base.forms import DateForm, WeekForm, MonthForm, YearForm
-
-from django.contrib.auth import authenticate, login, logout
-from django.shortcuts import render_to_response, get_object_or_404
-from django.contrib.auth.decorators import login_required
-# from django.views.decorators.csrf import csrf_protect
-from django.core.context_processors import csrf
+from possum.base.forms import YearForm
+from django.shortcuts import render_to_response
 from django.template import RequestContext
-from django.http import HttpResponseForbidden, HttpResponseRedirect
-from django.http import Http404
-from django.contrib.auth.context_processors import PermWrapper
-from django.contrib.auth.models import User, UserManager, Permission
-from django.conf import settings
+from django.http import HttpResponseRedirect
 from django.contrib import messages
-from django.utils.functional import wraps
-from django.core.mail import send_mail
-import os
 import datetime
 from possum.base.views import get_user
 from possum.base.charts import *
+
 
 def charts_year(request, choice='ttc'):
     """
@@ -66,7 +48,8 @@ def charts_year(request, choice='ttc'):
         try:
             year = int(request.POST.get('year'))
         except:
-            messages.add_message(request, messages.ERROR, "La date saisie n'est pas valide.")
+            messages.add_message(request, messages.ERROR, 
+                                 "La date saisie n'est pas valide.")
     if choice == 'ttc':
         data['chart1'] = get_chart_year_ttc(year)
     elif choice == 'bar':
@@ -83,7 +66,8 @@ def charts_year(request, choice='ttc'):
         try:
             cat = Categorie.objects.get(pk=choice)
         except Categorie.DoesNotExist:
-            messages.add_message(request, messages.ERROR, "Ce type de graphique n'existe pas.")
+            messages.add_message(request, messages.ERROR, 
+                                 "Ce type de graphique n'existe pas.")
             return HttpResponseRedirect('/manager/')
         else:
             data['chart2'] = get_chart_year_products(year, cat)
@@ -91,6 +75,5 @@ def charts_year(request, choice='ttc'):
     data['choice'] = choice
     data['year_form'] = YearForm({'year': year})
     data['year'] = year
-    return render_to_response('base/manager/charts/home.html',
-                    data,
-                    context_instance=RequestContext(request))
+    return render_to_response('base/manager/charts/home.html', data,
+                              context_instance=RequestContext(request))
