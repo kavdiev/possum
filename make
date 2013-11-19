@@ -147,7 +147,7 @@ EOF
 }
 
 function deb_install_apache {
-    apt-get install apache2-mpm-worker libapache2-mod-wsgi
+    sudo apt-get install apache2-mpm-worker libapache2-mod-wsgi
     a2dismod status cgid autoindex auth_basic cgi dir env
     a2dismod authn_file deflate setenvif reqtimeout negotiation
     a2dismod authz_groupfile authz_user authz_default
@@ -163,7 +163,7 @@ function deb_install_apache {
 }
 
 function deb_install_nginx {
-    apt-get install nginx-light supervisor
+    sudo apt-get install nginx-light supervisor
     echo 
     echo "Config example for Supervisor: possum/utils/supervisor.conf"
     echo "  cp possum/utils/supervisor.conf /etc/supervisor/conf.d/possum.conf"
@@ -176,7 +176,7 @@ function deb_install_nginx {
 }
 
 function deb_install {
-    apt-get install graphviz-dev graphviz libcups2-dev memcached \
+    sudo apt-get install graphviz-dev graphviz libcups2-dev memcached \
         python-virtualenv unzip \
         pkg-config python-dev cups-client cups
 #    deb_install_apache

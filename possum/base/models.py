@@ -25,7 +25,9 @@ from possum.base.daily_stat import DailyStat
 from possum.base.weekly_stat import WeeklyStat
 from possum.base.monthly_stat import MonthlyStat
 from possum.base.bill import Facture
-from possum.base.generic import Nom, NomDouble, Priorite
+from possum.base.generic import Nom
+from possum.base.generic import NomDouble
+from possum.base.generic import Priorite
 from possum.base.product import Produit
 from possum.base.product import ProduitVendu
 from possum.base.payment import Paiement

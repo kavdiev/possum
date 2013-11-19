@@ -42,6 +42,7 @@ class Facture(models.Model):
     following: liste des envois en cuisine
     next: si présent, la prochaine catégorie a envoyée en 
         cuisine
+
     """
     date_creation = models.DateTimeField('creer le', auto_now_add=True)
     table = models.ForeignKey('Table', \
