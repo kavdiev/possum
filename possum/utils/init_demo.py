@@ -18,7 +18,8 @@
 #    You should have received a copy of the GNU General Public License
 #    along with POSSUM.  If not, see <http://www.gnu.org/licenses/>.
 #
-import sys, os
+import sys
+import os
 # sys.path.append('/home/pos/possum-software')
 sys.path.append('.')
 os.environ['DJANGO_SETTINGS_MODULE'] = 'possum.settings'
@@ -51,10 +52,8 @@ Paiement.objects.all().delete()
 Config.objects.all().delete()
 
 # ajout d'un utilisateur
-user = User(username="demo",
-        first_name="first name",
-        last_name="last name",
-        email="demo@possum-software.org")
+user = User(username="demo", first_name="first name", last_name="last name",
+            email="demo@possum-software.org")
 user.set_password("demo")
 user.save()
 # on ajoute les droits d'admin
