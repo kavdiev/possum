@@ -70,7 +70,7 @@ disponibles avec la commande:
   lpstat -v
 
 Vous pouvez configurer le serveur d'impression via une interface web, en général à l'adresse
-suivante: `Cups <http://localhost:631>`
+suivante: `Cups <http://localhost:631>`_
 
 D'autre part, l'impression des tickets nécessite la création et la suppression de nombreux
 fichiers. Je vous recommande donc d'utiliser un système de fichier virtuel type tmpfs pour
@@ -101,7 +101,7 @@ Vous pouvez générer la documentation en html avec la commande suivante:
 
   ./make doc
 
-Sinon elle est également disponible sur le site officiel: `Documentation <http://www.possum-software.org>`.
+Sinon elle est également disponible sur le site officiel: `Documentation <http://www.possum-software.org>`_.
 
 Configuration du serveur Web
 ----------------------------
@@ -111,8 +111,8 @@ celle conseillée ici est la plus performante mais vous pouvez tout à fait choi
 une autre solution (''./make deb_install_apache'' installera par exemple les paquets
 nécessaires à l'utilisation du serveur web Apache).
 
-La solution préconisée à base de `NGinx <http://nginx.org/>`, `Gunicorn <http://gunicorn.org/>` 
-et `Supervisor <http://supervisord.org/>` semble à première
+La solution préconisée à base de `NGinx <http://nginx.org/>`_, `Gunicorn <http://gunicorn.org/>`_ 
+et `Supervisor <http://supervisord.org/>`_ semble à première
 vue compliquée mais c'est la plus performante dans le cas de Possum (peu de clients
 connectés à l'interface web).
 
