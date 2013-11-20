@@ -42,7 +42,8 @@ def archives(request):
             day = int(request.POST.get('date_day'))
             date = datetime.datetime(year, month, day)
         except:
-            messages.add_message(request, messages.ERROR, "La date saisie n'est pas valide.")
+            messages.add_message(request, messages.ERROR,
+                                 "La date saisie n'est pas valide.")
             date = datetime.datetime.today()
     else:
         date = datetime.datetime.today()
@@ -58,7 +59,8 @@ def archives_bill(request, bill_id):
     data = get_user(request)
     data['facture'] = get_object_or_404(Facture, pk=bill_id)
     if not data['facture'].est_soldee():
-        messages.add_message(request, messages.ERROR, "Cette facture n'est pas encore soldée.")
+        messages.add_message(request, messages.ERROR,
+                             "Cette facture n'est pas encore soldée.")
         return HttpResponseRedirect('/manager/archives/')
     data['menu_manager'] = True
     return render_to_response('base/manager/archives/invoice.html', data,
