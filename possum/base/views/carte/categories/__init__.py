@@ -25,6 +25,7 @@ from possum.base.daily_stat import DailyStat
 from possum.base.models import Printer
 from possum.base.category import Categorie
 from possum.base.vat import VAT
+from possum.base.product import Produit
 
 from django.shortcuts import render_to_response, get_object_or_404
 from django.template import RequestContext
