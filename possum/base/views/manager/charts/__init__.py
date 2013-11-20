@@ -30,7 +30,13 @@ from django.http import HttpResponseRedirect
 from django.contrib import messages
 import datetime
 from possum.base.views import get_user
-from possum.base.charts import *
+from possum.base.charts import get_chart_year_ttc
+from possum.base.charts import get_chart_year_bar
+from possum.base.charts import get_chart_year_guests
+from possum.base.charts import get_chart_year_vats
+from possum.base.charts import get_chart_year_payments
+from possum.base.charts import get_chart_year_categories
+from possum.base.charts import get_chart_year_products
 
 
 def charts_year(request, choice='ttc'):
@@ -48,7 +54,7 @@ def charts_year(request, choice='ttc'):
         try:
             year = int(request.POST.get('year'))
         except:
-            messages.add_message(request, messages.ERROR, 
+            messages.add_message(request, messages.ERROR,
                                  "La date saisie n'est pas valide.")
     if choice == 'ttc':
         data['chart1'] = get_chart_year_ttc(year)
@@ -66,7 +72,7 @@ def charts_year(request, choice='ttc'):
         try:
             cat = Categorie.objects.get(pk=choice)
         except Categorie.DoesNotExist:
-            messages.add_message(request, messages.ERROR, 
+            messages.add_message(request, messages.ERROR,
                                  "Ce type de graphique n'existe pas.")
             return HttpResponseRedirect('/manager/')
         else:
