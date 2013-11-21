@@ -12,20 +12,29 @@ Voici le schéma général des différentes briques logiciels:
 Possum
 ------
 
-Vous avez ici 2 possibilités, soit télécharger la dernière version
+Vous avez ici 2 possibilités, dans tous les cas, il faudra se positionner dans un répertoire.
+Prenons le répertoire ''/opt'':
+
+::
+
+  cd /opt
+
+Soit télécharger la dernière version
 stable de POSSUM ici: `GitHub <https://github.com/possum-software/possum/archives/master>`_
 
 ::
 
   tar xzf possum-software-possum-*.tar.gz
 
-L'autre possibilité est de récupérer la version en développement:
+Soit utiliser la version en développement:
 
 ::
 
   git clone https://github.com/possum-software/possum.git possum-software
 
-Remarque: il est recommandé d'utiliser la version dernière version stable.
+
+Remarque: il est recommandé d'utiliser la dernière version stable.
+
 
 Prérequis
 ---------
@@ -76,19 +85,19 @@ D'autre part, l'impression des tickets nécessite la création et la suppression
 fichiers. Je vous recommande donc d'utiliser un système de fichier virtuel type tmpfs pour
 le répertoire ''tickets'' qui se trouve par défaut dans le répertoire ''possum-software''.
 
-Par exemple, si le chemin absolu vers votre répertoire ''tickets' est ''/home/pos/possum-software/tickets/'', il faudra ajouter la ligne suivante dans votre fichier ''/etc/fstab'':
+Par exemple, si le chemin absolu vers votre répertoire ''tickets' est ''/opt/possum-software/tickets/'', il faudra ajouter la ligne suivante dans votre fichier ''/etc/fstab'':
 
 ::
 
-  tmpfs /home/pos/possum-software/tickets/ tmpfs defaults,nodev,nosuid 0 0
+  tmpfs /opt/possum-software/tickets/ tmpfs defaults,nodev,nosuid 0 0
 
 
 Cela peut être fait avec les commandes suivantes (en étant root):
 
 ::
 
-  echo "tmpfs /home/pos/possum-software/tickets/ tmpfs defaults,nodev,nosuid 0 0" >> /etc/fstab
-  mount /home/pos/possum-software/tickets/
+  echo "tmpfs /opt/possum-software/tickets/ tmpfs defaults,nodev,nosuid 0 0" >> /etc/fstab
+  mount /opt/possum-software/tickets/
 
 Le dernière commande donne les droits sur le répertoire au serveur web Apache.
 
@@ -100,6 +109,8 @@ Vous pouvez générer la documentation en html avec la commande suivante:
 ::
 
   ./make doc
+
+Elle sera disponible ici: ''/opt/possum-software/doc/_build/html/''.
 
 Sinon elle est également disponible sur le site officiel: `Documentation <http://www.possum-software.org>`_.
 
