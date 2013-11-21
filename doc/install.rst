@@ -135,8 +135,20 @@ Commençons par installer les paquets nécessaires:
 
 
 Il reste la configuration à faire. Pour cela, il y a des configurations type dans 
-le répertoire ''possum/utils/''. La commande ci-dessus devrait vous donner les 
-instructions à suivre.
+le répertoire ''possum/utils/''.
+
+On configure maintenant ''Supervisor'' qui s'occupera de lancer ''Possum'':
+
+::
+
+  cp possum/utils/supervisor.conf /etc/supervisor/conf.d/possum.conf
+  /etc/init.d/supervisor restart
+
+Pour ''NGinx'':
+
+::
+  cp possum/utils/nginx-ssl.conf /etc/nginx/sites-enabled/default
+  /etc/init.d/nginx restart
 
 
 La configuration conseillée utilise du ''https'' afin
