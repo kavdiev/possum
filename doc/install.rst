@@ -185,16 +185,22 @@ au panneau d'administration ou des bugs.
 
   sudo apt-get install postfix bsd-mailx
 
-  Système satellite : Tous les messages sont envoyés vers une autre machine, nommée un smarthost.
+  Configuration type du serveur de messagerie: Site Internet
   Nom de courrier : possum (ou le nom que vous voulez)
-  Serveur relais SMTP (vide pour aucun) :
-  Destinataire des courriels de « root » et de « postmaster » : votre_adresse_mail@example.org
-  Autres destinations pour lesquelles le courrier sera accepté (champ vide autorisé) : possum, localhost.localdomain, localhost
-  Faut-il forcer des mises à jour synchronisées de la file d'attente des courriels ? Non
-  Réseaux internes : 127.0.0.0/8 [::ffff:127.0.0.0]/104 [::1]/128
-  Taille maximale des boîtes aux lettres (en octets) : 0
-  Caractère d'extension des adresses locales : +
-  Protocoles internet à utiliser : tous
+
+Il est conseillé de définir un alias pour l'utilisateur root dans le fichier 
+''/etc/aliases''. Dans ce cas, vous aurez une ligne du type:
+
+::
+
+  root: votre_adresse@possum-software.org
+
+Cet alias vous permettra de recevoir les éventuelles alertes du système d'exploitation.
+Après chaque modification de ce fichier, il faut lancer la commande:
+
+::
+
+  sudo newaliases
 
 Si tout est bien configurer, vous devriez recevoir un mail avec comme
 sujet ''test'' et dans le message la date d'envoie en utilisant la

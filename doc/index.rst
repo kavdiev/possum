@@ -18,4 +18,5 @@ Sommaire
    releases
    licence
    credits
+   faq
 
