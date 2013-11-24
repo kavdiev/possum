@@ -15,7 +15,8 @@ De plus, si vous utilisez également ce serveur pour faire de la saisie, il
 faudra également le prévoir au niveau des performances.
 
 Afin de classer les différentes solutions, on utilise la base de
-démonstration et la commande ''Apache Benchmark'' sur 3 essais consécutifs:
+démonstration et la commande ''Apache Benchmark'' sur 3 essais consécutifs.
+Évidemment, on désactive l'authentification le temps de faire le test.
 
 ::
 
@@ -25,9 +26,9 @@ démonstration et la commande ''Apache Benchmark'' sur 3 essais consécutifs:
 ======================= ========= ========== ========== ================
 Matériel                essai 1   essai 2    essai 3    logiciels
 ======================= ========= ========== ========== ================
-Raspberry 512Mo type B  1.35      1.88       1.83       raspbian / nginx
+Raspberry 512Mo type B   1.35      1.88       1.83      raspbian / nginx
 Mini-ITX VIA M6000G
-Shuttle SD11G5
+Shuttle SD11G5          13.31     13.83      13.80      nginx
 ======================= ========= ========== ========== ================
 
 
