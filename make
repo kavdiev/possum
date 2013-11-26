@@ -31,11 +31,15 @@ EOF
 }
 
 function enter_virtualenv {
+    if [ ! -d .virtualenv]
+    then
+        update
+    fi
     source .virtualenv/bin/activate 2>/dev/null
     if [ ! $? -eq 0 ]
     then
         echo
-        echo "Virtualenv does not exist, run: $0 update"
+        echo "Virtualenv does not work !"
         echo
         exit 2
     fi
