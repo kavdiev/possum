@@ -70,10 +70,10 @@ def categories_print(request):
                                      printer.name)
             else:
                 messages.add_message(request, messages.ERROR, u"L'impression"
-                                     " a achouée sur %s." % printer.name)
+                                     u" a achouée sur %s." % printer.name)
         else:
             messages.add_message(request, messages.ERROR, u"Aucune imprimante "
-                                 "type 'manager' disponible.")
+                                 u"type 'manager' disponible.")
     else:
         messages.add_message(request, messages.ERROR, "Il n'y a rien dans la carte.")
     return HttpResponseRedirect('/carte/categories/')
