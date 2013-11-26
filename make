@@ -49,9 +49,10 @@ function doc {
 }
 
 function tests {
-    # prerequis: sloccount
-    # pip install django-jenkins pep8 pyflakes clonedigger flake8 flake8-todo
+    # prerequis: sloccount csslint
     enter_virtualenv
+    pip install django-jenkins pep8 pyflakes clonedigger flake8 flake8-todo \
+        coverage
     ./manage.py jenkins
     csslint possum/base/static/ --format=lint-xml --exclude-list=possum/base/static/jquery.min.js,possum/base/static/highcharts > reports/csslint.report
     #rm -f reports/{pylint.report,pep8.report}
@@ -60,7 +61,6 @@ function tests {
     #    pylint --output-format=parseable --reports=y --rcfile=possum/utils/pylint.rc $f >> reports/pylint.report 2>/dev/null
     #    pep8 $f >> reports/pep8.report
     #done || :
-    # flake8 for pep8, pyflakes and complexity
     flake8 --exclude=migrations --max-complexity 12 possum > reports/flake8.report
 #    OMIT="django_extensions,django,*migrations*,*.virtualenv*"
 #    coverage run --source=. manage.py test --verbosity=2 --traceback
@@ -97,18 +97,6 @@ function update_js {
     fi
     enter_virtualenv
     ./manage.py collectstatic --noinput --no-post-process
-#    if [ ! -d possum/static/chartit ]
-#    then
-#        mkdir -pv possum/static/chartit/js
-#    fi
-#    if [ ! -d possum/static/chartit/js ]
-#    then
-#        mkdir -pv possum/static/chartit/js
-#    fi
-#    if [ ! -e possum/static/chartit/js/chartloader.js ]
-#    then
-#        find .virtualenv/ -name chartloader.js -exec cp {} possum/static/chartit/js/chartloader.js \;
-#    fi
 }
 
 function update {
