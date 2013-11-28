@@ -21,6 +21,7 @@
 from django import forms
 from django.forms.extras.widgets import SelectDateWidget
 
+
 weeks_choice = [(unicode(i), i) for i in range(54)]
 months_choice = [(unicode(i), i) for i in range(1, 13)]
 years_choice = [(unicode(i), i) for i in range(2004, 2030)]

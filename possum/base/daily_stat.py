@@ -18,9 +18,13 @@
 #    along with POSSUM.  If not, see <http://www.gnu.org/licenses/>.
 #
 
+import datetime
 from decimal import Decimal
 from django.db import models
+import logging
+
 from django.db.models import Max, Avg
+
 from monthly_stat import MonthlyStat
 from possum.base.bill import Facture
 from possum.base.category import Categorie
@@ -29,8 +33,7 @@ from possum.base.product import Produit
 from possum.base.utils import nb_sorted
 from possum.base.vat import VAT
 from weekly_stat import WeeklyStat
-import datetime
-import logging
+
 
 logger = logging.getLogger(__name__)
 
@@ -222,7 +225,7 @@ class DailyStat(models.Model):
 
     def __add_bill_guests(self, bill, date, year, month, week):
         logger.debug(" ")
-        guests_nb, created = DailyStat.objects.get_or_create(date=date, 
+        guests_nb, created = DailyStat.objects.get_or_create(date=date,
                                                              key="guests_nb")
         if bill.couverts == 0:
             # if not, we try to find a number

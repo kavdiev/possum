@@ -17,25 +17,20 @@
 #    You should have received a copy of the GNU General Public License
 #    along with POSSUM.  If not, see <http://www.gnu.org/licenses/>.
 
-from possum.base.vat import VAT
-from possum.base.printer import Printer
-from possum.base.vatonbill import VATOnBill
-from possum.base.daily_stat import DailyStat
-from possum.base.weekly_stat import WeeklyStat
-from possum.base.monthly_stat import MonthlyStat
 from possum.base.bill import Facture
-from possum.base.generic import Nom
-from possum.base.generic import NomDouble
-from possum.base.generic import Priorite
-from possum.base.product import Produit
-from possum.base.product import ProduitVendu
-from possum.base.payment import Paiement
-from possum.base.payment import PaiementType
 from possum.base.category import Categorie
-from possum.base.options import Cuisson
-from possum.base.options import Sauce
-from possum.base.options import Accompagnement
-from possum.base.location import Zone
-from possum.base.location import Table
-from possum.base.follow import Follow
 from possum.base.config import Config
+from possum.base.daily_stat import DailyStat
+from possum.base.follow import Follow
+from possum.base.generic import Nom, NomDouble, Priorite
+from possum.base.location import Table, Zone
+from possum.base.monthly_stat import MonthlyStat
+from possum.base.options import Accompagnement, Cuisson, Sauce
+from possum.base.payment import Paiement, PaiementType
+from possum.base.printer import Printer
+from possum.base.product import Produit, ProduitVendu
+from possum.base.vat import VAT
+from possum.base.vatonbill import VATOnBill
+from possum.base.weekly_stat import WeeklyStat
+
+

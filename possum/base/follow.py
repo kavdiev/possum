@@ -19,6 +19,7 @@
 #
 
 from django.db import models
+
 from possum.base.category import Categorie
 from possum.base.product import ProduitVendu
 
