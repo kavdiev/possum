@@ -154,7 +154,7 @@ def product_select_made_with(request, bill_id, product_id):
 
 @permission_required('base.p3')
 def product_set_made_with(request, bill_id, product_id, category_id):
-    # TOCHECK request unused
+    # TODO request unused
     # data = get_user(request)
     product = get_object_or_404(ProduitVendu, pk=product_id)
     category = get_object_or_404(Categorie, pk=category_id)
@@ -171,7 +171,7 @@ def product_select(request, bill_id, category_id):
     """Select a product to add on a bill."""
     data = get_user(request)
     data['menu_bills'] = True
-    # bill = get_object_or_404(Facture, pk=bill_id) TOCHECK unused
+    # bill = get_object_or_404(Facture, pk=bill_id) TODO unused
     category = get_object_or_404(Categorie, pk=category_id)
     if not category.vat_onsite:
         messages.add_message(request,
@@ -212,7 +212,7 @@ def sold_view(request, bill_id, sold_id):
 
 @permission_required('base.p3')
 def sold_delete(request, bill_id, sold_id):
-    # TOCHECK request unused
+    # TODO request unused
     bill = get_object_or_404(Facture, pk=bill_id)
     sold = get_object_or_404(ProduitVendu, pk=sold_id)
     if sold in bill.produits.all():
