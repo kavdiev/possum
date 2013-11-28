@@ -1,5 +1,6 @@
-from django.conf.urls import patterns, include, url
 from django.conf import settings
+from django.conf.urls import patterns, url
+
 
 # Uncomment the next two lines to enable the admin:
 # from django.contrib import admin
@@ -8,7 +9,6 @@ from django.conf import settings
 # url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
 # Uncomment the next line to enable the admin:
 # url(r'^admin/', include(admin.site.urls)),
-
 urlpatterns = patterns('possum.base.views',
     url(r'^$', 'home', name='home'),
     url(r'^accueil$', 'home'),
@@ -98,7 +98,7 @@ urlpatterns += patterns('possum.base.views.bill',
 urlpatterns += patterns('possum.base.views.jukebox',
     url(r'^jukebox/$', 'jukebox'),
 )
-                        
+
 urlpatterns += patterns('possum.base.views.kitchen',
     url(r'^kitchen/$', 'kitchen'),
     url(r'^kitchen/(?P<bill_id>\d+)/$', 'kitchen_for_bill'),
@@ -184,7 +184,7 @@ urlpatterns += patterns('possum.base.views.manager.charts',
 
 if settings.DEBUG:
     urlpatterns += patterns('',
-            url(r'^static/(?P<path>.*)$', 
-                'django.views.static.serve', 
+            url(r'^static/(?P<path>.*)$',
+                'django.views.static.serve',
                 {'document_root': settings.MEDIA_ROOT}),
     )

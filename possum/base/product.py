@@ -17,13 +17,16 @@
 #    You should have received a copy of the GNU General Public License
 #    along with POSSUM.  If not, see <http://www.gnu.org/licenses/>.
 #
-from django.db import models
-from possum.base.generic import NomDouble
-from possum.base.category import Categorie
-from decimal import Decimal
-from possum.base.options import Cuisson, Sauce, Accompagnement
 from datetime import datetime
+from decimal import Decimal
+from django.db import models
 import logging
+
+from possum.base.category import Categorie
+from possum.base.generic import NomDouble
+from possum.base.options import Cuisson, Sauce, Accompagnement
+
+
 logger = logging.getLogger(__name__)
 
 
@@ -140,7 +143,7 @@ class Produit(NomDouble):
             if category.made_in_kitchen:
                 name += "[K]"
             result.append(name)
-            for product in Produit.objects.filter(categorie=category, 
+            for product in Produit.objects.filter(categorie=category,
                                                   actif=True):
                 result.append("%s: %.2f" % (product.nom_facture, product.prix))
             result.append(" ")
@@ -152,12 +155,12 @@ class ProduitVendu(models.Model):
     """
     date = models.DateTimeField(auto_now_add=True)
     produit = models.ForeignKey(Produit, related_name="produitvendu-produit")
-    cuisson = models.ForeignKey(Cuisson, null=True, blank=True, 
+    cuisson = models.ForeignKey(Cuisson, null=True, blank=True,
                                 related_name="produitvendu-cuisson")
     prix = models.DecimalField(max_digits=7, decimal_places=2, default=0)
-    sauce = models.ForeignKey(Sauce, null=True, blank=True, 
+    sauce = models.ForeignKey(Sauce, null=True, blank=True,
                               related_name="produitvendu-sauce")
-    accompagnement = models.ForeignKey(Accompagnement, null=True, blank=True, 
+    accompagnement = models.ForeignKey(Accompagnement, null=True, blank=True,
                                        related_name="produitvendu-accompagnement")
     # dans le cas d'un menu, peut contenir d'autres produits
     contient = models.ManyToManyField('self')

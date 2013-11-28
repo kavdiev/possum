@@ -21,11 +21,18 @@
 """Mise à jour des statistiques de la base.
 """
 
-import sys, os
+import logging
+import logging.handlers
+import os
+import sys
+
+from django.conf import settings
+
+from possum.base.models import Facture
+
+
 sys.path.append('/home/pos')
 os.environ['DJANGO_SETTINGS_MODULE'] = 'possum.settings'
-from django.conf import settings
-import logging, logging.handlers
 
 if settings.DEBUG:
     logging.basicConfig(
@@ -44,7 +51,6 @@ else:
     LOG.addHandler(logging.handlers.SMTPHandler("localhost", \
                    "possum@localhost", ["root@localhost"], "[POSSUM] "))
 
-from possum.base.models import Facture
 
 # for facture in Facture.objects.iterator():
     # facture.saved_in_stats = False

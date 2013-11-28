@@ -18,7 +18,9 @@
 #    along with POSSUM.  If not, see <http://www.gnu.org/licenses/>.
 #
 from django.db import models
+
 from possum.base.generic import Nom
+
 
 class Zone(Nom):
     """Un zone peut avoir une surtaxe par exemple dans le cas d'une majoration

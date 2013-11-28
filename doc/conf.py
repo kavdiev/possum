@@ -11,8 +11,10 @@
 # All configuration values have a default; values that are commented out
 # serve to show the default.
 
-import sys, os
 from datetime import datetime
+import os
+import sys
+
 
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
@@ -20,7 +22,6 @@ from datetime import datetime
 # sys.path.append(os.path.abspath('.'))
 # sys.path.append(os.path.abspath('../base'))
 # sys.path.append(os.path.abspath('../src'))
-
 # sys.path.append('/home/pos/possum-software/')
 sys.path.append('..')
 os.environ['DJANGO_SETTINGS_MODULE'] = 'possum.settings'
@@ -120,7 +121,7 @@ html_theme_options = {}
 # "<project> v<release> documentation".
 # html_title = None
 # html_title = "Possum"
-#html_title = "Documentation"
+# html_title = "Documentation"
 html_title = "%s %s" % (project, release)
 
 # A shorter title for the navigation bar.  Default is the same as html_title.

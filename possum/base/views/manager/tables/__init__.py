@@ -18,36 +18,39 @@
 #    along with POSSUM.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-import logging
-logger = logging.getLogger(__name__)
-
-from possum.base.bill import Facture
-from possum.base.models import Printer
-from possum.base.product import Produit, ProduitVendu
-from possum.base.payment import PaiementType, Paiement
-from possum.base.category import Categorie
-from possum.base.options import Cuisson, Sauce, Accompagnement
-from possum.base.location import Zone, Table
-from possum.base.vat import VAT
-from possum.base.forms import DateForm, WeekForm, MonthForm, YearForm
-
+import datetime
+from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
-from django.shortcuts import render_to_response, get_object_or_404
-from django.contrib.auth.decorators import login_required
-# from django.views.decorators.csrf import csrf_protect
-from django.core.context_processors import csrf
-from django.template import RequestContext
-from django.http import HttpResponseForbidden, HttpResponseRedirect
-from django.http import Http404
 from django.contrib.auth.context_processors import PermWrapper
 from django.contrib.auth.models import User, UserManager, Permission
-from django.conf import settings
-from django.contrib import messages
-from django.utils.functional import wraps
 from django.core.mail import send_mail
+from django.http import Http404, HttpResponseForbidden, HttpResponseRedirect
+import logging
 import os
-import datetime
+
+from django.conf import settings
+from django.contrib.auth.decorators import login_required
+from django.core.context_processors import csrf
+from django.shortcuts import render_to_response, get_object_or_404
+from django.template import RequestContext
+from django.utils.functional import wraps
+
+from possum.base.bill import Facture
+from possum.base.category import Categorie
+from possum.base.forms import DateForm, WeekForm, MonthForm, YearForm
+from possum.base.location import Zone, Table
+from possum.base.models import Printer
+from possum.base.options import Cuisson, Sauce, Accompagnement
+from possum.base.payment import PaiementType, Paiement
+from possum.base.product import Produit, ProduitVendu
+from possum.base.vat import VAT
 from possum.base.views import get_user, permission_required
+
+
+logger = logging.getLogger(__name__)
+
+
+# from django.views.decorators.csrf import csrf_protect
 
 @permission_required('base.p1')
 def tables_zone_delete(request, zone_id):

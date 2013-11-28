@@ -1,53 +1,87 @@
-{% extends "template.html" %}
-{% block page %}
-
-<ul id="menu">
-    <li class="icon" onclick="window.location='/bills/'">
-    {% if menu_bills %}
-        <img src="/static/images/order_color.jpg">
-    {% else %}
-        <img src="/static/images/order_bw.jpg">
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr" lang="fr">
+<head>
+    <meta charset="utf-8" />
+    <link rel="shortcut icon" type="image/x-icon" href="/static/images/favicon.png" />
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+    <meta name=author content="S. Bonnegent">
+    <script type="text/javascript" src="/static/base.js"></script>
+    {% if chart1 or chart2 %}
+        <script src="/static/jquery.min.js" type="text/javascript"></script>
+        <script src="/static/highcharts/js/highcharts.js" type="text/javascript"></script>
+        {% load chartit %}
+        {% if chart1 %}
+            {{ chart1|load_charts:"chart_view_1" }}
+        {% elif chart2 %}
+            {{ chart2|load_charts:"chart_view_1,chart_view_2" }}
+        {% endif %}
     {% endif %}
-    </li>
-    <li class="icon" onclick="window.location='/carte/categories/'">
-    {% if menu_carte %}
-        <img src="/static/images/carte_color.jpg">
-    {% else %}
-        <img src="/static/images/carte_bw.jpg">
-    {% endif %}
-    </li>
-    <li class="icon" onclick="window.location='/kitchen/'">
-    {% if menu_kitchen %}
-        <img src="/static/images/kitchen_color.jpg">
-    {% else %}
-        <img src="/static/images/kitchen_bw.jpg">
-    {% endif %}
-    </li>
-    <li class="icon" onclick="window.location='/manager/'">
-    {% if menu_manager %}
-        <img src="/static/images/manager_color.jpg">
-    {% else %}
-        <img src="/static/images/manager_bw.jpg">
-    {% endif %}
-    </li>
-    <li><div id="myclock"><script type="text/javascript">window.onload = date_heure('myclock');</script></div></li>
-    {% if user.is_authenticated %}
-    <li class="{% if menu_profile %}menuSelected{% endif %}" onclick="window.location='/profile/'"><a href="/profile/">{% if user.get_full_name %}{{ user.get_full_name }}{%else%}{{user.username}}{%endif%}</a></li>
-    <li><a href="/users/logout/">Déconnexion</a></li>
-    {% else %}
-    <li><a href="/users/login/">Connexion</a></li>
-    {% endif %}
-</ul>
-
-        <div id="content">
-            {% if messages %}
-            <ul id="messages">
-                {% for message in messages %}
-                <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
-                {% endfor %}
-            </ul>
+    <link rel="stylesheet" href="/static/base.css"/>
+    <title>POSSUM</title>
+</head>
+<body>
+    {% block menu %}
+    <ul id="menu">
+        {% if user.is_authenticated %}
+            <li class="{% if menu_profile %}menuSelected{% endif %}" onclick="window.location='/profile/'">
+                {% if user.get_full_name %}{{ user.get_full_name }}{%else%}{{user.username}}{%endif%}
+            </li>
+        {% endif %}
+        {% if not menu_bills %}
+            <li onclick="window.location='/bills/'">
+                Bills
+            </li>
+            {% if menu_carte %}
+                <li class="menuSelected" onclick="window.location='/carte/categories/'">
+            {% else %}
+                <li onclick="window.location='/carte/categories/'">
             {% endif %}
-
-            {% block content %}<p>Contenu de la page (Vide!).</p>{% endblock %}
-        </div>
-{% endblock %}
+                    Carte
+                </li>
+            {% if menu_kitchen %}
+                <li class="menuSelected" onclick="window.location='/kitchen/'">
+            {% else %}
+                <li onclick="window.location='/kitchen/'">
+            {% endif %}
+                    Kitchen
+                </li>
+            {% if menu_manager %}
+                <li class="menuSelected" onclick="window.location='/manager/'">
+            {% else %}
+                <li onclick="window.location='/manager/'">
+            {% endif %}
+                    Manager
+                </li>
+        {% endif %}
+        <li>
+            <div id="myclock">
+                <script type="text/javascript">window.onload = date_heure('myclock');</script>
+            </div>
+        </li>
+        {% if user.is_authenticated %}
+            <li onclick="window.location='/users/logout/'">
+                Déconnexion
+            </li>
+        {% else %}
+            <li onclick="window.location='/users/logout/'">
+                Connexion
+            </li>
+        {% endif %}
+    </ul>
+    {% endblock %}
+    {% block page %}
+    <div id="content">
+        {% if messages %}
+        <ul id="messages">
+            {% for message in messages %}
+            <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+        {% block content %}
+            <p>Il y a un problème dans le template, le contenu de la page vide.</p>
+        {% endblock %}
+    </div>
+    {% endblock %}
+    </body>
+</html>

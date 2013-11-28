@@ -20,6 +20,7 @@
 #
 import cups
 
+
 conn = cups.Connection()
 printer = ""
 filename = "/tmp/test-printer"

@@ -18,14 +18,18 @@
 #    You should have received a copy of the GNU General Public License
 #    along with POSSUM.  If not, see <http://www.gnu.org/licenses/>.
 #
-import sys, os
+from datetime import datetime, timedelta
+import os
+import sys
+
+from possum.base.models import Facture, StatsJourPaiement, StatsJourGeneral, \
+    StatsJourProduit, StatsJourCategorie
+
+
 sys.path.append('/home/pos')
 os.environ['DJANGO_SETTINGS_MODULE'] = 'possum.settings'
 
-from possum.base.models import Facture, StatsJourPaiement, \
-                StatsJourGeneral, StatsJourProduit, StatsJourCategorie
 
-from datetime import datetime, timedelta
 
 date = datetime(2011, 1, 27)
 date_min = date.replace(hour=5)

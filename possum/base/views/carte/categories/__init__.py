@@ -18,22 +18,26 @@
 #    along with POSSUM.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-import logging
-logger = logging.getLogger(__name__)
-
-from possum.base.daily_stat import DailyStat
-from possum.base.models import Printer
-from possum.base.category import Categorie
-from possum.base.vat import VAT
-from possum.base.product import Produit
-
-from django.shortcuts import render_to_response, get_object_or_404
-from django.template import RequestContext
-from django.http import HttpResponseRedirect
-from django.conf import settings
 from django.contrib import messages
 from django.core.mail import send_mail
+from django.http import HttpResponseRedirect
+import logging
+
+from django.conf import settings
+from django.shortcuts import render_to_response, get_object_or_404
+from django.template import RequestContext
+
+from possum.base.category import Categorie
+from possum.base.daily_stat import DailyStat
+from possum.base.models import Printer
+from possum.base.product import Produit
+from possum.base.vat import VAT
 from possum.base.views import get_user, permission_required
+
+
+logger = logging.getLogger(__name__)
+
+
 
 
 @permission_required('base.p2')
@@ -65,7 +69,7 @@ def categories_print(request):
         if printers:
             printer = printers[0]
             if printer.print_list(result, "carte_complete"):
-                messages.add_message(request, messages.SUCCESS, 
+                messages.add_message(request, messages.SUCCESS,
                                      u"L'impression a été envoyée sur %s." % 
                                      printer.name)
             else:
@@ -290,7 +294,7 @@ def categories_set_color(request, cat_id):
     color = request.POST.get('color', '').strip()
     cat = get_object_or_404(Categorie, pk=cat_id)
     if not cat.color or color != cat.color:
-        logger.info("[%s] new categorie color [%s]" % (data['user'].username, 
+        logger.info("[%s] new categorie color [%s]" % (data['user'].username,
                                                        cat.nom))
         cat.color = color
         try:

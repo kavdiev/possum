@@ -18,14 +18,17 @@
 #    along with POSSUM.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-from django.db.models import Avg
-from possum.base.category import Categorie
-from possum.base.product import Produit
-from possum.base.payment import PaiementType
-from possum.base.vat import VAT
-from possum.base.monthly_stat import MonthlyStat
 import logging
+
+from django.db.models import Avg
+
 from chartit import PivotDataPool, PivotChart
+from possum.base.category import Categorie
+from possum.base.monthly_stat import MonthlyStat
+from possum.base.payment import PaiementType
+from possum.base.product import Produit
+from possum.base.vat import VAT
+
 
 logger = logging.getLogger(__name__)
 
@@ -38,7 +41,7 @@ def month_name(*t):
              12: 'Dec'}
     month_num = int(t[0][0])
     logger.debug("names[%d] > [%s]" % (month_num, names[month_num]))
-    return (names[month_num], )
+    return (names[month_num],)
 
 
 def month_sort(*x):
@@ -57,7 +60,7 @@ def get_datapool_year(year, keys):
             'terms': {keys[key]: Avg('value')}
             })
     return PivotDataPool(
-            series = series,
+            series=series,
             sortf_mapf_mts=(month_sort, month_name, True))
 
 
@@ -67,15 +70,15 @@ def get_chart(datasource, graph, keys, title, xaxis):
     """
     terms = [keys[x] for x in keys.keys()]
     return PivotChart(
-                datasource = datasource,
-                series_options = [{
+                datasource=datasource,
+                series_options=[{
                     'options': {
                         'type': graph,
                         'stacking': False
                         },
                     'terms': terms
                     }],
-                chart_options = {
+                chart_options={
                     'title': {
                         'text': title},
                     'credits': {
@@ -98,7 +101,8 @@ def get_chart_year_ttc(year):
         datasource = get_datapool_year(year, keys)
     except:
         return False
-    return get_chart(datasource, 'line', keys, "Total TTC pour l'année %s" % year, "Mois")
+    return get_chart(datasource, 'line', keys,
+                     "Total TTC pour l'année %s" % year, "Mois")
 
 
 def get_chart_year_bar(year):
@@ -109,7 +113,8 @@ def get_chart_year_bar(year):
         datasource = get_datapool_year(year, keys)
     except:
         return False
-    return get_chart(datasource, 'line', keys, "Activité bar pour l'année %s" % year, "Mois")
+    return get_chart(datasource, 'line', keys,
+                     "Activité bar pour l'année %s" % year, "Mois")
 
 
 def get_chart_year_guests(year):
@@ -120,7 +125,8 @@ def get_chart_year_guests(year):
         datasource = get_datapool_year(year, keys)
     except:
         return False
-    return get_chart(datasource, 'line', keys, "Activité restaurant pour l'année %s" % year, "Mois")
+    return get_chart(datasource, 'line', keys,
+                     "Activité restaurant pour l'année %s" % year, "Mois")
 
 
 def get_chart_year_vats(year):
@@ -132,7 +138,8 @@ def get_chart_year_vats(year):
         datasource = get_datapool_year(year, keys)
     except:
         return False
-    return get_chart(datasource, 'line', keys, "TVA pour l'année %s" % year, "Mois")
+    return get_chart(datasource, 'line', keys,
+                     "TVA pour l'année %s" % year, "Mois")
 
 
 def get_chart_year_payments(year):
@@ -148,12 +155,14 @@ def get_chart_year_payments(year):
         datasource = get_datapool_year(year, keys_nb)
     except:
         return False
-    charts.append(get_chart(datasource, 'line', keys_nb, "Nombre de paiements par type pour l'année %s" % year, "Mois"))
+    charts.append(get_chart(datasource, 'line', keys_nb,
+                            "Nombre de paiements par type pour l'année %s" % year,
+                            "Mois"))
     try:
         datasource = get_datapool_year(year, keys_value)
     except:
         return False
-    charts.append(get_chart(datasource, 'line', keys_value, 
+    charts.append(get_chart(datasource, 'line', keys_value,
                   "Valeur des paiements par type pour l'année %s" % year, "Mois"))
     return charts
 

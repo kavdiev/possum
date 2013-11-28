@@ -18,16 +18,20 @@
 #    along with POSSUM.  If not, see <http://www.gnu.org/licenses/>.
 #
 
+from django.contrib import messages
+from django.http import HttpResponseRedirect
 import logging
-logger = logging.getLogger(__name__)
+
+from django.shortcuts import render_to_response, get_object_or_404
+from django.template import RequestContext
 
 from possum.base.product import Produit
 from possum.base.vat import VAT
-from django.shortcuts import render_to_response, get_object_or_404
-from django.template import RequestContext
-from django.http import HttpResponseRedirect
-from django.contrib import messages
 from possum.base.views import get_user, permission_required
+
+
+logger = logging.getLogger(__name__)
+
 
 
 @permission_required('base.p1')
@@ -48,6 +52,15 @@ def vats_view(request, vat_id):
                               context_instance=RequestContext(request))
 
 
+def check_name_and_tax(request, name, tax):
+    if not name:
+        messages.add_message(request, messages.ERROR,
+                             "Vous devez entrer un nom.")
+    if not tax:
+        messages.add_message(request, messages.ERROR,
+                             "Vous devez saisir un pourcentage de taxe.")
+
+
 @permission_required('base.p1')
 def vats_change(request, vat_id):
     data = get_user(request)
@@ -56,28 +69,20 @@ def vats_change(request, vat_id):
     if request.method == 'POST':
         name = request.POST.get('name', '').strip()
         tax = request.POST.get('tax', '').strip().replace(',', '.')
-        if name:
-            if tax:
-                try:
-                    data['vat'].name = name
-                    data['vat'].save()
-                    data['vat'].set_tax(tax)
-                    for product in Produit.objects.filter(categorie__vat_onsite=data['vat']):
-                        product.update_vats()
-                    for product in Produit.objects.filter(categorie__vat_takeaway=data['vat']):
-                        product.update_vats()
-                except:
-                    messages.add_message(request, messages.ERROR, "Les modifications n'ont pu être enregistrées.")
-                else:
-                    return HttpResponseRedirect('/manager/vats/')
-
-            else:
-                messages.add_message(request, messages.ERROR, 
-                                     "Vous devez saisir un pourcentage de taxe.")
+        check_name_and_tax(request, name, tax)
+        try:
+            data['vat'].name = name
+            data['vat'].save()
+            data['vat'].set_tax(tax)
+            for product in Produit.objects.filter(categorie__vat_onsite=data['vat']):
+                product.update_vats()
+            for product in Produit.objects.filter(categorie__vat_takeaway=data['vat']):
+                product.update_vats()
+        except:
+            messages.add_message(request, messages.ERROR,
+                                 "Les modifications n'ont pu être enregistrées.")
         else:
-            messages.add_message(request, messages.ERROR, 
-                                 "Vous devez entrer un nom.")
-
+            return HttpResponseRedirect('/manager/vats/')
     return render_to_response('base/manager/vats/change.html', data,
                               context_instance=RequestContext(request))
 
@@ -90,23 +95,15 @@ def vat_new(request):
     if request.method == 'POST':
         name = request.POST.get('name', '').strip()
         tax = request.POST.get('tax', '').strip().replace(",", ".")
-        if name:
-            if tax:
-                try:
-                    vat = VAT(name=name)
-                    vat.set_tax(tax)
-                    vat.save()
-                except:
-                    messages.add_message(request, messages.ERROR, 
-                                         "Les modifications n'ont pu être enregistrées.")
-                else:
-                    return HttpResponseRedirect('/manager/vats/')
-
-            else:
-                messages.add_message(request, messages.ERROR, 
-                                     "Vous devez saisir un pourcentage de taxe.")
+        check_name_and_tax(request, name, tax)
+        try:
+            vat = VAT(name=name)
+            vat.set_tax(tax)
+            vat.save()
+        except:
+            messages.add_message(request, messages.ERROR,
+                                 "Les modifications n'ont pu être enregistrées.")
         else:
-            messages.add_message(request, messages.ERROR, "Vous devez entrer un nom.")
-
+            return HttpResponseRedirect('/manager/vats/')
     return render_to_response('base/manager/vats/new.html', data,
                               context_instance=RequestContext(request))

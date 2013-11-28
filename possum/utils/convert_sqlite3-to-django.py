@@ -28,17 +28,23 @@ if DEBUG:
 else:
     limit = ""
 
-import sys, os
 import datetime
 from decimal import Decimal
+from django.contrib.auth.models import User
+from django.db import connection, transaction
+import os
+import sqlite3
+import sys
+
+from possum.base.models import Accompagnement, Sauce, Etat, Categorie, Couleur, \
+    Cuisson, Facture, Log, LogType, Paiement, PaiementType, Produit, ProduitVendu, \
+    Suivi, Table, Zone
 import progressbar
+
 
 sys.path.append('/home/pos')
 os.environ['DJANGO_SETTINGS_MODULE'] = 'possum.settings'
 
-from possum.base.models import Accompagnement, Sauce, Etat, \
-    Categorie, Couleur, Cuisson, Facture, Log, LogType, Paiement, \
-    PaiementType, Produit, ProduitVendu, Suivi, Table, Zone
 
 debut = datetime.datetime.now()
 
@@ -50,7 +56,6 @@ debut = datetime.datetime.now()
 print "> creation de la base"
 os.system('python manage.py syncdb --noinput > /dev/null')
 # create a super user
-from django.contrib.auth.models import User
 if User.objects.all().count() == 0:
     u = User.objects.create(
         username='bonnegent',
@@ -65,7 +70,6 @@ if User.objects.all().count() == 0:
     u.save()
 
 # base src
-import sqlite3
 # cx = sqlite3.connect("/home/pos/possum/data/database")
 cx = sqlite3.connect("/home/pos/possum/database-2010")
 cu = cx.cursor()
@@ -304,7 +308,6 @@ for id, date_creation, date_paiement, ttc, ttc_alcool, id_table, nb_couverts in 
 pbar.finish()
 
 # on remet en etat les index
-from django.db import connection, transaction
 cursor = connection.cursor()
 for i in ["couleur", "paiementtype", "produit", "categorie", "logtype", "log", "zone", "table", "facture", "paiement"]:
     cursor.execute("SELECT setval('base_%s_id_seq', max(id)) FROM base_%s" % (i, i))

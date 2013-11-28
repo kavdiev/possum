@@ -18,25 +18,25 @@
 #    along with POSSUM.  If not, see <http://www.gnu.org/licenses/>.
 #
 
+import datetime
+from django.contrib import messages
+from django.http import HttpResponseRedirect
 import logging
-logger = logging.getLogger(__name__)
 
-from possum.base.daily_stat import DailyStat
-from possum.base.category import Categorie
-from possum.base.forms import YearForm
 from django.shortcuts import render_to_response
 from django.template import RequestContext
-from django.http import HttpResponseRedirect
-from django.contrib import messages
-import datetime
+
+from possum.base.category import Categorie
+from possum.base.charts import get_chart_year_bar, get_chart_year_categories, \
+    get_chart_year_guests, get_chart_year_payments, get_chart_year_products, \
+    get_chart_year_ttc, get_chart_year_vats
+from possum.base.daily_stat import DailyStat
+from possum.base.forms import YearForm
 from possum.base.views import get_user
-from possum.base.charts import get_chart_year_ttc
-from possum.base.charts import get_chart_year_bar
-from possum.base.charts import get_chart_year_guests
-from possum.base.charts import get_chart_year_vats
-from possum.base.charts import get_chart_year_payments
-from possum.base.charts import get_chart_year_categories
-from possum.base.charts import get_chart_year_products
+
+
+logger = logging.getLogger(__name__)
+
 
 
 def charts_year(request, choice='ttc'):

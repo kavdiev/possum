@@ -1,13 +1,14 @@
-from os.path import abspath, basename, dirname, join, normpath, exists
 import os
+from os.path import abspath, dirname, join, normpath
 import random
 import sys
+
 
 ########## PATH CONFIGURATION
 # Absolute filesystem path to this Django project directory.
 DJANGO_ROOT = dirname(dirname(abspath(__file__)))
 # Site name.
-#SITE_NAME = basename(DJANGO_ROOT)
+# SITE_NAME = basename(DJANGO_ROOT)
 SITE_NAME = "possum"
 # Absolute filesystem path to the top-level project folder.
 SITE_ROOT = dirname(DJANGO_ROOT)
@@ -34,26 +35,26 @@ PERMS = ['p1', 'p2', 'p3', 'p4', 'p5', 'p6', 'p7', 'p8', 'p9']
 # SECRET_KEY. Will be auto-generated the first time this file is interpreted.
 SECRET_FILE = normpath(join(DJANGO_ROOT, SITE_NAME, 'secret_key'))
 
-# Try to load the SECRET_KEY from our SECRET_FILE. If that fails, then generate
-# a random SECRET_KEY and save it into our SECRET_FILE for future loading. If
-# everything fails, then just raise an exception.
+
 def create_secret_key():
-    secret_key_text = ""
+    ''' Try to load the SECRET_KEY from our SECRET_FILE. If that fails, then
+    generate a random SECRET_KEY and save it into our SECRET_FILE for future
+     loading. If everything fails, then just raise an exception. '''
     with open(abspath(SECRET_FILE), 'w') as f:
-        secret_key_text = "".join([random.choice("abcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*(-_=+)") for i in range(50)])
-        f.write(secret_key_text)
-    return secret_key_text
+        SECRET_KEY_TEXT = "".join([random.choice("abcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*(-_=+)") for i in range(50)])
+        f.write(SECRET_KEY_TEXT)
+    return SECRET_KEY_TEXT
 
 try:
     if os.path.isfile(SECRET_FILE):
-        secret_key_text = open(SECRET_FILE).read()
-        if not secret_key_text :
-            secret_key_text = create_secret_key()
+        SECRET_KEY_TEXT = open(SECRET_FILE).read()
+        if not SECRET_KEY_TEXT:
+            SECRET_KEY_TEXT = create_secret_key()
     else:
-        secret_key_text = create_secret_key()
-    SECRET_KEY = secret_key_text
-except IOError as e :
-        raise Exception('Cannot open file `%s` for writing. (%s)' % (SECRET_FILE, e))
+        SECRET_KEY_TEXT = create_secret_key()
+    SECRET_KEY = SECRET_KEY_TEXT
+except IOError as exc:
+        raise Exception('Cannot open file `%s` for writing. (%s)' % (SECRET_FILE, exc))
 ########## END KEY CONFIGURATION
 
 ADMINS = (
@@ -88,7 +89,7 @@ MEDIA_URL = '/media/'
 # in apps' "static/" subdirectories and in STATICFILES_DIRS.
 # Example: "/var/www/example.com/static/"
 STATIC_ROOT = normpath(join(DJANGO_ROOT, SITE_NAME, 'static'))
-#STATIC_ROOT = ''
+# STATIC_ROOT = ''
 
 # URL prefix for static files.
 # Example: "http://example.com/static/", "http://static.example.com/"
@@ -133,7 +134,8 @@ ROOT_URLCONF = 'possum.urls'
 WSGI_APPLICATION = 'possum.wsgi.application'
 
 TEMPLATE_DIRS = (
-    # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
+    # Put strings here, like "/home/html/django_templates"
+    # or "C:/www/django/templates".
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
     normpath(join(DJANGO_ROOT, SITE_NAME, 'templates')),
@@ -219,4 +221,3 @@ LOGGING = {
         }
     }
 }
-

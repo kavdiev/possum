@@ -17,8 +17,8 @@
 #    You should have received a copy of the GNU General Public License
 #    along with POSSUM.  If not, see <http://www.gnu.org/licenses/>.
 #
-from django.db import models
 from decimal import Decimal
+from django.db import models
 
 
 class VAT(models.Model):

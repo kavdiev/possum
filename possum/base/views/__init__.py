@@ -18,15 +18,19 @@
 #    along with POSSUM.  If not, see <http://www.gnu.org/licenses/>.
 #
 
+from django.contrib import messages
+from django.contrib.auth.context_processors import PermWrapper
+from django.http import HttpResponseRedirect
 import logging
-logger = logging.getLogger(__name__)
 
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponseRedirect
-from django.contrib.auth.context_processors import PermWrapper
-from django.contrib import messages
 from django.utils.functional import wraps
+
 from possum.base.utils import create_default_directory
+
+
+logger = logging.getLogger(__name__)
+
 
 # TODO une création de dossier au millieu de la vue ? 
 # (Déplacer dans settings common ?)

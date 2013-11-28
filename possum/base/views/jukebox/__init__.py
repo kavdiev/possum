@@ -19,12 +19,16 @@
 #
 
 import logging
+
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import render_to_response
+from django.template import RequestContext
+
+from possum.base.views import get_user
+
+
 logger = logging.getLogger(__name__)
 
-from django.shortcuts import render_to_response
-from django.contrib.auth.decorators import login_required
-from django.template import RequestContext
-from possum.base.views import get_user
 
 
 @login_required

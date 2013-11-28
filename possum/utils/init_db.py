@@ -18,16 +18,19 @@
 #    You should have received a copy of the GNU General Public License
 #    along with POSSUM.  If not, see <http://www.gnu.org/licenses/>.
 #
-import sys, os
+from django.contrib.auth.models import User, Permission
+import os
+import sys
+
+from possum.base.models import Accompagnement, Sauce, Categorie, Cuisson, \
+    Facture, Paiement, PaiementType, Produit, ProduitVendu, Follow, Table, Zone, VAT, \
+    Printer, VATOnBill, DailyStat, WeeklyStat, MonthlyStat, Config
+
+
 sys.path.append('.')
 # sys.path.append('/home/pos/possum-software')
 os.environ['DJANGO_SETTINGS_MODULE'] = 'possum.settings'
 
-from possum.base.models import Accompagnement, Sauce, \
-    Categorie, Cuisson, Facture, Paiement, \
-    PaiementType, Produit, ProduitVendu, Follow, Table, Zone, VAT, \
-    Printer, VATOnBill, DailyStat, WeeklyStat, MonthlyStat, Config
-from django.contrib.auth.models import User, Permission
 
 # on efface toutes la base
 VAT.objects.all().delete()

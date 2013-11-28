@@ -20,8 +20,11 @@
 
 from django.contrib import messages
 from django.http import HttpResponseRedirect
+import logging
+
 from django.shortcuts import render_to_response, get_object_or_404
 from django.template import RequestContext
+
 from possum.base.bill import Facture
 from possum.base.category import Categorie
 from possum.base.location import Zone, Table
@@ -29,7 +32,7 @@ from possum.base.models import Printer
 from possum.base.options import Cuisson
 from possum.base.product import Produit, ProduitVendu
 from possum.base.views import get_user, permission_required
-import logging
+
 
 logger = logging.getLogger(__name__)
 
@@ -53,14 +56,20 @@ def bill_send_kitchen(request, bill_id):
     erreur = False
     if not bill.table:
         erreur = True
-        messages.add_message(request, messages.ERROR, "Vous devez choisir une table.")
+        messages.add_message(request,
+                             messages.ERROR,
+                             "Vous devez choisir une table.")
     if not bill.couverts:
         erreur = True
-        messages.add_message(request, messages.ERROR, "Vous devez indiquer le nombre de couverts.")
+        messages.add_message(request,
+                             messages.ERROR,
+                             "Vous devez indiquer le nombre de couverts.")
     if not bill.send_in_the_kitchen():
         erreur = True
-        messages.add_message(request, messages.ERROR, "Erreur dans l'envoi (imprimante ok?).")
-    if not erreur :
+        messages.add_message(request,
+                             messages.ERROR,
+                             "Erreur dans l'envoi (imprimante ok?).")
+    if not erreur:
         if bill.table:
             message = u"%s envoyée" % bill.table
         else:
@@ -84,9 +93,13 @@ def bill_print(request, bill_id):
                                  "n'est configurée pour la facturation.")
         else:
             if bill.print_ticket():
-                messages.add_message(request, messages.SUCCESS, "Le ticket est imprimé.")
+                messages.add_message(request,
+                                     messages.SUCCESS,
+                                     "Le ticket est imprimé.")
             else:
-                messages.add_message(request, messages.ERROR, "L'impression a échouée.")
+                messages.add_message(request,
+                                     messages.ERROR,
+                                     "L'impression a échouée.")
     return HttpResponseRedirect('/bill/%s/' % bill.id)
 
 
@@ -124,7 +137,7 @@ def category_select(request, bill_id, category_id=None):
     if category_id:
         category = get_object_or_404(Categorie, pk=category_id)
     else:
-        if data['categories'] : 
+        if data['categories']:
             category = data['categories'][0]
     data['products'] = Produit.objects.filter(categorie=category, actif=True)
     return render_to_response('base/bill/categories.html', data,
@@ -144,14 +157,16 @@ def product_select_made_with(request, bill_id, product_id):
 
 @permission_required('base.p3')
 def product_set_made_with(request, bill_id, product_id, category_id):
-    data = get_user(request)
+    # TODO request unused
+    # data = get_user(request)
     product = get_object_or_404(ProduitVendu, pk=product_id)
     category = get_object_or_404(Categorie, pk=category_id)
     product.made_with = category
     product.save()
     bill = get_object_or_404(Facture, pk=bill_id)
     bill.something_for_the_kitchen()
-    return HttpResponseRedirect('/bill/%s/sold/%s/view/' % (bill_id, product.id))
+    return HttpResponseRedirect('/bill/%s/sold/%s/view/' % (bill_id,
+                                                            product.id))
 
 
 @permission_required('base.p3')
@@ -159,12 +174,16 @@ def product_select(request, bill_id, category_id):
     """Select a product to add on a bill."""
     data = get_user(request)
     data['menu_bills'] = True
-    bill = get_object_or_404(Facture, pk=bill_id)
+    # bill = get_object_or_404(Facture, pk=bill_id) TODO unused
     category = get_object_or_404(Categorie, pk=category_id)
     if not category.vat_onsite:
-        messages.add_message(request, messages.ERROR, "La TVA sur place n'est pas définie!")
+        messages.add_message(request,
+                             messages.ERROR,
+                             "La TVA sur place n'est pas définie!")
     if not category.vat_takeaway:
-        messages.add_message(request, messages.ERROR, "La TVA à emporter n'est pas définie!")
+        messages.add_message(request,
+                             messages.ERROR,
+                             "La TVA à emporter n'est pas définie!")
     data['products'] = Produit.objects.filter(categorie=category, actif=True)
     data['bill_id'] = bill_id
     return render_to_response('base/bill/products.html', data,
@@ -196,6 +215,7 @@ def sold_view(request, bill_id, sold_id):
 
 @permission_required('base.p3')
 def sold_delete(request, bill_id, sold_id):
+    # TODO request unused
     bill = get_object_or_404(Facture, pk=bill_id)
     sold = get_object_or_404(ProduitVendu, pk=sold_id)
     if sold in bill.produits.all():
@@ -210,7 +230,10 @@ def sold_delete(request, bill_id, sold_id):
         menu.save()
         category = sold.produit.categorie
         sold.delete()
-        return HttpResponseRedirect('/bill/%s/sold/%s/category/%s/select/' % (bill_id, menu.id, category.id))
+        redirect_url = '/bill/%s/sold/%s/category/%s/select/' % (bill_id,
+                                                                 menu.id,
+                                                                 category.id)
+        return HttpResponseRedirect(redirect_url)
 
 
 @permission_required('base.p3')
@@ -224,11 +247,19 @@ def subproduct_add(request, bill_id, sold_id, product_id):
     menu = get_object_or_404(ProduitVendu, pk=sold_id)
     menu.contient.add(product_sell)
     if product.choix_cuisson:
-        return HttpResponseRedirect('/bill/%s/sold/%s/%s/cooking/' % (bill_id, menu.id, product_sell.id))
+        redirect_url = '/bill/%s/sold/%s/%s/cooking/' % (bill_id,
+                                                         menu.id,
+                                                         product_sell.id)
+        return HttpResponseRedirect(redirect_url)
     category = menu.getFreeCategorie()
     if category:
-        return HttpResponseRedirect('/bill/%s/sold/%s/category/%s/select/' % (bill_id, menu.id, category.id))
-    return HttpResponseRedirect('/bill/%s/category/%s/' % (bill_id, menu.produit.categorie.id))
+        redirect_url = '/bill/%s/sold/%s/category/%s/select/' % (bill_id,
+                                                                 menu.id,
+                                                                 category.id)
+        return HttpResponseRedirect(redirect_url)
+    redirect_url = '/bill/%s/category/%s/' % (bill_id,
+                                              menu.produit.categorie.id)
+    return HttpResponseRedirect(redirect_url)
 
 
 @permission_required('base.p3')
@@ -242,12 +273,18 @@ def product_add(request, bill_id, product_id):
     bill.add_product(product_sell)
     if product.est_un_menu():
         category = product_sell.getFreeCategorie()
-        return HttpResponseRedirect('/bill/%s/sold/%s/category/%s/select/' % (bill_id, product_sell.id, category.id))
+        redirect_url = '/bill/%s/sold/%s/category/%s/select/' % (bill_id,
+                                                                 product_sell.id,
+                                                                 category.id)
+        return HttpResponseRedirect(redirect_url)
     if product.choix_cuisson:
-        return HttpResponseRedirect('/bill/%s/sold/%s/cooking/' % (bill_id, product_sell.id))
+        redirect_url = '/bill/%s/sold/%s/cooking/' % (bill_id,
+                                                      product_sell.id)
+        return HttpResponseRedirect(redirect_url)
 #    messages.add_message(request, messages.SUCCESS, "%s ok" % product.nom)
-    return HttpResponseRedirect('/bill/%s/category/%s/' % (bill_id, 
-                                product.categorie.id))
+    redirect_url = '/bill/%s/category/%s/' % (bill_id,
+                                              product.categorie.id)
+    return HttpResponseRedirect(redirect_url)
 
 
 @permission_required('base.p3')
@@ -266,7 +303,7 @@ def sold_cooking(request, bill_id, sold_id, cooking_id=-1, menu_id=-1):
             menu = get_object_or_404(ProduitVendu, pk=menu_id)
             category = menu.getFreeCategorie()
             if category:
-                url = '/bill/%s/sold/%s/category/%s/select/' % (bill_id, 
+                url = '/bill/%s/sold/%s/category/%s/select/' % (bill_id,
                       menu.id, category.id)
                 return HttpResponseRedirect(url)
         if old == None:

@@ -5,7 +5,7 @@
 #    This file is part of POSSUM.
 #
 #    POSSUM is free software: you can redistribute it and/or modify
-#    it under the terms of the GNU General Public License as published 
+#    it under the terms of the GNU General Public License as published
 #    the Free Software Foundation, either version 3 of the License, or
 #    (at your option) any later version.
 #
@@ -18,7 +18,7 @@
 #    along with POSSUM.  If not, see <http://www.gnu.org/licenses/>.
 #
 from django.db import models
-from possum.base.models import VAT
+
 
 class VATOnBill(models.Model):
     """VAT for a bill
