@@ -18,15 +18,19 @@
 #    along with POSSUM.  If not, see <http://www.gnu.org/licenses/>.
 #
 
+from django.contrib import messages
+from django.http import HttpResponseRedirect
 import logging
-logger = logging.getLogger(__name__)
 
-from possum.base.printer import Printer
 from django.shortcuts import render_to_response, get_object_or_404
 from django.template import RequestContext
-from django.http import HttpResponseRedirect
-from django.contrib import messages
+
+from possum.base.printer import Printer
 from possum.base.views import get_user, permission_required
+
+
+logger = logging.getLogger(__name__)
+
 
 
 @permission_required('base.p1')

@@ -18,8 +18,10 @@
 #    along with POSSUM.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-from django.shortcuts import render_to_response
 from django.template.context import RequestContext
+
+from django.shortcuts import render_to_response
+
 from possum.base.views import permission_required, get_user
 
 

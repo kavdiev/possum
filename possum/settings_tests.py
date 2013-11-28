@@ -1,5 +1,6 @@
 from common_settings import *
 
+
 DEBUG = False
 TEMPLATE_DEBUG = DEBUG
 
@@ -33,19 +34,19 @@ DATABASES = {
     }
 }
 
-#CACHES = {
+# CACHES = {
 #    'default': {
 #        'BACKEND': 'django.core.cache.backends.memcached.MemcachedCache',
 #        'LOCATION': '127.0.0.1:11211',
 #    }
-#}
+# }
 
 
 INSTALLED_APPS += (
     'django_jenkins',
 )
 
-#PROJECT_APPS = ['possum.base',]
+# PROJECT_APPS = ['possum.base',]
 
 JENKINS_TASKS = (
 #    'django_jenkins.tasks.run_pylint',
@@ -56,7 +57,7 @@ JENKINS_TASKS = (
 #    'django_jenkins.tasks.run_pyflakes',
 )
 
-#COVERAGE_EXCLUDES = ['django_extensions', 'django', '*migrations*', '.virtualenv']
+# COVERAGE_EXCLUDES = ['django_extensions', 'django', '*migrations*', '.virtualenv']
 COVERAGE_EXCLUDES_FOLDERS = ['possum/base/migrations/*', '.virtualenv/*']
 
 

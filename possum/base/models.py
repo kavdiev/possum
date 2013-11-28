@@ -16,7 +16,6 @@
 #
 #    You should have received a copy of the GNU General Public License
 #    along with POSSUM.  If not, see <http://www.gnu.org/licenses/>.
-#
 
 from possum.base.vat import VAT
 from possum.base.printer import Printer

@@ -18,6 +18,7 @@
 #    along with POSSUM.  If not, see <http://www.gnu.org/licenses/>.
 #
 from django.db import models
+
 from possum.base.generic import Nom, Priorite
 from possum.base.vat import VAT
 

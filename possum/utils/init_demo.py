@@ -18,17 +18,20 @@
 #    You should have received a copy of the GNU General Public License
 #    along with POSSUM.  If not, see <http://www.gnu.org/licenses/>.
 #
-import sys
+from django.contrib.auth.models import User, Permission
 import os
+import random
+import sys
+
+from possum.base.models import Accompagnement, Sauce, Categorie, Cuisson, \
+    Facture, Paiement, PaiementType, Produit, ProduitVendu, Follow, Table, Zone, VAT, \
+    Printer, VATOnBill, DailyStat, WeeklyStat, MonthlyStat, Config
+
+
 # sys.path.append('/home/pos/possum-software')
 sys.path.append('.')
 os.environ['DJANGO_SETTINGS_MODULE'] = 'possum.settings'
 
-from possum.base.models import Accompagnement, Sauce, \
-    Categorie, Cuisson, Facture, Paiement, \
-    PaiementType, Produit, ProduitVendu, Follow, Table, Zone, VAT, \
-    Printer, VATOnBill, DailyStat, WeeklyStat, MonthlyStat, Config
-from django.contrib.auth.models import User, Permission
 
 # on efface toutes la base
 VAT.objects.all().delete()
@@ -231,12 +234,11 @@ for product in Produit.objects.all():
     product.update_vats()
 
 # on ajoute des données pour avoir des jolies graphiques de démonstrations
-import random
 DailyStat(date="2013-10-01", key="total_ttc", value="234").save()
 for month in xrange(1, 13):
-    MonthlyStat(year=2013, month=month, key='total_ttc', value=100*month).save()
-    MonthlyStat(year=2013, month=month, key='bar_total_ttc', value=40*month).save()
-    MonthlyStat(year=2013, month=month, key='guests_total_ttc', value=60*month).save()
+    MonthlyStat(year=2013, month=month, key='total_ttc', value=100 * month).save()
+    MonthlyStat(year=2013, month=month, key='bar_total_ttc', value=40 * month).save()
+    MonthlyStat(year=2013, month=month, key='guests_total_ttc', value=60 * month).save()
     MonthlyStat(year=2013, month=month, key='nb_bills', value=random.randint(50, 500)).save()
     MonthlyStat(year=2013, month=month, key='guests_nb', value=random.randint(50, 500)).save()
     MonthlyStat(year=2013, month=month, key='guests_average', value=random.randint(50, 500)).save()

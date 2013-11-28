@@ -18,13 +18,14 @@
 #    along with POSSUM.  If not, see <http://www.gnu.org/licenses/>.
 #
 
+import cups
+from datetime import datetime
 from django.db import models
 import os
-import cups
-from django.conf import settings
-from datetime import datetime
-
 import unicodedata
+
+from django.conf import settings
+
 
 def sans_accent(message):
     """Enlève les accents qui peuvent poser

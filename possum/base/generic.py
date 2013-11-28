@@ -18,7 +18,9 @@
 #    along with POSSUM.  If not, see <http://www.gnu.org/licenses/>.
 #
 from django.db import models
+
 from django.conf import settings
+
 
 # les classes generiques
 class Nom(models.Model):

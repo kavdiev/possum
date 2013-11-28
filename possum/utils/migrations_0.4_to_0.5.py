@@ -18,14 +18,17 @@
 #    You should have received a copy of the GNU General Public License
 #    along with POSSUM.  If not, see <http://www.gnu.org/licenses/>.
 #
-import sys, os
 from datetime import datetime, timedelta
+import os
+import sys
+
+from possum.base.models import Facture
+
 
 sys.path.append('/home/pos')
 os.environ['DJANGO_SETTINGS_MODULE'] = 'possum.settings'
 
 # from trunk.base.models import Accompagnement, Sauce, Etat, Categorie, Couleur, Cuisson, Facture, Log, LogType, Paiement, PaiementType, Produit, ProduitVendu, Suivi, Table, Zone
-from possum.base.models import Facture
 
 debut = datetime.now()
 output = "/tmp/maj_nb_couverts.py"

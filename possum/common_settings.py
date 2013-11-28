@@ -1,13 +1,14 @@
-from os.path import abspath, dirname, join, normpath
 import os
+from os.path import abspath, dirname, join, normpath
 import random
 import sys
+
 
 ########## PATH CONFIGURATION
 # Absolute filesystem path to this Django project directory.
 DJANGO_ROOT = dirname(dirname(abspath(__file__)))
 # Site name.
-#SITE_NAME = basename(DJANGO_ROOT)
+# SITE_NAME = basename(DJANGO_ROOT)
 SITE_NAME = "possum"
 # Absolute filesystem path to the top-level project folder.
 SITE_ROOT = dirname(DJANGO_ROOT)
@@ -88,7 +89,7 @@ MEDIA_URL = '/media/'
 # in apps' "static/" subdirectories and in STATICFILES_DIRS.
 # Example: "/var/www/example.com/static/"
 STATIC_ROOT = normpath(join(DJANGO_ROOT, SITE_NAME, 'static'))
-#STATIC_ROOT = ''
+# STATIC_ROOT = ''
 
 # URL prefix for static files.
 # Example: "http://example.com/static/", "http://static.example.com/"

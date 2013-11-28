@@ -19,8 +19,11 @@
 #
 
 from django.db import models
-from django.db.models import Max, Avg, Min
 import logging
+
+from django.db.models import Max, Avg, Min
+
+
 logger = logging.getLogger(__name__)
 
 class GenericStat(models.Model):

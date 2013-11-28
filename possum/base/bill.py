@@ -18,19 +18,21 @@
 #    along with POSSUM.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-from django.db import models
-import logging
 import datetime
 from decimal import Decimal
-from django.db.models import Sum
-from possum.base.payment import Paiement
-from possum.base.payment import PaiementType
 from django.contrib.auth.models import User
+from django.db import models
+import logging
 import os
+
+from django.db.models import Sum
+
 from possum.base.category import Categorie
-from possum.base.printer import Printer
-from possum.base.follow import Follow
 from possum.base.config import Config
+from possum.base.follow import Follow
+from possum.base.payment import Paiement, PaiementType
+from possum.base.printer import Printer
+
 
 logger = logging.getLogger(__name__)
 
@@ -415,7 +417,7 @@ class Facture(models.Model):
         ''' Vérifie un paiement avant add_payment '''
         if self.restant_a_payer <= Decimal("0"):
             logger.info("[%s] nouveau paiement ignore car restant"
-                        " a payer <= 0 (%5.2f)" % (self, 
+                        " a payer <= 0 (%5.2f)" % (self,
                                                    self.restant_a_payer))
             return False
         if not self.produits:
@@ -456,7 +458,7 @@ class Facture(models.Model):
         self.save()
         return True
 
-    def rendre_monnaie(self,paiement):
+    def rendre_monnaie(self, paiement):
         '''Régularisation si le montant payé est superieur au montant 
         de la facture'''
         monnaie = Paiement()
@@ -556,7 +558,7 @@ class Facture(models.Model):
             ticket.append("  TVA % 5.2f%%: % 6.2f Eur." % (vatonbill.vat.tax,
                                                            vatonbill.total))
         ticket.append(separateur)
-        return printer.print_list(ticket, "invoice-%s" % self.id, 
+        return printer.print_list(ticket, "invoice-%s" % self.id,
                                   with_header=True)
 
     def get_working_day(self):

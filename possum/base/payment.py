@@ -18,6 +18,7 @@
 #    along with POSSUM.  If not, see <http://www.gnu.org/licenses/>.
 #
 from django.db import models
+
 from possum.base.generic import Nom
 
 
@@ -32,7 +33,8 @@ class Paiement(models.Model):
     # facture = models.ForeignKey('Facture', related_name="paiement-facture")
     type = models.ForeignKey(PaiementType, related_name="paiement-type")
     montant = models.DecimalField(max_digits=9, decimal_places=2, default=0)
-    valeur_unitaire = models.DecimalField(max_digits=9, decimal_places=2, default=1)
+    valeur_unitaire = models.DecimalField(max_digits=9, decimal_places=2,
+                                          default=1)
     date = models.DateTimeField('encaisser le', auto_now_add=True)
     nb_tickets = models.PositiveIntegerField(default=0)
 
@@ -42,11 +44,10 @@ class Paiement(models.Model):
     def __unicode__(self):
         if self.type.fixed_value:
             return u"%-20s % 8.2f €    (%d tickets x %5.2f €)" % (
-                    self.type.nom, self.montant, self.nb_tickets, 
+                    self.type.nom, self.montant, self.nb_tickets,
                     self.valeur_unitaire)
         else:
             return u"%-20s % 8.2f €" % (self.type.nom, self.montant)
 
     def __cmp__(self, other):
         return cmp(self.date.date, other.date.date)
-

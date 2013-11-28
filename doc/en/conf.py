@@ -11,8 +11,10 @@
 # All configuration values have a default; values that are commented out
 # serve to show the default.
 
-import sys, os
 from datetime import datetime
+import os
+import sys
+
 
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
@@ -20,7 +22,6 @@ from datetime import datetime
 # sys.path.append(os.path.abspath('.'))
 # sys.path.append(os.path.abspath('../base'))
 # sys.path.append(os.path.abspath('../src'))
-
 sys.path.append('/home/pos')
 os.environ['DJANGO_SETTINGS_MODULE'] = 'possum.settings'
 
