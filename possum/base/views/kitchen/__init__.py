@@ -18,16 +18,19 @@
 #    along with POSSUM.  If not, see <http://www.gnu.org/licenses/>.
 #
 
+from django.contrib import messages
+from django.http import HttpResponseRedirect
 import logging
-logger = logging.getLogger(__name__)
+
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import render_to_response, get_object_or_404
+from django.template import RequestContext
 
 from possum.base.bill import Facture
-
-from django.shortcuts import render_to_response, get_object_or_404
-from django.contrib.auth.decorators import login_required
-from django.template import RequestContext
-from django.contrib import messages
 from possum.base.views import get_user
+
+
+logger = logging.getLogger(__name__)
 
 
 @login_required
@@ -50,7 +53,9 @@ def kitchen_for_bill(request, bill_id):
     data['menu_kitchen'] = True
     data['facture'] = get_object_or_404(Facture, pk=bill_id)
     if data['facture'].est_soldee():
-        messages.add_message(request, messages.ERROR, "Cette facture a déjà été soldée.")
+        messages.add_message(request,
+                             messages.ERROR,
+                             "Cette facture a déjà été soldée.")
         return HttpResponseRedirect('/kitchen/')
     return render_to_response('base/kitchen/view.html',
             data,

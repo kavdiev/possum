@@ -31,7 +31,8 @@ logger = logging.getLogger(__name__)
 
 
 @permission_required('base.p3')
-def bill_payment_set_right(request, bill_id, type_id, left, right, number, count):
+def bill_payment_set_right(request, bill_id, type_id, left,
+                           right, number, count):
     data = get_user(request)
     data['menu_bills'] = True
     data['bill_id'] = bill_id
@@ -42,7 +43,8 @@ def bill_payment_set_right(request, bill_id, type_id, left, right, number, count
 
 
 @permission_required('base.p3')
-def bill_payment_set_left(request, bill_id, type_id, left, right, number, count):
+def bill_payment_set_left(request, bill_id, type_id, left,
+                          right, number, count):
     data = get_user(request)
     data['menu_bills'] = True
     data['bill_id'] = bill_id
@@ -75,7 +77,8 @@ def bill_payment_view(request, bill_id, payment_id):
 
 
 @permission_required('base.p3')
-def bill_payment_save(request, bill_id, type_id, left, right, count):
+def bill_payment_save(request, bill_id, type_id, left,
+                      right, count):
     """Enregistre le paiement
     """
     type_payment = get_object_or_404(PaiementType, pk=type_id)
@@ -86,16 +89,21 @@ def bill_payment_save(request, bill_id, type_id, left, right, count):
     else:
         result = bill.add_payment(type_payment, montant)
     if not result:
-        messages.add_message(request, messages.ERROR, "Le paiement n'a pu être enregistré.")
+        messages.add_message(request,
+                             messages.ERROR,
+                             "Le paiement n'a pu être enregistré.")
     if bill.est_soldee():
-        messages.add_message(request, messages.SUCCESS, "La facture a été soldée.")
+        messages.add_message(request,
+                             messages.SUCCESS,
+                             "La facture a été soldée.")
         return HttpResponseRedirect('/bills/')
     else:
         return HttpResponseRedirect('/bill/%s/' % bill_id)
 
 
 @permission_required('base.p3')
-def bill_payment_set(request, bill_id, type_id, left, right, count, part="left"):
+def bill_payment_set(request, bill_id, type_id, left, right,
+                     count, part="left"):
     """if part == "left" alors on fait la partie gauche du nombre
     sinon on fait la partie droite
     """
@@ -158,4 +166,3 @@ def bill_payment(request, bill_id, type_id=-1, count=-1, left=0, right=0):
     return render_to_response('base/bill/payment.html',
                                 data,
                                 context_instance=RequestContext(request))
-

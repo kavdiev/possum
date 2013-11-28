@@ -32,13 +32,14 @@ import logging
 
 logger = logging.getLogger(__name__)
 
+
 class MonthlyStat(models.Model):
     """Monthly statistics, full list of keys:
     # Common
     nb_bills      : number of invoices
     total_ttc        : total TTC
     ID_vat           : VAT part for vat ID
-    
+
     # Products
     ID_product_nb    : how many product
     ID_product_value : total TTC for product ID
@@ -130,11 +131,15 @@ class MonthlyStat(models.Model):
         categories = []
         products = []
         for category in Categorie.objects.order_by('priorite', 'nom').iterator():
-            category.nb = MonthlyStat().get_value("%s_category_nb" % category.id, year, month)
+            category.nb = MonthlyStat().get_value("%s_category_nb" % category.id,
+                                                  year, month)
             if category.nb > 0:
                 categories.append(category)
-                for product in Produit.objects.filter(categorie=category, actif=True).iterator():
-                    product.nb = MonthlyStat().get_value("%s_product_nb" % product.id, year, month)
+                products = Produit.objects.filter(categorie=category,
+                                                  actif=True).iterator()
+                for product in products:
+                    product.nb = MonthlyStat().get_value("%s_product_nb" % product.id,
+                                                         year, month)
                     if product.nb > 0:
                         products.append(product)
         data['categories'] = sorted(categories, cmp=nb_sorted)
@@ -144,6 +149,6 @@ class MonthlyStat(models.Model):
         for payment_type in PaiementType.objects.order_by("nom").iterator():
             data['payments'].append("%s : %.2f" % (
                     payment_type.nom,
-                    MonthlyStat().get_value("%s_payment_value" % payment_type.id, year, month)))
+                    MonthlyStat().get_value("%s_payment_value" % payment_type.id,
+                                             year, month)))
         return data
-

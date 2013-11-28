@@ -22,18 +22,20 @@ from django.shortcuts import render_to_response
 from django.template.context import RequestContext
 from possum.base.views import permission_required, get_user
 
+
 @permission_required('base.p1')
 def credits(request):
     data = get_user(request)
     data['menu_manager'] = True
     return render_to_response('base/manager/credits.html',
-                                data,
-                                context_instance=RequestContext(request))
+                              data,
+                              context_instance=RequestContext(request))
+
 
 @permission_required('base.p1')
 def manager(request):
     data = get_user(request)
     data['menu_manager'] = True
     return render_to_response('base/manager/home.html',
-                                data,
-                                context_instance=RequestContext(request))
+                              data,
+                              context_instance=RequestContext(request))

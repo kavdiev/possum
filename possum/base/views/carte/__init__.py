@@ -41,17 +41,23 @@ def carte(request):
                                 context_instance=RequestContext(request))
 
 
-def is_valid_product(name, billname, prize):
+def is_valid_product(request, name, billname, prize):
     erreur = False
-    if not name :
+    if not name:
         erreur = True
-        messages.add_message(request, messages.ERROR, "Vous devez saisir un nom.")
-    if not billname :
+        messages.add_message(request,
+                             messages.ERROR,
+                             "Vous devez saisir un nom.")
+    if not billname:
         erreur = True
-        messages.add_message(request, messages.ERROR, "Vous devez saisir un nom pour la facture.")
-    if not prize :
+        messages.add_message(request,
+                             messages.ERROR,
+                             "Vous devez saisir un nom pour la facture.")
+    if not prize:
         erreur = True
-        messages.add_message(request, messages.ERROR, "Vous devez entrer un prix.")
+        messages.add_message(request,
+                             messages.ERROR,
+                             "Vous devez entrer un prix.")
     return not erreur
 
 
@@ -69,13 +75,15 @@ def treat_product_new(request, category):
     name = request.POST.get('name', '').strip()
     billname = request.POST.get('billname', '').strip()
     prize = request.POST.get('prize', '').strip()
-    if is_valid_product(name, billname, prize) :
+    if is_valid_product(request, name, billname, prize):
         try:
             product = Produit(nom=name, nom_facture=billname, prix=prize)
             product.set_category(category)
             product.save()
-        except Exception as e:
-            messages.add_message(request, messages.ERROR, "Les modifications n'ont pu être enregistrées.")
+        except Exception as ex:
+            messages.add_message(request,
+                                 messages.ERROR,
+                                 "Les modifications n'ont pu être enregistrées. ('{}')".format(ex))
         else:
             return HttpResponseRedirect('/carte/categories/%s/' % category.id)
 
@@ -202,11 +210,11 @@ def products_enable(request, product_id):
     return HttpResponseRedirect('/carte/products/%s/' % product_id)
 
 
-def treat_products_change(request, product_id):
+def treat_products_change(request, product):
     name = request.POST.get('name', '').strip()
     billname = request.POST.get('billname', '').strip()
     prize = request.POST.get('prize', '').strip().replace(',', '.')
-    if is_valid_product(name, billname, prize) :
+    if is_valid_product(request, name, billname, prize):
         product = product.set_prize(prize)
         product.nom = name
         product.nom_facture = billname
@@ -214,7 +222,7 @@ def treat_products_change(request, product_id):
             product.save()
         except:
             messages.add_message(request, messages.ERROR,
-                                 "Les modifications n'ont pu être enregistrées.")
+                            "Les modifications n'ont pu être enregistrées.")
             return HttpResponseRedirect('/carte/products/%s/' % product.id)
 
 
@@ -224,7 +232,7 @@ def products_change(request, product_id):
     product = get_object_or_404(Produit, pk=product_id)
     data['menu_carte'] = True
     if request.method == 'POST':
-        treat_product_change(request, product_id)
+        treat_products_change(request, product)
     data['product'] = product
     return render_to_response('base/carte/product_change.html',
                                 data,

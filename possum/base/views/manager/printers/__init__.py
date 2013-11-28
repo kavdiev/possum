@@ -71,7 +71,9 @@ def printer_view(request, printer_id):
         try:
             data['printer'].save()
         except:
-            messages.add_message(request, messages.ERROR, "Les informations n'ont pu être enregistrées.")
+            messages.add_message(request,
+                                 messages.ERROR,
+                                 "Les informations n'ont pu être enregistrées.")
     return render_to_response('base/manager/printer_view.html', data,
                               context_instance=RequestContext(request))
 

@@ -28,13 +28,14 @@ from possum.base.utils import nb_sorted
 from possum.base.vat import VAT
 import datetime
 
+
 class WeeklyStat(models.Model):
     """Weekly statistics, full list of keys:
     # Common
     nb_bills      : number of invoices
     total_ttc        : total TTC
     ID_vat           : VAT part for vat ID
-    
+
     # Products
     ID_product_nb    : how many product
     ID_product_value : total TTC for product ID

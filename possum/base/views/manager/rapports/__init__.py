@@ -53,7 +53,9 @@ def rapports_daily(request):
             day = int(request.POST.get('date_day'))
             date = datetime.datetime(year, month, day)
         except:
-            messages.add_message(request, messages.ERROR, "La date saisie n'est pas valide.")
+            messages.add_message(request,
+                                 messages.ERROR,
+                                 "La date saisie n'est pas valide.")
     data['date_form'] = DateForm({'date': date, })
     data['date'] = date
     data = DailyStat().get_data(data, date)
@@ -85,7 +87,9 @@ def rapports_weekly(request):
             week = int(request.POST.get('week'))
             year = int(request.POST.get('year'))
         except:
-            messages.add_message(request, messages.ERROR, "La date saisie n'est pas valide.")
+            messages.add_message(request,
+                                 messages.ERROR,
+                                 "La date saisie n'est pas valide.")
     data['week_form'] = WeekForm({'year': year, 'week': week})
     data['week'] = week
     data['year'] = year
@@ -117,7 +121,9 @@ def rapports_monthly(request):
             month = int(request.POST.get('month'))
             year = int(request.POST.get('year'))
         except:
-            messages.add_message(request, messages.ERROR, "La date saisie n'est pas valide.")
+            messages.add_message(request,
+                                 messages.ERROR,
+                                 "La date saisie n'est pas valide.")
     data['month_form'] = MonthForm({'year': year, 'month': month})
     data['month'] = month
     data['year'] = year
@@ -165,13 +171,19 @@ TM/facture: %s
     mail += "\n\nFait le %s" % datetime.datetime.now().strftime("%d/%m/%Y %H:%M")
     if request.user.email:
         try:
-            send_mail(subject, mail, settings.DEFAULT_FROM_EMAIL, [request.user.email], fail_silently=False)
+            send_mail(subject, mail,
+                      settings.DEFAULT_FROM_EMAIL,
+                      [request.user.email], fail_silently=False)
         except:
             messages.add_message(request, messages.ERROR, u"Le mail n'a pu être envoyé.")
         else:
-            messages.add_message(request, messages.SUCCESS, u"Le mail a été envoyé à %s." % request.user.email)
+            messages.add_message(request,
+                                 messages.SUCCESS,
+                                 u"Le mail a été envoyé à %s." % request.user.email)
     else:
-        messages.add_message(request, messages.ERROR, u"Vous n'avez pas d'adresse mail.")
+        messages.add_message(request,
+                             messages.ERROR,
+                             u"Vous n'avez pas d'adresse mail.")
 
 
 @permission_required('base.p1')
@@ -234,11 +246,17 @@ def rapports_print(request, subject, data):
     if printers:
         printer = printers[0]
         if printer.print_list(result, "rapports_print"):
-            messages.add_message(request, messages.SUCCESS, u"L'impression a été envoyée sur %s." % printer.name)
+            messages.add_message(request,
+                                 messages.SUCCESS,
+                                 u"L'impression a été envoyée sur %s." % printer.name)
         else:
-            messages.add_message(request, messages.ERROR, u"L'impression a achouée sur %s." % printer.name)
+            messages.add_message(request,
+                                 messages.ERROR,
+                                 u"L'impression a achouée sur %s." % printer.name)
     else:
-        messages.add_message(request, messages.ERROR, u"Aucune imprimante type 'manager' disponible.")
+        messages.add_message(request,
+                             messages.ERROR,
+                             u"Aucune imprimante type 'manager' disponible.")
 
 
 @permission_required('base.p1')
@@ -276,13 +294,18 @@ def rapports_vats_send(request, subject, data):
     mail += "\n\nFait le %s" % datetime.datetime.now().strftime("%d/%m/%Y %H:%M")
     if request.user.email:
         try:
-            send_mail(subject, mail, settings.DEFAULT_FROM_EMAIL, [request.user.email], fail_silently=False)
+            send_mail(subject, mail,
+                      settings.DEFAULT_FROM_EMAIL,
+                      [request.user.email], fail_silently=False)
         except:
-            messages.add_message(request, messages.ERROR, u"Le mail n'a pu être envoyé.")
+            messages.add_message(request, messages.ERROR,
+                                 u"Le mail n'a pu être envoyé.")
         else:
-            messages.add_message(request, messages.SUCCESS, u"Le mail a été envoyé à %s." % request.user.email)
+            messages.add_message(request, messages.SUCCESS,
+                                 u"Le mail a été envoyé à %s." % request.user.email)
     else:
-        messages.add_message(request, messages.ERROR, u"Vous n'avez pas d'adresse mail.")
+        messages.add_message(request, messages.ERROR,
+                             u"Vous n'avez pas d'adresse mail.")
 
 
 @permission_required('base.p1')
@@ -315,11 +338,14 @@ def rapports_vats_print(request, data):
     if printers:
         printer = printers[0]
         if printer.print_list(data, "rapport_common"):
-            messages.add_message(request, messages.SUCCESS, u"L'impression a été envoyée sur %s." % printer.name)
+            messages.add_message(request, messages.SUCCESS,
+                                 u"L'impression a été envoyée sur %s." % printer.name)
         else:
-            messages.add_message(request, messages.ERROR, u"L'impression a achouée sur %s." % printer.name)
+            messages.add_message(request, messages.ERROR,
+                                 u"L'impression a achouée sur %s." % printer.name)
     else:
-        messages.add_message(request, messages.ERROR, u"Aucune imprimante type 'manager' disponible.")
+        messages.add_message(request, messages.ERROR,
+                             u"Aucune imprimante type 'manager' disponible.")
 
 
 @permission_required('base.p1')
