@@ -31,7 +31,7 @@ EOF
 }
 
 function enter_virtualenv {
-    if [ ! -d .virtualenv]
+    if [ ! -d .virtualenv ]
     then
         update
     fi
