@@ -33,12 +33,12 @@ DATABASES = {
     }
 }
 
-CACHES = {
-    'default': {
-        'BACKEND': 'django.core.cache.backends.memcached.MemcachedCache',
-        'LOCATION': '127.0.0.1:11211',
-    }
-}
+#CACHES = {
+#    'default': {
+#        'BACKEND': 'django.core.cache.backends.memcached.MemcachedCache',
+#        'LOCATION': '127.0.0.1:11211',
+#    }
+#}
 
 
 INSTALLED_APPS += (
@@ -48,14 +48,15 @@ INSTALLED_APPS += (
 #PROJECT_APPS = ['possum.base',]
 
 JENKINS_TASKS = (
-    'django_jenkins.tasks.run_pylint',
+#    'django_jenkins.tasks.run_pylint',
+#    'django_jenkins.tasks.run_pep8',
     'django_jenkins.tasks.with_coverage',
     'django_jenkins.tasks.dir_tests',
-    'django_jenkins.tasks.run_csslint',
-    'django_jenkins.tasks.run_pep8',
-    'django_jenkins.tasks.run_pyflakes',
+#    'django_jenkins.tasks.run_csslint',
+#    'django_jenkins.tasks.run_pyflakes',
 )
 
 #COVERAGE_EXCLUDES = ['django_extensions', 'django', '*migrations*', '.virtualenv']
-COVERAGE_EXCLUDES_FOLDERS = ['possum/base/migrations/*', '.virtualenv']
+COVERAGE_EXCLUDES_FOLDERS = ['possum/base/migrations/*', '.virtualenv/*']
+
 

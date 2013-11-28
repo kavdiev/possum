@@ -37,5 +37,3 @@ else:
     printers = conn.getPrinters()
     for printer in printers:
         print printer
-
-

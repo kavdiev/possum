@@ -32,11 +32,6 @@ Voici le schèma général des différentes classes utilisées.
    :scale: 50
    :alt: Schéma des classes d'objets
 
-À nouveau les différentes classes avec leurs héritages.
-
-.. inheritance-diagram:: possum.base.models.bill.Facture
-   :parts: 1
-
 La classe centrale, et donc la plus importante, est la classe Facture_.
 
 Après toute modification dans les modèles, il faudrat utiliser South pour les appliquer:
@@ -54,12 +49,18 @@ On peut également se créer un jeu de données avec:
   ./manage.py dumpdata --indent=2 --format=json base > possum/base/fixtures/demo1.json
 
 
+Classes
+=======
+
+.. include:: classes.rst
+
+
 Qualité
 =======
 
-La qualité générale de Possum est auditée grâce à Jenkins et Sonar.
-Les résultats sont consultables ici:  `Jenkins <https://www.possum-software.org/jenkins>`_
-et `Sonar <https://www.possum-software.org/sonar>`_.
+La qualité générale de Possum est auditée grâce à Jenkins.
+Les résultats sont consultables ici:  `Jenkins <https://www.possum-software.org/jenkins>`_.
+
 
 Les bugs
 ========

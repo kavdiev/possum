@@ -21,51 +21,32 @@
 import logging
 logger = logging.getLogger(__name__)
 
-from possum.base.bill import Facture
-from possum.base.models import Printer
-from possum.base.product import Produit, ProduitVendu
-from possum.base.payment import PaiementType, Paiement
-from possum.base.category import Categorie
-from possum.base.options import Cuisson, Sauce, Accompagnement
-from possum.base.location import Zone, Table
+from possum.base.product import Produit
 from possum.base.vat import VAT
-from possum.base.forms import DateForm, WeekForm, MonthForm, YearForm
-
-from django.contrib.auth import authenticate, login, logout
 from django.shortcuts import render_to_response, get_object_or_404
-from django.contrib.auth.decorators import login_required
-# from django.views.decorators.csrf import csrf_protect
-from django.core.context_processors import csrf
 from django.template import RequestContext
-from django.http import HttpResponseForbidden, HttpResponseRedirect
-from django.http import Http404
-from django.contrib.auth.context_processors import PermWrapper
-from django.contrib.auth.models import User, UserManager, Permission
-from django.conf import settings
+from django.http import HttpResponseRedirect
 from django.contrib import messages
-from django.utils.functional import wraps
-from django.core.mail import send_mail
-import os
-import datetime
 from possum.base.views import get_user, permission_required
+
 
 @permission_required('base.p1')
 def vats(request):
     data = get_user(request)
     data['vats'] = VAT.objects.order_by('name')
     data['menu_manager'] = True
-    return render_to_response('base/manager/vats/home.html',
-                                data,
-                                context_instance=RequestContext(request))
+    return render_to_response('base/manager/vats/home.html', data,
+                              context_instance=RequestContext(request))
+
 
 @permission_required('base.p1')
 def vats_view(request, vat_id):
     data = get_user(request)
     data['menu_manager'] = True
     data['vat'] = get_object_or_404(VAT, pk=vat_id)
-    return render_to_response('base/manager/vats/view.html',
-                                data,
-                                context_instance=RequestContext(request))
+    return render_to_response('base/manager/vats/view.html', data,
+                              context_instance=RequestContext(request))
+
 
 @permission_required('base.p1')
 def vats_change(request, vat_id):
@@ -91,13 +72,15 @@ def vats_change(request, vat_id):
                     return HttpResponseRedirect('/manager/vats/')
 
             else:
-                messages.add_message(request, messages.ERROR, "Vous devez saisir un pourcentage de taxe.")
+                messages.add_message(request, messages.ERROR, 
+                                     "Vous devez saisir un pourcentage de taxe.")
         else:
-            messages.add_message(request, messages.ERROR, "Vous devez entrer un nom.")
+            messages.add_message(request, messages.ERROR, 
+                                 "Vous devez entrer un nom.")
 
-    return render_to_response('base/manager/vats/change.html',
-                                data,
-                                context_instance=RequestContext(request))
+    return render_to_response('base/manager/vats/change.html', data,
+                              context_instance=RequestContext(request))
+
 
 @permission_required('base.p1')
 def vat_new(request):
@@ -114,15 +97,16 @@ def vat_new(request):
                     vat.set_tax(tax)
                     vat.save()
                 except:
-                    messages.add_message(request, messages.ERROR, "Les modifications n'ont pu être enregistrées.")
+                    messages.add_message(request, messages.ERROR, 
+                                         "Les modifications n'ont pu être enregistrées.")
                 else:
                     return HttpResponseRedirect('/manager/vats/')
 
             else:
-                messages.add_message(request, messages.ERROR, "Vous devez saisir un pourcentage de taxe.")
+                messages.add_message(request, messages.ERROR, 
+                                     "Vous devez saisir un pourcentage de taxe.")
         else:
             messages.add_message(request, messages.ERROR, "Vous devez entrer un nom.")
 
-    return render_to_response('base/manager/vats/new.html',
-                                data,
-                                context_instance=RequestContext(request))
+    return render_to_response('base/manager/vats/new.html', data,
+                              context_instance=RequestContext(request))

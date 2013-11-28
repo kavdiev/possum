@@ -31,11 +31,15 @@ EOF
 }
 
 function enter_virtualenv {
+    if [ ! -d .virtualenv]
+    then
+        update
+    fi
     source .virtualenv/bin/activate 2>/dev/null
     if [ ! $? -eq 0 ]
     then
         echo
-        echo "Virtualenv does not exist, run: $0 update"
+        echo "Virtualenv does not work !"
         echo
         exit 2
     fi
@@ -49,19 +53,26 @@ function doc {
 }
 
 function tests {
-    # pip install django-jenkins pep8 pyflakes
+    # prerequis: sloccount csslint
     enter_virtualenv
+    pip install django-jenkins pep8 pyflakes clonedigger flake8 flake8-todo \
+        coverage
     ./manage.py jenkins
-#    for f in `find possum/ -name '*.py'|egrep -v 'possum/test/|possum/base/migrations/'`
-#    do
-#        pylint --output-format=parseable --reports=y $f >> pylint.log
-#        pep8 $f >> pep8.log
-#    done || :
+    csslint possum/base/static/ --format=lint-xml --exclude-list=possum/base/static/jquery.min.js,possum/base/static/highcharts > reports/csslint.report
+    #rm -f reports/{pylint.report,pep8.report}
+    #for f in `find possum/ -name '*.py'|egrep -v 'possum/test/|possum/base/migrations/'`
+    #do
+    #    pylint --output-format=parseable --reports=y --rcfile=possum/utils/pylint.rc $f >> reports/pylint.report 2>/dev/null
+    #    pep8 $f >> reports/pep8.report
+    #done || :
+    flake8 --exclude=migrations --max-complexity 12 possum > reports/flake8.report
 #    OMIT="django_extensions,django,*migrations*,*.virtualenv*"
 #    coverage run --source=. manage.py test --verbosity=2 --traceback
 #    coverage report --omit=${OMIT}
 #    coverage html --omit=${OMIT}
 #    coverage xml --omit=${OMIT}
+    clonedigger --cpd-output -o reports/clonedigger.xml $(find possum -name "*.py" | fgrep -v '/migrations/' | fgrep -v '/test/' | xargs echo )
+    sloccount --duplicates --wide --details possum | fgrep -v .git | fgrep -v '/migrations/' | fgrep -v '/static/highcharts/' > reports/soccount.sc
 }
 
 function update_js {
@@ -90,18 +101,6 @@ function update_js {
     fi
     enter_virtualenv
     ./manage.py collectstatic --noinput --no-post-process
-#    if [ ! -d possum/static/chartit ]
-#    then
-#        mkdir -pv possum/static/chartit/js
-#    fi
-#    if [ ! -d possum/static/chartit/js ]
-#    then
-#        mkdir -pv possum/static/chartit/js
-#    fi
-#    if [ ! -e possum/static/chartit/js/chartloader.js ]
-#    then
-#        find .virtualenv/ -name chartloader.js -exec cp {} possum/static/chartit/js/chartloader.js \;
-#    fi
 }
 
 function update {
@@ -140,7 +139,7 @@ EOF
 }
 
 function deb_install_apache {
-    apt-get install apache2-mpm-worker libapache2-mod-wsgi
+    sudo apt-get install apache2-mpm-worker libapache2-mod-wsgi
     a2dismod status cgid autoindex auth_basic cgi dir env
     a2dismod authn_file deflate setenvif reqtimeout negotiation
     a2dismod authz_groupfile authz_user authz_default
@@ -156,7 +155,7 @@ function deb_install_apache {
 }
 
 function deb_install_nginx {
-    apt-get install nginx-light supervisor
+    sudo apt-get install nginx-light supervisor
     echo 
     echo "Config example for Supervisor: possum/utils/supervisor.conf"
     echo "  cp possum/utils/supervisor.conf /etc/supervisor/conf.d/possum.conf"
@@ -169,7 +168,7 @@ function deb_install_nginx {
 }
 
 function deb_install {
-    apt-get install graphviz-dev graphviz libcups2-dev memcached \
+    sudo apt-get install graphviz-dev graphviz libcups2-dev memcached \
         python-virtualenv unzip \
         pkg-config python-dev cups-client cups
 #    deb_install_apache
@@ -216,9 +215,9 @@ tests)
 #    cp possum/settings_tests.py possum/settings.py
 #    fi
     cp possum/settings_tests.py possum/settings.py
-    update
+    update >/dev/null
     tests
-    doc
+    doc >/dev/null
     ;;
 sh)
     enter_virtualenv
@@ -226,7 +225,7 @@ sh)
     ;;
 run)
     enter_virtualenv
-    ./manage.py runserver_plus
+    ./manage.py runserver
     ;;
 *)
     my_help

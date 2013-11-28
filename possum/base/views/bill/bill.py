@@ -28,11 +28,11 @@ from possum.base.location import Zone, Table
 from possum.base.models import Printer
 from possum.base.options import Cuisson
 from possum.base.product import Produit, ProduitVendu
-from possum.base.vat import VAT
 from possum.base.views import get_user, permission_required
 import logging
 
 logger = logging.getLogger(__name__)
+
 
 @permission_required('base.p3')
 def bill_new(request):
@@ -42,9 +42,9 @@ def bill_new(request):
     bill = Facture()
     bill.save()
     data['facture'] = bill
-    return render_to_response('base/bill/bill.html',
-                                data,
-                                context_instance=RequestContext(request))
+    return render_to_response('base/bill/bill.html', data,
+                              context_instance=RequestContext(request))
+
 
 @permission_required('base.p3')
 def bill_send_kitchen(request, bill_id):
@@ -68,6 +68,7 @@ def bill_send_kitchen(request, bill_id):
         messages.add_message(request, messages.SUCCESS, message)
     return HttpResponseRedirect('/bill/%s/' % bill.id)
 
+
 @permission_required('base.p3')
 def bill_print(request, bill_id):
     """Print the bill"""
@@ -79,13 +80,15 @@ def bill_print(request, bill_id):
     else:
         printers = Printer.objects.filter(billing=True)
         if printers.count() == 0:
-            messages.add_message(request, messages.ERROR, "Aucune imprimante n'est configurée pour la facturation.")
+            messages.add_message(request, messages.ERROR, "Aucune imprimante "
+                                 "n'est configurée pour la facturation.")
         else:
             if bill.print_ticket():
                 messages.add_message(request, messages.SUCCESS, "Le ticket est imprimé.")
             else:
                 messages.add_message(request, messages.ERROR, "L'impression a échouée.")
     return HttpResponseRedirect('/bill/%s/' % bill.id)
+
 
 @permission_required('base.p3')
 def table_select(request, bill_id):
@@ -94,9 +97,9 @@ def table_select(request, bill_id):
     data['menu_bills'] = True
     data['zones'] = Zone.objects.all()
     data['bill_id'] = bill_id
-    return render_to_response('base/bill/select_a_table.html',
-                                data,
-                                context_instance=RequestContext(request))
+    return render_to_response('base/bill/select_a_table.html', data,
+                              context_instance=RequestContext(request))
+
 
 @permission_required('base.p3')
 def table_set(request, bill_id, table_id):
@@ -106,9 +109,9 @@ def table_set(request, bill_id, table_id):
     table = get_object_or_404(Table, pk=table_id)
     bill.set_table(table)
     data['facture'] = bill
-    return render_to_response('base/bill/bill.html',
-                                data,
-                                context_instance=RequestContext(request))
+    return render_to_response('base/bill/bill.html', data,
+                              context_instance=RequestContext(request))
+
 
 @permission_required('base.p3')
 def category_select(request, bill_id, category_id=None):
@@ -117,14 +120,16 @@ def category_select(request, bill_id, category_id=None):
     data['menu_bills'] = True
     data['categories'] = Categorie.objects.order_by('priorite', 'nom')
     data['bill'] = get_object_or_404(Facture, pk=bill_id)
+    category = None
     if category_id:
         category = get_object_or_404(Categorie, pk=category_id)
     else:
-        category = data['categories'][0]
+        if data['categories'] : 
+            category = data['categories'][0]
     data['products'] = Produit.objects.filter(categorie=category, actif=True)
-    return render_to_response('base/bill/categories.html',
-                                data,
-                                context_instance=RequestContext(request))
+    return render_to_response('base/bill/categories.html', data,
+                              context_instance=RequestContext(request))
+
 
 @permission_required('base.p3')
 def product_select_made_with(request, bill_id, product_id):
@@ -134,8 +139,8 @@ def product_select_made_with(request, bill_id, product_id):
     data['product'] = get_object_or_404(ProduitVendu, pk=product_id)
     data['categories'] = Categorie.objects.filter(made_in_kitchen=True)
     return render_to_response('base/bill/product_select_made_with.html',
-                                data,
-                                context_instance=RequestContext(request))
+                              data, context_instance=RequestContext(request))
+
 
 @permission_required('base.p3')
 def product_set_made_with(request, bill_id, product_id, category_id):
@@ -147,6 +152,7 @@ def product_set_made_with(request, bill_id, product_id, category_id):
     bill = get_object_or_404(Facture, pk=bill_id)
     bill.something_for_the_kitchen()
     return HttpResponseRedirect('/bill/%s/sold/%s/view/' % (bill_id, product.id))
+
 
 @permission_required('base.p3')
 def product_select(request, bill_id, category_id):
@@ -161,9 +167,9 @@ def product_select(request, bill_id, category_id):
         messages.add_message(request, messages.ERROR, "La TVA à emporter n'est pas définie!")
     data['products'] = Produit.objects.filter(categorie=category, actif=True)
     data['bill_id'] = bill_id
-    return render_to_response('base/bill/products.html',
-                                data,
-                                context_instance=RequestContext(request))
+    return render_to_response('base/bill/products.html', data,
+                              context_instance=RequestContext(request))
+
 
 @permission_required('base.p3')
 def subproduct_select(request, bill_id, sold_id, category_id):
@@ -174,9 +180,9 @@ def subproduct_select(request, bill_id, sold_id, category_id):
     data['products'] = Produit.objects.filter(categorie=category, actif=True)
     data['bill_id'] = bill_id
     data['sold_id'] = sold_id
-    return render_to_response('base/bill/subproducts.html',
-                                data,
-                                context_instance=RequestContext(request))
+    return render_to_response('base/bill/subproducts.html', data,
+                              context_instance=RequestContext(request))
+
 
 @permission_required('base.p3')
 def sold_view(request, bill_id, sold_id):
@@ -184,13 +190,12 @@ def sold_view(request, bill_id, sold_id):
     data['menu_bills'] = True
     data['bill_id'] = bill_id
     data['sold'] = get_object_or_404(ProduitVendu, pk=sold_id)
-    return render_to_response('base/bill/sold.html',
-                                data,
-                                context_instance=RequestContext(request))
+    return render_to_response('base/bill/sold.html', data,
+                              context_instance=RequestContext(request))
+
 
 @permission_required('base.p3')
 def sold_delete(request, bill_id, sold_id):
-    data = get_user(request)
     bill = get_object_or_404(Facture, pk=bill_id)
     sold = get_object_or_404(ProduitVendu, pk=sold_id)
     if sold in bill.produits.all():
@@ -207,12 +212,11 @@ def sold_delete(request, bill_id, sold_id):
         sold.delete()
         return HttpResponseRedirect('/bill/%s/sold/%s/category/%s/select/' % (bill_id, menu.id, category.id))
 
+
 @permission_required('base.p3')
 def subproduct_add(request, bill_id, sold_id, product_id):
     """Add a product to a bill. If this product contains others products,
     we have to add them too."""
-    data = get_user(request)
-    bill = get_object_or_404(Facture, pk=bill_id)
     product = get_object_or_404(Produit, pk=product_id)
     product_sell = ProduitVendu(produit=product)
     product_sell.made_with = product_sell.produit.categorie
@@ -226,11 +230,11 @@ def subproduct_add(request, bill_id, sold_id, product_id):
         return HttpResponseRedirect('/bill/%s/sold/%s/category/%s/select/' % (bill_id, menu.id, category.id))
     return HttpResponseRedirect('/bill/%s/category/%s/' % (bill_id, menu.produit.categorie.id))
 
+
 @permission_required('base.p3')
 def product_add(request, bill_id, product_id):
     """Add a product to a bill. If this product contains others products,
     we have to add them too."""
-    data = get_user(request)
     bill = get_object_or_404(Facture, pk=bill_id)
     product = get_object_or_404(Produit, pk=product_id)
     product_sell = ProduitVendu(produit=product)
@@ -242,10 +246,12 @@ def product_add(request, bill_id, product_id):
     if product.choix_cuisson:
         return HttpResponseRedirect('/bill/%s/sold/%s/cooking/' % (bill_id, product_sell.id))
 #    messages.add_message(request, messages.SUCCESS, "%s ok" % product.nom)
-    return HttpResponseRedirect('/bill/%s/category/%s/' % (bill_id, product.categorie.id))
+    return HttpResponseRedirect('/bill/%s/category/%s/' % (bill_id, 
+                                product.categorie.id))
+
 
 @permission_required('base.p3')
-def sold_cooking(request, bill_id, sold_id, cooking_id= -1, menu_id= -1):
+def sold_cooking(request, bill_id, sold_id, cooking_id=-1, menu_id=-1):
     data = get_user(request)
     data['sold'] = get_object_or_404(ProduitVendu, pk=sold_id)
     data['cookings'] = Cuisson.objects.order_by('priorite', 'nom')
@@ -260,16 +266,19 @@ def sold_cooking(request, bill_id, sold_id, cooking_id= -1, menu_id= -1):
             menu = get_object_or_404(ProduitVendu, pk=menu_id)
             category = menu.getFreeCategorie()
             if category:
-                return HttpResponseRedirect('/bill/%s/sold/%s/category/%s/select/' % (bill_id, menu.id, category.id))
+                url = '/bill/%s/sold/%s/category/%s/select/' % (bill_id, 
+                      menu.id, category.id)
+                return HttpResponseRedirect(url)
         if old == None:
             # certainement un nouveau produit donc on veut retourner
             # sur le panneau de saisie des produits
-            return HttpResponseRedirect('/bill/%s/category/%s/' % (bill_id, data['sold'].produit.categorie.id))
+            return HttpResponseRedirect('/bill/%s/category/%s/' % (bill_id,
+                                        data['sold'].produit.categorie.id))
         else:
             return HttpResponseRedirect('/bill/%s/' % bill_id)
-    return render_to_response('base/bill/cooking.html',
-                                data,
-                                context_instance=RequestContext(request))
+    return render_to_response('base/bill/cooking.html', data,
+                              context_instance=RequestContext(request))
+
 
 @permission_required('base.p3')
 def couverts_select(request, bill_id):
@@ -278,9 +287,9 @@ def couverts_select(request, bill_id):
     data['menu_bills'] = True
     data['nb_couverts'] = range(43)
     data['bill_id'] = bill_id
-    return render_to_response('base/bill/couverts.html',
-                                data,
-                                context_instance=RequestContext(request))
+    return render_to_response('base/bill/couverts.html', data,
+                              context_instance=RequestContext(request))
+
 
 @permission_required('base.p3')
 def couverts_set(request, bill_id, number):
@@ -289,18 +298,18 @@ def couverts_set(request, bill_id, number):
     bill = get_object_or_404(Facture, pk=bill_id)
     bill.set_couverts(number)
     data['facture'] = bill
-    return render_to_response('base/bill/bill.html',
-                                data,
-                                context_instance=RequestContext(request))
+    return render_to_response('base/bill/bill.html', data,
+                              context_instance=RequestContext(request))
+
 
 @permission_required('base.p3')
 def factures(request):
     data = get_user(request)
     data['menu_bills'] = True
     data['factures'] = Facture().non_soldees()
-    return render_to_response('base/bill/home.html',
-                                data,
-                                context_instance=RequestContext(request))
+    return render_to_response('base/bill/home.html', data,
+                              context_instance=RequestContext(request))
+
 
 @permission_required('base.p3')
 def bill_view(request, bill_id):
@@ -308,12 +317,13 @@ def bill_view(request, bill_id):
     data = get_user(request)
     data['facture'] = get_object_or_404(Facture, pk=bill_id)
     if data['facture'].est_soldee():
-        messages.add_message(request, messages.ERROR, "Cette facture a déjà été soldée.")
+        messages.add_message(request, messages.ERROR,
+                             "Cette facture a déjà été soldée.")
         return HttpResponseRedirect('/bills/')
     data['menu_bills'] = True
-    return render_to_response('base/bill/bill.html',
-                                data,
-                                context_instance=RequestContext(request))
+    return render_to_response('base/bill/bill.html', data,
+                              context_instance=RequestContext(request))
+
 
 @permission_required('base.p3')
 def bill_delete(request, bill_id):
@@ -321,9 +331,9 @@ def bill_delete(request, bill_id):
     order.delete()
     return HttpResponseRedirect('/bills/')
 
+
 @permission_required('base.p3')
 def bill_onsite(request, bill_id):
-    data = get_user(request)
     order = get_object_or_404(Facture, pk=bill_id)
     new = not order.onsite
     order.onsite = new

@@ -5,7 +5,7 @@
 #    This file is part of POSSUM.
 #
 #    POSSUM is free software: you can redistribute it and/or modify
-#    it under the terms of the GNU General Public License as published 
+#    it under the terms of the GNU General Public License as published
 #    the Free Software Foundation, either version 3 of the License, or
 #    (at your option) any later version.
 #
@@ -20,10 +20,12 @@
 from django.db import models
 from possum.base.generic import Nom
 
+
 class PaiementType(Nom):
     """Type de paiment"""
     fixed_value = models.BooleanField("ticket ?", default=False)
 #    last_value = models.PositiveIntegerField("dernière valeur", default=0)
+
 
 class Paiement(models.Model):
     """valeur_unitaire: pour gerer les montants des tickets restos"""
@@ -39,8 +41,8 @@ class Paiement(models.Model):
 
     def __unicode__(self):
         if self.type.fixed_value:
-            return u"%-20s % 8.2f €    (%d tickets x %5.2f €)" % (\
-                    self.type.nom, self.montant, self.nb_tickets, \
+            return u"%-20s % 8.2f €    (%d tickets x %5.2f €)" % (
+                    self.type.nom, self.montant, self.nb_tickets, 
                     self.valeur_unitaire)
         else:
             return u"%-20s % 8.2f €" % (self.type.nom, self.montant)

@@ -21,36 +21,14 @@
 import logging
 logger = logging.getLogger(__name__)
 
-from possum.base.daily_stat import DailyStat
-from possum.base.weekly_stat import WeeklyStat
-from possum.base.monthly_stat import MonthlyStat
-from possum.base.bill import Facture
-from possum.base.models import Printer
-from possum.base.product import Produit, ProduitVendu
-from possum.base.payment import PaiementType, Paiement
+from possum.base.product import Produit
 from possum.base.category import Categorie
-from possum.base.options import Cuisson, Sauce, Accompagnement
-from possum.base.location import Zone, Table
-from possum.base.vat import VAT
-from possum.base.forms import DateForm, WeekForm, MonthForm, YearForm
-
-from django.contrib.auth import authenticate, login, logout
 from django.shortcuts import render_to_response, get_object_or_404
-from django.contrib.auth.decorators import login_required
-# from django.views.decorators.csrf import csrf_protect
-from django.core.context_processors import csrf
 from django.template import RequestContext
-from django.http import HttpResponseForbidden, HttpResponseRedirect
-from django.http import Http404
-from django.contrib.auth.context_processors import PermWrapper
-from django.contrib.auth.models import User, UserManager, Permission
-from django.conf import settings
+from django.http import HttpResponseRedirect
 from django.contrib import messages
-from django.utils.functional import wraps
-from django.core.mail import send_mail
-import os
-import datetime
 from possum.base.views import get_user, permission_required
+
 
 @permission_required('base.p2')
 def carte(request):
@@ -61,6 +39,7 @@ def carte(request):
     return render_to_response('base/carte.html',
                                 data,
                                 context_instance=RequestContext(request))
+
 
 def is_valid_product(name, billname, prize):
     erreur = False
@@ -75,6 +54,7 @@ def is_valid_product(name, billname, prize):
         messages.add_message(request, messages.ERROR, "Vous devez entrer un prix.")
     return not erreur
 
+
 @permission_required('base.p2')
 def products_view(request, product_id):
     data = get_user(request)
@@ -84,30 +64,33 @@ def products_view(request, product_id):
                                 data,
                                 context_instance=RequestContext(request))
 
-def treat_product_new(request, cat_id):
+
+def treat_product_new(request, category):
     name = request.POST.get('name', '').strip()
     billname = request.POST.get('billname', '').strip()
     prize = request.POST.get('prize', '').strip()
     if is_valid_product(name, billname, prize) :
         try:
             product = Produit(nom=name, nom_facture=billname, prix=prize)
-            product.set_category(data['category'])
+            product.set_category(category)
             product.save()
-        except:
+        except Exception as e:
             messages.add_message(request, messages.ERROR, "Les modifications n'ont pu être enregistrées.")
         else:
-            return HttpResponseRedirect('/carte/categories/%s/' % data['category'].id)
-        
+            return HttpResponseRedirect('/carte/categories/%s/' % category.id)
+
+
 @permission_required('base.p2')
 def products_new(request, cat_id):
     data = get_user(request)
     data['menu_carte'] = True
     data['category'] = get_object_or_404(Categorie, pk=cat_id)
     if request.method == 'POST':
-        treat_product_new(request, cat_id)
+        treat_product_new(request, data['category'])
     return render_to_response('base/carte/product_new.html',
                                 data,
                                 context_instance=RequestContext(request))
+
 
 @permission_required('base.p2')
 def products_set_category(request, product_id, cat_id):
@@ -116,6 +99,7 @@ def products_set_category(request, product_id, cat_id):
     category = get_object_or_404(Categorie, pk=cat_id)
     product.set_category(category)
     return HttpResponseRedirect('/carte/products/%s/' % product_id)
+
 
 @permission_required('base.p2')
 def products_category(request, product_id):
@@ -127,6 +111,7 @@ def products_category(request, product_id):
                                 data,
                                 context_instance=RequestContext(request))
 
+
 @permission_required('base.p2')
 def products_del_produits_ok(request, product_id, sub_id):
     data = get_user(request)
@@ -135,6 +120,7 @@ def products_del_produits_ok(request, product_id, sub_id):
     menu.produits_ok.remove(sub)
     menu.save()
     return HttpResponseRedirect('/carte/products/%s/' % product_id)
+
 
 @permission_required('base.p2')
 def products_select_produits_ok(request, product_id):
@@ -150,6 +136,7 @@ def products_select_produits_ok(request, product_id):
                                 data,
                                 context_instance=RequestContext(request))
 
+
 @permission_required('base.p2')
 def products_add_produits_ok(request, product_id, sub_id):
     data = get_user(request)
@@ -158,6 +145,7 @@ def products_add_produits_ok(request, product_id, sub_id):
     menu.produits_ok.add(product)
     menu.save()
     return HttpResponseRedirect('/carte/products/%s/' % product_id)
+
 
 @permission_required('base.p2')
 def products_del_categories_ok(request, product_id, cat_id):
@@ -168,6 +156,7 @@ def products_del_categories_ok(request, product_id, cat_id):
     product.save()
     return HttpResponseRedirect('/carte/products/%s/' % product_id)
 
+
 @permission_required('base.p2')
 def products_add_categories_ok(request, product_id, cat_id):
     data = get_user(request)
@@ -176,6 +165,7 @@ def products_add_categories_ok(request, product_id, cat_id):
     product.categories_ok.add(category)
     product.save()
     return HttpResponseRedirect('/carte/products/%s/' % product_id)
+
 
 @permission_required('base.p2')
 def products_select_categories_ok(request, product_id):
@@ -191,6 +181,7 @@ def products_select_categories_ok(request, product_id):
                                 data,
                                 context_instance=RequestContext(request))
 
+
 @permission_required('base.p2')
 def products_cooking(request, product_id):
     data = get_user(request)
@@ -200,6 +191,7 @@ def products_cooking(request, product_id):
     product.save()
     return HttpResponseRedirect('/carte/products/%s/' % product_id)
 
+
 @permission_required('base.p2')
 def products_enable(request, product_id):
     data = get_user(request)
@@ -208,6 +200,7 @@ def products_enable(request, product_id):
     product.actif = new
     product.save()
     return HttpResponseRedirect('/carte/products/%s/' % product_id)
+
 
 def treat_products_change(request, product_id):
     name = request.POST.get('name', '').strip()
@@ -223,6 +216,7 @@ def treat_products_change(request, product_id):
             messages.add_message(request, messages.ERROR,
                                  "Les modifications n'ont pu être enregistrées.")
             return HttpResponseRedirect('/carte/products/%s/' % product.id)
+
 
 @permission_required('base.p2')
 def products_change(request, product_id):

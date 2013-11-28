@@ -42,6 +42,7 @@ class Facture(models.Model):
     following: liste des envois en cuisine
     next: si présent, la prochaine catégorie a envoyée en 
         cuisine
+
     """
     date_creation = models.DateTimeField('creer le', auto_now_add=True)
     table = models.ForeignKey('Table', \
@@ -331,7 +332,7 @@ class Facture(models.Model):
                 self.add_product_prize(vendu)
         else:
             self.add_product_prize(vendu)
-            
+
     def add_product(self, vendu):
         """Ajout d'un produit à la facture.
         Si c'est le premier produit alors on modifie la date de creation
@@ -394,8 +395,8 @@ class Facture(models.Model):
                 self.del_product_prize(product)
             self.something_for_the_kitchen()
         else:
-            logger.warning("[%s] on essaye de supprimer un produit "\
-                            "qui n'est pas dans la facture" % self)
+            logger.warning("[%s] on essaye de supprimer un produit "
+                           "qui n'est pas dans la facture" % self)
 
     def del_payment(self, payment):
         """On supprime un paiement"""
@@ -405,17 +406,17 @@ class Facture(models.Model):
             self.save()
             self.compute_total()
         else:
-            logger.warning("[%s] on essaye de supprimer un paiement "\
-                            "qui n'est pas dans la facture: %s %s %s %s"\
-                            % (self, payment.id, payment.date, \
-                            payment.type.nom, payment.montant))
+            logger.warning("[%s] on essaye de supprimer un paiement "
+                           "qui n'est pas dans la facture: %s %s %s %s"
+                           % (self, payment.id, payment.date,
+                              payment.type.nom, payment.montant))
 
     def is_valid_payment(self, montant):
         ''' Vérifie un paiement avant add_payment '''
         if self.restant_a_payer <= Decimal("0"):
-            logger.info("[%s] nouveau paiement ignore car restant"\
-                            " a payer <= 0 (%5.2f)"
-                            % (self, self.restant_a_payer))
+            logger.info("[%s] nouveau paiement ignore car restant"
+                        " a payer <= 0 (%5.2f)" % (self, 
+                                                   self.restant_a_payer))
             return False
         if not self.produits:
             logger.debug("Pas de produit, donc rien a payer")
@@ -424,7 +425,7 @@ class Facture(models.Model):
             logger.debug("Le montant n'est pas indique.")
             return False
         return True
-    
+
     def add_payment(self, type_payment, montant, valeur_unitaire="1.0"):
         """
         :param type_payment: Un TypePaiement
@@ -432,7 +433,7 @@ class Facture(models.Model):
         :param valeur_unitaire : String convertissable en décimal
         :return: Boolean
         """
-        if not self.is_valid_payment(montant) :
+        if not self.is_valid_payment(montant):
             return False
         paiement = Paiement()
         paiement.type = type_payment
@@ -448,7 +449,7 @@ class Facture(models.Model):
         paiement.save()
         self.paiements.add(paiement)
         if paiement.montant > self.restant_a_payer:
-            #  Si le montant est superieur au restant du alors on rembourse en 
+            # Si le montant est superieur au restant du alors on rembourse en
             # espece.
             self.rendre_monnaie(paiement)
         self.restant_a_payer -= paiement.montant
@@ -456,7 +457,8 @@ class Facture(models.Model):
         return True
 
     def rendre_monnaie(self,paiement):
-        ''' Regularisation si le montant payé est superieur au montant de la facture '''
+        '''Régularisation si le montant payé est superieur au montant 
+        de la facture'''
         monnaie = Paiement()
         payment_for_refunds = Config.objects.get(key="payment_for_refunds").value
         monnaie.type = PaiementType.objects.get(id=payment_for_refunds)
@@ -498,9 +500,10 @@ class Facture(models.Model):
         return False
         if self.onsite:
             for produit in self.produits.iterator():
-                # logging.debug("test with produit: %s and categorie id: %d" % (produit.nom, produit.categorie.id))
+                logger.debug("test with produit: %s and categorie id: %d" % (
+                             produit.nom, produit.categorie.id))
                 if produit.produit.categorie.disable_surtaxe:
-                    # logging.debug("pas de surtaxe")
+                    logger.debug("pas de surtaxe")
                     return False
             if self.table:
                 return self.table.est_surtaxe()
@@ -516,11 +519,10 @@ class Facture(models.Model):
         date_min = datetime.datetime(date.year, date.month, date.day, 5)
         tmp = date_min + datetime.timedelta(days=1)
         date_max = datetime.datetime(tmp.year, tmp.month, tmp.day, 5)
-        return Facture.objects.filter(\
-                                      date_creation__gt=date_min, \
-                                      date_creation__lt=date_max, \
-                                      restant_a_payer=0).exclude(\
-                                      produits__isnull=True)
+        bills = Facture.objects.filter(date_creation__gt=date_min,
+                                       date_creation__lt=date_max,
+                                       restant_a_payer=0)
+        return bills.exclude(produits__isnull=True)
 
     def print_ticket(self):
         try:
@@ -530,11 +532,11 @@ class Facture(models.Model):
         ticket = []
         ticket.append("Le %s" % self.date_creation.strftime("%d/%m/%Y %H:%M"))
         if self.table and self.couverts:
-            ticket.append("Table: %s / %s couverts" % (self.table, self.couverts))
+            ticket.append("Table: %s / %s couverts" % (self.table,
+                                                       self.couverts))
         separateur = '-' * printer.width
         ticket.append(separateur)
-        for vendu in self.produits.order_by(\
-                            "produit__categorie__priorite").iterator():
+        for vendu in self.produits.order_by("produit__categorie__priorite"):
             name = vendu.produit.nom_facture[:25]
             prize = "% 3.2f" % vendu.produit.prix
             # la largeur disponible correspond à la largeur du ticket
@@ -551,10 +553,11 @@ class Facture(models.Model):
         ticket.append(separateur)
         ticket.append("  Total: % 8.2f Eur." % self.total_ttc)
         for vatonbill in self.vats.iterator():
-            ticket.append("  TVA % 5.2f%%: % 6.2f Eur." % (\
-                    vatonbill.vat.tax, vatonbill.total))
+            ticket.append("  TVA % 5.2f%%: % 6.2f Eur." % (vatonbill.vat.tax,
+                                                           vatonbill.total))
         ticket.append(separateur)
-        return printer.print_list(ticket, "invoice-%s" % self.id, with_header=True)
+        return printer.print_list(ticket, "invoice-%s" % self.id, 
+                                  with_header=True)
 
     def get_working_day(self):
         """Retourne la journee de travail officiel
