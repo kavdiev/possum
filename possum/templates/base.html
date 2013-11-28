@@ -21,47 +21,53 @@
 </head>
 <body>
     {% block menu %}
-    <div class="container">
-        <div class="navbar-header">
-		   <ul class="nav navbar-nav" id="menu">
-                {% if user.is_authenticated %}
-                    <li class="{% if menu_profile %}menuSelected{% endif %}" onclick="window.location='/profile/'">
-                        <a href="/profile/">{% if user.get_full_name %}{{ user.get_full_name }}{%else%}{{user.username}}{%endif%}</a>
-                    </li>
-                {% endif %}
-                {% if not menu_bills %}
-                    <li onclick="window.location='/bills/'">Bills</li>
-                    {% if menu_carte %}
-                        <li class="menuSelected" onclick="window.location='/carte/categories/'">
-                    {% else %}
-                        <li onclick="window.location='/carte/categories/'">
-                    {% endif %}
-                        Carte
-                    </li>
-                    {% if menu_kitchen %}
-                        <li class="menuSelected" onclick="window.location='/kitchen/'">
-                    {% else %}
-                        <li onclick="window.location='/kitchen/'">
-                    {% endif %}
+    <ul id="menu">
+        {% if user.is_authenticated %}
+            <li class="{% if menu_profile %}menuSelected{% endif %}" onclick="window.location='/profile/'">
+                {% if user.get_full_name %}{{ user.get_full_name }}{%else%}{{user.username}}{%endif%}
+            </li>
+        {% endif %}
+        {% if not menu_bills %}
+            <li onclick="window.location='/bills/'">
+                Bills
+            </li>
+            {% if menu_carte %}
+                <li class="menuSelected" onclick="window.location='/carte/categories/'">
+            {% else %}
+                <li onclick="window.location='/carte/categories/'">
+            {% endif %}
+                    Carte
+                </li>
+            {% if menu_kitchen %}
+                <li class="menuSelected" onclick="window.location='/kitchen/'">
+            {% else %}
+                <li onclick="window.location='/kitchen/'">
+            {% endif %}
                     Kitchen
-                    </li>
-                    {% if menu_manager %}
-                        <li class="menuSelected" onclick="window.location='/manager/'">
-                    {% else %}
-                        <li onclick="window.location='/manager/'">
-                    {% endif %}
+                </li>
+            {% if menu_manager %}
+                <li class="menuSelected" onclick="window.location='/manager/'">
+            {% else %}
+                <li onclick="window.location='/manager/'">
+            {% endif %}
                     Manager
-                    </li>
-                {% endif %}
-                <li><div id="myclock"><script type="text/javascript">window.onload = date_heure('myclock');</script></div></li>
-                {% if user.is_authenticated %}
-                    <li><a href="/users/logout/">Déconnexion</a></li>
-                {% else %}
-                    <li><a href="/users/login/">Connexion</a></li>
-                {% endif %}
-            </ul>
-        </div>
-    </div>
+                </li>
+        {% endif %}
+        <li>
+            <div id="myclock">
+                <script type="text/javascript">window.onload = date_heure('myclock');</script>
+            </div>
+        </li>
+        {% if user.is_authenticated %}
+            <li onclick="window.location='/users/logout/'">
+                Déconnexion
+            </li>
+        {% else %}
+            <li onclick="window.location='/users/logout/'">
+                Connexion
+            </li>
+        {% endif %}
+    </ul>
     {% endblock %}
     {% block page %}
     <div id="content">
