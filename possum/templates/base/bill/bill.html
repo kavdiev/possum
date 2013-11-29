@@ -2,10 +2,6 @@
 {% block titre %}Facture {{facture.id}}{% endblock %}
 {% block content %}
 
-<ul id="back">
-<li onclick="window.location='/bills/'">Retour commandes</li>
-</ul>
-
 <h1>Commande [{{facture}}]</h1>
 <ul id="bill_info">
     {% if facture.category_to_follow %}

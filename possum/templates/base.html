@@ -22,14 +22,12 @@
 <body>
     {% block menu %}
     <ul id="menu">
-        {% if user.is_authenticated %}
-            <li class="{% if menu_profile %}menuSelected{% endif %}" onclick="window.location='/profile/'">
-                {% if user.get_full_name %}{{ user.get_full_name }}{%else%}{{user.username}}{%endif%}
-            </li>
-        {% endif %}
-        {% if not menu_bills %}
+        {% if menu_bills %}
+            <li class="menuSelected" onclick="window.location='/bills/'">
+        {% else %}
             <li onclick="window.location='/bills/'">
-                Bills
+        {% endif %}
+                Commandes
             </li>
             {% if menu_carte %}
                 <li class="menuSelected" onclick="window.location='/carte/categories/'">
@@ -43,7 +41,7 @@
             {% else %}
                 <li onclick="window.location='/kitchen/'">
             {% endif %}
-                    Kitchen
+                    Cuisine
                 </li>
             {% if menu_manager %}
                 <li class="menuSelected" onclick="window.location='/manager/'">
@@ -52,18 +50,20 @@
             {% endif %}
                     Manager
                 </li>
-        {% endif %}
         <li>
             <div id="myclock">
                 <script type="text/javascript">window.onload = date_heure('myclock');</script>
             </div>
         </li>
         {% if user.is_authenticated %}
+            <li class="{% if menu_profile %}menuSelected{% endif %}" onclick="window.location='/profile/'">
+                {{user.username}}
+            </li>
             <li onclick="window.location='/users/logout/'">
                 Déconnexion
             </li>
         {% else %}
-            <li onclick="window.location='/users/logout/'">
+            <li onclick="window.location='/users/login/'">
                 Connexion
             </li>
         {% endif %}

@@ -1,8 +1,6 @@
 {% extends "base.html" %}
 {% block content %}
 
-<h1>Cuisine ({{factures|length}})</h1>
-
 <ul id="kitchen">
     {% for facture in factures %}
         {% if facture.following %}
