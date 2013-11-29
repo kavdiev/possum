@@ -33,7 +33,6 @@ from possum.base.views import get_user, permission_required
 logger = logging.getLogger(__name__)
 
 
-
 @permission_required('base.p1')
 def vats(request):
     data = get_user(request)
@@ -80,7 +79,8 @@ def vats_change(request, vat_id):
                 product.update_vats()
         except:
             messages.add_message(request, messages.ERROR,
-                                 "Les modifications n'ont pu être enregistrées.")
+                                 "Les modifications n'ont pu être "
+                                 "enregistrées.")
         else:
             return HttpResponseRedirect('/manager/vats/')
     return render_to_response('base/manager/vats/change.html', data,
@@ -102,7 +102,8 @@ def vat_new(request):
             vat.save()
         except:
             messages.add_message(request, messages.ERROR,
-                                 "Les modifications n'ont pu être enregistrées.")
+                                 "Les modifications n'ont pu être "
+                                 "enregistrées.")
         else:
             return HttpResponseRedirect('/manager/vats/')
     return render_to_response('base/manager/vats/new.html', data,
