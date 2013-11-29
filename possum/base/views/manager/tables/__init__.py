@@ -86,12 +86,12 @@ def tables_table(request, zone_id, table_id):
         try:
             data['table'].save()
         except:
-            messages.add_message(request, messages.ERROR, "Les modifications n'ont pu être enregistrées.")
+            messages.add_message(request, messages.ERROR, "Les modifications "
+                                 "n'ont pu être enregistrées.")
         else:
             return HttpResponseRedirect('/manager/tables/')
-    return render_to_response('base/manager/tables/table.html',
-                                data,
-                                context_instance=RequestContext(request))
+    return render_to_response('base/manager/tables/table.html', data,
+                              context_instance=RequestContext(request))
 
 @permission_required('base.p1')
 def tables_zone(request, zone_id):
@@ -104,18 +104,17 @@ def tables_zone(request, zone_id):
         try:
             data['zone'].save()
         except:
-            messages.add_message(request, messages.ERROR, "Les modifications n'ont pu être enregistrées.")
+            messages.add_message(request, messages.ERROR, "Les modifications "
+                                 "n'ont pu être enregistrées.")
         else:
             return HttpResponseRedirect('/manager/tables/')
-    return render_to_response('base/manager/tables/zone.html',
-                                data,
-                                context_instance=RequestContext(request))
+    return render_to_response('base/manager/tables/zone.html', data,
+                              context_instance=RequestContext(request))
 
 @permission_required('base.p1')
 def tables(request):
     data = get_user(request)
     data['menu_manager'] = True
     data['zones'] = Zone.objects.all()
-    return render_to_response('base/manager/tables/home.html',
-                                data,
-                                context_instance=RequestContext(request))
+    return render_to_response('base/manager/tables/home.html', data,
+                              context_instance=RequestContext(request))
