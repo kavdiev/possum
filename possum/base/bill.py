@@ -20,13 +20,8 @@
 
 import datetime
 from decimal import Decimal
-from django.contrib.auth.models import User
 from django.db import models
 import logging
-import os
-
-from django.db.models import Sum
-
 from possum.base.category import Categorie
 from possum.base.config import Config
 from possum.base.follow import Follow
@@ -36,13 +31,14 @@ from possum.base.printer import Printer
 
 logger = logging.getLogger(__name__)
 
+
 class Facture(models.Model):
     """
     overcharge: surtaxe à ajouter par produits par exemple
         dans le cas d'une terrasse pour laquelle le service
         est surtaxé
     following: liste des envois en cuisine
-    next: si présent, la prochaine catégorie a envoyée en 
+    next: si présent, la prochaine catégorie a envoyée en
         cuisine
 
     """
@@ -61,13 +57,15 @@ class Facture(models.Model):
         limit_choices_to={'date__gt': datetime.datetime.today()})
     vats = models.ManyToManyField('VATOnBill',
         related_name="vat total for each vat on a bill")
-    restant_a_payer = models.DecimalField(max_digits=9, decimal_places=2,
-            default=0)
+    restant_a_payer = models.DecimalField(max_digits=9, 
+                                          decimal_places=2,
+                                          default=0)
     saved_in_stats = models.BooleanField(default=False)
     onsite = models.BooleanField(default=True)
     overcharge = models.BooleanField(default=False)
-    following = models.ManyToManyField('Follow', \
-            null=True, blank=True)
+    following = models.ManyToManyField('Follow', 
+                                       null=True, 
+                                       blank=True)
     category_to_follow = models.ForeignKey('Categorie', null=True, blank=True)
 
     class Meta:
@@ -203,7 +201,9 @@ class Facture(models.Model):
                     todolist.append(product)
             result = False
             for printer in Printer.objects.filter(kitchen=True):
-                result = printer.print_list(todolist, "kitchen-%s-%s" % (self.id, follow.category.id))
+                result = printer.print_list(todolist, 
+                                            "kitchen-%s-%s" % (
+                                            self.id, follow.category.id))
             follow.save()
             self.following.add(follow)
             self.something_for_the_kitchen()
@@ -312,7 +312,8 @@ class Facture(models.Model):
     def remove_surtaxe(self):
         """Remove surtaxe on all needed products
         """
-        for product in self.produits.filter(produit__categorie__surtaxable=True):
+        for product in self.produits.filter(
+                                    produit__categorie__surtaxable=True):
             product.prix -= self.table.zone.prix_surtaxe
             product.save()
         self.compute_total()
@@ -462,7 +463,8 @@ class Facture(models.Model):
         '''Régularisation si le montant payé est superieur au montant 
         de la facture'''
         monnaie = Paiement()
-        payment_for_refunds = Config.objects.get(key="payment_for_refunds").value
+        payment_for_refunds = Config.objects.get(key="payment_for_refunds"
+                                                ).value
         monnaie.type = PaiementType.objects.get(id=payment_for_refunds)
         monnaie.montant = self.restant_a_payer - paiement.montant
         monnaie.save()
@@ -483,7 +485,8 @@ class Facture(models.Model):
         for vendu in self.produits.iterator():
             if vendu.produit.categorie.made_in_kitchen:
                 return True
-            if vendu.contient.filter(produit__categorie__made_in_kitchen=True).count():
+            if vendu.contient.filter(produit__categorie__made_in_kitchen=True
+                                    ).count():
                 return True
         return False
 
