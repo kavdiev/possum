@@ -23,14 +23,12 @@ import os
 import random
 import sys
 
+sys.path.append('.')
+os.environ['DJANGO_SETTINGS_MODULE'] = 'possum.settings'
+
 from possum.base.models import Accompagnement, Sauce, Categorie, Cuisson, \
     Facture, Paiement, PaiementType, Produit, ProduitVendu, Follow, Table, Zone, VAT, \
     Printer, VATOnBill, DailyStat, WeeklyStat, MonthlyStat, Config
-
-
-# sys.path.append('/home/pos/possum-software')
-sys.path.append('.')
-os.environ['DJANGO_SETTINGS_MODULE'] = 'possum.settings'
 
 
 # on efface toutes la base
@@ -83,15 +81,18 @@ PaiementType(nom='Tic. Resto.', fixed_value=True).save()
 id_type_paiement = PaiementType.objects.get(nom="Espece").id
 Config(key="payment_for_refunds", value=id_type_paiement).save()
 
+# Montant de la surtaxe
+Config(key="price_surcharge", value="0.20").save()
+
 # Tables
-z = Zone(nom='Bar', surtaxe=False, prix_surtaxe='0.2')
+z = Zone(nom='Bar', surtaxe=False)
 z.save()
 Table(nom="T--", zone=z).save()
-z = Zone(nom='Rez de chaussee', surtaxe=False, prix_surtaxe='0.2')
+z = Zone(nom='Rez de chaussee', surtaxe=False)
 z.save()
 for i in xrange(1, 15):
     Table(nom="T%02d" % i, zone=z).save()
-z = Zone(nom='Terrasse', surtaxe=True, prix_surtaxe='0.2')
+z = Zone(nom='Terrasse', surtaxe=True)
 z.save()
 for i in xrange(15, 26):
     Table(nom="T%02d" % i, zone=z).save()

@@ -32,9 +32,6 @@ class Zone(Nom):
     mangent).
     """
     surtaxe = models.BooleanField("zone surtaxée ?", default=False)
-    prix_surtaxe = models.DecimalField(max_digits=4, decimal_places=2,
-                                       default=0)
-#    prix_surtaxe = models.PositiveIntegerField("surtaxe en centimes")
 
     def est_surtaxe(self):
 #       logging.debug("surtaxe de %d centimes sur la zone %s" % (self.surtaxe))
