@@ -57,23 +57,12 @@ function tests {
     # prerequis: sloccount csslint
     enter_virtualenv
     pip install --proxy=${http_proxy} django-jenkins pep8 pyflakes clonedigger \
-        flake8 flake8-todo coverage
-    ./manage.py jenkins
+        flake8 flake8-todo coverage >/dev/null
     csslint possum/base/static/ --format=lint-xml --exclude-list=possum/base/static/jquery.min.js,possum/base/static/highcharts > reports/csslint.report
-    #rm -f reports/{pylint.report,pep8.report}
-    #for f in `find possum/ -name '*.py'|egrep -v 'possum/test/|possum/base/migrations/'`
-    #do
-    #    pylint --output-format=parseable --reports=y --rcfile=possum/utils/pylint.rc $f >> reports/pylint.report 2>/dev/null
-    #    pep8 $f >> reports/pep8.report
-    #done || :
     flake8 --exclude=migrations --max-complexity 12 possum > reports/flake8.report
-#    OMIT="django_extensions,django,*migrations*,*.virtualenv*"
-#    coverage run --source=. manage.py test --verbosity=2 --traceback
-#    coverage report --omit=${OMIT}
-#    coverage html --omit=${OMIT}
-#    coverage xml --omit=${OMIT}
     clonedigger --cpd-output -o reports/clonedigger.xml $(find possum -name "*.py" | fgrep -v '/migrations/' | fgrep -v '/tests/' | xargs echo )
     sloccount --duplicates --wide --details possum | fgrep -v .git | fgrep -v '/migrations/' | fgrep -v '/static/highcharts/' > reports/soccount.sc
+    ./manage.py jenkins
 }
 
 function fasttu {
