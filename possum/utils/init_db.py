@@ -22,15 +22,12 @@ from django.contrib.auth.models import User, Permission
 import os
 import sys
 
+sys.path.append('.')
+os.environ['DJANGO_SETTINGS_MODULE'] = 'possum.settings'
+
 from possum.base.models import Accompagnement, Sauce, Categorie, Cuisson, \
     Facture, Paiement, PaiementType, Produit, ProduitVendu, Follow, Table, Zone, VAT, \
     Printer, VATOnBill, DailyStat, WeeklyStat, MonthlyStat, Config
-
-
-sys.path.append('.')
-# sys.path.append('/home/pos/possum-software')
-os.environ['DJANGO_SETTINGS_MODULE'] = 'possum.settings'
-
 
 # on efface toutes la base
 VAT.objects.all().delete()
