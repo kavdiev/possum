@@ -31,13 +31,13 @@ class Tests_VAT(unittest.TestCase):
         """ Test for setting a Tax """
         pass  # TODO
 
-    def test_get_tax_for(self, prize):
+    def test_get_tax_for(self):
         """Retourne la part de taxe
         pour un prix HT
         """
         pass  # TODO
 
-    def test_get_ttc_for(self, prize):
+    def test_get_ttc_for(self):
         """Retourne le prix TTC
         pour un prix HT
         """
