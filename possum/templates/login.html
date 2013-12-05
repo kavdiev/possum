@@ -1,19 +1,28 @@
 {% extends "base.html" %}
 
-{% block menu %} <!-- Connectez-vous pour accéder à Possum. --> {% endblock %}
+{% block menu %}<!-- Connectez-vous pour accéder à Possum. -->{% endblock %}
 
 {% block page %}
-    {% if error %}
-        <div id="error">
-            <p>{{error}}</p>
-        </div>
-    {%endif%}
-    <div id="login">
-    	<tr><td colspan=2 align="center"><img src="/static/images/bandeau-128.png" alt="logo"/></td></tr>
-	    <form method='post' action='/users/login/' name='login'>{% csrf_token %}
-	      {% csrf_token %}
-	      {{ form }}
-	      <input type="submit" value="Connexion"  class="" />
-		</form>
-    </div>
+
+{% if error %}
+<div id="error"><p>{{error}}</p></div>
+{%endif%}
+
+<div id="login">
+    <form method='post' action='/users/login/' name='login'>{% csrf_token %}
+        <table>
+    	    <tr>
+                <td colspan=2 align="center">
+                    <img src="/static/images/bandeau-128.png" alt="logo"/>
+                </td>
+            </tr>
+	    {{ form.as_table }}
+            <tr>
+                <td colspan=2>
+                    <input type="submit" value="Connexion"  class="" />
+                </td>
+            </tr>
+        </table>
+    </form>
+</div>
 {% endblock %}
