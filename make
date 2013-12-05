@@ -19,7 +19,7 @@ List of commands:
     sh                 :  run ./manage.py shell_plus in virtualenv
     run                :  run ./manage.py runserver_plus in virtualenv
     tests              :  make tests and coverage
-    tests_unit         :  make only the unit tests
+    fasttu             :  make only the unit tests
     update             :  install/update Possum environnement
 
 Note: If you need to define a proxy, set $http_proxy.
@@ -77,7 +77,8 @@ function tests {
     python -Wall manage.py test base --settings=possum.settings_tests --verbosity=2 --traceback
 }
 
-function tests_unit {
+function fasttu {
+    enter_virtualenv
     python -Wall manage.py test base --settings=possum.settings_tests --verbosity=2 --traceback
 }
 
@@ -199,6 +200,9 @@ deb_install)
     ;;
 deb_install_apache)
     deb_install_apache
+    ;;
+fasttu)
+    fasttu
     ;;
 deb_install_nginx)
     deb_install_nginx
