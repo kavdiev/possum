@@ -43,7 +43,7 @@ DATABASES = {
 
 
 INSTALLED_APPS += (
-#    'django_jenkins',
+    'django_jenkins',
 )
 
 # PROJECT_APPS = ['possum.base',]
