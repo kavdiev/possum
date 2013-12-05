@@ -19,6 +19,7 @@ List of commands:
     sh                 :  run ./manage.py shell_plus in virtualenv
     run                :  run ./manage.py runserver_plus in virtualenv
     tests              :  make tests and coverage
+    fasttu             :  make only the unit tests
     update             :  install/update Possum environnement
 
 Note: If you need to define a proxy, set $http_proxy.
@@ -73,6 +74,12 @@ function tests {
 #    coverage xml --omit=${OMIT}
     clonedigger --cpd-output -o reports/clonedigger.xml $(find possum -name "*.py" | fgrep -v '/migrations/' | fgrep -v '/tests/' | xargs echo )
     sloccount --duplicates --wide --details possum | fgrep -v .git | fgrep -v '/migrations/' | fgrep -v '/static/highcharts/' > reports/soccount.sc
+    python -Wall manage.py test base --settings=possum.settings_tests --verbosity=2 --traceback
+}
+
+function fasttu {
+    enter_virtualenv
+    python -Wall manage.py test base --settings=possum.settings_tests --verbosity=2 --traceback
 }
 
 function update_js {
@@ -193,6 +200,9 @@ deb_install)
     ;;
 deb_install_apache)
     deb_install_apache
+    ;;
+fasttu)
+    fasttu
     ;;
 deb_install_nginx)
     deb_install_nginx

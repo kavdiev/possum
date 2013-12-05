@@ -38,8 +38,6 @@ from possum.base.views import get_user, permission_required
 logger = logging.getLogger(__name__)
 
 
-
-
 @permission_required('base.p2')
 def categories_send(request):
     result = Produit().get_list_with_all_products()
@@ -52,17 +50,20 @@ def categories_send(request):
             send_mail(subject, mail, settings.DEFAULT_FROM_EMAIL,
                       [request.user.email], fail_silently=False)
         except:
-            messages.add_message(request, messages.ERROR, u"Le mail n'a pu être envoyé.")
+            messages.add_message(request, messages.ERROR,
+                                 u"Le mail n'a pu être envoyé.")
         else:
-            messages.add_message(request, messages.SUCCESS, u"Le mail a été envoyé à %s." % request.user.email)
+            messages.add_message(request, messages.SUCCESS,
+                                 u"Le mail a été envoyé à %s."
+                                 % request.user.email)
     else:
-        messages.add_message(request, messages.ERROR, u"Vous n'avez pas d'adresse mail.")
+        messages.add_message(request, messages.ERROR,
+                             u"Vous n'avez pas d'adresse mail.")
     return HttpResponseRedirect('/carte/categories/')
 
 
 @permission_required('base.p2')
 def categories_print(request):
-    data = get_user(request)
     result = Produit().get_list_with_all_products()
     if result:
         printers = Printer.objects.filter(manager=True)
@@ -70,16 +71,17 @@ def categories_print(request):
             printer = printers[0]
             if printer.print_list(result, "carte_complete"):
                 messages.add_message(request, messages.SUCCESS,
-                                     u"L'impression a été envoyée sur %s." % 
+                                     u"L'impression a été envoyée sur %s." %
                                      printer.name)
             else:
                 messages.add_message(request, messages.ERROR, u"L'impression"
-                                     u" a achouée sur %s." % printer.name)
+                                     u" a échouée sur %s." % printer.name)
         else:
             messages.add_message(request, messages.ERROR, u"Aucune imprimante "
                                  u"type 'manager' disponible.")
     else:
-        messages.add_message(request, messages.ERROR, "Il n'y a rien dans la carte.")
+        messages.add_message(request, messages.ERROR,
+                             "Il n'y a rien dans la carte.")
     return HttpResponseRedirect('/carte/categories/')
 
 
@@ -105,7 +107,7 @@ def categories_delete(request, cat_id):
         if cat_report_id:
             try:
                 report = Categorie.objects.get(id=cat_report_id)
-                # we transfert all statistics
+                # we transfer all statistics
                 # TODO: report on WeeklyStat and MonthlyStat
                 for stat in DailyStat.objects.filter(key="%s_category_nb" % cat_id):
                     category_nb, created = DailyStat.objects.get_or_create(
@@ -121,7 +123,7 @@ def categories_delete(request, cat_id):
                     category_value.value += stat.value
                     category_value.save()
                     stat.delete()
-                # we transfert all products
+                # we transfer all products
                 for product in Produit.objects.filter(categorie__id=cat_id):
                     product.categorie = report
                     product.save()
@@ -131,7 +133,7 @@ def categories_delete(request, cat_id):
                 messages.add_message(request, messages.ERROR, "La catégorie "
                                      "n'existe pas.")
                 return HttpResponseRedirect('/carte/categories/%s/delete/' % cat_id)
-        # now, we have to delete the categorie and remove all products remains
+        # now, we have to delete the categories and remove all products remains
         for product in Produit.objects.filter(categorie__id=cat_id):
             DailyStat.objects.filter(key="%s_product_nb" % product.id).delete()
             DailyStat.objects.filter(key="%s_product_value" % product.id).delete()

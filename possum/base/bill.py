@@ -57,14 +57,14 @@ class Facture(models.Model):
         limit_choices_to={'date__gt': datetime.datetime.today()})
     vats = models.ManyToManyField('VATOnBill',
         related_name="vat total for each vat on a bill")
-    restant_a_payer = models.DecimalField(max_digits=9, 
+    restant_a_payer = models.DecimalField(max_digits=9,
                                           decimal_places=2,
                                           default=0)
     saved_in_stats = models.BooleanField(default=False)
     onsite = models.BooleanField(default=True)
     overcharge = models.BooleanField(default=False)
-    following = models.ManyToManyField('Follow', 
-                                       null=True, 
+    following = models.ManyToManyField('Follow',
+                                       null=True,
                                        blank=True)
     category_to_follow = models.ForeignKey('Categorie', null=True, blank=True)
 
@@ -84,16 +84,16 @@ class Facture(models.Model):
 
     def __unicode__(self):
         if self.id:
-            id = self.id
+            object_id = self.id
         else:
-            id = 0
+            object_id = 0
         if self.date_creation:
 #            print self.date_creation
 #            date = self.date_creation.strftime("%Y/%m/%d %H:%M")
             date = self.date_creation.strftime("%H:%M %d/%m")
         else:
             date = "--:-- --/--"
-        return u"%s F%06d" % (date, id)
+        return u"%s F%06d" % (date, object_id)
 
     def __cmp__(self, other):
         """
@@ -168,7 +168,8 @@ class Facture(models.Model):
             todolist = []
             heure = follow.date.strftime("%H:%M")
             # heure = datetime.datetime.now().strftime("%H:%M")
-            todolist.append("[%s] Table %s (%s couv.)" % (heure, self.table, self.couverts))
+            todolist.append("[%s] Table %s (%s couv.)" % (heure, self.table,
+                                                          self.couverts))
             todolist.append(">>> envoye %s" % follow.category.nom)
             todolist.append(" ")
             nb_products_sent = self.produits.filter(sent=True).count()
@@ -184,7 +185,8 @@ class Facture(models.Model):
                             follow.produits.add(sub)
                             sub.save()
                 else:
-                    if not product.sent and product.made_with == follow.category:
+                    if  not product.sent \
+                        and product.made_with == follow.category:
                         product.sent = True
                         products.append(product)
                         follow.produits.add(product)
@@ -201,7 +203,7 @@ class Facture(models.Model):
                     todolist.append(product)
             result = False
             for printer in Printer.objects.filter(kitchen=True):
-                result = printer.print_list(todolist, 
+                result = printer.print_list(todolist,
                                             "kitchen-%s-%s" % (
                                             self.id, follow.category.id))
             follow.save()

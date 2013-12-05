@@ -21,25 +21,24 @@
 import unittest
 
 
-# class Test_VAT(unittest.TestCase):
-#    """name is a symbolic name
-#    tax is for example '19.6' for 19.6%
-#    value: is used to minimize operations (example: 0.196
-#    """
-#
-#    def test_set_tax(self):
-#        """ Test for setting a Tax """
-#        pass  # TODO
-#
-#    def test_get_tax_for(self, prize):
-#        """Retourne la part de taxe
-#        pour un prix HT
-#        """
-#        pass  # TODO
-#
-#    def test_get_ttc_for(self, prize):
-#        """Retourne le prix TTC
-#        pour un prix HT
-#        """
-#        pass  # TODO
-#
+class Tests_VAT(unittest.TestCase):
+    """name is a symbolic name
+    tax is for example '19.6' for 19.6%
+    value: is used to minimize operations (example: 0.196
+    """
+
+    def test_set_tax(self):
+        """ Test for setting a Tax """
+        pass  # TODO
+
+    def test_get_tax_for(self):
+        """Retourne la part de taxe
+        pour un prix HT
+        """
+        pass  # TODO
+
+    def test_get_ttc_for(self):
+        """Retourne le prix TTC
+        pour un prix HT
+        """
+        pass  # TODO

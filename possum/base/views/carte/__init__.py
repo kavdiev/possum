@@ -33,7 +33,6 @@ from possum.base.views import get_user, permission_required
 logger = logging.getLogger(__name__)
 
 
-
 @permission_required('base.p2')
 def carte(request):
     """This is not used.
