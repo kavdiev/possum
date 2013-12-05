@@ -68,8 +68,7 @@ function tests {
     clonedigger --cpd-output -o reports/clonedigger.xml $(find possum -name "*.py" | fgrep -v '/migrations/' | fgrep -v '/tests/' | xargs echo )
     sloccount --duplicates --wide --details possum | fgrep -v .git | fgrep -v '/migrations/' | fgrep -v '/static/highcharts/' > reports/soccount.sc
     ./manage.py jenkins
-    echo "> $?"
-    return $?
+    exit $?
 #    ./manage.py test base 
 }
 
