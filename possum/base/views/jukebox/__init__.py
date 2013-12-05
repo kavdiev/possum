@@ -30,7 +30,6 @@ from possum.base.views import get_user
 logger = logging.getLogger(__name__)
 
 
-
 @login_required
 def jukebox(request):
     data = get_user(request)
