@@ -9,13 +9,11 @@
         </div>
     {%endif%}
     <div id="login">
-        <form method='post' action='/users/login/' name='login'>{% csrf_token %}
-            <table>
-                <tr><td colspan=2 align="center"><img src="/static/images/bandeau-128.png" alt="logo"/></td></tr>
-                <tr><td>identifiant:</td><td><input type='text' name='username' size='20'></td></tr>
-                <tr><td>mot de passe:</td><td><input type='password' name='password' size='20'></td></tr>
-                <tr><td colspan=2 align="center"><input type='submit' value='Connexion'></td></tr>
-            </table>
-        </form>
+    	<tr><td colspan=2 align="center"><img src="/static/images/bandeau-128.png" alt="logo"/></td></tr>
+	    <form method='post' action='/users/login/' name='login'>{% csrf_token %}
+	      {% csrf_token %}
+	      {{ form }}
+	      <input type="submit" value="Connexion"  class="" />
+		</form>
     </div>
 {% endblock %}
