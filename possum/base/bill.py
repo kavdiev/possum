@@ -238,7 +238,7 @@ class Facture(models.Model):
         On ne traite pas le cas ou les 2 tables sont surtaxées à des montants
         différents.
         """
-        if self.est_surtaxe():
+        if self.is_surcharged():
             if not table.zone.surtaxe:
                 # la nouvelle table n'est pas surtaxée
                 self.remove_surtaxe()
@@ -325,7 +325,7 @@ class Facture(models.Model):
         :param vendu: TODO Définir le type de l'entrée '''
         self.produits.add(vendu)
         self.save()
-        if self.est_surtaxe():
+        if self.is_surcharged():
             if vendu.produit.categorie.disable_surtaxe:
                 # on doit enlever la surtaxe pour tous les produits
                 # concernés
@@ -392,9 +392,9 @@ class Facture(models.Model):
         ce cas on enlève tous les produits.
         """
         if product in self.produits.iterator():
-            surtaxe = self.est_surtaxe()
+            surtaxe = self.is_surcharged()
             self.produits.remove(product)
-            if surtaxe != self.est_surtaxe():
+            if surtaxe != self.is_surcharged():
                 self.compute_total()
             else:
                 self.del_product_prize(product)
@@ -499,7 +499,7 @@ class Facture(models.Model):
         else:
             return False
 
-    def est_surtaxe(self):
+    def is_surcharged(self):
         """
         Table is surtaxed et il n'y a pas de nourriture.
         """
@@ -513,7 +513,7 @@ class Facture(models.Model):
                     logger.debug("pas de surtaxe")
                     return False
             if self.table:
-                return self.table.est_surtaxe()
+                return self.table.is_surcharged()
             else:
                 return False
         else:

@@ -33,7 +33,7 @@ class Zone(Nom):
     """
     surtaxe = models.BooleanField("zone surtaxée ?", default=False)
 
-    def est_surtaxe(self):
+    def is_surcharged(self):
 #       logging.debug("surtaxe de %d centimes sur la zone %s" % (self.surtaxe))
         return self.surtaxe
 
@@ -45,9 +45,9 @@ class Zone(Nom):
 class Table(Nom):
     zone = models.ForeignKey(Zone, related_name="table-zone")
 
-    def est_surtaxe(self):
+    def is_surcharged(self):
         if self.zone:
-            result = self.zone.est_surtaxe()
+            result = self.zone.is_surcharged()
         else:
             # par defaut, il n'y a pas de surtaxe
             result = False
