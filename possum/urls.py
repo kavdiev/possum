@@ -179,7 +179,7 @@ urlpatterns += patterns('possum.base.views.manager.rapports',
 
 urlpatterns += patterns('possum.base.views.manager.charts',
     url(r'^manager/charts/year/$', 'charts_year', name='charts_year'),
-    url(r'^manager/charts/year/(?P<choice>[a-zA-Z0-9_-]+)/$', 'charts_year', name='charts_year'),
+    url(r'^manager/charts/year/(?P<choice>[a-zA-Z0-9_-]+)/$', 'charts_year', name='charts_year_with_argument'),
 )
 
 if settings.DEBUG:

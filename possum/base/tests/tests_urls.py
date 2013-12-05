@@ -46,11 +46,11 @@ class Tests_urls(TestCase):
             reverse('categories_set_color', args=('42',)),
             reverse('categories_vat_onsite', args=('42',)),
             reverse('categories_set_vat_onsite', args=('42', '73')),
-            reverse('categories_vat_takeaway', args=('42', '73')),
+            reverse('categories_vat_takeaway', args=('4')),
             reverse('categories_set_vat_takeaway', args=('42', '73')),
-            reverse('categories_delete', args=('42', '73')),
-            reverse('categories_disable_surtaxe', args=('42', '73')),
-            reverse('categories_set_kitchen', args=('42', '73')),
+            reverse('categories_delete', args=('42',)),
+            reverse('categories_disable_surtaxe', args=('42',)),
+            reverse('categories_set_kitchen', args=('42',)),
                 ]
         self.assert_http_status(urls, 302)
         self.assert_http_status_after_login(urls, 200)
@@ -58,7 +58,7 @@ class Tests_urls(TestCase):
     def test_carte(self):
         ''' Test that the carte urls work. '''
         urls = [
-            reverse('products_new'),
+            reverse('products_new', args=('2')),
             reverse('products_view', args=('42',)),
             reverse('products_change', args=('42',)),
             reverse('products_category', args=('42',)),
@@ -108,9 +108,9 @@ class Tests_urls(TestCase):
             reverse('bill_payment_save', args=('42', '73', '51', '7', '13')),
             reverse('bill_payment_set', args=('42', '73', '51', '7', '13')),
             reverse('bill_payment_set', args=('42', '73', '51', '7', '13')),
-            reverse('bill_payment_set_left', args=('42', '73', '51', '7', '13')),
-            reverse('bill_payment_set_right', args=('42', '73', '51', '7', '13')),
-            reverse('bill_payment_count', args=('42', '73', '51', '7', '13')),
+            reverse('bill_payment_set_left', args=('42', '73', '51', '7', '13', '1')),
+            reverse('bill_payment_set_right', args=('42', '73', '51', '7', '13', '1')),
+            reverse('bill_payment_count', args=('42', '73', '51', '7')),
             reverse('bill_print', args=('42',)),
             reverse('bill_send_kitchen', args=('42',)),
             reverse('bill_view', args=('42',)),
@@ -165,7 +165,7 @@ class Tests_urls(TestCase):
             reverse('printer_change_manager', args=('42',)),
             reverse('printer_select_width', args=('42',)),
             reverse('printer_test_print', args=('42',)),
-            reverse('printer_set_width', args=('42',)),
+            reverse('printer_set_width', args=('42','73',)),
         ]
         self.assert_http_status(urls, 302)
         self.assert_http_status_after_login(urls, 200)
@@ -179,7 +179,7 @@ class Tests_urls(TestCase):
             reverse('users_passwd', args=('42',)),
             reverse('users_active', args=('42',)),
             reverse('users_change', args=('42',)),
-            reverse('users_change_perm', args=('42', '73')),
+            reverse('users_change_perm', args=('42', 'p1',)),
         ]
         self.assert_http_status(urls, 302)
         self.assert_http_status_after_login(urls, 200)
@@ -226,15 +226,15 @@ class Tests_urls(TestCase):
             reverse('rapports_daily_print', args=('2013', '10', '10')),
             reverse('rapports_daily_send', args=('2013', '10', '10')),
             reverse('rapports_weekly'),
-            reverse('rapports_weekly_vats_print', args=('42', '13')),
-            reverse('rapports_weekly_vats_send', args=('42', '13')),
-            reverse('rapports_weekly_print', args=('42', '13')),
-            reverse('rapports_weekly_send', args=('42', '13')),
+            reverse('rapports_weekly_vats_print', args=('4242', '13')),
+            reverse('rapports_weekly_vats_send', args=('4242', '13')),
+            reverse('rapports_weekly_print', args=('4242', '13')),
+            reverse('rapports_weekly_send', args=('4242', '13')),
             reverse('rapports_monthly'),
-            reverse('rapports_monthly_vats_print', args=('42', '73')),
-            reverse('rapports_monthly_vats_send', args=('42', '73')),
-            reverse('rapports_monthly_print', args=('42', '73')),
-            reverse('rapports_monthly_send', args=('42', '73')),
+            reverse('rapports_monthly_vats_print', args=('4242', '73')),
+            reverse('rapports_monthly_vats_send', args=('4242', '73')),
+            reverse('rapports_monthly_print', args=('4242', '73')),
+            reverse('rapports_monthly_send', args=('4242', '73')),
         ]
         self.assert_http_status(urls, 302)
         self.assert_http_status_after_login(urls, 200)
@@ -243,7 +243,7 @@ class Tests_urls(TestCase):
         ''' Test that the charts urls work. '''
         urls = [
             reverse('charts_year'),
-            reverse('charts_year', args=("spam")),
+            reverse('charts_year_with_argument', args=("spam2013",)),
         ]
         self.assert_http_status(urls, 302)
         self.assert_http_status_after_login(urls, 200)
