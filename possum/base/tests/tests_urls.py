@@ -58,7 +58,7 @@ class Tests_urls(TestCase):
     def test_carte(self):
         ''' Test that the carte urls work. '''
         urls = [
-            reverse('products_new', args=('2')),
+            reverse('products_new', args=('42',)),
             reverse('products_view', args=('42',)),
             reverse('products_change', args=('42',)),
             reverse('products_category', args=('42',)),
@@ -179,8 +179,9 @@ class Tests_urls(TestCase):
             reverse('users_passwd', args=('42',)),
             reverse('users_active', args=('42',)),
             reverse('users_change', args=('42',)),
-            reverse('users_change_perm', args=('42', 'p1',)),
         ]
+        for perm in ["p1","p2","p3"]:
+            urls += reverse('users_change_perm', args=('42', perm,))
         self.assert_http_status(urls, 302)
         self.assert_http_status_after_login(urls, 200)
 
