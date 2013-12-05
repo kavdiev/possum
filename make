@@ -53,21 +53,26 @@ function doc {
     echo "Documentation is in: doc/_build/html/"
 }
 
-function tests {
+function install_tests {
     # prerequis: sloccount csslint
     enter_virtualenv
     pip install --proxy=${http_proxy} django-jenkins pep8 pyflakes clonedigger \
         flake8 flake8-todo coverage >/dev/null
+}
+
+function tests {
+    install_tests
+    enter_virtualenv
     csslint possum/base/static/ --format=lint-xml --exclude-list=possum/base/static/jquery.min.js,possum/base/static/highcharts > reports/csslint.report
     flake8 --exclude=migrations --max-complexity 12 possum > reports/flake8.report
     clonedigger --cpd-output -o reports/clonedigger.xml $(find possum -name "*.py" | fgrep -v '/migrations/' | fgrep -v '/tests/' | xargs echo )
     sloccount --duplicates --wide --details possum | fgrep -v .git | fgrep -v '/migrations/' | fgrep -v '/static/highcharts/' > reports/soccount.sc
     ./manage.py jenkins
+    ./manage.py test base --verbosity=2 --traceback
 }
 
 function fasttu {
-    # le fichier possum/settings.py doit etre une copie 
-    # de possum/settings_tests.py
+    install_tests
     enter_virtualenv
     python -Wall manage.py test base --settings=possum.settings_tests --verbosity=2 --traceback
 }
