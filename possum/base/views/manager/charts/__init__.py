@@ -22,23 +22,21 @@ import datetime
 from django.contrib import messages
 from django.http import HttpResponseRedirect
 import logging
-
 from django.shortcuts import render_to_response
 from django.template import RequestContext
-
 from possum.base.category import Categorie
 from possum.base.charts import get_chart_year_bar, get_chart_year_categories, \
     get_chart_year_guests, get_chart_year_payments, get_chart_year_products, \
     get_chart_year_ttc, get_chart_year_vats
 from possum.base.daily_stat import DailyStat
 from possum.base.forms import YearForm
-from possum.base.views import get_user
+from possum.base.views import get_user, permission_required
 
 
 logger = logging.getLogger(__name__)
 
 
-
+@permission_required('base.p1')
 def charts_year(request, choice='ttc'):
     """
     chart1: pour un seul graphique
