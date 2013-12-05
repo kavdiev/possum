@@ -252,11 +252,6 @@ div.button
     width:30%;
     position:relative
 }
-.errorlist
-{
-    color:#DD1111;
-}
-
 ul {
     list-style:none; /* inutile pour safari et firefox, mais pas pour IE */
 }
@@ -271,6 +266,14 @@ li {
     text-align:center;
     border-radius: 10px; /* bord arrondi */
 }
+.errorlist {
+    color:#DD1111;
+}
+.errorlist li {
+    width:90%;    
+    height:80px;
+}
+
 #myclock {
     font-size: x-large;
 }
