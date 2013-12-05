@@ -30,12 +30,20 @@
 
 <h1>Produits présents sur la commande</h1>
 <ul id="products_sold">
-    {% for vendu in bill.produits.iterator %}
-    <li style="background:{{vendu.produit.categorie.color}};" onclick="window.location='/bill/{{bill.id}}/sold/{{vendu.id}}/view/'">{{vendu.produit.nom}}
+  {% for type_produit, list_produit in bill.regroup_produits.items %}
+  <li style="background:{{list_produit.0.1.produit.categorie.color}}" id="{{type_produit}}" href="javascript:void(0)" onclick="javascript:myLinkButtonClick(this.id);">{{list_produit|length}} x {{type_produit}}</li>
+  <div id="list_{{type_produit}}" style="display: none">
+    {% for vendu_id_in_model, vendu in list_produit %}
+    <li style="background:{{vendu.produit.categorie.color}}" onclick="window.location='/bill/{{bill.id}}/sold/{{vendu_id_in_model}}/view/'">
+      {{vendu}} ({{vendu.produit.get_prize}})
+      {% if vendu.cuisson %}({{vendu.cuisson}}){% endif %}
+      {{ vendu.get_menu_resume }}
     </li>
-    {% empty %}
-    <li>Aucun produit</li>
     {% endfor %}
+  </div>
+  {% empty %}
+  <li>Aucun produit</li>
+  {% endfor %}
 </ul>
 
 {% endblock %}

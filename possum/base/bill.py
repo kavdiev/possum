@@ -22,6 +22,8 @@ import datetime
 from decimal import Decimal
 from django.db import models
 import logging
+import unicodedata
+
 from possum.base.category import Categorie
 from possum.base.config import Config
 from possum.base.follow import Follow
@@ -102,6 +104,15 @@ class Facture(models.Model):
         """
         return cmp(self.date_creation, other.date_creation)
 
+    def regroup_produits(self):
+        dict_produits = {}
+        for produit in self.produits.iterator():
+            if str(produit) in dict_produits:
+                dict_produits[str(produit)].append((produit.id, produit))
+            else:
+                dict_produits[str(produit)]=[(produit.id, produit)]
+        return dict_produits        
+
     def something_for_the_kitchen(self):
         """If one, set the first category to prepare in the
         kitchen. Example: Entree if there are Entree and Plat.
@@ -168,8 +179,7 @@ class Facture(models.Model):
             todolist = []
             heure = follow.date.strftime("%H:%M")
             # heure = datetime.datetime.now().strftime("%H:%M")
-            todolist.append("[%s] Table %s (%s couv.)" % (heure, self.table,
-                                                          self.couverts))
+            todolist.append("[%s] Table %s (%s couv.)" % (heure, self.table, self.couverts))
             todolist.append(">>> envoye %s" % follow.category.nom)
             todolist.append(" ")
             nb_products_sent = self.produits.filter(sent=True).count()
@@ -185,8 +195,7 @@ class Facture(models.Model):
                             follow.produits.add(sub)
                             sub.save()
                 else:
-                    if  not product.sent \
-                        and product.made_with == follow.category:
+                    if not product.sent and product.made_with == follow.category:
                         product.sent = True
                         products.append(product)
                         follow.produits.add(product)
@@ -203,9 +212,7 @@ class Facture(models.Model):
                     todolist.append(product)
             result = False
             for printer in Printer.objects.filter(kitchen=True):
-                result = printer.print_list(todolist,
-                                            "kitchen-%s-%s" % (
-                                            self.id, follow.category.id))
+                result = printer.regroup_list_and_print(todolist, "kitchen-%s-%s" % (self.id, follow.category.id))
             follow.save()
             self.following.add(follow)
             self.something_for_the_kitchen()
@@ -543,20 +550,26 @@ class Facture(models.Model):
                                                        self.couverts))
         separateur = '-' * printer.width
         ticket.append(separateur)
+        dict_vendu = {}
         for vendu in self.produits.order_by("produit__categorie__priorite"):
-            name = vendu.produit.nom_facture[:25]
-            prize = "% 3.2f" % vendu.produit.prix
+            if vendu.produit.nom_facture in dict_vendu:
+                dict_vendu[vendu.produit.nom_facture].append(vendu.produit.prix)
+            else:
+                dict_vendu[vendu.produit.nom_facture] = [vendu.produit.prix]
+        for nom_facture, prix in dict_vendu.items():
+            name = nom_facture[:25]
+            prize = "% 3.2f" % sum(prix)
             # la largeur disponible correspond à la largeur du ticket
             # sans la 1er partie (" 1 ") et sans la largeur du prix
             # " 1 largeur_dispo PRIX"
-            largeur_dispo = printer.width - 3 - len(prize)
-            if len(vendu.produit.nom_facture) < largeur_dispo:
-                name = vendu.produit.nom_facture
+            largeur_dispo = printer.width - 4 - len(prize)
+            if len(nom_facture) < largeur_dispo:
+                name = nom_facture
             else:
                 longueur_max = largeur_dispo - 2
-                name = vendu.produit.nom_facture[:longueur_max]
+                name = nom_facture[:longueur_max]
             remplissage = " " * (largeur_dispo - len(name))
-            ticket.append(" 1 %s%s%s" % (name, remplissage, prize))
+            ticket.append("%s x %s%s%s" % (len(prix), name, remplissage, prize))
         ticket.append(separateur)
         ticket.append("  Total: % 8.2f Eur." % self.total_ttc)
         for vatonbill in self.vats.iterator():

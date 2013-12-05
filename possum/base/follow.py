@@ -37,3 +37,12 @@ class Follow(models.Model):
 
     def __unicode__(self):
         return "[%s] %s" % (self.date.strftime("%H:%M"), self.category.nom)
+
+    def regroup_produits(self):
+        dict_produits = {}
+        for produit in self.produits.iterator():
+            if str(produit) in dict_produits:
+                dict_produits[str(produit)].append((produit.id, produit))
+            else:
+                dict_produits[str(produit)]=[(produit.id, produit)]
+        return dict_produits

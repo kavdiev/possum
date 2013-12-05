@@ -32,12 +32,17 @@
 <h2><!--Produits--></h2>
 <ul id="products_sold">
     <li onclick="window.location='/bill/{{facture.id}}/category/select/'">Ajouter un produit</li>
-    {% for vendu in facture.produits.iterator %}
-    <li style="background:{{vendu.produit.categorie.color}};" onclick="window.location='/bill/{{facture.id}}/sold/{{vendu.id}}/view/'">
-    {{vendu}} ({{vendu.produit.get_prize}})</br>
-        {% if vendu.cuisson %}({{vendu.cuisson}}){% endif %}
-        {{ vendu.get_menu_resume }}
-        </li>
+    {% for type_produit, list_produit in facture.regroup_produits.items %}
+    <li style="background:{{list_produit.0.1.produit.categorie.color}}" id="{{type_produit}}" href="javascript:void(0)" onclick="javascript:myLinkButtonClick(this.id);">{{list_produit|length}} x {{type_produit}}</li>
+    <div id="list_{{type_produit}}" style="display: none">
+      {% for vendu_id_in_model, vendu in list_produit %}
+      <li style="background:{{vendu.produit.categorie.color}}" onclick="window.location='/bill/{{facture.id}}/sold/{{vendu_id_in_model}}/view/'">
+	{{vendu}} ({{vendu.produit.get_prize}})
+	{% if vendu.cuisson %}({{vendu.cuisson}}){% endif %}
+	{{ vendu.get_menu_resume }}
+      </li>
+      {% endfor %}
+    </div>
     {% endfor %}
 </ul>
 

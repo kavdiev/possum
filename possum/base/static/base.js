@@ -21,3 +21,9 @@ function date_heure(id)
         setTimeout('date_heure("'+id+'");','1000');
         return true;
 }
+
+function myLinkButtonClick(clicked_id)
+{
+  var el = document.getElementById("list_"+clicked_id);
+  el.style.display = (el.style.display != 'none' ? 'none' : '' );
+}
