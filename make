@@ -56,8 +56,8 @@ function doc {
 function tests {
     # prerequis: sloccount csslint
     enter_virtualenv
-    pip install django-jenkins pep8 pyflakes clonedigger flake8 flake8-todo \
-        coverage
+    pip install --proxy=${http_proxy} django-jenkins pep8 pyflakes clonedigger \
+        flake8 flake8-todo coverage
     ./manage.py jenkins
     csslint possum/base/static/ --format=lint-xml --exclude-list=possum/base/static/jquery.min.js,possum/base/static/highcharts > reports/csslint.report
     #rm -f reports/{pylint.report,pep8.report}
@@ -72,7 +72,7 @@ function tests {
 #    coverage report --omit=${OMIT}
 #    coverage html --omit=${OMIT}
 #    coverage xml --omit=${OMIT}
-    clonedigger --cpd-output -o reports/clonedigger.xml $(find possum -name "*.py" | fgrep -v '/migrations/' | fgrep -v '/test/' | xargs echo )
+    clonedigger --cpd-output -o reports/clonedigger.xml $(find possum -name "*.py" | fgrep -v '/migrations/' | fgrep -v '/tests/' | xargs echo )
     sloccount --duplicates --wide --details possum | fgrep -v .git | fgrep -v '/migrations/' | fgrep -v '/static/highcharts/' > reports/soccount.sc
     python -Wall manage.py test base --settings=possum.settings_tests --verbosity=2 --traceback
 }
