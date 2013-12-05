@@ -74,10 +74,11 @@ function tests {
 #    coverage xml --omit=${OMIT}
     clonedigger --cpd-output -o reports/clonedigger.xml $(find possum -name "*.py" | fgrep -v '/migrations/' | fgrep -v '/tests/' | xargs echo )
     sloccount --duplicates --wide --details possum | fgrep -v .git | fgrep -v '/migrations/' | fgrep -v '/static/highcharts/' > reports/soccount.sc
-    python -Wall manage.py test base --settings=possum.settings_tests --verbosity=2 --traceback
 }
 
 function fasttu {
+    # le fichier possum/settings.py doit etre une copie 
+    # de possum/settings_tests.py
     enter_virtualenv
     python -Wall manage.py test base --settings=possum.settings_tests --verbosity=2 --traceback
 }
@@ -224,7 +225,6 @@ tests)
 #    then
 #    cp possum/settings_tests.py possum/settings.py
 #    fi
-    cp possum/settings_tests.py possum/settings.py
     update >/dev/null
     tests
     doc >/dev/null
