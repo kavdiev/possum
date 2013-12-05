@@ -122,10 +122,15 @@ class Produit(NomDouble):
         surcharge = Decimal(price_surcharge.value)
         one = Decimal('1')
         if self.categorie.vat_onsite and self.categorie.vat_takeaway:
-            self.price_surcharged = self.prix + surcharge
             value = self.categorie.vat_onsite.value
             self.vat_onsite = Decimal(self.prix) / (one + value) * value
-            self.vat_surcharged = Decimal(self.price_surcharged)/(one+value)*value
+            if self.categorie.surtaxable:
+                self.price_surcharged = self.prix + surcharge
+                vat = Decimal(self.price_surcharged) / (one+value) * value
+                self.vat_surcharged = vat
+            else:
+                self.price_surcharged = self.prix
+                self.vat_surcharged = self.vat_onsite
             value = self.categorie.vat_takeaway.value
             self.vat_takeaway = Decimal(self.prix) / (one + value) * value
             self.save()
