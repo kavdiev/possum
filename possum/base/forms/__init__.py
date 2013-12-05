@@ -43,3 +43,10 @@ class MonthForm(forms.Form):
 
 class YearForm(forms.Form):
     year = forms.ChoiceField(label="Année", choices=years_choice)
+
+
+class LoginForm(forms.Form):
+    """ Class LoginForm representing a form to log an User in. """
+    username = forms.CharField(max_length=100,
+                               widget=forms.TextInput(attrs={'placeholder': 'identifiant:'}))
+    password = forms.CharField(widget=forms.PasswordInput(attrs={'placeholder': 'mot de passe:'}))
