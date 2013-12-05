@@ -17,6 +17,43 @@ class Tests_urls(TestCase):
     def tearDown(self):
         self.logout()
 
+    def test_home(self):
+        ''' Test that the home urls work'''
+        urls = [reverse('home'),
+                ]
+        self.assert_http_status(urls, 302)
+        self.assert_http_status_after_login(urls, 200)
+
+    def test__carte_categories(self):
+        ''' Test that the home urls work'''
+        urls = [
+            reverse('categories'),
+            reverse('categories_print'),
+            reverse('categories_send'),
+            reverse('categories'),
+            reverse('categories_add'),
+            reverse('categories_new'),
+            reverse('categories_view', args=('42',)),
+            reverse('categories_less_priority', args=('42',)),
+            reverse('categories_more_priority', args=('42',)),
+            reverse('categories_less_priority', args=('42',)),
+            reverse('categories_more_priority', args=('42',)),
+            reverse('categories_surtaxable', args=('42',)),
+            reverse('categories_name', args=('42',)),
+            reverse('categories_set_name', args=('42',)),
+            reverse('categories_color', args=('42',)),
+            reverse('categories_set_color', args=('42',)),
+            reverse('categories_vat_onsite', args=('42',)),
+            reverse('categories_set_vat_onsite', args=('42', '73')),
+            reverse('categories_vat_takeaway', args=('42', '73')),
+            reverse('categories_set_vat_takeaway', args=('42', '73')),
+            reverse('categories_delete', args=('42', '73')),
+            reverse('categories_disable_surtaxe', args=('42', '73')),
+            reverse('categories_set_kitchen', args=('42', '73')),
+                ]
+        self.assert_http_status(urls, 302)
+        self.assert_http_status_after_login(urls, 200)
+
     def test_table(self):
         ''' Test that the table urls work'''
         urls = [reverse('tables'),
@@ -43,8 +80,8 @@ class Tests_urls(TestCase):
             self.assertEqual(resp.status_code, status,
                              "For '{0}' {1}, the http response".format(url,
                                                                        msg)
-                             + ' status is {0}'.format(resp.status_code)
-                             + 'but it should be {1}'.format(status))
+                             + ' status is {0} '.format(resp.status_code)
+                             + 'but it should be {0}'.format(status))
 
     @staticmethod
     def login():
