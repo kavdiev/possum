@@ -180,8 +180,8 @@ class Tests_urls(TestCase):
             reverse('users_active', args=('42',)),
             reverse('users_change', args=('42',)),
         ]
-        for perm in ["p1","p2","p3"]:
-            urls += reverse('users_change_perm', args=('42', perm,))
+        for perm in ["p1", "p2", "p3"]:
+            urls.append(reverse('users_change_perm', args=('42', perm,)))
         self.assert_http_status(urls, 302)
         self.assert_http_status_after_login(urls, 200)
 
