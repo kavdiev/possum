@@ -179,7 +179,8 @@ class Facture(models.Model):
             todolist = []
             heure = follow.date.strftime("%H:%M")
             # heure = datetime.datetime.now().strftime("%H:%M")
-            todolist.append("[%s] Table %s (%s couv.)" % (heure, self.table, self.couverts))
+            todolist.append("[%s] Table %s (%s couv.)" % (heure, self.table, 
+                                                          self.couverts))
             todolist.append(">>> envoye %s" % follow.category.nom)
             todolist.append(" ")
             nb_products_sent = self.produits.filter(sent=True).count()
@@ -195,7 +196,8 @@ class Facture(models.Model):
                             follow.produits.add(sub)
                             sub.save()
                 else:
-                    if not product.sent and product.made_with == follow.category:
+                    if not product.sent \
+                       and product.made_with == follow.category:
                         product.sent = True
                         products.append(product)
                         follow.produits.add(product)
@@ -212,7 +214,9 @@ class Facture(models.Model):
                     todolist.append(product)
             result = False
             for printer in Printer.objects.filter(kitchen=True):
-                result = printer.regroup_list_and_print(todolist, "kitchen-%s-%s" % (self.id, follow.category.id))
+                result = printer.regroup_list_and_print(todolist, 
+                                                        "kitchen-%s-%s" % (
+                                                        self.id, follow.category.id))
             follow.save()
             self.following.add(follow)
             self.something_for_the_kitchen()
