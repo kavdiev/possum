@@ -126,7 +126,7 @@ class Produit(NomDouble):
             self.vat_onsite = Decimal(self.prix) / (one + value) * value
             if self.categorie.surtaxable:
                 self.price_surcharged = self.prix + surcharge
-                vat = Decimal(self.price_surcharged) / (one+value) * value
+                vat = Decimal(self.price_surcharged) / (one + value) * value
                 self.vat_surcharged = vat
             else:
                 self.price_surcharged = self.prix
@@ -187,7 +187,8 @@ class ProduitVendu(models.Model):
     # dans le cas d'un menu, peut contenir d'autres produits
     contient = models.ManyToManyField('self')
     # faut-il préparer ce plat avec les entrées ?
-    made_with = models.ForeignKey(Categorie, related_name="produit-kitchen", null=True)
+    made_with = models.ForeignKey(Categorie, related_name="produit-kitchen",
+                                  null=True)
     # a-t-il été envoyé en cuisine
     sent = models.BooleanField(default=False)
 
@@ -200,29 +201,7 @@ class ProduitVendu(models.Model):
     def isFull(self):
         """
         True si tous les élèments sous présents (les sous produits pour 
-        les formules) et False sinon.
-
-        >>> vendu = ProduitVendu()
-        >>> vendu.save()
-        >>> vendu.isFull()
-        True
-        >>> cat1 = Categorie(nom="cat1")
-        >>> cat1.save()
-        >>> cat2 = Categorie(nom="cat2")
-        >>> cat2.save()
-        >>> vendu.categories_ok.add(cat1, cat2)
-        >>> vendu.isFull()
-        False
-        >>> vendu.produits = [ 1 ]
-        >>> vendu.isFull()
-        False
-        >>> vendu.produits = [ 1, 2 ]
-        >>> vendu.isFull()
-        True
-        >>> vendu.produits = [ 1, 2, 3 ]
-        >>> vendu.isFull()
-        True
-        """
+        les formules) et False sinon. """
         nb_produits = self.contient.count()
         nb_categories = self.produit.categories_ok.count()
         if nb_produits == nb_categories:
@@ -267,29 +246,7 @@ class ProduitVendu(models.Model):
     def getFreeCategorie(self):
         """Retourne la premiere categorie dans la liste categories_ok
         qui n'a pas de produit dans la partir 'contient'. Sinon retourne
-        None
-
-        >>> f = Facture(id=3)
-        >>> cat1 = Categorie(id=1, nom="cat1")
-        >>> cat2 = Categorie(id=2, nom="cat2")
-        >>> produit1 = Produit(id=1, nom="p1", categorie=cat1)
-        >>> produit2 = Produit(id=2, nom="p2", categorie=cat2)
-        >>> vendu = ProduitVendu(id=1, produit=produit1, facture=f)
-        >>> vendu.getFreeCategorie()
-        0
-        >>> produit1.categories_ok.add(cat1, cat2)
-        >>> vendu.getFreeCategorie()
-        0
-        >>> sub = ProduitVendu(id=2, produit=produit1, facture=f)
-        >>> vendu.contient.add(sub)
-        >>> vendu.getFreeCategorie()
-        1
-        >>> sub = ProduitVendu(id=3, produit=produit2, facture=f)
-        >>> sub.produit.categorie = cat2
-        >>> vendu.contient.add(sub)
-        >>> vendu.getFreeCategorie()
-        0
-        """
+        None """
         if self.produit.categories_ok.count() > 0:
             for categorie in self.produit.categories_ok.order_by("priorite").iterator():
                 if self.contient.filter(produit__categorie=categorie).count() == 0:

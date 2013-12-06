@@ -9,3 +9,5 @@ from tests_vat import Tests_VAT
 # from test_weeklystat import Test_WeeklyStat
 # from test_views import Test_Views
 from tests_urls import Tests_urls
+from tests_categories import Tests_Categories
+from tests_product import Tests_Products

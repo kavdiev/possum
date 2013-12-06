@@ -43,12 +43,14 @@ class Zone(Nom):
 
 
 class Table(Nom):
+    """ TODO """
+
     zone = models.ForeignKey(Zone, related_name="table-zone")
 
     def is_surcharged(self):
+        ''' By default there is no surcharge. '''
         if self.zone:
             result = self.zone.is_surcharged()
         else:
-            # par defaut, il n'y a pas de surtaxe
             result = False
         return result

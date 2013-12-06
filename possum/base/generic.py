@@ -17,12 +17,11 @@
 #    You should have received a copy of the GNU General Public License
 #    along with POSSUM.  If not, see <http://www.gnu.org/licenses/>.
 #
-from django.db import models
 
 from django.conf import settings
+from django.db import models
 
 
-# les classes generiques
 class Nom(models.Model):
     nom = models.CharField(max_length=60)
 
@@ -36,17 +35,18 @@ class Nom(models.Model):
         abstract = True
         ordering = ['nom']
 
+
 class NomDouble(Nom):
     nom_facture = models.CharField(max_length=35)
 
     class Meta:
         abstract = True
 
+
 class Priorite(models.Model):
     """Getter / setter: si priorite inferieur à 0 on reste à 0
     """
     priorite = models.PositiveIntegerField(default=0)
-
 
     class Meta:
         abstract = True
@@ -66,5 +66,3 @@ class Priorite(models.Model):
     def set_more_priority(self, number=1):
         self.priorite += number
         self.save()
-
-

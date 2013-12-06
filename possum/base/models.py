@@ -32,5 +32,3 @@ from possum.base.product import Produit, ProduitVendu
 from possum.base.vat import VAT
 from possum.base.vatonbill import VATOnBill
 from possum.base.weekly_stat import WeeklyStat
-
-
