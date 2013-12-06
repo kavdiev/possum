@@ -284,6 +284,8 @@ class Facture(models.Model):
             if not sold.produit.price_surcharged:
                 # TODO: just in case for backwards comtability
                 # in case Produit has no price_surcharged
+                logger.info("[%s] product without price_surcharged" % 
+                            sold.produit.id)
                 sold.produit.update_vats()
             if sold.prix != sold.produit.price_surcharged:
                 sold.prix = sold.produit.price_surcharged
