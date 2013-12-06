@@ -19,7 +19,7 @@ class Tests_urls(TestCase):
     def test_home(self):
         ''' Test that the home urls work'''
         urls = [
-                reverse('home'),
+            reverse('home'),
         ]
         self.assert_http_status(urls, 302)
         self.assert_http_status_after_login(urls, 200)
@@ -50,7 +50,7 @@ class Tests_urls(TestCase):
             reverse('categories_delete', args=('42',)),
             reverse('categories_disable_surtaxe', args=('42',)),
             reverse('categories_set_kitchen', args=('42',)),
-                ]
+        ]
         self.assert_http_status(urls, 302)
         self.assert_http_status_after_login(urls, 200)
 
@@ -270,7 +270,8 @@ class Tests_urls(TestCase):
              + 'but it should be {0}'.format(status))
 
     def login(self):
-        self.client.login(username='demo', password='demo')
+        result = self.client.login(username='demo', password='demo')
+        print result
 
     def logout(self):
         self.client.logout()
