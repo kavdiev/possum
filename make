@@ -8,18 +8,19 @@ function my_help {
 Usage: ./make [a command]
 
 List of commands:
+    create_json_demo   :  create JSON fixtures in possum/base/fixtures/demo.json
     doc                :  make the documentation in html
-    help               :  this help
     deb_install        :  install required packages on Debian/Ubuntu (*)
     deb_install_apache :  install apache on Debian/Ubuntu (*)
     deb_install_nginx  :  install nginx on Debian/Ubuntu (*)
+    fasttu             :  make only the unit tests
+    help               :  this help
     init_demo          :  erase database with data of demonstration
     init_mine          :  run possum/utils/init_mine.py in virtualenv 
     model              :  generate doc/images/models-base.png
     sh                 :  run ./manage.py shell_plus in virtualenv
     run                :  run ./manage.py runserver_plus in virtualenv
     tests              :  make tests and coverage
-    fasttu             :  make only the unit tests
     update             :  install/update Possum environnement
 
 Note: If you need to define a proxy, set $http_proxy.
@@ -51,6 +52,11 @@ function doc {
     cd doc
     make html
     echo "Documentation is in: doc/_build/html/"
+}
+
+function create_json_demo {
+    enter_virtualenv
+    ./manage.py dumpdata --format=json > possum/base/fixtures/demo.json
 }
 
 function install_tests {
@@ -187,6 +193,9 @@ then
 fi
 
 case "$1" in
+create_json_demo)
+    create_json_demo
+    ;;
 init_mine)
     enter_virtualenv
     possum/utils/init_mine.py

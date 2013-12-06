@@ -9,6 +9,7 @@ from django.utils.unittest.case import TestCase
 
 # import mock
 class Tests_urls(TestCase):
+    fixtures = ['demo.json', ]
 
     def setUp(self):
         self.client = Client()
