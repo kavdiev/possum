@@ -29,7 +29,7 @@
         Couleur:</br>{{category.color}}</li>
     <li onclick="window.location='/carte/categories/{{category.id}}/name/'">
         Changement de nom</li>
-    <!--li onclick="window.location='/carte/categories/{{category.id}}/surtaxable/'"
+    <li onclick="window.location='/carte/categories/{{category.id}}/surtaxable/'"
         {% if category.surtaxable %}
             class="enabled"> Est surtaxable
         {% else %}
@@ -42,7 +42,7 @@
         {% else %}
             class="disabled"> Ne peux annuler la surtaxe
         {% endif %}
-    </li-->
+    </li>
     <li onclick="window.location='/carte/categories/{{category.id}}/vat_onsite/'"
         {% if category.vat_onsite %}
             >TVA sur place:</br>{{category.vat_onsite.name}}

@@ -13,7 +13,7 @@
 
 {% for zone in zones %}
     <h2>{{zone.nom}}</h2>
-    {% if zone.is_surcharged %}
+    {% if zone.surtaxe %}
     <p>Cette zone est soumise à une surtaxe.</p>
     {% endif %}
 
@@ -25,7 +25,7 @@
         <li onclick="window.location='/manager/tables/{{zone.id}}/new/'">+</li>
         {% for table in zone.tables %}
         <li onclick="window.location='/manager/tables/{{zone.id}}/{{table.id}}/'"
-            {% if zone.is_surcharged %}class="surtaxe"{% endif %}>
+            {% if zone.surtaxe %}class="surtaxe"{% endif %}>
             {{table.nom}}
             </li>
         {% endfor %}

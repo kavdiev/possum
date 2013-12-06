@@ -241,7 +241,7 @@ def categories_surtaxable(request, cat_id):
     if cat.surtaxable:
         cat.disable_surtaxe = False
     cat.save()
-    for product in Produit.objects.filter(categorie=category).iterator():
+    for product in Produit.objects.filter(categorie=cat).iterator():
         product.update_vats()
     logger.info("[%s] cat [%s] surtaxable: %s" % (data['user'].username,
                 cat.nom, cat.surtaxable))

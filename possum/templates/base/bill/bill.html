@@ -13,7 +13,7 @@
     {% endif %}
     </li>
     <li onclick="window.location='/bill/{{facture.id}}/table/select/'"
-        {% if facture.overcharge %}class="warning"{% endif %}>
+        {% if facture.surcharge %}class="surtaxe"{% endif %}>
         Table:</br>{{facture.table.nom}}</li>
     <li onclick="window.location='/bill/{{facture.id}}/couverts/select/'">Couverts:</br>{{facture.couverts}}</li>
     <li onclick="window.location='/bill/{{facture.id}}/onsite/'" 
@@ -34,7 +34,7 @@
     <li onclick="window.location='/bill/{{facture.id}}/category/select/'">Ajouter un produit</li>
     {% for vendu in facture.produits.iterator %}
     <li style="background:{{vendu.produit.categorie.color}};" onclick="window.location='/bill/{{facture.id}}/sold/{{vendu.id}}/view/'">
-    {{vendu}} ({{vendu.produit.get_prize}})</br>
+    {{vendu}} ({{vendu.prix}})</br>
         {% if vendu.cuisson %}({{vendu.cuisson}}){% endif %}
         {{ vendu.get_menu_resume }}
         </li>

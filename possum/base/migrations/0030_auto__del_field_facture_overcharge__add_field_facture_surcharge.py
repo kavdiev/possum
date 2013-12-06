@@ -8,35 +8,23 @@ from django.db import models
 class Migration(SchemaMigration):
 
     def forwards(self, orm):
-        # Adding field 'Produit.price_surcharged'
-        db.add_column(u'base_produit', 'price_surcharged',
-                      self.gf('django.db.models.fields.DecimalField')(default=0, max_digits=7, decimal_places=2),
+        # Deleting field 'Facture.overcharge'
+        db.delete_column(u'base_facture', 'overcharge')
+
+        # Adding field 'Facture.surcharge'
+        db.add_column(u'base_facture', 'surcharge',
+                      self.gf('django.db.models.fields.BooleanField')(default=False),
                       keep_default=False)
-
-        # Adding field 'Produit.vat_surcharged'
-        db.add_column(u'base_produit', 'vat_surcharged',
-                      self.gf('django.db.models.fields.DecimalField')(default=0, max_digits=7, decimal_places=2),
-                      keep_default=False)
-
-        # Deleting field 'Zone.prix_surtaxe'
-        db.delete_column(u'base_zone', 'prix_surtaxe')
-
-        # Update VATS
-        for product in orm.Produit.objects.filter(actif=True):
-            product.update_vats()
 
 
     def backwards(self, orm):
-        # Deleting field 'Produit.price_surcharged'
-        db.delete_column(u'base_produit', 'price_surcharged')
-
-        # Deleting field 'Produit.vat_surcharged'
-        db.delete_column(u'base_produit', 'vat_surcharged')
-
-        # Adding field 'Zone.prix_surtaxe'
-        db.add_column(u'base_zone', 'prix_surtaxe',
-                      self.gf('django.db.models.fields.DecimalField')(default=0, max_digits=4, decimal_places=2),
+        # Adding field 'Facture.overcharge'
+        db.add_column(u'base_facture', 'overcharge',
+                      self.gf('django.db.models.fields.BooleanField')(default=False),
                       keep_default=False)
+
+        # Deleting field 'Facture.surcharge'
+        db.delete_column(u'base_facture', 'surcharge')
 
 
     models = {
@@ -87,11 +75,11 @@ class Migration(SchemaMigration):
             'following': ('django.db.models.fields.related.ManyToManyField', [], {'symmetrical': 'False', 'to': u"orm['base.Follow']", 'null': 'True', 'blank': 'True'}),
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'onsite': ('django.db.models.fields.BooleanField', [], {'default': 'True'}),
-            'overcharge': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
             'paiements': ('django.db.models.fields.related.ManyToManyField', [], {'related_name': "'les paiements'", 'symmetrical': 'False', 'to': u"orm['base.Paiement']"}),
             'produits': ('django.db.models.fields.related.ManyToManyField', [], {'related_name': "'les produits vendus'", 'symmetrical': 'False', 'to': u"orm['base.ProduitVendu']"}),
             'restant_a_payer': ('django.db.models.fields.DecimalField', [], {'default': '0', 'max_digits': '9', 'decimal_places': '2'}),
             'saved_in_stats': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
+            'surcharge': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
             'table': ('django.db.models.fields.related.ForeignKey', [], {'blank': 'True', 'related_name': "'facture-table'", 'null': 'True', 'to': u"orm['base.Table']"}),
             'total_ttc': ('django.db.models.fields.DecimalField', [], {'default': '0', 'max_digits': '9', 'decimal_places': '2'}),
             'vats': ('django.db.models.fields.related.ManyToManyField', [], {'related_name': "'vat total for each vat on a bill'", 'symmetrical': 'False', 'to': u"orm['base.VATOnBill']"})
