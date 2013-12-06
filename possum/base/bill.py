@@ -88,8 +88,6 @@ class Facture(models.Model):
         else:
             object_id = 0
         if self.date_creation:
-#            print self.date_creation
-#            date = self.date_creation.strftime("%Y/%m/%d %H:%M")
             date = self.date_creation.strftime("%H:%M %d/%m")
         else:
             date = "--:-- --/--"
@@ -99,6 +97,7 @@ class Facture(models.Model):
         """
             Les factures sont triees par date_creation.
             D'abord les plus récentes, puis les plus vielles.
+            :param other: A Facture
         """
         return cmp(self.date_creation, other.date_creation)
 
@@ -125,6 +124,7 @@ class Facture(models.Model):
 
     def get_first_todolist_for_kitchen(self):
         """Prepare la liste des produits a envoyer en cuisine
+        :return: TODO
         """
         categories = []
         products = {}
@@ -161,6 +161,7 @@ class Facture(models.Model):
 
     def send_in_the_kitchen(self):
         """We send the first category available to the kitchen.
+        :return: TODO
         """
         if self.category_to_follow:
             follow = Follow(category=self.category_to_follow)
@@ -212,7 +213,8 @@ class Facture(models.Model):
             return result
 
     def guest_couverts(self):
-        """Essaye de deviner le nombre de couverts"""
+        """Essaye de deviner le nombre de couverts
+        :return: An integer. """
         nb = {}
         # categories = Categorie.objects.filter(made_in_kitchen=True)
         for categorie in Categorie.objects.filter(made_in_kitchen=True):
@@ -225,9 +227,10 @@ class Facture(models.Model):
                     nb[sous_produit.produit.categorie.nom] += 1
         return max(nb.values())
 
-    def set_couverts(self, nb):
-        """Change le nombre de couvert"""
-        self.couverts = nb
+    def set_couverts(self, number_of_eater):
+        """Change le nombre de couvert
+        :param number_of_eater: An integer. (TODO : vérifier ça) """
+        self.couverts = number_of_eater
         self.save()
 
     def set_table(self, table):
@@ -237,6 +240,7 @@ class Facture(models.Model):
 
         On ne traite pas le cas ou les 2 tables sont surtaxées à des montants
         différents.
+        :param table: TODO
         """
         if self.est_surtaxe():
             if not table.zone.surtaxe:
@@ -252,7 +256,8 @@ class Facture(models.Model):
                 self.add_surtaxe()
 
     def non_soldees(self):
-        """Retourne la liste des factures non soldees"""
+        """ Return the list of unpaid facture
+        :return: A list of Facture """
         liste = []
         for i in Facture.objects.exclude(restant_a_payer=0).iterator():
             liste.append(i)
@@ -261,11 +266,12 @@ class Facture(models.Model):
         return liste
 
     def compute_total(self):
+        """ Calculate the total of a bill. """
         self.total_ttc = Decimal("0")
         self.restant_a_payer = Decimal("0")
-        for v in self.vats.iterator():
-            v.total = 0
-            v.save()
+        for vat in self.vats.iterator():
+            vat.total = 0
+            vat.save()
         for product in self.produits.iterator():
             self.add_product_prize(product)
         for payment in self.paiements.iterator():
@@ -273,7 +279,8 @@ class Facture(models.Model):
         self.save()
 
     def add_product_prize(self, product):
-        """Ajoute le prix d'un ProduitVendu sur la facture."""
+        """Ajoute le prix d'un ProduitVendu sur la facture.
+        :param product: TODO"""
         ttc = Decimal(product.produit.prix)
         self.total_ttc += ttc
         self.restant_a_payer += ttc
@@ -390,6 +397,7 @@ class Facture(models.Model):
         Si le montant est négatif après le retrait d'un élèment,
         c'est qu'il reste certainement une remise, dans
         ce cas on enlève tous les produits.
+        :param product: TODO Définir le type de l'entrée
         """
         if product in self.produits.iterator():
             surtaxe = self.est_surtaxe()
@@ -404,7 +412,8 @@ class Facture(models.Model):
                            "qui n'est pas dans la facture" % self)
 
     def del_payment(self, payment):
-        """On supprime un paiement"""
+        """On supprime un paiement
+        :param payment: TODO Définir le type de l'entrée    """
         if payment in self.paiements.iterator():
             self.paiements.remove(payment)
             payment.delete()
@@ -417,7 +426,8 @@ class Facture(models.Model):
                               payment.type.nom, payment.montant))
 
     def is_valid_payment(self, montant):
-        ''' Vérifie un paiement avant add_payment '''
+        ''' Vérifie un paiement avant add_payment
+        :param montant: TODO Définir le type de l'entrée '''
         if self.restant_a_payer <= Decimal("0"):
             logger.info("[%s] nouveau paiement ignore car restant"
                         " a payer <= 0 (%5.2f)" % (self,
@@ -462,8 +472,9 @@ class Facture(models.Model):
         return True
 
     def rendre_monnaie(self, paiement):
-        '''Régularisation si le montant payé est superieur au montant 
-        de la facture'''
+        ''' Régularisation si le montant payé est superieur au montant
+        de la facture
+        :param paiement: TODO Définir le type de l'entrée    '''
         monnaie = Paiement()
         payment_for_refunds = Config.objects.get(key="payment_for_refunds"
                                                 ).value
@@ -474,7 +485,8 @@ class Facture(models.Model):
         self.restant_a_payer -= monnaie.montant
 
     def est_soldee(self):
-        """La facture a été utilisée et soldée"""
+        """La facture a été utilisée et soldée
+        :return: Boolean"""
         if self.restant_a_payer == 0 and self.produits.count() > 0:
             return True
         else:
@@ -483,6 +495,7 @@ class Facture(models.Model):
     def est_un_repas(self):
         """Est ce que la facture contient un element qui est
         fabriqué en cuisine
+        :return: Boolean
         """
         for vendu in self.produits.iterator():
             if vendu.produit.categorie.made_in_kitchen:
@@ -493,16 +506,16 @@ class Facture(models.Model):
         return False
 
     def is_empty(self):
-        """La facture est vierge"""
+        """La facture est vierge
+        :return: Boolean"""
         if self.restant_a_payer == 0 and self.produits.count() == 0:
             return True
         else:
             return False
 
     def est_surtaxe(self):
-        """
-        Table is surtaxed et il n'y a pas de nourriture.
-        """
+        """ Table is surtaxed et il n'y a pas de nourriture.
+        :return: Boolean """
         # TODO: gestion de la surtaxe
         return False
         if self.onsite:
@@ -522,6 +535,8 @@ class Facture(models.Model):
     def get_bills_for(self, date):
         """Retourne la liste des factures soldees du jour 'date'
         date de type datetime
+        :param date: TODO
+        :return: TODO
         """
         date_min = datetime.datetime(date.year, date.month, date.day, 5)
         tmp = date_min + datetime.timedelta(days=1)
@@ -532,6 +547,9 @@ class Facture(models.Model):
         return bills.exclude(produits__isnull=True)
 
     def print_ticket(self):
+        """ Print the ticket
+        :return: TODO
+        """
         try:
             printer = Printer.objects.filter(billing=True)[0]
         except:
@@ -568,11 +586,11 @@ class Facture(models.Model):
 
     def get_working_day(self):
         """Retourne la journee de travail officiel
-            (qui fini a 5h du matin)
-            date de type datetime.datetime.now()
+        (qui fini a 5h du matin)
+        :return: A datetime (For example : datetime.datetime.now())
         """
         if self.date_creation.hour < 5:
-            # jour de travail precedent
+            # Previous working day
             return self.date_creation - datetime.timedelta(days=1)
         else:
             return self.date_creation

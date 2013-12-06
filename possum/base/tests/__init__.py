@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-#from test_bill import Test_Facture
+from tests_bill import Tests_Bill
 # from test_dailystat import Test_DailyStat
 # from test_monthlystat import Test_MonthlyStat
 # from test_printer import Test_Printer
