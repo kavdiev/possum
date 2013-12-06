@@ -92,3 +92,6 @@ PaiementType(nom='Tic. Resto.', fixed_value=True).save()
 # le paiement dépasse le montant de la facture
 id_type_paiement = PaiementType.objects.get(nom="Espece").id
 Config(key="payment_for_refunds", value=id_type_paiement).save()
+
+# Le montant de surtaxe
+Config(key="price_surcharge", value="0.20").save()

@@ -32,11 +32,8 @@ class Zone(Nom):
     mangent).
     """
     surtaxe = models.BooleanField("zone surtaxée ?", default=False)
-    prix_surtaxe = models.DecimalField(max_digits=4, decimal_places=2,
-                                       default=0)
-#    prix_surtaxe = models.PositiveIntegerField("surtaxe en centimes")
 
-    def est_surtaxe(self):
+    def is_surcharged(self):
 #       logging.debug("surtaxe de %d centimes sur la zone %s" % (self.surtaxe))
         return self.surtaxe
 
@@ -48,9 +45,9 @@ class Zone(Nom):
 class Table(Nom):
     zone = models.ForeignKey(Zone, related_name="table-zone")
 
-    def est_surtaxe(self):
+    def is_surcharged(self):
         if self.zone:
-            result = self.zone.est_surtaxe()
+            result = self.zone.is_surcharged()
         else:
             # par defaut, il n'y a pas de surtaxe
             result = False

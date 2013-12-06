@@ -372,8 +372,5 @@ def bill_delete(request, bill_id):
 @permission_required('base.p3')
 def bill_onsite(request, bill_id):
     order = get_object_or_404(Facture, pk=bill_id)
-    new = not order.onsite
-    order.onsite = new
-    order.save()
-    order.compute_total()
+    order.set_onsite(not order.onsite)
     return HttpResponseRedirect('/bill/%s/' % bill_id)

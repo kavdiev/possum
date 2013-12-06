@@ -25,6 +25,7 @@ import logging
 from possum.base.category import Categorie
 from possum.base.generic import NomDouble
 from possum.base.options import Cuisson, Sauce, Accompagnement
+from possum.base.config import Config
 
 
 logger = logging.getLogger(__name__)
@@ -45,8 +46,15 @@ class Produit(NomDouble):
     # decimal_places: la partie décimale
     # ici: 2 chiffres après la virgule et 5 chiffres pour la partie entière
     prix = models.DecimalField(max_digits=7, decimal_places=2, default=0)
+    price_surcharged = models.DecimalField(max_digits=7,
+                                           decimal_places=2,
+                                           default=0)
     vat_onsite = models.DecimalField(max_digits=7, decimal_places=2, default=0)
-    vat_takeaway = models.DecimalField(max_digits=7, decimal_places=2,
+    vat_surcharged = models.DecimalField(max_digits=7,
+                                         decimal_places=2,
+                                         default=0)
+    vat_takeaway = models.DecimalField(max_digits=7,
+                                       decimal_places=2,
                                        default=0)
 
     def __cmp__(self, other):
@@ -104,16 +112,30 @@ class Produit(NomDouble):
         self.update_vats()
 
     def update_vats(self):
-        """Update vat_onsite and vat_takeaway with prix in TTC
+        """Update vat_onsite and vat_takeaway with price in TTC
         """
-        un = Decimal('1')
-        if self.categorie.vat_onsite:
+        price_surcharge, created = Config.objects.get_or_create(key="price_"
+                                                                "surcharge")
+        if created:
+            price_surcharge.value = "0.2"
+            price_surcharge.save()
+        surcharge = Decimal(price_surcharge.value)
+        one = Decimal('1')
+        if self.categorie.vat_onsite and self.categorie.vat_takeaway:
             value = self.categorie.vat_onsite.value
-            self.vat_onsite = Decimal(self.prix) / (un + value) * value
-        if self.categorie.vat_takeaway:
+            self.vat_onsite = Decimal(self.prix) / (one + value) * value
+            if self.categorie.surtaxable:
+                self.price_surcharged = self.prix + surcharge
+                vat = Decimal(self.price_surcharged) / (one+value) * value
+                self.vat_surcharged = vat
+            else:
+                self.price_surcharged = self.prix
+                self.vat_surcharged = self.vat_onsite
             value = self.categorie.vat_takeaway.value
-            self.vat_takeaway = Decimal(self.prix) / (un + value) * value
-        self.save()
+            self.vat_takeaway = Decimal(self.prix) / (one + value) * value
+            self.save()
+        else:
+            logger.warning("[%s] categorie without VAT" % self.categorie)
 
     def get_prize_takeaway(self):
         if self.categorie:

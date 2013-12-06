@@ -367,7 +367,7 @@ li.selected {
     width:40px;
     height:30px;
 }
-#tables li.surtaxe {
+li.surtaxe {
     background-color: #f8bd30;
 }
 #cookings li {

@@ -165,7 +165,7 @@ class Tests_urls(TestCase):
             reverse('printer_change_manager', args=('42',)),
             reverse('printer_select_width', args=('42',)),
             reverse('printer_test_print', args=('42',)),
-            reverse('printer_set_width', args=('42','73',)),
+            reverse('printer_set_width', args=('42', '73',)),
         ]
         self.assert_http_status(urls, 302)
         self.assert_http_status_after_login(urls, 200)
@@ -187,11 +187,14 @@ class Tests_urls(TestCase):
 
     def test_authentication(self):
         ''' Test that the login/logout urls work. '''
-        urls = [
-            reverse("login"),
-            reverse("logout"),
-        ]
-        self.assert_http_status(urls, 200)
+        login = [reverse("login"), ]
+        self.assert_http_status(login, 200)
+        # We could want to redirect the user to the main page 
+        # if he/she is already logged
+        # self.assert_http_status_after_login(login, 302)
+        logout = [reverse("logout"), ]
+        self.assert_http_status(logout, 302)
+        self.assert_http_status_after_login(logout, 200)
 
     def test_vats(self):
         ''' Test that the vats urls work. '''
@@ -259,22 +262,19 @@ class Tests_urls(TestCase):
 
     def assert_http_status(self, urls, status, msg='without logging in'):
         for url in urls:
-            resp = self.client.get(url)
+            resp = Tests_urls.client.get(url)
             self.assertEqual(resp.status_code, status,
-                             "For '{0}' {1}, the http response".format(url,
-                                                                       msg)
-                             + ' status is {0} '.format(resp.status_code)
-                             + 'but it should be {0}'.format(status))
+             "For '{0}' {1}, the http response".format(url, msg)
+             + ' status is {0} '.format(resp.status_code)
+             + 'but it should be {0}'.format(status))
 
     @staticmethod
     def login():
-        Tests_urls.client.post(reverse('login'), {
-                               'username': "demo",
-                               'password': "demo"})
+        Tests_urls.client.login(username='demo', password='demo')
 
     @staticmethod
     def logout():
-        Tests_urls.client.post(reverse('logout'))
+        Tests_urls.client.logout()
 
     def assert_http_status_after_login(self, urls, status):
         self.login()
