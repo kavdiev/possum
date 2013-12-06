@@ -281,6 +281,10 @@ class Facture(models.Model):
         Le ProduitVendu se trouve deja dans la liste
         des produits."""
         if self.surcharge:
+            if not sold.produit.price_surcharged:
+                # TODO: just in case for backwards comtability
+                # in case Produit has no price_surcharged
+                sold.produit.update_vats()
             if sold.prix != sold.produit.price_surcharged:
                 sold.prix = sold.produit.price_surcharged
                 sold.save()
