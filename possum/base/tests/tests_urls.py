@@ -204,8 +204,8 @@ class Tests_urls(TestCase):
         urls = [
             reverse('vat_new'),
             reverse('vats'),
-            reverse('vats_view', args=('42',)),
-            reverse('vats_change', args=('42',)),
+            reverse('vats_view', args=('1',)),
+            reverse('vats_change', args=('1',)),
         ]
         self.assert_http_status(urls, 302)
         self.assert_http_status_after_login(urls, 200)
@@ -272,8 +272,8 @@ class Tests_urls(TestCase):
              + 'but it should be {0}'.format(status))
 
     def login(self):
-        result = self.client.login(username='demo', password='demo')
-        print result
+        self.client.post('/users/login/',
+                         {'username': 'demo', 'password': 'demo'})
 
     def logout(self):
         self.client.logout()
