@@ -23,8 +23,9 @@ class Migration(SchemaMigration):
         db.delete_column(u'base_zone', 'prix_surtaxe')
 
         # Update VATS
-        for product in orm.Produit.objects.filter(actif=True):
-            product.update_vats()
+        if not db.dry_run:
+            for product in orm['base.Produit'].objects.filter(actif=True):
+                product.update_vats()
 
 
     def backwards(self, orm):
