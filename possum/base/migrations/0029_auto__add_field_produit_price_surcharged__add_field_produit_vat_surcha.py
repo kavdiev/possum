@@ -6,8 +6,6 @@ from django.db import models
 
 
 class Migration(SchemaMigration):
-    no_dry_run = True
-
     def forwards(self, orm):
         # Adding field 'Produit.price_surcharged'
         db.add_column(u'base_produit', 'price_surcharged',
@@ -21,12 +19,6 @@ class Migration(SchemaMigration):
 
         # Deleting field 'Zone.prix_surtaxe'
         db.delete_column(u'base_zone', 'prix_surtaxe')
-
-        # Update VATS
-        if not db.dry_run:
-            for product in orm['base.Produit'].objects.filter(actif=True):
-                product.update_vats()
-
 
     def backwards(self, orm):
         # Deleting field 'Produit.price_surcharged'
