@@ -18,18 +18,19 @@
 #    along with POSSUM.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-from django.db import models
 import logging
 
-from django.db.models import Max, Avg, Min
+from django.db import models
+# from django.db.models import Max, Avg, Min
 
 
 logger = logging.getLogger(__name__)
 
+
 class GenericStat(models.Model):
-    
+
     key = models.CharField(max_length=32)
     value = models.DecimalField(max_digits=9, decimal_places=2, default=0)
-    
+
     # TODO Comprendre ce qui est généralisable dans les autres classes de stats
     # Et le mettre ici

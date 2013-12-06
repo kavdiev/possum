@@ -145,5 +145,3 @@ class WeeklyStat(models.Model):
                     payment_type.nom,
                     WeeklyStat().get_value("%s_payment_value" % payment_type.id, year, week)))
         return data
-
-

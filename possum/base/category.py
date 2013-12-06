@@ -17,6 +17,7 @@
 #    You should have received a copy of the GNU General Public License
 #    along with POSSUM.  If not, see <http://www.gnu.org/licenses/>.
 #
+
 from django.db import models
 
 from possum.base.generic import Nom, Priorite
@@ -35,23 +36,8 @@ class Categorie(Nom, Priorite):
             related_name="categorie-vat-takeaway")
 
     def __cmp__(self, other):
-        """
-        Classement par priorite_facture (plus la valeur est petite,
-        plus elle est prioritaire), puis par nom_ihm en cas d'égalité.
-
-        >>> cat1 = Categorie(nom="nom1",priorite=1)
-        >>> cat2 = Categorie(nom="nom2")
-        >>> cat3 = Categorie(nom="nom3",priorite=1)
-        >>> liste = []
-        >>> liste.append(cat3)
-        >>> liste.append(cat2)
-        >>> liste.append(cat1)
-        >>> liste
-        [<Categorie: [0] [nom3]>, <Categorie: [0] [nom2]>, <Categorie: [0] [nom1]>]
-        >>> liste.sort()
-        >>> liste
-        [<Categorie: [0] [nom2]>, <Categorie: [0] [nom1]>, <Categorie: [0] [nom3]>]
-        """
+        """ Classement par priorite_facture (plus la valeur est petite,
+        plus elle est prioritaire), puis par nom_ihm en cas d'égalité. """
         if self.priorite == other.priorite:
             return cmp(self.nom, other.nom)
         else:

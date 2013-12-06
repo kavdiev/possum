@@ -31,4 +31,3 @@ class VATOnBill(models.Model):
 
     def __unicode__(self):
         return "%s: %s" % (self.vat.name, self.total)
-

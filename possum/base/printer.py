@@ -18,20 +18,21 @@
 #    along with POSSUM.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-import cups
 from datetime import datetime
-from django.db import models
 import os
 import unicodedata
 
+import cups
 from django.conf import settings
+from django.db import models
 
 
 def sans_accent(message):
-    """Enlève les accents qui peuvent poser
+    """ Enlève les accents qui peuvent poser
     problème à l'impression."""
-    message = unicodedata.normalize("NFKD", unicode(message)).encode("ascii", "ignore")
-    return message
+    return unicodedata.normalize("NFKD", unicode(message)).encode("ascii",
+                                                                  "ignore")
+
 
 class Printer(models.Model):
     """Printer model
@@ -101,15 +102,14 @@ class Printer(models.Model):
 
     def print_list(self, list_to_print, name, with_header=False):
         path = "%s/%s-%s.txt" % (settings.PATH_TICKET, self.id, name)
-        fd = open(path, "w")
+        ticket_to_print = open(path, "w")
         if with_header:
-            fd.write(self.header)
+            ticket_to_print.write(self.header)
         for line in list_to_print:
-            tmp = sans_accent(line)
-            fd.write("%s\n" % tmp)
+            ticket_to_print.write("{0}\n".format(sans_accent(line)))
         if with_header:
-            fd.write(self.footer)
-        fd.close()
+            ticket_to_print.write(self.footer)
+        ticket_to_print.close()
         result = self.print_file(path)
         os.remove(path)
         return result
@@ -119,4 +119,3 @@ class Printer(models.Model):
         list_to_print.append("> POSSUM Printing test !")
         list_to_print.append(datetime.now().strftime("> %H:%M %d/%m/%Y\n"))
         return self.print_list(list_to_print, "test")
-

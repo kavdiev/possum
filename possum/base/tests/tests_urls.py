@@ -10,9 +10,8 @@ from django.utils.unittest.case import TestCase
 # import mock
 class Tests_urls(TestCase):
 
-    @staticmethod
-    def setUpClass():
-        Tests_urls.client = Client()
+    def setUp(self):
+        self.client = Client()
 
     def tearDown(self):
         self.logout()
@@ -20,7 +19,7 @@ class Tests_urls(TestCase):
     def test_home(self):
         ''' Test that the home urls work'''
         urls = [
-                reverse('home'),
+            reverse('home'),
         ]
         self.assert_http_status(urls, 302)
         self.assert_http_status_after_login(urls, 200)
@@ -51,7 +50,7 @@ class Tests_urls(TestCase):
             reverse('categories_delete', args=('42',)),
             reverse('categories_disable_surtaxe', args=('42',)),
             reverse('categories_set_kitchen', args=('42',)),
-                ]
+        ]
         self.assert_http_status(urls, 302)
         self.assert_http_status_after_login(urls, 200)
 
@@ -108,8 +107,10 @@ class Tests_urls(TestCase):
             reverse('bill_payment_save', args=('42', '73', '51', '7', '13')),
             reverse('bill_payment_set', args=('42', '73', '51', '7', '13')),
             reverse('bill_payment_set', args=('42', '73', '51', '7', '13')),
-            reverse('bill_payment_set_left', args=('42', '73', '51', '7', '13', '1')),
-            reverse('bill_payment_set_right', args=('42', '73', '51', '7', '13', '1')),
+            reverse('bill_payment_set_left',
+                    args=('42', '73', '51', '7', '13', '1')),
+            reverse('bill_payment_set_right',
+                    args=('42', '73', '51', '7', '13', '1')),
             reverse('bill_payment_count', args=('42', '73', '51', '7')),
             reverse('bill_print', args=('42',)),
             reverse('bill_send_kitchen', args=('42',)),
@@ -165,7 +166,7 @@ class Tests_urls(TestCase):
             reverse('printer_change_manager', args=('42',)),
             reverse('printer_select_width', args=('42',)),
             reverse('printer_test_print', args=('42',)),
-            reverse('printer_set_width', args=('42','73',)),
+            reverse('printer_set_width', args=('42', '73',)),
         ]
         self.assert_http_status(urls, 302)
         self.assert_http_status_after_login(urls, 200)
@@ -187,11 +188,14 @@ class Tests_urls(TestCase):
 
     def test_authentication(self):
         ''' Test that the login/logout urls work. '''
-        urls = [
-            reverse("login"),
-            reverse("logout"),
-        ]
-        self.assert_http_status(urls, 200)
+        login = [reverse("login"), ]
+        self.assert_http_status(login, 200)
+        # We could want to redirect the user to the main page
+        # if he/she is already logged
+        # self.assert_http_status_after_login(login, 302)
+        logout = [reverse("logout"), ]
+        self.assert_http_status(logout, 302)
+        self.assert_http_status_after_login(logout, 200)
 
     def test_vats(self):
         ''' Test that the vats urls work. '''
@@ -249,11 +253,11 @@ class Tests_urls(TestCase):
         self.assert_http_status(urls, 302)
         self.assert_http_status_after_login(urls, 200)
 
-#     @mock.patch('model.searchmanagement.PagesSearch.filter_by', pages_search_filter_by)
+#     @mock.patch('model.PagesSearch.filter_by', pages_search_filter_by)
 #     def test_page_oid_exists(self):
 #         ''' Test that the page urls work'''
 #
-#         urls = [reverse('page', args=('5ae1e22d-f37d-43a4-90c1-d6ea0073ed6e', ))]
+#         urls = [reverse('page', args=('5ae1e22d-6ea0073ed6e', ))]
 #         self.assert_http_status(urls, 302)
 #         self.assert_http_status_after_login(urls, 200)
 
@@ -261,20 +265,16 @@ class Tests_urls(TestCase):
         for url in urls:
             resp = self.client.get(url)
             self.assertEqual(resp.status_code, status,
-                             "For '{0}' {1}, the http response".format(url,
-                                                                       msg)
-                             + ' status is {0} '.format(resp.status_code)
-                             + 'but it should be {0}'.format(status))
+             "For '{0}' {1}, the http response".format(url, msg)
+             + ' status is {0} '.format(resp.status_code)
+             + 'but it should be {0}'.format(status))
 
-    @staticmethod
-    def login():
-        Tests_urls.client.post(reverse('login'), {
-                               'username': "demo",
-                               'password': "demo"})
+    def login(self):
+        result = self.client.login(username='demo', password='demo')
+        print result
 
-    @staticmethod
-    def logout():
-        Tests_urls.client.post(reverse('logout'))
+    def logout(self):
+        self.client.logout()
 
     def assert_http_status_after_login(self, urls, status):
         self.login()

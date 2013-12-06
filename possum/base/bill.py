@@ -88,8 +88,6 @@ class Facture(models.Model):
         else:
             object_id = 0
         if self.date_creation:
-#            print self.date_creation
-#            date = self.date_creation.strftime("%Y/%m/%d %H:%M")
             date = self.date_creation.strftime("%H:%M %d/%m")
         else:
             date = "--:-- --/--"
@@ -256,7 +254,8 @@ class Facture(models.Model):
         self.compute_total()
 
     def non_soldees(self):
-        """Retourne la liste des factures non soldees"""
+        """ Return the list of unpaid facture
+        :return: A list of Facture """
         liste = []
         for i in Facture.objects.exclude(restant_a_payer=0).iterator():
             liste.append(i)
