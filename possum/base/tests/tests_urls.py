@@ -4,12 +4,13 @@
 # from django.conf import settings
 from django.core.urlresolvers import reverse
 from django.test.client import Client
-from django.utils.unittest.case import TestCase
+#from django.utils.unittest.case import TestCase
+from django.test import TestCase
 
 
 # import mock
 class Tests_urls(TestCase):
-    fixtures = ['demo.json', ]
+    fixtures = ['demo.json']
 
     def setUp(self):
         self.client = Client()

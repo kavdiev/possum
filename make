@@ -56,7 +56,7 @@ function doc {
 
 function create_json_demo {
     enter_virtualenv
-    ./manage.py dumpdata --format=json > possum/base/fixtures/demo.json
+    ./manage.py dumpdata --format=json --exclude=contenttypes --exclude=auth.Permission > possum/base/fixtures/demo.json
 }
 
 function install_tests {
