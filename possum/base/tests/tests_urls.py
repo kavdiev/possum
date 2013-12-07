@@ -133,7 +133,7 @@ class Tests_urls(TestCase):
         ''' Test that the kitchen urls work. '''
         urls = [
             reverse('kitchen'),
-            reverse('kitchen_for_bill', args=('42',)),
+            reverse('kitchen_for_bill', args=('4',)),
         ]
         self.assert_http_status(urls, 302)
         self.assert_http_status_after_login(urls, 200)
