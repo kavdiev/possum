@@ -48,7 +48,6 @@ def tables_table_new(request, zone_id):
 
 @permission_required('base.p1')
 def tables_zone_new(request):
-    data = get_user(request)
     zone = Zone()
     zone.save()
     return HttpResponseRedirect('/manager/tables/%s/' % zone.id)

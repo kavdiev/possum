@@ -1,10 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-#from django.utils.unittest.case import TestCase
 from django.test import TestCase
-
-from possum.base.bill import Facture
 from possum.base.category import Categorie
 from possum.base.product import ProduitVendu, Produit
 
