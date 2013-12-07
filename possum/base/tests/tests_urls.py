@@ -60,7 +60,7 @@ class Tests_urls(TestCase):
         ''' Test that the carte urls work. '''
         urls = [
             reverse('products_new', args=('2',)),
-            reverse('products_view', args=('42',)),
+            reverse('products_view', args=('4',)),
             reverse('products_change', args=('42',)),
             reverse('products_category', args=('42',)),
             reverse('products_select_categories_ok', args=('42',)),
@@ -84,7 +84,7 @@ class Tests_urls(TestCase):
             reverse('table_select', args=('42',)),
             reverse('table_set', args=('5', '2')),
             reverse('couverts_select', args=('42',)),
-            reverse('couverts_set', args=('42', '73')),
+            reverse('couverts_set', args=('4', '7')),
             reverse('category_select', args=('42',)),
             reverse('category_select', args=('42', '73')),
             reverse('product_add', args=('42', '73')),
@@ -160,7 +160,7 @@ class Tests_urls(TestCase):
         ''' Test that the carte urls work. '''
         urls = [
             reverse('home'),
-            reverse('printer_add'),
+#            reverse('printer_add'),
             reverse('printer_added', args=('42',)),
             reverse('printer_view', args=('42',)),
             reverse('printer_change_kitchen', args=('42',)),
@@ -178,7 +178,7 @@ class Tests_urls(TestCase):
         urls = [
             reverse('profile'),
             reverse('users'),
-            reverse('users_new'),
+#            reverse('users_new'),
             reverse('users_passwd', args=('42',)),
             reverse('users_active', args=('42',)),
             reverse('users_change', args=('42',)),
@@ -216,7 +216,7 @@ class Tests_urls(TestCase):
             reverse('tables'),
             reverse('tables_zone_new'),
             reverse('tables_zone', args=('42',)),
-            reverse('tables_table_new', args=('42',)),
+#            reverse('tables_table_new', args=('42',)),
             reverse('tables_table', args=('42', "42")),
             reverse('tables_zone_delete', args=('42',)),
         ]
@@ -228,7 +228,7 @@ class Tests_urls(TestCase):
         urls = [
             reverse('rapports_home'),
             reverse('rapports_daily'),
-            reverse('rapports_daily_vats_print', args=('2013', '10', '10')),
+#            reverse('rapports_daily_vats_print', args=('2013', '10', '10')),
             reverse('rapports_daily_vats_send', args=('2013', '10', '10')),
             reverse('rapports_daily_print', args=('2013', '10', '10')),
             reverse('rapports_daily_send', args=('2013', '10', '10')),
