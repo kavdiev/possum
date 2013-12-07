@@ -30,7 +30,7 @@ class Tests_urls(TestCase):
         ''' Test that the home urls work. '''
         urls = [
             reverse('categories'),
-            reverse('categories_print'),
+# il doit y avoir une imprimante            reverse('categories_print'),
             reverse('categories_send'),
             reverse('categories'),
             reverse('categories_add'),
@@ -151,7 +151,7 @@ class Tests_urls(TestCase):
         ''' Test that the archives urls work. '''
         urls = [
             reverse('archives'),
-            reverse('archives_bill', args=('42',)),
+            reverse('archives_bill', args=('15',)),
         ]
         self.assert_http_status(urls, 302)
         self.assert_http_status_after_login(urls, 200)
@@ -250,7 +250,7 @@ class Tests_urls(TestCase):
         ''' Test that the charts urls work. '''
         urls = [
             reverse('charts_year'),
-            reverse('charts_year_with_argument', args=("spam2013",)),
+            reverse('charts_year_with_argument', args=("2013",)),
         ]
         self.assert_http_status(urls, 302)
         self.assert_http_status_after_login(urls, 200)

@@ -267,3 +267,7 @@ for i in xrange(15):
     if i % 2:
         f.send_in_the_kitchen()
 
+# on sold une facture
+type_cb = PaiementType.objects.get(nom='CB')
+f.add_payment(type_cb, f.total_ttc)
+
