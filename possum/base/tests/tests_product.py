@@ -14,7 +14,6 @@ class Tests_Products(TestCase):
 
     def test_is_full(self):
         menu = ProduitVendu()
-        menu.save()
         menu.produit = Produit.object.get(nom="biere 50cl")
         menu.save()
         self.assertTrue(menu.isFull())
@@ -36,7 +35,6 @@ class Tests_Products(TestCase):
 
     def test_free_category(self):
         menu = ProduitVendu()
-        menu.save()
         menu.produit = Produit.object.get(nom="biere 50cl")
         menu.save()
         self.assertEqual(None, menu.getFreeCategorie())
