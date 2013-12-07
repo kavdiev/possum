@@ -61,17 +61,17 @@ class Tests_urls(TestCase):
         urls = [
             reverse('products_new', args=('2',)),
             reverse('products_view', args=('4',)),
-            reverse('products_change', args=('42',)),
-            reverse('products_category', args=('42',)),
-            reverse('products_select_categories_ok', args=('42',)),
-            reverse('products_add_categories_ok', args=('42', '73')),
-            reverse('products_del_categories_ok', args=('42', '73')),
-            reverse('products_select_produits_ok', args=('42',)),
-            reverse('products_add_produits_ok', args=('42', '73')),
-            reverse('products_del_produits_ok', args=('42', '73')),
-            reverse('products_set_category', args=('42', '73')),
-            reverse('products_enable', args=('42',)),
-            reverse('products_cooking', args=('42',)),
+            reverse('products_change', args=('4',)),
+            reverse('products_category', args=('2',)),
+            reverse('products_select_categories_ok', args=('2',)),
+            reverse('products_add_categories_ok', args=('4', '3')),
+            reverse('products_del_categories_ok', args=('4', '3')),
+            reverse('products_select_produits_ok', args=('4',)),
+            reverse('products_add_produits_ok', args=('4', '3')),
+            reverse('products_del_produits_ok', args=('4', '3')),
+            reverse('products_set_category', args=('4', '3')),
+            reverse('products_enable', args=('4',)),
+            reverse('products_cooking', args=('4',)),
         ]
         self.assert_http_status(urls, 302)
         self.assert_http_status_after_login(urls, 200)
@@ -81,12 +81,12 @@ class Tests_urls(TestCase):
         urls = [
             reverse('home_factures'),
             reverse('bill_new'),
-            reverse('table_select', args=('42',)),
+            reverse('table_select', args=('4',)),
             reverse('table_set', args=('5', '2')),
             reverse('couverts_select', args=('42',)),
             reverse('couverts_set', args=('4', '7')),
-            reverse('category_select', args=('42',)),
-            reverse('category_select', args=('42', '73')),
+            reverse('category_select', args=('2',)),
+            reverse('category_select', args=('2', '3')),
             reverse('product_add', args=('42', '73')),
             reverse('product_select', args=('42', '73')),
             reverse('product_select_made_with', args=('42', '73')),
@@ -179,12 +179,12 @@ class Tests_urls(TestCase):
             reverse('profile'),
             reverse('users'),
 #            reverse('users_new'),
-            reverse('users_passwd', args=('42',)),
-            reverse('users_active', args=('42',)),
-            reverse('users_change', args=('42',)),
+            reverse('users_passwd', args=('2',)),
+            reverse('users_active', args=('2',)),
+            reverse('users_change', args=('2',)),
         ]
         for perm in ["p1", "p2", "p3"]:
-            urls.append(reverse('users_change_perm', args=('42', perm,)))
+            urls.append(reverse('users_change_perm', args=('2', perm,)))
         self.assert_http_status(urls, 302)
         self.assert_http_status_after_login(urls, 200)
 

@@ -24,13 +24,13 @@ class Tests_Products(TestCase):
         plat = ProduitVendu()
         plat.produit = Produit.objects.get(nom="entrecote")
         plat.save()
-        menu.produits.add(plat)
+        menu.contient.add(plat)
         self.assertFalse(menu.isFull())
 
         entree = ProduitVendu()
         entree.produit = Produit.objects.get(nom="salade normande")
         entree.save()
-        menu.produits.add(entree)
+        menu.contient.add(entree)
         self.assertTrue(menu.isFull())
 
     def test_free_category(self):
@@ -46,18 +46,18 @@ class Tests_Products(TestCase):
         entree = ProduitVendu()
         entree.produit = Produit.objects.get(nom="salade normande")
         entree.save()
-        menu.produits.add(entree)
+        menu.contient.add(entree)
         cat_plats = Categorie.objects.get(nom="Plat")
         self.assertEqual(cat_plats, menu.getFreeCategorie())
 
         plat = ProduitVendu()
         plat.produit = Produit.objects.get(nom="entrecote")
         plat.save()
-        menu.produits.add(plat)
+        menu.contient.add(plat)
         self.assertEqual(None, menu.getFreeCategorie())
 
-        menu.produits.remove(entree)
+        menu.contient.remove(entree)
         self.assertEqual(cat_entrees, menu.getFreeCategorie())
 
-        menu.produits.add(entree)
+        menu.contient.add(entree)
         self.assertEqual(None, menu.getFreeCategorie())
