@@ -10,37 +10,56 @@ from possum.base.product import ProduitVendu, Produit
 
 
 class Tests_Products(TestCase):
+    fixtures = ['demo.json']
 
     def test_is_full(self):
-        vendu = ProduitVendu()
-        vendu.save()
-        self.assertTrue(vendu.isFull())
-        cat1 = Categorie(nom="cat1")
-        cat1.save()
-        cat2 = Categorie(nom="cat2")
-        cat2.save()
-        vendu.categories_ok.add(cat1, cat2)
-        self.assertFalse(vendu.isFull())
-        vendu.produits = [1]
-        self.assertFalse(vendu.isFull())
-        vendu.produits = [1, 2]
-        self.assertTrue(vendu.isFull())
-        vendu.produits = [1, 2, 3]
-        self.assertTrue(vendu.isFull())
+        menu = ProduitVendu()
+        menu.save()
+        menu.produit = Produit.object.get(nom="biere 50cl")
+        menu.save()
+        self.assertTrue(menu.isFull())
+
+        menu.produit = Produit.object.get(nom="Entree/Plat")
+        self.assertFalse(menu.isFull())
+
+        plat = ProduitVendu()
+        plat.produit = Produit.object.get(nom="entrecote")
+        plat.save()
+        menu.produits.add(plat)
+        self.assertFalse(menu.isFull())
+
+        entree = ProduitVendu()
+        entree.produit = Produit.object.get(nom="salade normande")
+        entree.save()
+        menu.produits.add(entree)
+        self.assertTrue(menu.isFull())
 
     def test_free_category(self):
-        cat1 = Categorie(id=1, nom="cat1")
-        cat2 = Categorie(id=2, nom="cat2")
-        produit1 = Produit(id=1, nom="p1", categorie=cat1)
-        produit2 = Produit(id=2, nom="p2", categorie=cat2)
-        vendu = ProduitVendu(id=1, produit=produit1)
-        self.assertEqual(0, vendu.getFreeCategorie())
-        produit1.categories_ok.add(cat1, cat2)
-        self.assertEqual(0, vendu.getFreeCategorie())
-        sub = ProduitVendu(id=2, produit=produit1)
-        vendu.contient.add(sub)
-        self.assertEqual(1, vendu.getFreeCategorie())
-        sub = ProduitVendu(id=3, produit=produit2)
-        sub.produit.categorie = cat2
-        vendu.contient.add(sub)
-        self.assertEqual(0, vendu.getFreeCategorie())
+        menu = ProduitVendu()
+        menu.save()
+        menu.produit = Produit.object.get(nom="biere 50cl")
+        menu.save()
+        self.assertEqual(None, menu.getFreeCategorie())
+
+        menu.produit = Produit.object.get(nom="Entree/Plat")
+        cat_entrees = Categorie.objects.get(nom="Entrees")
+        self.assertEqual(cat_entrees, menu.getFreeCategorie())
+
+        entree = ProduitVendu()
+        entree.produit = Produit.object.get(nom="salade normande")
+        entree.save()
+        menu.produits.add(entree)
+        cat_plats = Categorie.objects.get(nom="Plat")
+        self.assertEqual(cat_plats, menu.getFreeCategorie())
+
+        plat = ProduitVendu()
+        plat.produit = Produit.object.get(nom="entrecote")
+        plat.save()
+        menu.produits.add(plat)
+        self.assertEqual(None, menu.getFreeCategorie())
+
+        menu.produits.remove(entree)
+        self.assertEqual(cat_entrees, menu.getFreeCategorie())
+
+        menu.produits.add(entree)
+        self.assertEqual(None, menu.getFreeCategorie())
