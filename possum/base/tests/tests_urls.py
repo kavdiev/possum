@@ -34,7 +34,7 @@ class Tests_urls(TestCase):
 #            reverse('categories_send'),
             reverse('categories'),
             reverse('categories_add'),
-            reverse('categories_new'),
+#            reverse('categories_new'),
 #            reverse('categories_view', args=('42',)),
 #            reverse('categories_less_priority', args=('42',)),
 #            reverse('categories_more_priority', args=('42',)),
@@ -71,7 +71,7 @@ class Tests_urls(TestCase):
 #            reverse('products_del_produits_ok', args=('4', '3')),
 #            reverse('products_set_category', args=('4', '3')),
 #            reverse('products_enable', args=('4',)),
-            reverse('products_cooking', args=('3',)),
+#            reverse('products_cooking', args=('3',)),
         ]
         self.assert_http_status(urls, 302)
         self.assert_http_status_after_login(urls, 200)
@@ -183,8 +183,8 @@ class Tests_urls(TestCase):
 #            reverse('users_active', args=('1',)),
 #            reverse('users_change', args=('1',)),
         ]
-        for perm in ["p1", "p2", "p3"]:
-            urls.append(reverse('users_change_perm', args=('2', perm,)))
+#        for perm in ["p1", "p2", "p3"]:
+#            urls.append(reverse('users_change_perm', args=('2', perm,)))
         self.assert_http_status(urls, 302)
         self.assert_http_status_after_login(urls, 200)
 
