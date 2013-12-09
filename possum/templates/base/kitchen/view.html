@@ -12,14 +12,20 @@
 
 <h2>{{follow}}</h2>
 <ul id="kitchen">
-    {% for product in follow.produits.iterator %}
-    <li style="background:{{product.produit.categorie.color}};">
-    {{product}}
-    {% if product.cuisson %}({{product.cuisson}}){% endif %}
-        </li>
-    {% empty %}
-    <li>Aucun produit.</li>
+  {% for type_produit, list_produit in follow.regroup_produits.items %}
+  <li id="{{type_produit}}" href="javascript:void(0)" onclick="javascript:myLinkButtonClick(this.id);">{{list_produit|length}} x {{type_produit}}</li>
+  <div id="list_{{type_produit}}" style="display: none">
+    {% for vendu_id_in_model, vendu in list_produit %}
+    <li style="background:{{vendu.produit.categorie.color}}" onclick="window.location='/bill/{{facture.id}}/sold/{{vendu_id_in_model}}/view/'">
+      {{vendu}} ({{vendu.produit.get_prize}})
+      {% if vendu.cuisson %}({{vendu.cuisson}}){% endif %}
+      {{ vendu.get_menu_resume }}
+    </li>
     {% endfor %}
+  </div>
+  {% empty %}
+  <li>Aucun produit.</li>
+  {% endfor %}
 </ul>
 {% endfor %}
 
