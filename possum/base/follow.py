@@ -29,8 +29,8 @@ class Follow(models.Model):
     category est la categorie envoyée en cuisine"""
     category = models.ForeignKey(Categorie)
     date = models.DateTimeField('depuis le', auto_now_add=True)
-    produits = models.ManyToManyField(ProduitVendu, \
-        related_name="les produits envoyes")
+    produits = models.ManyToManyField(ProduitVendu,
+                                      related_name="les produits envoyes")
 
     class Meta:
         get_latest_by = 'id'
@@ -44,5 +44,5 @@ class Follow(models.Model):
             if str(produit) in dict_produits:
                 dict_produits[str(produit)].append((produit.id, produit))
             else:
-                dict_produits[str(produit)]=[(produit.id, produit)]
+                dict_produits[str(produit)] = [(produit.id, produit)]
         return dict_produits

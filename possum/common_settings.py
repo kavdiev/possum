@@ -41,7 +41,9 @@ def create_secret_key():
     generate a random SECRET_KEY and save it into our SECRET_FILE for future
      loading. If everything fails, then just raise an exception. '''
     with open(abspath(SECRET_FILE), 'w') as f:
-        SECRET_KEY_TEXT = "".join([random.choice("abcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*(-_=+)") for i in range(50)])
+        SECRET_KEY_TEXT = "".join([random.choice("abcdefghijklmnopqrstuvwxyz"
+                                                 "0123456789!@#$%^&*(-_=+)") \
+                                   for i in range(50)])
         f.write(SECRET_KEY_TEXT)
     return SECRET_KEY_TEXT
 
@@ -54,7 +56,8 @@ try:
         SECRET_KEY_TEXT = create_secret_key()
     SECRET_KEY = SECRET_KEY_TEXT
 except IOError as exc:
-        raise Exception('Cannot open file `%s` for writing. (%s)' % (SECRET_FILE, exc))
+        raise Exception('Cannot open file `%s` for writing. (%s)'
+                        % (SECRET_FILE, exc))
 ########## END KEY CONFIGURATION
 
 ADMINS = (
@@ -97,10 +100,6 @@ STATIC_URL = '/static/'
 
 # Additional locations of static files
 STATICFILES_DIRS = (
-    # Put strings here, like "/home/html/static" or "C:/www/django/static".
-    # Always use forward slashes, even on Windows.
-    # Don't forget to use absolute paths, not relative paths.
-#    normpath(join(DJANGO_ROOT, SITE_NAME , 'static')),
 )
 
 # List of finder classes that know how to find static files in
@@ -108,14 +107,12 @@ STATICFILES_DIRS = (
 STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
-#    'django.contrib.staticfiles.finders.DefaultStorageFinder',
 )
 
 # List of callables that know how to import templates from various sources.
 TEMPLATE_LOADERS = (
     'django.template.loaders.filesystem.Loader',
     'django.template.loaders.app_directories.Loader',
-#     'django.template.loaders.eggs.Loader',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -162,7 +159,8 @@ LOGGING = {
     'disable_existing_loggers': True,
     'formatters': {
         'verbose': {
-            'format': '[%(asctime)s %(module)s:%(lineno)d %(funcName)s] %(levelname)-8s %(message)s',
+            'format': '[%(asctime)s %(module)s:%(lineno)d %(funcName)s] '
+                      '%(levelname)-8s %(message)s',
             'datefmt': '%H:%M:%S'
         },
         'simple': {
@@ -173,9 +171,9 @@ LOGGING = {
         },
     },
     'filters': {
-         'require_debug_false': {
+        'require_debug_false': {
              '()': 'django.utils.log.RequireDebugFalse'
-         }
+        }
     },
     'handlers': {
         'null': {

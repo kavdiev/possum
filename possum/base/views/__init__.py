@@ -60,7 +60,8 @@ def permission_required(perm, **kwargs):
                 return view_func(request, *args, **kwargs)
             else:
                 messages.add_message(request, messages.ERROR, "Vous n'avez pas"
-                        " les droits nécessaires (%s)." % perm.split('.')[1])
+                                     " les droits nécessaires (%s)." % 
+                                     perm.split('.')[1])
                 return HttpResponseRedirect('/kitchen/')
         return wraps(view_func)(_wrapped_view)
     return decorator

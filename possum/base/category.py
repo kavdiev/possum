@@ -31,9 +31,9 @@ class Categorie(Nom, Priorite):
     made_in_kitchen = models.BooleanField(default=False)
     color = models.CharField(max_length=8, default="#ffdd82")
     vat_onsite = models.ForeignKey(VAT, null=True, blank=True,
-            related_name="categorie-vat-onsite")
+                                   related_name="categorie-vat-onsite")
     vat_takeaway = models.ForeignKey(VAT, null=True, blank=True,
-            related_name="categorie-vat-takeaway")
+                                     related_name="categorie-vat-takeaway")
 
     def __cmp__(self, other):
         """ Classement par priorite_facture (plus la valeur est petite,

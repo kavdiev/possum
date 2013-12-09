@@ -101,7 +101,7 @@ class Printer(models.Model):
             return False
 
     def print_list(self, list_to_print, name, with_header=False):
-        ''' 
+        '''
         Generate a print list from a list which contains informations
         in string and serveral business objects.
         '''
@@ -119,9 +119,9 @@ class Printer(models.Model):
         return result
 
     def regroup_list_and_print(self, list_to_print, name, with_header=False):
-        ''' 
+        '''
         Regroup the business objects in a list and reprensent
-        them by String (number and name of object) then generate 
+        them by String (number and name of object) then generate
         a print list
         '''
         path = "%s/%s-%s.txt" % (settings.PATH_TICKET, self.id, name)
@@ -134,10 +134,12 @@ class Printer(models.Model):
         for line in list_to_print:
             count += 1
             tmp = sans_accent(line)
-            if old_tmp != tmp :
+            if old_tmp != tmp:
                 if old_tmp:
-                    if old_tmp == " " or old_tmp.startswith("*") or \
-                    old_tmp.startswith(">") or old_tmp.startswith("["):
+                    if old_tmp == " " \
+                            or old_tmp.startswith("*") \
+                            or old_tmp.startswith(">") \
+                            or old_tmp.startswith("["):
                         fd.write("%s\n" % old_tmp)
                     else:
                         fd.write("%s x %s\n" % (str(num_tmp), old_tmp))
@@ -147,8 +149,10 @@ class Printer(models.Model):
                 num_tmp += 1
             if count == len(list_to_print):
                 if old_tmp:
-                    if old_tmp == " " or old_tmp.startswith("*") or \
-                    old_tmp.startswith(">") or old_tmp.startswith("["):
+                    if old_tmp == " " \
+                            or old_tmp.startswith("*") \
+                            or old_tmp.startswith(">") \
+                            or old_tmp.startswith("["):
                         fd.write("%s\n" % old_tmp)
                     else:
                         fd.write("%s x %s\n" % (str(num_tmp), old_tmp))         

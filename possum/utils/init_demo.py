@@ -27,8 +27,8 @@ os.environ['DJANGO_SETTINGS_MODULE'] = 'possum.settings'
 
 from django.contrib.auth.models import User, Permission
 from possum.base.models import Accompagnement, Sauce, Categorie, Cuisson, \
-    Facture, Paiement, PaiementType, Produit, ProduitVendu, Follow, Table, Zone, VAT, \
-    Printer, VATOnBill, DailyStat, WeeklyStat, MonthlyStat, Config
+    Facture, Paiement, PaiementType, Produit, ProduitVendu, Follow, Table, \
+    Zone, VAT, Printer, VATOnBill, DailyStat, WeeklyStat, MonthlyStat, Config
 
 
 # on efface toutes la base
@@ -63,10 +63,22 @@ for i in xrange(1, 10):
 user.save()
 
 # Cuisson
-Cuisson(nom='bleu', nom_facture='B', color='#8CC6D7', priorite='10').save()
-Cuisson(nom='saignant', nom_facture='S', color='#DB0B32', priorite='15').save()
-Cuisson(nom=u'à point', nom_facture='AP', color='#C44C51', priorite='20').save()
-Cuisson(nom='bien cuit', nom_facture='BC', color='#B78178', priorite='25').save()
+Cuisson(nom='bleu',
+        nom_facture='B',
+        color='#8CC6D7',
+        priorite='10').save()
+Cuisson(nom='saignant',
+        nom_facture='S',
+        color='#DB0B32',
+        priorite='15').save()
+Cuisson(nom=u'à point',
+        nom_facture='AP',
+        color='#C44C51',
+        priorite='20').save()
+Cuisson(nom='bien cuit',
+        nom_facture='BC',
+        color='#B78178',
+        priorite='25').save()
 
 # Type de paiements
 PaiementType(nom='AMEX', fixed_value=False).save()
@@ -110,118 +122,118 @@ vat_takeaway.save()
 
 # on entre les nouveaux produits, les prix sont TTC
 jus = Categorie(nom="Jus",
-        priorite=25,
-        surtaxable=False,
-        disable_surtaxe=False,
-        made_in_kitchen=False,
-        color="#44b3dc",
-        vat_onsite=vat_onsite,
-        vat_takeaway=vat_takeaway)
+                priorite=25,
+                surtaxable=False,
+                disable_surtaxe=False,
+                made_in_kitchen=False,
+                color="#44b3dc",
+                vat_onsite=vat_onsite,
+                vat_takeaway=vat_takeaway)
 jus.save()
 abricot = Produit(nom="abricot",
-        nom_facture="jus abricot",
-        prix="2.80",
-        choix_cuisson=False,
-        choix_accompagnement=False,
-        choix_sauce=False,
-        categorie=jus)
+                  nom_facture="jus abricot",
+                  prix="2.80",
+                  choix_cuisson=False,
+                  choix_accompagnement=False,
+                  choix_sauce=False,
+                  categorie=jus)
 abricot.save()
 pomme = Produit(nom="pomme",
-        nom_facture="jus pomme",
-        prix="2.80",
-        choix_cuisson=False,
-        choix_accompagnement=False,
-        choix_sauce=False,
-        categorie=jus)
+                nom_facture="jus pomme",
+                prix="2.80",
+                choix_cuisson=False,
+                choix_accompagnement=False,
+                choix_sauce=False,
+                categorie=jus)
 pomme.save()
 
 bieres = Categorie(nom="Bieres",
-        priorite=2,
-        surtaxable=False,
-        disable_surtaxe=False,
-        made_in_kitchen=False,
-        color="#ea97b5",
-        vat_onsite=vat_alcool,
-        vat_takeaway=vat_alcool)
+                   priorite=2,
+                   surtaxable=False,
+                   disable_surtaxe=False,
+                   made_in_kitchen=False,
+                   color="#ea97b5",
+                   vat_onsite=vat_alcool,
+                   vat_takeaway=vat_alcool)
 bieres.save()
 biere = Produit(nom="biere 50cl",
-        nom_facture="biere",
-        prix="2.80",
-        choix_cuisson=False,
-        choix_accompagnement=False,
-        choix_sauce=False,
-        categorie=bieres)
+                nom_facture="biere",
+                prix="2.80",
+                choix_cuisson=False,
+                choix_accompagnement=False,
+                choix_sauce=False,
+                categorie=bieres)
 biere.save()
 
 entrees = Categorie(nom="Entrees",
-        priorite=5,
-        surtaxable=False,
-        disable_surtaxe=False,
-        made_in_kitchen=True,
-        color="#ff9f00",
-        vat_onsite=vat_onsite,
-        vat_takeaway=vat_takeaway)
+                    priorite=5,
+                    surtaxable=False,
+                    disable_surtaxe=False,
+                    made_in_kitchen=True,
+                    color="#ff9f00",
+                    vat_onsite=vat_onsite,
+                    vat_takeaway=vat_takeaway)
 entrees.save()
 salade = Produit(nom="salade normande",
-        nom_facture="salade",
-        prix="3.40",
-        choix_cuisson=False,
-        choix_accompagnement=False,
-        choix_sauce=False,
-        categorie=entrees)
+                 nom_facture="salade",
+                 prix="3.40",
+                 choix_cuisson=False,
+                 choix_accompagnement=False,
+                 choix_sauce=False,
+                 categorie=entrees)
 salade.save()
 buffet = Produit(nom="buffet",
-        nom_facture="buffet",
-        prix="6.40",
-        choix_cuisson=False,
-        choix_accompagnement=False,
-        choix_sauce=False,
-        categorie=entrees)
+                 nom_facture="buffet",
+                 prix="6.40",
+                 choix_cuisson=False,
+                 choix_accompagnement=False,
+                 choix_sauce=False,
+                 categorie=entrees)
 buffet.save()
 
 plat = Categorie(nom="Plat",
-        priorite=10,
-        surtaxable=False,
-        disable_surtaxe=False,
-        made_in_kitchen=True,
-        color="#c9a100",
-        vat_onsite=vat_onsite,
-        vat_takeaway=vat_takeaway)
+                 priorite=10,
+                 surtaxable=False,
+                 disable_surtaxe=False,
+                 made_in_kitchen=True,
+                 color="#c9a100",
+                 vat_onsite=vat_onsite,
+                 vat_takeaway=vat_takeaway)
 plat.save()
 entrecote = Produit(nom="entrecote",
-        nom_facture="entrecote",
-        prix="8.40",
-        choix_cuisson=True,
-        choix_accompagnement=False,
-        choix_sauce=False,
-        categorie=plat)
+                    nom_facture="entrecote",
+                    prix="8.40",
+                    choix_cuisson=True,
+                    choix_accompagnement=False,
+                    choix_sauce=False,
+                    categorie=plat)
 entrecote.save()
 pave = Produit(nom=u"pavé de saumon",
-        nom_facture="pave de saumon",
-        prix="9.40",
-        choix_cuisson=False,
-        choix_accompagnement=False,
-        choix_sauce=False,
-        categorie=plat)
+               nom_facture="pave de saumon",
+               prix="9.40",
+               choix_cuisson=False,
+               choix_accompagnement=False,
+               choix_sauce=False,
+               categorie=plat)
 pave.save()
 
 # pour les menu
 menu = Categorie(nom="Menu",
-        priorite=22,
-        surtaxable=False,
-        disable_surtaxe=False,
-        made_in_kitchen=False,
-        color="#88f027",
-        vat_onsite=vat_onsite,
-        vat_takeaway=vat_takeaway)
+                 priorite=22,
+                 surtaxable=False,
+                 disable_surtaxe=False,
+                 made_in_kitchen=False,
+                 color="#88f027",
+                 vat_onsite=vat_onsite,
+                 vat_takeaway=vat_takeaway)
 menu.save()
 entree_plat = Produit(nom=u"Entree/Plat",
-        nom_facture="menu express",
-        prix="13.40",
-        choix_cuisson=False,
-        choix_accompagnement=False,
-        choix_sauce=False,
-        categorie=menu)
+                      nom_facture="menu express",
+                      prix="13.40",
+                      choix_cuisson=False,
+                      choix_accompagnement=False,
+                      choix_sauce=False,
+                      categorie=menu)
 entree_plat.save()
 entree_plat.categories_ok.add(entrees)
 entree_plat.categories_ok.add(plat)
@@ -237,20 +249,28 @@ for product in Produit.objects.all():
 # on ajoute des données pour avoir des jolies graphiques de démonstrations
 DailyStat(date="2013-10-01", key="total_ttc", value="234").save()
 for month in xrange(1, 13):
-    MonthlyStat(year=2013, month=month, key='total_ttc', value=100 * month).save()
-    MonthlyStat(year=2013, month=month, key='bar_total_ttc', value=40 * month).save()
-    MonthlyStat(year=2013, month=month, key='guests_total_ttc', value=60 * month).save()
-    MonthlyStat(year=2013, month=month, key='nb_bills', value=random.randint(50, 500)).save()
-    MonthlyStat(year=2013, month=month, key='guests_nb', value=random.randint(50, 500)).save()
-    MonthlyStat(year=2013, month=month, key='guests_average', value=random.randint(50, 500)).save()
-    MonthlyStat(year=2013, month=month, key='bar_nb', value=random.randint(50, 500)).save()
-    MonthlyStat(year=2013, month=month, key='bar_average', value=random.randint(50, 500)).save()
+    MonthlyStat(year=2013, month=month, key='total_ttc',
+                value=100 * month).save()
+    MonthlyStat(year=2013, month=month, key='bar_total_ttc',
+                value=40 * month).save()
+    MonthlyStat(year=2013, month=month, key='guests_total_ttc',
+                value=60 * month).save()
+    MonthlyStat(year=2013, month=month, key='nb_bills',
+                value=random.randint(50, 500)).save()
+    MonthlyStat(year=2013, month=month, key='guests_nb',
+                value=random.randint(50, 500)).save()
+    MonthlyStat(year=2013, month=month, key='guests_average',
+                value=random.randint(50, 500)).save()
+    MonthlyStat(year=2013, month=month, key='bar_nb',
+                value=random.randint(50, 500)).save()
+    MonthlyStat(year=2013, month=month, key='bar_average',
+                value=random.randint(50, 500)).save()
 
 # Création d'une dizaine de facture
 for i in xrange(15):
     table = 'T%d' % random.randint(10, 25)
     f = Facture(table=Table.objects.get(nom=table),
-            couverts=random.randint(1, 15))
+                couverts=random.randint(1, 15))
     f.save()
     for produit in [salade, buffet, entrecote, pave, biere]:
         for j in xrange(3):
@@ -270,4 +290,3 @@ for i in xrange(15):
 # on sold une facture
 type_cb = PaiementType.objects.get(nom='CB')
 f.add_payment(type_cb, f.total_ttc)
-
