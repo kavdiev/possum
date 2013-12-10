@@ -129,7 +129,7 @@ function update {
     fi
     enter_virtualenv
     pip install --proxy=${http_proxy} --requirement requirements.txt >/dev/null
-    if [ "$(python --version | grep -c 'Python 2.6')" == "1" ]
+    if [ "$(python --version 2>&1 | grep -c 'Python 2.6')" == "1" ]
     then
         pip install --proxy=${http_proxy} ordereddict
     fi
