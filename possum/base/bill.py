@@ -18,6 +18,7 @@
 #    along with POSSUM.  If not, see <http://www.gnu.org/licenses/>.
 #
 
+from collections import OrderedDict
 import datetime
 from decimal import Decimal
 from django.db import models
@@ -103,7 +104,7 @@ class Facture(models.Model):
         return cmp(self.date_creation, other.date_creation)
 
     def regroup_produits(self):
-        dict_produits = {}
+        dict_produits = OrderedDict()
         for produit in self.produits.iterator():
             if str(produit) in dict_produits:
                 dict_produits[str(produit)].append((produit.id, produit))
