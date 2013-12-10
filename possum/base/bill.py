@@ -17,8 +17,12 @@
 #    You should have received a copy of the GNU General Public License
 #    along with POSSUM.  If not, see <http://www.gnu.org/licenses/>.
 #
+try:
+    from collections import OrderedDict
+except:
+    # Needed if you use a python older than 2.7
+    from ordereddict import OrderedDict
 
-from collections import OrderedDict
 import datetime
 from decimal import Decimal
 from django.db import models
