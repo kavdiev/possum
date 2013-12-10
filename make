@@ -128,7 +128,11 @@ function update {
         virtualenv --prompt=="POSSUM" --python=python2 .virtualenv
     fi
     enter_virtualenv
-    pip install --proxy=${http_proxy} --requirement requirements.txt
+    pip install --proxy=${http_proxy} --requirement requirements.txt >/dev/null
+    if [ "$(python --version | grep -c 'Python 2.6')" == "1" ]
+    then
+        pip install --proxy=${http_proxy} ordereddict
+    fi
     update_js
     if [ ! -e possum/settings.py ]
     then
