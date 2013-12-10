@@ -155,7 +155,7 @@ class Printer(models.Model):
                             or old_tmp.startswith("["):
                         fd.write("%s\n" % old_tmp)
                     else:
-                        fd.write("%s x %s\n" % (str(num_tmp), old_tmp))         
+                        fd.write("%s x %s\n" % (str(num_tmp), old_tmp))
         if with_header:
             fd.write(self.footer)
         fd.close()
