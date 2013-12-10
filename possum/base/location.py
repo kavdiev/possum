@@ -43,7 +43,7 @@ class Zone(Nom):
 
 
 class Table(Nom):
-    """ TODO """
+    """ Une table dépend obligatoirement d'une zone """
 
     zone = models.ForeignKey(Zone, related_name="table-zone")
 

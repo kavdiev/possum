@@ -44,8 +44,8 @@ class Paiement(models.Model):
     def __unicode__(self):
         if self.type.fixed_value:
             return u"%-20s % 8.2f €    (%d tickets x %5.2f €)" % (
-                    self.type.nom, self.montant, self.nb_tickets,
-                    self.valeur_unitaire)
+                   self.type.nom, self.montant, self.nb_tickets,
+                   self.valeur_unitaire)
         else:
             return u"%-20s % 8.2f €" % (self.type.nom, self.montant)
 
