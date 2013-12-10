@@ -390,8 +390,9 @@ class DailyStat(models.Model):
     def update(self):
         """Update statistics with new bills
         """
-        logger.debug(" ")
         for bill in Facture.objects.filter(saved_in_stats=False).iterator():
+            logger.info("[%s] update daily stats for bill %d" % (
+                        bill.date_creation.strftime("%Y-%m-%d"), bill.id))
             DailyStat().add_bill(bill)
 
     def get_data(self, data, date):
