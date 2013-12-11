@@ -109,7 +109,6 @@ class DailyStat(models.Model):
     def add_bill(self, bill):
         """if necessary, add this bill
         """
-        logger.debug(" ")
         if bill.saved_in_stats:
             logger.warning("Bill [%s] is already in stats" % bill.id)
             return False
@@ -134,7 +133,6 @@ class DailyStat(models.Model):
                 return False
 
     def __add_bill_common(self, bill, date, year, month, week):
-        logger.debug(" ")
         nb_bills, created = DailyStat.objects.get_or_create(date=date,
                                                              key="nb_bills")
         nb_bills.value += 1
@@ -188,7 +186,6 @@ class DailyStat(models.Model):
 
         Cela nous permet de regrouper les stats de plusieurs catégories
         """
-        logger.debug(" ")
         values = {}
         # on construit les valeurs
         for product in bill.produits.iterator():
@@ -224,7 +221,6 @@ class DailyStat(models.Model):
             stat.save()
 
     def __add_bill_guests(self, bill, date, year, month, week):
-        logger.debug(" ")
         guests_nb, created = DailyStat.objects.get_or_create(date=date,
                                                              key="guests_nb")
         if bill.couverts == 0:
@@ -282,7 +278,6 @@ class DailyStat(models.Model):
         guests_average.save()
 
     def __add_bill_bar(self, bill, date, year, month, week):
-        logger.debug(" ")
         bar_nb, created = DailyStat.objects.get_or_create(date=date,
                                                           key="bar_nb")
         bar_nb.value += 1
@@ -336,7 +331,6 @@ class DailyStat(models.Model):
         bar_average.save()
 
     def __add_bill_payments(self, bill, date, year, month, week):
-        logger.debug(" ")
         for payment in bill.paiements.iterator():
             key = "%s_payment_nb" % payment.type_id
             payment_nb, created = DailyStat.objects.get_or_create(date=date,
@@ -372,7 +366,6 @@ class DailyStat(models.Model):
     def get_common(self, date):
         """Return les stats pour date sous forme de liste
         """
-        logger.debug(" ")
         result = []
         result.append("  -- %s --" % date)
         result.append("Fait le %s" % datetime.datetime.now().strftime("%d/%m/%Y %H:%M"))
@@ -399,7 +392,6 @@ class DailyStat(models.Model):
         """Recupere les donnees pour une date, retourne data
             data = {}
         """
-        logger.debug(" ")
         for key in ['nb_bills', 'total_ttc']:
             data[key] = DailyStat().get_value(key, date)
         data['vats'] = []
