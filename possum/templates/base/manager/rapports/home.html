@@ -31,6 +31,71 @@
 </ul>
 {% endif %}
 
+<table>
+    <tr>
+        <td></td>
+        <td>Valeur actuelle</td>
+        <td>Année passée</td>
+        <td>Moyenne</td>
+        <td>Max.</td>
+    </tr>
+    <tr>
+        <td>Total TTC</td>
+        <td {% if total_ttc > last_total_ttc %}class="enabled"{% endif %} align='right'>{{total_ttc}}</td>
+        <td align='right'>{{last_total_ttc}}</td>
+        <td align='right'>{{avg_total_ttc}}</td>
+        <td align='right'>{{max_total_ttc}}</td>
+    </tr>
+    <tr>
+        <td>Nb factures</td>
+        <td {% if nb_bills > last_nb_bills %}class="enabled"{% endif %} align='right'>{{nb_bills}}</td>
+        <td align='right'>{{last_nb_bills}}</td>
+        <td align='right'>{{avg_nb_bills}}</td>
+        <td align='right'>{{max_nb_bills}}</td>
+    </tr>
+    <tr>
+        <td>Restauration total TTC</td>
+        <td {% if guests_total_ttc > last_guests_total_ttc %}class="enabled"{% endif %} align='right'>{{guests_total_ttc}}</td>
+        <td align='right'>{{last_guests_total_ttc}}</td>
+        <td align='right'>{{avg_guests_total_ttc}}</td>
+        <td align='right'>{{max_guests_total_ttc}}</td>
+    </tr>
+    <tr>
+        <td>Restauration nb couverts</td>
+        <td {% if guests_nb > last_guests_nb %}class="enabled"{% endif %} align='right'>{{guests_nb}}</td>
+        <td align='right'>{{last_guests_nb}}</td>
+        <td align='right'>{{avg_guests_nb}}</td>
+        <td align='right'>{{max_guests_nb}}</td>
+    </tr>
+    <tr>
+        <td>Restauration TM/couvert</td>
+        <td {% if guests_average > last_guests_average %}class="enabled"{% endif %} align='right'>{{guests_average}}</td>
+        <td align='right'>{{last_guests_average}}</td>
+        <td align='right'>{{avg_guests_average}}</td>
+        <td align='right'>{{max_guests_average}}</td>
+    </tr>
+    <tr>
+        <td>Bar total TTC</td>
+        <td {% if bar_total_ttc > last_bar_total_ttc %}class="enabled"{% endif %} align='right'>{{bar_total_ttc}}</td>
+        <td align='right'>{{last_bar_total_ttc}}</td>
+        <td align='right'>{{avg_bar_total_ttc}}</td>
+        <td align='right'>{{max_bar_total_ttc}}</td>
+    </tr>
+    <tr>
+        <td>Bar nb factures</td>
+        <td {% if bar_nb > last_bar_nb %}class="enabled"{% endif %} align='right'>{{bar_nb}}</td>
+        <td align='right'>{{last_bar_nb}}</td>
+        <td align='right'>{{avg_bar_nb}}</td>
+        <td align='right'>{{max_bar_nb}}</td>
+    </tr>
+    <tr>
+        <td>Bar TM/facture</td>
+        <td {% if bar_average > last_bar_average %}class="enabled"{% endif %} align='right'>{{bar_average}}</td>
+        <td align='right'>{{last_bar_average}}</td>
+        <td align='right'>{{avg_bar_average}}</td>
+        <td align='right'>{{max_bar_average}}</td>
+    </tr>
+</table>
 <h2>Général</h2>
 <ul id="rapports">
     <li {% if nb_bills > last_nb_bills %}class="enabled"{% endif %}>
