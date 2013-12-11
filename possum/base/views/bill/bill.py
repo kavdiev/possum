@@ -350,7 +350,6 @@ def factures(request):
 
 @permission_required('base.p3')
 def bill_view(request, bill_id):
-    logger.debug(" ")
     data = get_user(request)
     data['facture'] = get_object_or_404(Facture, pk=bill_id)
     if data['facture'].est_soldee():
