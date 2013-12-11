@@ -51,3 +51,6 @@ class Categorie(Nom, Priorite):
     def set_vat_onsite(self, vat):
         self.vat_onsite = vat
         self.save()
+
+    class Meta:
+        ordering = ['priorite',]

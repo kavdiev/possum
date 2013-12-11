@@ -113,8 +113,8 @@ class Facture(models.Model):
             if str(produit) in dict_produits:
                 dict_produits[str(produit)].append((produit.id, produit))
             else:
-                dict_produits[str(produit)]=[(produit.id, produit)]
-        return dict_produits        
+                dict_produits[str(produit)] = [(produit.id, produit)]
+        return dict_produits
 
     def something_for_the_kitchen(self):
         """If one, set the first category to prepare in the
