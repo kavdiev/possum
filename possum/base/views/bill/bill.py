@@ -64,17 +64,14 @@ def bill_send_kitchen(request, bill_id):
         messages.add_message(request,
                              messages.ERROR,
                              "Vous devez indiquer le nombre de couverts.")
-    if not bill.send_in_the_kitchen():
+    if not erreur and not bill.send_in_the_kitchen():
         erreur = True
         messages.add_message(request,
                              messages.ERROR,
                              "Erreur dans l'envoi (imprimante ok?).")
     if not erreur:
-        if bill.table:
-            message = u"%s envoyée" % bill.table
-        else:
-            message = u"Envoyé en cuisine"
-        messages.add_message(request, messages.SUCCESS, message)
+        messages.add_message(request, messages.SUCCESS, u"%s envoyée" % 
+                             bill.table)
     return HttpResponseRedirect('/bill/%s/' % bill.id)
 
 

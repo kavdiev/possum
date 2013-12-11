@@ -215,15 +215,16 @@ class Facture(models.Model):
                 products.sort()
                 for product in products:
                     todolist.append(product)
-            result = False
             for printer in Printer.objects.filter(kitchen=True):
                 result = printer.regroup_list_and_print(todolist, 
                                                         "kitchen-%s-%s" % (
                                                         self.id, follow.category.id))
+                if not result:
+                    return False
             follow.save()
             self.following.add(follow)
             self.something_for_the_kitchen()
-            return result
+            return True
 
     def guest_couverts(self):
         """Essaye de deviner le nombre de couverts"""
