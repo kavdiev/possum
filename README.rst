@@ -22,6 +22,7 @@ The key word: try to keep it simple for the final user.
 
 * Documentation:     http://www.possum-software.org
 * Freecode:          http://freecode.com/projects/possum
+* Ohloh:             https://www.ohloh.net/p/possum-software
 
 Community
 ---------

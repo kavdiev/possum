@@ -155,9 +155,9 @@ html_static_path = ['_static']
 
 # Custom sidebar templates, maps document names to template names.
 # html_sidebars = {}
-# html_sidebars = {
-#    '**': ['globaltoc.html', 'searchbox.html'],
-# }
+html_sidebars = {
+    '**': ['globaltoc.html', 'searchbox.html', 'ohloh.html'],
+}
 #    '**': ['globaltoc.html', 'localtoc.html', 'searchbox.html'],
 #    'using/windows': ['windowssidebar.html', 'searchbox.html'],
 
