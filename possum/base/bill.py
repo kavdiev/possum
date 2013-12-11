@@ -454,7 +454,8 @@ class Facture(models.Model):
 
     def est_un_repas(self):
         """Est ce que la facture contient un element qui est
-        fabriqué en cuisine
+        fabriqué en cuisine, dans ce cas on considère que
+        c'est de la restauration.
         """
         for sold in self.produits.iterator():
             if sold.produit.categorie.made_in_kitchen:
