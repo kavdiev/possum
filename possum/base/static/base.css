@@ -273,6 +273,9 @@ li {
     width:90%;    
     height:80px;
 }
+.enabled { 
+    background-color: #00FF00;
+}
 
 #myclock {
     font-size: x-large;

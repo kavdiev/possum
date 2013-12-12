@@ -393,7 +393,7 @@ class DailyStat(models.Model):
             data = {}
         """
         for key in ['nb_bills', 'total_ttc']:
-            data[key] = DailyStat().get_value(key, date)
+            data[key] = "%.2f" % DailyStat().get_value(key, date)
         data['vats'] = []
         for vat in VAT.objects.order_by('name').iterator():
             key = "%s_vat" % vat.id
@@ -401,10 +401,10 @@ class DailyStat(models.Model):
             data['vats'].append("TVA % 6.2f%% : %.2f" % (vat.tax, value))
         # restaurant
         for key in ['guests_nb', 'guests_average', 'guests_total_ttc']:
-            data[key] = DailyStat().get_value(key, date)
+            data[key] = "%.2f" % DailyStat().get_value(key, date)
         # bar
         for key in ['bar_nb', 'bar_average', 'bar_total_ttc']:
-            data[key] = DailyStat().get_value(key, date)
+            data[key] = "%.2f" % DailyStat().get_value(key, date)
         # categories & products
         categories = []
         products = []

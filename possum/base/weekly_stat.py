@@ -113,7 +113,7 @@ class WeeklyStat(models.Model):
         """Recupere les donnees pour une date
         """
         for key in ['nb_bills', 'total_ttc']:
-            data[key] = WeeklyStat().get_value(key, year, week)
+            data[key] = "%.2f" % WeeklyStat().get_value(key, year, week)
         data['vats'] = []
         for vat in VAT.objects.order_by('name').iterator():
             key = "%s_vat" % vat.id
@@ -121,10 +121,10 @@ class WeeklyStat(models.Model):
             data['vats'].append("TVA % 6.2f%% : %.2f" % (vat.tax, value))
         # restaurant
         for key in ['guests_nb', 'guests_average', 'guests_total_ttc']:
-            data[key] = WeeklyStat().get_value(key, year, week)
+            data[key] = "%.2f" % WeeklyStat().get_value(key, year, week)
         # bar
         for key in ['bar_nb', 'bar_average', 'bar_total_ttc']:
-            data[key] = WeeklyStat().get_value(key, year, week)
+            data[key] = "%.2f" % WeeklyStat().get_value(key, year, week)
         # categories & products
         categories = []
         products = []

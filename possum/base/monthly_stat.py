@@ -118,7 +118,7 @@ class MonthlyStat(models.Model):
         """Recupere les donnees pour un mois
         """
         for key in ['nb_bills', 'total_ttc']:
-            data[key] = MonthlyStat().get_value(key, year, month)
+            data[key] = "%.2f" % MonthlyStat().get_value(key, year, month)
         data['vats'] = []
         for vat in VAT.objects.order_by('name').iterator():
             key = "%s_vat" % vat.id
@@ -126,10 +126,10 @@ class MonthlyStat(models.Model):
             data['vats'].append("TVA % 6.2f%% : %.2f" % (vat.tax, value))
         # restaurant
         for key in ['guests_nb', 'guests_average', 'guests_total_ttc']:
-            data[key] = MonthlyStat().get_value(key, year, month)
+            data[key] = "%.2f" % MonthlyStat().get_value(key, year, month)
         # bar
         for key in ['bar_nb', 'bar_average', 'bar_total_ttc']:
-            data[key] = MonthlyStat().get_value(key, year, month)
+            data[key] = "%.2f" % MonthlyStat().get_value(key, year, month)
         # categories & products
         categories = []
         products = []

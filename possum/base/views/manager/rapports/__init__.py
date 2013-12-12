@@ -40,7 +40,6 @@ from possum.base.weekly_stat import WeeklyStat
 logger = logging.getLogger(__name__)
 
 
-
 @permission_required('base.p1')
 def rapports_daily(request):
     """
@@ -67,7 +66,7 @@ def rapports_daily(request):
     last_year = get_last_year(date)
     for key in ['nb_bills', 'total_ttc', 'guests_nb', 'guests_average',
                 'guests_total_ttc', 'bar_nb', 'bar_average', 'bar_total_ttc']:
-        data['last_%s' % key] = DailyStat().get_value(key, last_year)
+        data['last_%s' % key] = "%.2f" % DailyStat().get_value(key, last_year)
         data['max_%s' % key] = DailyStat().get_max(key)
         data['avg_%s' % key] = DailyStat().get_avg(key)
     return render_to_response('base/manager/rapports/home.html',
@@ -101,7 +100,7 @@ def rapports_weekly(request):
     data = WeeklyStat().get_data(data, year, week)
     for key in ['nb_bills', 'total_ttc', 'guests_nb', 'guests_average',
                 'guests_total_ttc', 'bar_nb', 'bar_average', 'bar_total_ttc']:
-        data['last_%s' % key] = WeeklyStat().get_value(key, last_year, week)
+        data['last_%s' % key] = "%.2f" % WeeklyStat().get_value(key, last_year, week)
         data['max_%s' % key] = WeeklyStat().get_max(key)
         data['avg_%s' % key] = WeeklyStat().get_avg(key)
     return render_to_response('base/manager/rapports/home.html',
@@ -135,7 +134,7 @@ def rapports_monthly(request):
     data = MonthlyStat().get_data(data, year, month)
     for key in ['nb_bills', 'total_ttc', 'guests_nb', 'guests_average',
                 'guests_total_ttc', 'bar_nb', 'bar_average', 'bar_total_ttc']:
-        data['last_%s' % key] = MonthlyStat().get_value(key, last_year, month)
+        data['last_%s' % key] = "%.2f" % MonthlyStat().get_value(key, last_year, month)
         data['max_%s' % key] = MonthlyStat().get_max(key)
         data['avg_%s' % key] = MonthlyStat().get_avg(key)
     return render_to_response('base/manager/rapports/home.html',
