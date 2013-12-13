@@ -27,8 +27,6 @@ import datetime
 from decimal import Decimal
 from django.db import models
 import logging
-import unicodedata
-
 from possum.base.category import Categorie
 from possum.base.config import Config
 from possum.base.follow import Follow
@@ -50,20 +48,25 @@ class Facture(models.Model):
 
     """
     date_creation = models.DateTimeField('creer le', auto_now_add=True)
-    table = models.ForeignKey('Table', \
-            null=True, blank=True, \
-            related_name="facture-table")
+    table = models.ForeignKey('Table',
+                              null=True,
+                              blank=True,
+                              related_name="facture-table")
     couverts = models.PositiveIntegerField("nombre de couverts", default=0)
-    produits = models.ManyToManyField('ProduitVendu', \
-        related_name="les produits vendus", \
-        limit_choices_to={'date__gt': datetime.datetime.today()})
-    total_ttc = models.DecimalField(max_digits=9, decimal_places=2,
-            default=0)
+    produits = models.ManyToManyField('ProduitVendu',
+                                      related_name="les produits vendus",
+                                      limit_choices_to={
+                                      'date__gt': datetime.datetime.today()})
+    total_ttc = models.DecimalField(max_digits=9,
+                                    decimal_places=2,
+                                    default=0)
     paiements = models.ManyToManyField('Paiement',
-        related_name="les paiements",
-        limit_choices_to={'date__gt': datetime.datetime.today()})
+                                       related_name="les paiements",
+                                       limit_choices_to={
+                                       'date__gt': datetime.datetime.today()})
     vats = models.ManyToManyField('VATOnBill',
-        related_name="vat total for each vat on a bill")
+                                  related_name="vat total for each vat on "
+                                  "a bill")
     restant_a_payer = models.DecimalField(max_digits=9,
                                           decimal_places=2,
                                           default=0)
@@ -206,7 +209,7 @@ class Facture(models.Model):
                         follow.produits.add(product)
                         product.save()
             if nb_products_sent == 0:
-                # on crée le ticket avec la liste des produits et 
+                # on crée le ticket avec la liste des produits et
                 # des suites
                 products = self.get_first_todolist_for_kitchen()
                 if products:
@@ -216,9 +219,10 @@ class Facture(models.Model):
                 for product in products:
                     todolist.append(product)
             for printer in Printer.objects.filter(kitchen=True):
-                result = printer.regroup_list_and_print(todolist, 
+                result = printer.regroup_list_and_print(todolist,
                                                         "kitchen-%s-%s" % (
-                                                        self.id, follow.category.id))
+                                                        self.id, 
+                                                        follow.category.id))
                 if not result:
                     return False
             follow.save()
@@ -300,7 +304,7 @@ class Facture(models.Model):
             if not sold.produit.price_surcharged:
                 # TODO: just in case for backwards comtability
                 # in case Produit has no price_surcharged
-                logger.info("[%s] product without price_surcharged" % 
+                logger.info("[%s] product without price_surcharged" %
                             sold.produit.id)
                 sold.produit.update_vats()
             if sold.prix != sold.produit.price_surcharged:
@@ -435,11 +439,11 @@ class Facture(models.Model):
         return True
 
     def rendre_monnaie(self, paiement):
-        '''Régularisation si le montant payé est superieur au montant 
+        '''Régularisation si le montant payé est superieur au montant
         de la facture'''
         monnaie = Paiement()
         payment_for_refunds = Config.objects.get(key="payment_for_refunds"
-                                                ).value
+                                                 ).value
         monnaie.type = PaiementType.objects.get(id=payment_for_refunds)
         monnaie.montant = self.restant_a_payer - paiement.montant
         monnaie.save()
@@ -517,10 +521,11 @@ class Facture(models.Model):
         ticket.append(separateur)
         dict_vendu = {}
         for vendu in self.produits.order_by("produit__categorie__priorite"):
-            if vendu.produit.nom_facture in dict_vendu:
-                dict_vendu[vendu.produit.nom_facture].append(vendu.produit.prix)
+            produit = vendu.produit
+            if produit.nom_facture in dict_vendu:
+                dict_vendu[produit.nom_facture].append(produit.prix)
             else:
-                dict_vendu[vendu.produit.nom_facture] = [vendu.produit.prix]
+                dict_vendu[produit.nom_facture] = [produit.prix]
         for nom_facture, prix in dict_vendu.items():
             name = nom_facture[:25]
             prize = "% 3.2f" % sum(prix)
@@ -534,7 +539,10 @@ class Facture(models.Model):
                 longueur_max = largeur_dispo - 2
                 name = nom_facture[:longueur_max]
             remplissage = " " * (largeur_dispo - len(name))
-            ticket.append("%s x %s%s%s" % (len(prix), name, remplissage, prize))
+            ticket.append("%s x %s%s%s" % (len(prix),
+                                           name,
+                                           remplissage,
+                                           prize))
         ticket.append(separateur)
         ticket.append("  Total: % 8.2f Eur." % self.total_ttc)
         for vatonbill in self.vats.iterator():
