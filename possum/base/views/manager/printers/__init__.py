@@ -21,11 +21,9 @@
 from django.contrib import messages
 from django.http import HttpResponseRedirect
 import logging
-
 from django.shortcuts import render_to_response, get_object_or_404
 from django.template import RequestContext
-
-from possum.base.printer import Printer
+from possum.base.models import Printer
 from possum.base.views import get_user, permission_required
 
 

@@ -22,15 +22,13 @@ import datetime
 from decimal import Decimal
 from django.db import models
 import logging
-
 from django.db.models import Max, Avg
-
 from chartit import PivotDataPool, PivotChart
-from possum.base.category import Categorie
-from possum.base.payment import PaiementType
-from possum.base.product import Produit
+from category import Categorie
+from payment import PaiementType
+from product import Produit
 from possum.base.utils import nb_sorted
-from possum.base.vat import VAT
+from vat import VAT
 
 
 logger = logging.getLogger(__name__)
@@ -69,6 +67,7 @@ class MonthlyStat(models.Model):
     value = models.DecimalField(max_digits=9, decimal_places=2, default=0)
 
     class Meta:
+        app_label = 'base'
         ordering = ["year", "month"]
 
     def get_value(self, key, year, month):

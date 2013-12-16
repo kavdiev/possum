@@ -5,7 +5,7 @@
 #    This file is part of POSSUM.
 #
 #    POSSUM is free software: you can redistribute it and/or modify
-#    it under the terms of the GNU General Public License as published by
+#    it under the terms of the GNU General Public License as published
 #    the Free Software Foundation, either version 3 of the License, or
 #    (at your option) any later version.
 #
@@ -20,17 +20,17 @@
 from django.db import models
 
 
-class Config(models.Model):
-    """Possum Configuration
+class VATOnBill(models.Model):
+    """VAT for a bill
     """
-    key = models.CharField(max_length=32)
-    value = models.CharField(max_length=64)
-
-    def __unicode__(self):
-        return self.key
-
-    def __cmp__(self, other):
-        return cmp(self.key, other.key)
+    vat = models.ForeignKey('VAT', related_name="bill-vat")
+    total = models.DecimalField(max_digits=9, decimal_places=2, default=0)
 
     class Meta:
-        ordering = ['key']
+        app_label = 'base'
+
+    def __cmp__(self, other):
+        return cmp(self.vat.name, other.vat.name)
+
+    def __unicode__(self):
+        return "%s: %s" % (self.vat.name, self.total)

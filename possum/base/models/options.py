@@ -19,13 +19,15 @@
 
 
 from django.db import models
-
-from possum.base.generic import Nom, Priorite, NomDouble
+from generic import Nom, Priorite, NomDouble
 
 
 class Cuisson(NomDouble, Priorite):
     """Cuisson d'un produit"""
     color = models.CharField(max_length=8, default="#ffdd82")
+
+    class Meta:
+        app_label = 'base'
 
     def __cmp__(self, other):
         return cmp(self.priorite, other.priorite)
@@ -35,7 +37,14 @@ class Sauce(Nom):
     """Sauce d'un produit"""
     color = models.CharField(max_length=8, default="#ffdd82")
 
+    class Meta:
+        app_label = 'base'
+
 
 class Accompagnement(Nom):
     """Accompagnement d'un produit"""
     color = models.CharField(max_length=8, default="#ffdd82")
+
+    class Meta:
+        app_label = 'base'
+

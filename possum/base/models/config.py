@@ -17,20 +17,21 @@
 #    You should have received a copy of the GNU General Public License
 #    along with POSSUM.  If not, see <http://www.gnu.org/licenses/>.
 #
-
-import logging
-
 from django.db import models
-# from django.db.models import Max, Avg, Min
 
 
-logger = logging.getLogger(__name__)
-
-
-class GenericStat(models.Model):
-
+class Config(models.Model):
+    """Possum Configuration
+    """
     key = models.CharField(max_length=32)
-    value = models.DecimalField(max_digits=9, decimal_places=2, default=0)
+    value = models.CharField(max_length=64)
 
-    # TODO Comprendre ce qui est généralisable dans les autres classes de stats
-    # Et le mettre ici
+    def __unicode__(self):
+        return self.key
+
+    def __cmp__(self, other):
+        return cmp(self.key, other.key)
+
+    class Meta:
+        app_label = 'base'
+        ordering = ['key']

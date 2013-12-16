@@ -21,12 +21,10 @@
 from django.contrib import messages
 from django.http import HttpResponseRedirect
 import logging
-
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render_to_response, get_object_or_404
 from django.template import RequestContext
-
-from possum.base.bill import Facture
+from possum.base.models import Facture
 from possum.base.views import get_user
 
 

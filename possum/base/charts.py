@@ -19,15 +19,13 @@
 #
 
 import logging
-
 from django.db.models import Avg
-
 from chartit import PivotDataPool, PivotChart
-from possum.base.category import Categorie
-from possum.base.monthly_stat import MonthlyStat
-from possum.base.payment import PaiementType
-from possum.base.product import Produit
-from possum.base.vat import VAT
+from models import Categorie
+from models import MonthlyStat
+from models import PaiementType
+from models import Produit
+from models import VAT
 
 
 logger = logging.getLogger(__name__)

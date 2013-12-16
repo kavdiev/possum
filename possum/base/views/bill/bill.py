@@ -21,16 +21,14 @@
 from django.contrib import messages
 from django.http import HttpResponseRedirect
 import logging
-
 from django.shortcuts import render_to_response, get_object_or_404
 from django.template import RequestContext
-
-from possum.base.bill import Facture
-from possum.base.category import Categorie
-from possum.base.location import Zone, Table
+from possum.base.models import Facture
+from possum.base.models import Categorie
+from possum.base.models import Zone, Table
 from possum.base.models import Printer
-from possum.base.options import Cuisson
-from possum.base.product import Produit, ProduitVendu
+from possum.base.models import Cuisson
+from possum.base.models import Produit, ProduitVendu
 from possum.base.views import get_user, permission_required
 
 

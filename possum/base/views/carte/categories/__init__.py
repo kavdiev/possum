@@ -22,16 +22,14 @@ from django.contrib import messages
 from django.core.mail import send_mail
 from django.http import HttpResponseRedirect
 import logging
-
 from django.conf import settings
 from django.shortcuts import render_to_response, get_object_or_404
 from django.template import RequestContext
-
-from possum.base.category import Categorie
-from possum.base.daily_stat import DailyStat
+from possum.base.models import Categorie
+from possum.base.models import DailyStat
 from possum.base.models import Printer
-from possum.base.product import Produit
-from possum.base.vat import VAT
+from possum.base.models import Produit
+from possum.base.models import VAT
 from possum.base.views import get_user, permission_required
 
 

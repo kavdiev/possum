@@ -27,11 +27,11 @@ import datetime
 from decimal import Decimal
 from django.db import models
 import logging
-from possum.base.category import Categorie
-from possum.base.config import Config
-from possum.base.follow import Follow
-from possum.base.payment import Paiement, PaiementType
-from possum.base.printer import Printer
+from category import Categorie
+from config import Config
+from follow import Follow
+from payment import Paiement, PaiementType
+from printer import Printer
 
 
 logger = logging.getLogger(__name__)
@@ -80,6 +80,7 @@ class Facture(models.Model):
 
     class Meta:
         get_latest_by = 'id'
+        app_label = 'base'
         permissions = (
             ("p1", "can use manager part"),
             ("p2", "can use carte part"),

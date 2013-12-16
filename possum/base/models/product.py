@@ -21,11 +21,10 @@ from datetime import datetime
 from decimal import Decimal
 from django.db import models
 import logging
-
-from possum.base.category import Categorie
-from possum.base.generic import NomDouble
-from possum.base.options import Cuisson, Sauce, Accompagnement
-from possum.base.config import Config
+from category import Categorie
+from generic import NomDouble
+from options import Cuisson, Sauce, Accompagnement
+from config import Config
 
 
 logger = logging.getLogger(__name__)
@@ -64,6 +63,7 @@ class Produit(NomDouble):
             return cmp(self.categorie, other.categorie)
 
     class Meta:
+        app_label = 'base'
         ordering = ['categorie', 'nom']
 #        ordering = ['-actif', 'nom']
 
@@ -193,6 +193,7 @@ class ProduitVendu(models.Model):
     sent = models.BooleanField(default=False)
 
     class Meta:
+        app_label = 'base'
         ordering = ['produit', ]
 
     def __unicode__(self):

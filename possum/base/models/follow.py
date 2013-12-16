@@ -20,8 +20,8 @@
 
 from django.db import models
 
-from possum.base.category import Categorie
-from possum.base.product import ProduitVendu
+from category import Categorie
+from product import ProduitVendu
 
 
 class Follow(models.Model):
@@ -33,6 +33,7 @@ class Follow(models.Model):
                                       related_name="les produits envoyes")
 
     class Meta:
+        app_label = 'base'
         get_latest_by = 'id'
 
     def __unicode__(self):

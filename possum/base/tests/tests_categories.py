@@ -2,8 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from django.utils.unittest.case import TestCase
-
-from possum.base.category import Categorie
+from possum.base.models import Categorie
 
 
 class Tests_Categories(TestCase):

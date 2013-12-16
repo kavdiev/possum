@@ -20,8 +20,8 @@
 
 from django.db import models
 
-from possum.base.generic import Nom, Priorite
-from possum.base.vat import VAT
+from generic import Nom, Priorite
+from vat import VAT
 
 
 class Categorie(Nom, Priorite):
@@ -53,4 +53,5 @@ class Categorie(Nom, Priorite):
         self.save()
 
     class Meta:
+        app_label = 'base'
         ordering = ['priorite',]

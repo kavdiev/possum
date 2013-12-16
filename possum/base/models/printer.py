@@ -21,7 +21,6 @@
 from datetime import datetime
 import os
 import unicodedata
-
 import cups
 from django.conf import settings
 from django.db import models
@@ -53,6 +52,9 @@ class Printer(models.Model):
     kitchen = models.BooleanField(default=False)
     billing = models.BooleanField(default=False)
     manager = models.BooleanField(default=False)
+
+    class Meta:
+        app_label = 'base'
 
     def __unicode__(self):
         return self.name

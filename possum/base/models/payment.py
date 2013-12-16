@@ -18,14 +18,16 @@
 #    along with POSSUM.  If not, see <http://www.gnu.org/licenses/>.
 #
 from django.db import models
-
-from possum.base.generic import Nom
+from generic import Nom
 
 
 class PaiementType(Nom):
     """Type de paiment"""
     fixed_value = models.BooleanField("ticket ?", default=False)
 #    last_value = models.PositiveIntegerField("dernière valeur", default=0)
+
+    class Meta:
+        app_label = 'base'
 
 
 class Paiement(models.Model):
@@ -39,6 +41,7 @@ class Paiement(models.Model):
     nb_tickets = models.PositiveIntegerField(default=0)
 
     class Meta:
+        app_label = 'base'
         get_latest_by = 'date'
 
     def __unicode__(self):

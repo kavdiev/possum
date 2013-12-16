@@ -2,8 +2,8 @@
 # -*- coding: utf-8 -*-
 
 from django.test import TestCase
-from possum.base.category import Categorie
-from possum.base.product import ProduitVendu, Produit
+from possum.base.models import Categorie
+from possum.base.models import ProduitVendu, Produit
 
 
 class Tests_Products(TestCase):

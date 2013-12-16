@@ -18,8 +18,7 @@
 #    along with POSSUM.  If not, see <http://www.gnu.org/licenses/>.
 #
 from django.db import models
-
-from possum.base.generic import Nom
+from generic import Nom
 
 
 class Zone(Nom):
@@ -32,6 +31,9 @@ class Zone(Nom):
     mangent).
     """
     surtaxe = models.BooleanField("zone surtaxée ?", default=False)
+
+    class Meta:
+        app_label = 'base'
 
     def is_surcharged(self):
 #       logging.debug("surtaxe de %d centimes sur la zone %s" % (self.surtaxe))
@@ -46,6 +48,9 @@ class Table(Nom):
     """ Une table dépend obligatoirement d'une zone """
 
     zone = models.ForeignKey(Zone, related_name="table-zone")
+
+    class Meta:
+        app_label = 'base'
 
     def is_surcharged(self):
         ''' By default there is no surcharge. '''

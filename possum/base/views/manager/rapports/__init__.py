@@ -23,18 +23,16 @@ from django.contrib import messages
 from django.core.mail import send_mail
 from django.http import HttpResponseRedirect
 import logging
-
 from django.conf import settings
 from django.shortcuts import render_to_response
 from django.template import RequestContext
-
-from possum.base.daily_stat import DailyStat
+from possum.base.models import DailyStat
 from possum.base.forms import DateForm, WeekForm, MonthForm
 from possum.base.models import Printer
-from possum.base.monthly_stat import MonthlyStat
+from possum.base.models import MonthlyStat
 from possum.base.utils import get_last_year
 from possum.base.views import get_user, permission_required
-from possum.base.weekly_stat import WeeklyStat
+from possum.base.models import WeeklyStat
 
 
 logger = logging.getLogger(__name__)

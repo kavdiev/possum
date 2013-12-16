@@ -32,6 +32,7 @@ class Nom(models.Model):
         return cmp(self.nom, other.nom)
 
     class Meta:
+        app_label = 'base'
         abstract = True
         ordering = ['nom']
 
@@ -40,6 +41,7 @@ class NomDouble(Nom):
     nom_facture = models.CharField(max_length=35)
 
     class Meta:
+        app_label = 'base'
         abstract = True
 
 
@@ -49,6 +51,7 @@ class Priorite(models.Model):
     priorite = models.PositiveIntegerField(default=0)
 
     class Meta:
+        app_label = 'base'
         abstract = True
         ordering = ['priorite']
 

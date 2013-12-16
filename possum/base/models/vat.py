@@ -37,6 +37,7 @@ class VAT(models.Model):
         return cmp(self.name, other.name)
 
     class Meta:
+        app_label = 'base'
         ordering = ['name']
 
     def set_tax(self, tax):
