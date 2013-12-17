@@ -17,6 +17,7 @@ List of commands:
     help               :  this help
     init_demo          :  erase database with data of demonstration
     init_mine          :  run possum/utils/init_mine.py in virtualenv 
+    load_demo          :  load database with data of demonstration
     model              :  generate doc/images/models-base.png
     sh                 :  run ./manage.py shell_plus in virtualenv
     run                :  run ./manage.py runserver_plus in virtualenv
@@ -207,6 +208,10 @@ init_mine)
 init_demo)
     enter_virtualenv
     possum/utils/init_demo.py
+    ;;
+load_demo)
+    enter_virtualenv
+    ./manage.py loaddata demo
     ;;
 deb_install)
     deb_install

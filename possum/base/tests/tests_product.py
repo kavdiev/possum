@@ -15,7 +15,7 @@ class Tests_Products(TestCase):
         menu.save()
         self.assertTrue(menu.isFull())
 
-        menu.produit = Produit.objects.get(nom="Entree/Plat")
+        menu.produit = Produit.objects.get(nom="Menu Entree/Plat")
         self.assertFalse(menu.isFull())
 
         plat = ProduitVendu()
