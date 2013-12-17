@@ -10,12 +10,12 @@ from django.conf.urls import patterns, url
 # Uncomment the next line to enable the admin:
 # url(r'^admin/', include(admin.site.urls)),
 urlpatterns = patterns('possum.base.views',
-					   url(r'^$', 'home', name='home'),
-					   url(r'^accueil$', 'home'),
+                       url(r'^$', 'home', name='home'),
+                       url(r'^accueil$', 'home'),
 )
 
 urlpatterns += patterns('possum.base.views.carte.categories',
-                        url(r'^carte/$', 'categories', 
+                        url(r'^carte/$', 'categories',
                             name='home_categories'),
                         url(r'^carte/print/$', 'categories_print',
                             name='categories_print'),
