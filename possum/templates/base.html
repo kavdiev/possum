@@ -18,6 +18,9 @@
     {% endif %}
     <link rel="stylesheet" href="/static/base.css"/>
     <title>POSSUM</title>
+    {% if need_auto_refresh %}
+        <meta http-equiv="refresh" content="10">
+    {% endif %}
 </head>
 <body>
     {% block menu %}
