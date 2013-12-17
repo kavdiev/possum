@@ -6,13 +6,11 @@
 </ul>
 
 <h1>Produit: {{product.nom}}</h2>
+<p>Attention, suivant les imprimantes, il faut limiter l'utilisation des accents et des noms longs.</p>
 <ul id="product_info">
     <li onclick="window.location='/carte/products/{{product.id}}/change/'">
         Nom:</br>
         {{product.nom}}</li>
-        <li onclick="window.location='/carte/products/{{product.id}}/change/'">
-        Nom facture:</br>
-        {{product.nom_facture}}</li>
     <li onclick="window.location='/carte/products/{{product.id}}/category/'" 
         style="background:{{product.categorie.color}};">
         Catégorie:</br>{{product.categorie}}</li>

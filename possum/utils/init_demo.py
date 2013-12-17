@@ -130,16 +130,14 @@ jus = Categorie(nom="Jus",
                 vat_onsite=vat_onsite,
                 vat_takeaway=vat_takeaway)
 jus.save()
-abricot = Produit(nom="abricot",
-                  nom_facture="jus abricot",
+abricot = Produit(nom="jus abricot",
                   prix="2.80",
                   choix_cuisson=False,
                   choix_accompagnement=False,
                   choix_sauce=False,
                   categorie=jus)
 abricot.save()
-pomme = Produit(nom="pomme",
-                nom_facture="jus pomme",
+pomme = Produit(nom="jus pomme",
                 prix="2.80",
                 choix_cuisson=False,
                 choix_accompagnement=False,
@@ -157,7 +155,6 @@ bieres = Categorie(nom="Bieres",
                    vat_takeaway=vat_alcool)
 bieres.save()
 biere = Produit(nom="biere 50cl",
-                nom_facture="biere",
                 prix="2.80",
                 choix_cuisson=False,
                 choix_accompagnement=False,
@@ -175,7 +172,6 @@ entrees = Categorie(nom="Entrees",
                     vat_takeaway=vat_takeaway)
 entrees.save()
 salade = Produit(nom="salade normande",
-                 nom_facture="salade",
                  prix="3.40",
                  choix_cuisson=False,
                  choix_accompagnement=False,
@@ -183,7 +179,6 @@ salade = Produit(nom="salade normande",
                  categorie=entrees)
 salade.save()
 buffet = Produit(nom="buffet",
-                 nom_facture="buffet",
                  prix="6.40",
                  choix_cuisson=False,
                  choix_accompagnement=False,
@@ -201,15 +196,13 @@ plat = Categorie(nom="Plat",
                  vat_takeaway=vat_takeaway)
 plat.save()
 entrecote = Produit(nom="entrecote",
-                    nom_facture="entrecote",
                     prix="8.40",
                     choix_cuisson=True,
                     choix_accompagnement=False,
                     choix_sauce=False,
                     categorie=plat)
 entrecote.save()
-pave = Produit(nom=u"pavé de saumon",
-               nom_facture="pave de saumon",
+pave = Produit(nom="pave de saumon",
                prix="9.40",
                choix_cuisson=False,
                choix_accompagnement=False,
@@ -227,8 +220,7 @@ menu = Categorie(nom="Menu",
                  vat_onsite=vat_onsite,
                  vat_takeaway=vat_takeaway)
 menu.save()
-entree_plat = Produit(nom=u"Entree/Plat",
-                      nom_facture="menu express",
+entree_plat = Produit(nom=u"Menu Entree/Plat",
                       prix="13.40",
                       choix_cuisson=False,
                       choix_accompagnement=False,

@@ -74,11 +74,10 @@ def products_view(request, product_id):
 
 def treat_product_new(request, category):
     name = request.POST.get('name', '').strip()
-    billname = request.POST.get('billname', '').strip()
     prize = request.POST.get('prize', '').strip()
     if is_valid_product(request, name, billname, prize):
         try:
-            product = Produit(nom=name, nom_facture=billname, prix=prize)
+            product = Produit(nom=name, prix=prize)
             product.set_category(category)
             product.save()
         except Exception as ex:
@@ -218,7 +217,6 @@ def treat_products_change(request, product):
     if is_valid_product(request, name, billname, prize):
         product = product.set_prize(prize)
         product.nom = name
-        product.nom_facture = billname
         try:
             product.save()
         except:

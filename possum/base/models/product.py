@@ -91,7 +91,6 @@ class Produit(Nom):
             self.save()
             product.prix = prize
             product.nom = self.nom
-            product.nom_facture = self.nom_facture
             product.choix_cuisson = self.choix_cuisson
             product.choix_accompagnement = self.choix_accompagnement
             product.choix_sauce = self.choix_sauce
@@ -167,7 +166,7 @@ class Produit(Nom):
             result.append(name)
             for product in Produit.objects.filter(categorie=category,
                                                   actif=True):
-                result.append("%s: %.2f" % (product.nom_facture, product.prix))
+                result.append("%s: %.2f" % (product.nom, product.prix))
             result.append(" ")
         return result
 

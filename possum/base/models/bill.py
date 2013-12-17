@@ -32,6 +32,7 @@ from config import Config
 from follow import Follow
 from payment import Paiement, PaiementType
 from printer import Printer
+from product_sold import ProduitVendu
 
 
 logger = logging.getLogger(__name__)
@@ -53,7 +54,7 @@ class Facture(models.Model):
                               blank=True,
                               related_name="facture-table")
     couverts = models.PositiveIntegerField("nombre de couverts", default=0)
-    produits = models.ManyToManyField('ProduitVendu',
+    produits = models.ManyToManyField(ProduitVendu,
                                       related_name="les produits vendus",
                                       limit_choices_to={
                                       'date__gt': datetime.datetime.today()})
@@ -154,7 +155,7 @@ class Facture(models.Model):
                         categories.append(subproduct.made_with)
                     if subproduct.made_with.id not in products:
                         products[subproduct.made_with.id] = []
-                    name = subproduct.produit.nom_facture
+                    name = subproduct.produit.nom
                     if subproduct.produit.choix_cuisson:
                         name += ": %s" % subproduct.cuisson.nom_facture
                     products[subproduct.made_with.id].append(name)
@@ -164,7 +165,7 @@ class Facture(models.Model):
                         categories.append(product.made_with)
                     if product.made_with.id not in products:
                         products[product.made_with.id] = []
-                    name = product.produit.nom_facture
+                    name = product.produit.nom
                     if product.produit.choix_cuisson:
                         name += ": %s" % product.cuisson
                     products[product.made_with.id].append(name)
@@ -523,22 +524,22 @@ class Facture(models.Model):
         dict_vendu = {}
         for vendu in self.produits.order_by("produit__categorie__priorite"):
             produit = vendu.produit
-            if produit.nom_facture in dict_vendu:
-                dict_vendu[produit.nom_facture].append(produit.prix)
+            if produit.nom in dict_vendu:
+                dict_vendu[produit.nom].append(produit.prix)
             else:
-                dict_vendu[produit.nom_facture] = [produit.prix]
-        for nom_facture, prix in dict_vendu.items():
-            name = nom_facture[:25]
+                dict_vendu[produit.nom] = [produit.prix]
+        for nom, prix in dict_vendu.items():
+            name = nom[:25]
             prize = "% 3.2f" % sum(prix)
             # la largeur disponible correspond à la largeur du ticket
             # sans la 1er partie (" 1 ") et sans la largeur du prix
             # " 1 largeur_dispo PRIX"
             largeur_dispo = printer.width - 4 - len(prize)
-            if len(nom_facture) < largeur_dispo:
-                name = nom_facture
+            if len(nom) < largeur_dispo:
+                name = nom
             else:
                 longueur_max = largeur_dispo - 2
-                name = nom_facture[:longueur_max]
+                name = nom[:longueur_max]
             remplissage = " " * (largeur_dispo - len(name))
             ticket.append("%s x %s%s%s" % (len(prix),
                                            name,
