@@ -12,7 +12,7 @@ from django.conf.urls import patterns, url
 urlpatterns = patterns('possum.base.views',
                        url(r'^$', 'home', name='home'),
                        url(r'^accueil$', 'home'),
-                      )
+                       )
 
 urlpatterns += patterns('possum.base.views.carte.categories',
                         url(r'^carte/$', 'categories',
@@ -77,7 +77,7 @@ urlpatterns += patterns('possum.base.views.carte.categories',
                         url(r'^carte/categories/(?P<cat_id>\d+)/kitchen/$',
                             'categories_set_kitchen',
                             name='categories_set_kitchen'),
-                       )
+                        )
 
 urlpatterns += patterns('possum.base.views.carte',
     url(r'^carte/categories/(?P<cat_id>\d+)/product/new/$', 'products_new',
@@ -156,23 +156,26 @@ urlpatterns += patterns('possum.base.views.bill',
 )
 
 urlpatterns += patterns('possum.base.views.jukebox',
-    url(r'^jukebox/$', 'jukebox', name='jukebox'),
-)
+                        url(r'^jukebox/$', 'jukebox', name='jukebox'),
+                        )
 
 urlpatterns += patterns('possum.base.views.kitchen',
-    url(r'^kitchen/$', 'kitchen', name='kitchen'),
-    url(r'^kitchen/(?P<bill_id>\d+)/$', 'kitchen_for_bill', name='kitchen_for_bill'),
-)
+                        url(r'^kitchen/$', 'kitchen', name='kitchen'),
+                        url(r'^kitchen/(?P<bill_id>\d+)/$', 'kitchen_for_bill',
+                            name='kitchen_for_bill'),
+                        )
 
 urlpatterns += patterns('possum.base.views.manager',
-    url(r'^manager/$', 'manager', name='manager'),
-    url(r'^manager/credits/$', 'credits', name='credits'),
-)
+                        url(r'^manager/$', 'manager', name='manager'),
+                        url(r'^manager/credits/$', 'credits', name='credits'),
+                        )
 
 urlpatterns += patterns('possum.base.views.manager.archives',
-    url(r'^manager/archives/$', 'archives', name='archives'),
-    url(r'^manager/archives/bill/(?P<bill_id>\d+)/$', 'archives_bill', name='archives_bill'),
-)
+                        url(r'^manager/archives/$', 'archives',
+                            name='archives'),
+                        url(r'^manager/archives/bill/(?P<bill_id>\d+)/$',
+                            'archives_bill', name='archives_bill'),
+                        )
 
 urlpatterns += patterns('possum.base.views.manager.printers',
     url(r'^manager/printers/$', 'home', name='home'),
@@ -198,9 +201,13 @@ urlpatterns += patterns('possum.base.views.manager.user',
 )
 
 urlpatterns += patterns('',
-    url(r'^users/login/$', 'django.contrib.auth.views.login', {'template_name': 'login.html'}, name="login"),
-    url(r'^users/logout/$', 'django.contrib.auth.views.logout_then_login', name="logout"),
-)
+                        url(r'^users/login/$',
+                            'django.contrib.auth.views.login',
+                            {'template_name': 'login.html'}, name="login"),
+                        url(r'^users/logout/$',
+                            'django.contrib.auth.views.logout_then_login',
+                            name="logout"),
+                        )
 
 urlpatterns += patterns('possum.base.views.manager.vats',
     url(r'^manager/vats/new/$', 'vat_new', name='vat_new'),
@@ -238,12 +245,16 @@ urlpatterns += patterns('possum.base.views.manager.rapports',
 )
 
 urlpatterns += patterns('possum.base.views.manager.charts',
-    url(r'^manager/charts/year/$', 'charts_year', name='charts_year'),
-    url(r'^manager/charts/year/(?P<choice>[a-zA-Z0-9_-]+)/$', 'charts_year', name='charts_year_with_argument'),
-)
+                        url(r'^manager/charts/year/$', 'charts_year',
+                            name='charts_year'),
+                        url(r'^manager/charts/year/(?P<choice>[a-zA-Z0-9_-]+)/$',
+                            'charts_year', name='charts_year_with_argument'),
+                        )
 
 if settings.DEBUG:
     urlpatterns += patterns('',
-            url(r'^static/(?P<path>.*)$', 'django.views.static.serve',
-                {'document_root': settings.MEDIA_ROOT}, name="django_serve"),
-    )
+                            url(r'^static/(?P<path>.*)$',
+                                'django.views.static.serve',
+                                {'document_root': settings.MEDIA_ROOT},
+                                name="django_serve"),
+                            )
