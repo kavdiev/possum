@@ -1,10 +1,6 @@
 {% extends "base.html" %}
 {% block content %}
 
-<ul id="back">
-<li onclick="window.location='/manager/'">Retour</li>
-</ul>
-
 {% if date %}
 <h1>Rapport du {{date|date:'l d F Y'}}</h1>
 <form method='post' action='/manager/rapports/daily/' name='journalier'>{% csrf_token %}

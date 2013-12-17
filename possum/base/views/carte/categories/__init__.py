@@ -86,7 +86,7 @@ def categories_print(request):
 @permission_required('base.p2')
 def categories(request):
     data = get_user(request)
-    data['menu_carte'] = True
+    data['menu_manager'] = True
     data['categories'] = Categorie.objects.order_by('priorite', 'nom')
     return render_to_response('base/carte/categories.html', data,
                               context_instance=RequestContext(request))
@@ -95,7 +95,7 @@ def categories(request):
 @permission_required('base.p2')
 def categories_delete(request, cat_id):
     data = get_user(request)
-    data['menu_carte'] = True
+    data['menu_manager'] = True
     data['current_cat'] = get_object_or_404(Categorie, pk=cat_id)
     data['categories'] = Categorie.objects.order_by('priorite', 'nom').exclude(id=cat_id)
     cat_report_id = request.POST.get('cat_report', '').strip()
@@ -152,7 +152,7 @@ def categories_delete(request, cat_id):
 def categories_view(request, cat_id):
     data = get_user(request)
     data['category'] = get_object_or_404(Categorie, pk=cat_id)
-    data['menu_carte'] = True
+    data['menu_manager'] = True
     products = Produit.objects.filter(categorie__id=cat_id)
     data['products_enable'] = products.filter(actif=True)
     data['products_disable'] = products.filter(actif=False)
@@ -163,7 +163,7 @@ def categories_view(request, cat_id):
 @permission_required('base.p2')
 def categories_add(request):
     data = get_user(request)
-    data['menu_carte'] = True
+    data['menu_manager'] = True
     return render_to_response('base/carte/categories_add.html', data,
                               context_instance=RequestContext(request))
 
@@ -253,7 +253,7 @@ def categories_vat_takeaway(request, cat_id):
     data['type_vat'] = 'TVA à emporter'
     data['url_vat'] = 'vat_takeaway'
     data['vats'] = VAT.objects.order_by('name')
-    data['menu_carte'] = True
+    data['menu_manager'] = True
     return render_to_response('base/carte/categories/select_vat.html', data,
                               context_instance=RequestContext(request))
 
@@ -281,7 +281,7 @@ def categories_set_vat_onsite(request, cat_id, vat_id):
 @permission_required('base.p2')
 def categories_vat_onsite(request, cat_id):
     data = get_user(request)
-    data['menu_carte'] = True
+    data['menu_manager'] = True
     data['category'] = get_object_or_404(Categorie, pk=cat_id)
     data['type_vat'] = 'TVA sur place'
     data['url_vat'] = 'vat_onsite'

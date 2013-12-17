@@ -1,10 +1,6 @@
 {% extends "base.html" %}
 {% block content %}
 
-<ul id="back">
-<li onclick="window.location='/manager/'">Retour</li>
-</ul>
-
 <h1>Archives du {{date|date:'d F Y'}}</h1>
 
 <form method='post' action='/manager/archives/' name='archives'>{% csrf_token %}

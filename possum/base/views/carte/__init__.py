@@ -36,7 +36,7 @@ def carte(request):
     """This is not used.
     """
     data = get_user(request)
-    data['menu_carte'] = True
+    data['menu_manager'] = True
     return render_to_response('base/carte.html',
                                 data,
                                 context_instance=RequestContext(request))
@@ -66,7 +66,7 @@ def is_valid_product(request, name, billname, prize):
 def products_view(request, product_id):
     data = get_user(request)
     data['product'] = get_object_or_404(Produit, pk=product_id)
-    data['menu_carte'] = True
+    data['menu_manager'] = True
     return render_to_response('base/carte/product.html',
                                 data,
                                 context_instance=RequestContext(request))
@@ -91,7 +91,7 @@ def treat_product_new(request, category):
 @permission_required('base.p2')
 def products_new(request, cat_id):
     data = get_user(request)
-    data['menu_carte'] = True
+    data['menu_manager'] = True
     data['category'] = get_object_or_404(Categorie, pk=cat_id)
     if request.method == 'POST':
         treat_product_new(request, data['category'])
@@ -113,7 +113,7 @@ def products_set_category(request, product_id, cat_id):
 def products_category(request, product_id):
     data = get_user(request)
     data['product'] = get_object_or_404(Produit, pk=product_id)
-    data['menu_carte'] = True
+    data['menu_manager'] = True
     data['categories'] = Categorie.objects.order_by('priorite', 'nom')
     return render_to_response('base/carte/product_category.html',
                                 data,
@@ -134,7 +134,7 @@ def products_del_produits_ok(request, product_id, sub_id):
 def products_select_produits_ok(request, product_id):
     data = get_user(request)
     data['product'] = get_object_or_404(Produit, pk=product_id)
-    data['menu_carte'] = True
+    data['menu_manager'] = True
     data['products'] = []
     for category in data['product'].categories_ok.iterator():
         for sub in Produit.objects.filter(categorie=category, actif=True).iterator():
@@ -179,7 +179,7 @@ def products_add_categories_ok(request, product_id, cat_id):
 def products_select_categories_ok(request, product_id):
     data = get_user(request)
     data['product'] = get_object_or_404(Produit, pk=product_id)
-    data['menu_carte'] = True
+    data['menu_manager'] = True
     data['categories'] = []
     for category in Categorie.objects.order_by('priorite', 'nom').iterator():
         if category not in data['product'].categories_ok.iterator() \
@@ -229,7 +229,7 @@ def treat_products_change(request, product):
 def products_change(request, product_id):
     data = get_user(request)
     product = get_object_or_404(Produit, pk=product_id)
-    data['menu_carte'] = True
+    data['menu_manager'] = True
     if request.method == 'POST':
         treat_products_change(request, product)
     data['product'] = product
