@@ -28,7 +28,8 @@ from monthly_stat import MonthlyStat
 from options import Accompagnement, Cuisson, Sauce
 from payment import Paiement, PaiementType
 from printer import Printer
-from product import Produit, ProduitVendu
+from product import Produit
+from product_sold import ProduitVendu
 from vat import VAT
 from vatonbill import VATOnBill
 from weekly_stat import WeeklyStat
