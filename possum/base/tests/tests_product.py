@@ -36,7 +36,7 @@ class Tests_Products(TestCase):
         menu.save()
         self.assertEqual(None, menu.getFreeCategorie())
 
-        menu.produit = Produit.objects.get(nom="Entree/Plat")
+        menu.produit = Produit.objects.get(nom="Menu Entree/Plat")
         cat_entrees = Categorie.objects.get(nom="Entrees")
         self.assertEqual(cat_entrees, menu.getFreeCategorie())
 
