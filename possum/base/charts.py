@@ -33,7 +33,6 @@ logger = logging.getLogger(__name__)
 
 def month_name(*t):
     """ Sert à trier les mois."""
-    logger.debug(t)
     names = {1: 'Jan', 2: 'Fev', 3: 'Mar', 4: 'Avr', 5: 'Mai', 6: 'Jui',
              7: 'Jui', 8: 'Aou', 9: 'Sep', 10: 'Oct', 11: 'Nov',
              12: 'Dec'}
@@ -43,7 +42,8 @@ def month_name(*t):
 
 
 def month_sort(*x):
-    logger.debug(x)
+    """x example: ((('Fev',), ('2',)),)
+    """
     return (int(x[0][1][0]),)
 
 
