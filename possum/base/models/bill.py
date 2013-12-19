@@ -521,7 +521,7 @@ class Facture(models.Model):
                                                        self.couverts))
         separateur = '-' * printer.width
         ticket.append(separateur)
-        dict_vendu = {}
+        dict_vendu = OrderedDict()
         for vendu in self.produits.order_by("produit__categorie__priorite"):
             produit = vendu.produit
             if produit.nom in dict_vendu:
