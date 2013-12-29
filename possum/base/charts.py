@@ -193,10 +193,11 @@ def get_chart_year_products(year, category):
     keys_nb = {}
     keys_value = {}
     for product in Produit.objects.filter(categorie=category).iterator():
+        name = "%s #%s" % (product.nom, product.id)
         key = "%s_product_nb" % product.id
-        keys_nb[key] = product.nom
+        keys_nb[key] = name
         key = "%s_product_value" % product.id
-        keys_value[key] = product.nom
+        keys_value[key] = name
     try:
         datasource = get_datapool_year(year, keys_nb)
     except:
