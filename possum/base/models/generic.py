@@ -38,7 +38,7 @@ class Nom(models.Model):
 
 
 class NomDouble(Nom):
-    nom_facture = models.CharField(max_length=35)
+    nom_facture = models.CharField(max_length=35, default="")
 
     class Meta:
         app_label = 'base'

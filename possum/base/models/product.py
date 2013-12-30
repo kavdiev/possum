@@ -23,7 +23,6 @@ from django.db import models
 import logging
 from category import Categorie
 from generic import Nom
-from options import Cuisson, Sauce, Accompagnement
 from config import Config
 
 
@@ -33,7 +32,7 @@ logger = logging.getLogger(__name__)
 class Produit(Nom):
     categorie = models.ForeignKey(Categorie, related_name="produit-categorie")
     choix_cuisson = models.BooleanField(default=False)
-    choix_accompagnement = models.BooleanField(default=False)
+    choix_dish = models.BooleanField(default=False)
     choix_sauce = models.BooleanField(default=False)
     # pour les menus / formules
     # categories authorisees
@@ -92,7 +91,7 @@ class Produit(Nom):
             product.prix = prize
             product.nom = self.nom
             product.choix_cuisson = self.choix_cuisson
-            product.choix_accompagnement = self.choix_accompagnement
+            product.choix_dish = self.choix_dish
             product.choix_sauce = self.choix_sauce
             product.categorie = self.categorie
             product.save()

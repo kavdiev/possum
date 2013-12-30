@@ -19,6 +19,7 @@ List of commands:
     init_mine          :  run possum/utils/init_mine.py in virtualenv 
     load_demo          :  load database with data of demonstration
     model              :  generate doc/images/models-base.png
+    modified_models    :  prepare files after modified models
     sh                 :  run ./manage.py shell_plus in virtualenv
     run                :  run ./manage.py runserver_plus in virtualenv
     tests              :  make tests and coverage
@@ -185,6 +186,12 @@ function deb_install_nginx {
     echo
 }
 
+function graph_models {
+    enter_virtualenv
+    ./manage.py graph_models --output=doc/images/models-base.png -g base
+    echo "[doc/images/models-base.png] updated"
+}
+
 function deb_install {
     sudo apt-get install graphviz-dev graphviz libcups2-dev memcached \
         python-virtualenv unzip \
@@ -229,12 +236,20 @@ doc)
     doc
     ;;
 model)
-    enter_virtualenv
-    ./manage.py graph_models --output=doc/images/models-base.png -g base
-    echo "[doc/images/models-base.png] updated"
+    graph_models
     ;;
 update)
     update
+    ;;
+modified_models)
+    enter_virtualenv
+    ./manage.py syncdb --noinput --migrate
+    ./manage.py schemamigration base --auto
+    ./manage.py migrate base
+    possum/utils/init_db.py
+    possum/utils/init_demo.py
+    create_json_demo
+    graph_models
     ;;
 tests)
 # TODO: diff sur le settings.py et backup de securite

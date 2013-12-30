@@ -25,7 +25,7 @@ from follow import Follow
 from generic import Nom, NomDouble, Priorite
 from location import Table, Zone
 from monthly_stat import MonthlyStat
-from options import Accompagnement, Cuisson, Sauce
+from options import Dish, Cuisson, Sauce
 from payment import Paiement, PaiementType
 from printer import Printer
 from product import Produit

@@ -24,7 +24,7 @@ import logging
 from category import Categorie
 from generic import NomDouble
 from product import Produit
-from options import Cuisson, Sauce, Accompagnement
+from options import Cuisson, Sauce, Dish
 from config import Config
 
 
@@ -39,10 +39,9 @@ class ProduitVendu(models.Model):
     cuisson = models.ForeignKey(Cuisson, null=True, blank=True,
                                 related_name="produitvendu-cuisson")
     prix = models.DecimalField(max_digits=7, decimal_places=2, default=0)
-    sauce = models.ForeignKey(Sauce, null=True, blank=True,
-                              related_name="produitvendu-sauce")
-    accompagnement = models.ForeignKey(Accompagnement, null=True, blank=True,
-                                       related_name="produitvendu-accompagnement")
+    sauces = models.ManyToManyField(Sauce, null=True, blank=True,
+                                   related_name="produitvendu-sauce")
+    dishes = models.ManyToManyField(Dish, null=True, blank=True)
     # dans le cas d'un menu, peut contenir d'autres produits
     contient = models.ManyToManyField('self')
     # faut-il préparer ce plat avec les entrées ?

@@ -26,7 +26,7 @@ sys.path.append('.')
 os.environ['DJANGO_SETTINGS_MODULE'] = 'possum.settings'
 
 from django.contrib.auth.models import User, Permission
-from possum.base.models import Accompagnement, Sauce, Categorie, Cuisson, \
+from possum.base.models import Dish, Sauce, Categorie, Cuisson, \
     Facture, Paiement, PaiementType, Produit, ProduitVendu, Follow, Table, \
     Zone, VAT, Printer, VATOnBill, DailyStat, WeeklyStat, MonthlyStat, Config
 
@@ -38,7 +38,7 @@ VATOnBill.objects.all().delete()
 Categorie.objects.all().delete()
 Cuisson.objects.all().delete()
 Sauce.objects.all().delete()
-Accompagnement.objects.all().delete()
+Dish.objects.all().delete()
 Produit.objects.all().delete()
 DailyStat.objects.all().delete()
 WeeklyStat.objects.all().delete()
@@ -133,14 +133,14 @@ jus.save()
 abricot = Produit(nom="jus abricot",
                   prix="2.80",
                   choix_cuisson=False,
-                  choix_accompagnement=False,
+                  choix_dish=False,
                   choix_sauce=False,
                   categorie=jus)
 abricot.save()
 pomme = Produit(nom="jus pomme",
                 prix="2.80",
                 choix_cuisson=False,
-                choix_accompagnement=False,
+                choix_dish=False,
                 choix_sauce=False,
                 categorie=jus)
 pomme.save()
@@ -157,7 +157,7 @@ bieres.save()
 biere = Produit(nom="biere 50cl",
                 prix="2.80",
                 choix_cuisson=False,
-                choix_accompagnement=False,
+                choix_dish=False,
                 choix_sauce=False,
                 categorie=bieres)
 biere.save()
@@ -174,14 +174,14 @@ entrees.save()
 salade = Produit(nom="salade normande",
                  prix="3.40",
                  choix_cuisson=False,
-                 choix_accompagnement=False,
+                 choix_dish=False,
                  choix_sauce=False,
                  categorie=entrees)
 salade.save()
 buffet = Produit(nom="buffet",
                  prix="6.40",
                  choix_cuisson=False,
-                 choix_accompagnement=False,
+                 choix_dish=False,
                  choix_sauce=False,
                  categorie=entrees)
 buffet.save()
@@ -198,14 +198,14 @@ plat.save()
 entrecote = Produit(nom="entrecote",
                     prix="8.40",
                     choix_cuisson=True,
-                    choix_accompagnement=False,
+                    choix_dish=False,
                     choix_sauce=False,
                     categorie=plat)
 entrecote.save()
 pave = Produit(nom="pave de saumon",
                prix="9.40",
                choix_cuisson=False,
-               choix_accompagnement=False,
+               choix_dish=False,
                choix_sauce=False,
                categorie=plat)
 pave.save()
@@ -223,7 +223,7 @@ menu.save()
 entree_plat = Produit(nom=u"Menu Entree/Plat",
                       prix="13.40",
                       choix_cuisson=False,
-                      choix_accompagnement=False,
+                      choix_dish=False,
                       choix_sauce=False,
                       categorie=menu)
 entree_plat.save()

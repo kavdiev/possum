@@ -33,15 +33,16 @@ class Cuisson(NomDouble, Priorite):
         return cmp(self.priorite, other.priorite)
 
 
-class Sauce(Nom):
-    """Sauce d'un produit"""
+class Sauce(NomDouble):
+    """Sauce d'un produit.
+    nom_facture est utilise pour l'affichage court"""
     color = models.CharField(max_length=8, default="#ffdd82")
 
     class Meta:
         app_label = 'base'
 
 
-class Accompagnement(Nom):
+class Dish(NomDouble):
     """Accompagnement d'un produit"""
     color = models.CharField(max_length=8, default="#ffdd82")
 
