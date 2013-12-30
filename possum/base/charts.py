@@ -104,8 +104,7 @@ def get_chart_year_ttc(year):
 
 def get_chart_year_bar(year):
     keys = {"bar_average": 'TM/facture',
-            "bar_nb": 'nb factures',
-            "bar_total_ttc": 'total ttc bar'}
+            "bar_nb": 'nb factures'}
     try:
         datasource = get_datapool_year(year, keys)
     except:
@@ -116,8 +115,7 @@ def get_chart_year_bar(year):
 
 def get_chart_year_guests(year):
     keys = {"guests_average": 'TM/couvert',
-            "guests_nb": 'nb couverts',
-            "guests_total_ttc": 'total ttc restaurant'}
+            "guests_nb": 'nb couverts'}
     try:
         datasource = get_datapool_year(year, keys)
     except:
