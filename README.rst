@@ -35,7 +35,7 @@ Demo
 ----
 
 You can test POSSUM on the demo site with login/password (demo/demo) 
-`here <http://demo.possum-software.org>`_.
+`here <https://demo.possum-software.org>`_.
 
 Devs
 ----
