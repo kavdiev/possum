@@ -1,8 +1,8 @@
 FAQ
 ===
 
-Comment se connecter à distance à l'interface graphique
--------------------------------------------------------
+Comment se connecter à distance à l'interface graphique ?
+---------------------------------------------------------
 
 Pour cela, nous allons utiliser ''x11vnc'' sur le serveur:
 
@@ -34,20 +34,17 @@ Ensuite, nous allons utiliser cette connexion pour avoir l'affichage:
 
   gvncviewer localhost:0
 
+Comment avoir un navigateur web en plein écran pour seulement utiliser Possum ?
+-------------------------------------------------------------------------------
 
-Comment avoir un clavier virtuel
---------------------------------
+Le plus simple est d'utiliser ''Firefox'' en mode kiosque, c'est à dire: en plein écran avec
+tous les raccourcis et autres menus désactivés. Il suffira de lancer automatiquement
+au lancement de votre gestionnaire de fenêtre (par exemple: ''Fluxbox'').
 
-Vous pouvez utiliser ''Onboard Virtual Keyboard'' sous Ubuntu:
-
-::
-
-  sudo apt-get install onboard
-
-Vous pouvez le configurer avec un:
-
-::
-
-  onboard-settings
+Pour activer le mode kiosque, je vous conseille l'extension ''R-kiosk''.
 
 
+Comment avoir un clavier virtuel ?
+----------------------------------
+
+Je vous conseille de directement utiliser une extension disponible pour ''Firefox'': FxKeyboard
