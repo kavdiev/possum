@@ -26,6 +26,7 @@ from generic import NomDouble
 from product import Produit
 from options import Cuisson, Sauce, Dish
 from config import Config
+from note import Note
 
 
 logger = logging.getLogger(__name__)
@@ -44,6 +45,7 @@ class ProduitVendu(models.Model):
     dishes = models.ManyToManyField(Dish, null=True, blank=True)
     # dans le cas d'un menu, peut contenir d'autres produits
     contient = models.ManyToManyField('self')
+    notes = models.ManyToManyField(Note, null=True, blank=True)
     # faut-il préparer ce plat avec les entrées ?
     made_with = models.ForeignKey(Categorie, related_name="produit-kitchen",
                                   null=True)

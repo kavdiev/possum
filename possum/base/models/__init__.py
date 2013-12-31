@@ -17,6 +17,7 @@
 #    You should have received a copy of the GNU General Public License
 #    along with POSSUM.  If not, see <http://www.gnu.org/licenses/>.
 
+from note import Note
 from bill import Facture
 from category import Categorie
 from config import Config
