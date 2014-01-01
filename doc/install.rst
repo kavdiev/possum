@@ -13,7 +13,7 @@ Possum
 ------
 
 Vous avez ici 2 possibilités, dans tous les cas, il faudra se positionner dans un répertoire.
-Prenons le répertoire ''/opt'':
+Prenons le répertoire **/opt**:
 
 ::
 
@@ -40,7 +40,7 @@ Prérequis
 ---------
 
 Possum nécessite l'installation de quelques paquets, pour simplifier l'installation
-il suffit d'utiliser la commande ''./make'' dans le répertoire de Possum:
+il suffit d'utiliser la commande **./make** dans le répertoire de Possum:
 
 ::
 
@@ -48,7 +48,7 @@ il suffit d'utiliser la commande ''./make'' dans le répertoire de Possum:
   ./make deb_install
 
 Ensuite pour l'installation ou les mises à jours, nous allons encore utiliser la
-commande ''./make'':
+commande **./make**:
 
 ::
 
@@ -58,8 +58,8 @@ Cette opération va installer et configurer tout l'environnement virtuel nécess
 à Possum.
 
 Il nous reste maintenant à initialiser les données, pour cela il est recommandé
-de copier le fichier d'initialisation ''possum/utils/init_db.py''. Pour un exemple
-plus complet, vous pouvez vous inspirer du fichier ''possum/utils/init_demo.py'':
+de copier le fichier d'initialisation **possum/utils/init_db.py**. Pour un exemple
+plus complet, vous pouvez vous inspirer du fichier **possum/utils/init_demo.py**:
 
 ::
 
@@ -83,9 +83,9 @@ suivante: `Cups <http://localhost:631>`_
 
 D'autre part, l'impression des tickets nécessite la création et la suppression de nombreux
 fichiers. Je vous recommande donc d'utiliser un système de fichier virtuel type tmpfs pour
-le répertoire ''tickets'' qui se trouve par défaut dans le répertoire ''possum-software''.
+le répertoire **tickets** qui se trouve par défaut dans le répertoire **possum-software**.
 
-Par exemple, si le chemin absolu vers votre répertoire ''tickets' est ''/opt/possum-software/tickets/'', il faudra ajouter la ligne suivante dans votre fichier ''/etc/fstab'':
+Par exemple, si le chemin absolu vers votre répertoire **tickets' est **/opt/possum-software/tickets/**, il faudra ajouter la ligne suivante dans votre fichier **/etc/fstab**:
 
 ::
 
@@ -110,7 +110,7 @@ Vous pouvez générer la documentation en html avec la commande suivante:
 
   ./make doc
 
-Elle sera disponible ici: ''/opt/possum-software/doc/_build/html/''.
+Elle sera disponible ici: **/opt/possum-software/doc/_build/html/**.
 
 Sinon elle est également disponible sur le site officiel: `Documentation <http://www.possum-software.org>`_.
 
@@ -119,7 +119,7 @@ Configuration du serveur Web
 
 Nous avons besoin maintenant d'un serveur web. Il y a plusieurs possibilités,
 celle conseillée ici est la plus performante mais vous pouvez tout à fait choisir
-une autre solution (''./make deb_install_apache'' installera par exemple les paquets
+une autre solution (**./make deb_install_apache** installera par exemple les paquets
 nécessaires à l'utilisation du serveur web Apache).
 
 La solution préconisée à base de `NGinx <http://nginx.org/>`_, `Gunicorn <http://gunicorn.org/>`_ 
@@ -135,26 +135,27 @@ Commençons par installer les paquets nécessaires:
 
 
 Il reste la configuration à faire. Pour cela, il y a des configurations type dans 
-le répertoire ''possum/utils/''.
+le répertoire **possum/utils/**.
 
-On configure maintenant ''Supervisor'' qui s'occupera de lancer ''Possum'':
+On configure maintenant **Supervisor** qui s'occupera de lancer **Possum**:
 
 ::
 
   cp possum/utils/supervisor.conf /etc/supervisor/conf.d/possum.conf
   /etc/init.d/supervisor restart
 
-Pour ''NGinx'':
+Pour **NGinx**:
 
 ::
+
   cp possum/utils/nginx-ssl.conf /etc/nginx/sites-enabled/default
   /etc/init.d/nginx restart
 
 
-La configuration conseillée utilise du ''https'' afin
+La configuration conseillée utilise du **https** afin
 de sécuriser les échanges entre les clients et le serveur. Pour utiliser 
 cette configuration, le 
-fichier ''/etc/hosts'' doit être correctement configuré. 
+fichier **/etc/hosts** doit être correctement configuré. 
 
 Exemple:
 
@@ -163,7 +164,7 @@ Exemple:
   # hostname
   possum
 
-Ici, le serveur s'appelle ''possum''.
+Ici, le serveur s'appelle **possum**.
 
 ::
 
@@ -189,7 +190,7 @@ au panneau d'administration ou des bugs.
   Nom de courrier : possum (ou le nom que vous voulez)
 
 Il est conseillé de définir un alias pour l'utilisateur root dans le fichier 
-''/etc/aliases''. Dans ce cas, vous aurez une ligne du type:
+**/etc/aliases**. Dans ce cas, vous aurez une ligne du type:
 
 ::
 
@@ -203,7 +204,7 @@ Après chaque modification de ce fichier, il faut lancer la commande:
   sudo newaliases
 
 Si tout est bien configurer, vous devriez recevoir un mail avec comme
-sujet ''test'' et dans le message la date d'envoie en utilisant la
+sujet **test** et dans le message la date d'envoie en utilisant la
 commande suivante:
 
 ::
