@@ -263,7 +263,8 @@ def categories_set_vat_takeaway(request, cat_id, vat_id):
     category = get_object_or_404(Categorie, pk=cat_id)
     vat = get_object_or_404(VAT, pk=vat_id)
     category.set_vat_takeaway(vat)
-    for product in Produit.objects.filter(categorie=category).iterator():
+    for product in Produit.objects.filter(categorie=category,
+                                          actif=True).iterator():
         product.update_vats()
     return HttpResponseRedirect('/carte/categories/%s/' % cat_id)
 
@@ -273,7 +274,8 @@ def categories_set_vat_onsite(request, cat_id, vat_id):
     category = get_object_or_404(Categorie, pk=cat_id)
     vat = get_object_or_404(VAT, pk=vat_id)
     category.set_vat_onsite(vat)
-    for product in Produit.objects.filter(categorie=category).iterator():
+    for product in Produit.objects.filter(categorie=category
+                                          actif=True).iterator():
         product.update_vats()
     return HttpResponseRedirect('/carte/categories/%s/' % cat_id)
 

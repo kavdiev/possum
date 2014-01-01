@@ -207,6 +207,10 @@ def products_enable(request, product_id):
     new = not product.actif
     product.actif = new
     product.save()
+    if product.actif:
+        # si le produit est a nouveau actif, on mets a jour les informations
+        # sur la TVA, ...
+        product.update_vats()
     return HttpResponseRedirect('/carte/products/%s/' % product_id)
 
 
