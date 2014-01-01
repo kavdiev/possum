@@ -89,7 +89,7 @@ class Produit(Nom):
         product.actif = self.actif
         self.actif = False
         self.save()
-        product.prix = self.prize
+        product.prix = self.prix
         product.nom = self.nom
         product.choix_cuisson = self.choix_cuisson
         product.choix_dish = self.choix_dish
