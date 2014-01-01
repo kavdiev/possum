@@ -141,14 +141,14 @@ h3 {clear: both;}
     width:100px;
     float:left; /* c'est cette balise qui fait l'effet tableau*/
     height:25px;
-    background:#eee;
+    background:#afbbcc;
     margin:5px;
     overflow:hidden; /* permet de limiter l'affichage du contenu au dimension du contenant */
     padding:5px;
 }
 #menu li.menuSelected
 {
-    background-color: #afbbcc;
+    background-color: #8e9299;
 }
 #menu li.icon {
     background-color: #FFF;
@@ -259,7 +259,7 @@ li {
     float:left; /* c'est cette balise qui fait l'effet tableau*/
     width:200px;
     height:40px;
-    background:#eee;
+    background:#afbbcc;
     margin:5px;
     overflow:hidden; /* permet de limiter l'affichage du contenu au dimension du contenant */
     padding:5px;
