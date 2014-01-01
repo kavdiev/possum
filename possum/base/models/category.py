@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-#    Copyright 2009, 2010, 2011, 2012 Sébastien Bonnegent
+#    Copyright 2009-2014 Sébastien Bonnegent
 #
 #    This file is part of POSSUM.
 #

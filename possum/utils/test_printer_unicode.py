@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-#    Copyright 2009, 2010, 2011 Sébastien Bonnegent
+#    Copyright 2009-2014 Sébastien Bonnegent
 #
 #    This file is part of POSSUM.
 #
