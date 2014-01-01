@@ -42,18 +42,13 @@ def carte(request):
                                 context_instance=RequestContext(request))
 
 
-def is_valid_product(request, name, billname, prize):
+def is_valid_product(request, name, prize):
     erreur = False
     if not name:
         erreur = True
         messages.add_message(request,
                              messages.ERROR,
                              "Vous devez saisir un nom.")
-    if not billname:
-        erreur = True
-        messages.add_message(request,
-                             messages.ERROR,
-                             "Vous devez saisir un nom pour la facture.")
     if not prize:
         erreur = True
         messages.add_message(request,
@@ -75,7 +70,7 @@ def products_view(request, product_id):
 def treat_product_new(request, category):
     name = request.POST.get('name', '').strip()
     prize = request.POST.get('prize', '').strip()
-    if is_valid_product(request, name, billname, prize):
+    if is_valid_product(request, name, prize):
         try:
             product = Produit(nom=name, prix=prize)
             product.set_category(category)
@@ -216,9 +211,8 @@ def products_enable(request, product_id):
 
 def treat_products_change(request, product):
     name = request.POST.get('name', '').strip()
-    billname = request.POST.get('billname', '').strip()
     prize = request.POST.get('prize', '').strip().replace(',', '.')
-    if is_valid_product(request, name, billname, prize):
+    if is_valid_product(request, name, prize):
         product = product.set_prize(prize)
         product.nom = name
         try:
