@@ -237,6 +237,5 @@ def products_change(request, product_id):
     if request.method == 'POST':
         treat_products_change(request, product)
     data['product'] = product
-    return render_to_response('base/carte/product_change.html',
-                                data,
-                                context_instance=RequestContext(request))
+    return render_to_response('base/carte/product_change.html', data,
+                              context_instance=RequestContext(request))
