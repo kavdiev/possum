@@ -79,28 +79,42 @@ class Produit(Nom):
     def get_prize(self):
         return "%.2f" % self.prix
 
+    def _clone_product(self):
+        """Clone a product to keep old one for stats and reports.
+        It is use with a modification of prize.
+
+        New product is returned, and old one is disabled.
+        """
+        product = Produit()
+        product.actif = self.actif
+        self.actif = False
+        self.save()
+        product.prix = self.prize
+        product.nom = self.nom
+        product.choix_cuisson = self.choix_cuisson
+        product.choix_dish = self.choix_dish
+        product.choix_sauce = self.choix_sauce
+        product.categorie = self.categorie
+        product.price_surcharged = self.price_surcharged
+        product.vat_onsite = self.vat_onsite
+        product.vat_surcharged = self.vat_surcharged
+        product.vat_takeaway = self.vat_takeaway
+        product.save()
+        for c in self.categories_ok.distinct():
+            product.categories_ok.add(c)
+        for p in self.produits_ok.distinct():
+            product.produits_ok.add(p)
+        product.save()
+        return product
+
     def set_prize(self, prize):
         """With new prize, we have to create a new product to keep statistics
         and historics.
         """
         if prize != str(self.prix):
-            product = Produit()
-            product.actif = self.actif
-            self.actif = False
-            self.save()
+            product = self._clone_product()
             product.prix = prize
-            product.nom = self.nom
-            product.choix_cuisson = self.choix_cuisson
-            product.choix_dish = self.choix_dish
-            product.choix_sauce = self.choix_sauce
-            product.categorie = self.categorie
-            product.save()
-            product.update_vats()
-            for c in self.categories_ok.distinct():
-                product.categories_ok.add(c)
-            for p in self.produits_ok.distinct():
-                product.produits_ok.add(p)
-            product.save()
+            product.update_vats(keep_clone=False)
             return product
         else:
             return self
@@ -109,8 +123,10 @@ class Produit(Nom):
         self.categorie = category
         self.update_vats()
 
-    def update_vats(self):
+    def update_vats(self, keep_clone=True):
         """Update vat_onsite and vat_takeaway with price in TTC
+
+        keep_clone=True : we keep a clean with old values
         """
         price_surcharge, created = Config.objects.get_or_create(key="price_"
                                                                 "surcharge")
@@ -121,17 +137,29 @@ class Produit(Nom):
         one = Decimal('1')
         if self.categorie.vat_onsite and self.categorie.vat_takeaway:
             value = self.categorie.vat_onsite.value
-            self.vat_onsite = Decimal(self.prix) / (one + value) * value
+            vat_onsite = Decimal(self.prix) / (one + value) * value
             if self.categorie.surtaxable:
-                self.price_surcharged = self.prix + surcharge
-                vat = Decimal(self.price_surcharged) / (one + value) * value
-                self.vat_surcharged = vat
+                price_surcharged = self.prix + surcharge
+                vat = Decimal(price_surcharged) / (one + value) * value
+                vat_surcharged = vat
             else:
-                self.price_surcharged = self.prix
-                self.vat_surcharged = self.vat_onsite
+                price_surcharged = self.prix
+                vat_surcharged = vat_onsite
             value = self.categorie.vat_takeaway.value
-            self.vat_takeaway = Decimal(self.prix) / (one + value) * value
-            self.save()
+            vat_takeaway = Decimal(self.prix) / (one + value) * value
+            if self.vat_onsite != vat_onsite or \
+                    self.price_surcharged != price_surcharged or \
+                    self.vat_surcharged != vat_surcharged or \
+                    self.vat_takeaway != vat_takeaway:
+                if keep_clone:
+                    product = self._clone_product()
+                else:
+                    product = self
+                product.vat_onsite = vat_onsite
+                product.price_surcharged = price_surcharged
+                product.vat_surcharged = vat_surcharged
+                product.vat_takeaway = vat_takeaway
+                product.save()
         else:
             logger.warning("[%s] categorie without VAT" % self.categorie)
 
