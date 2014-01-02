@@ -236,7 +236,7 @@ entree_plat.save()
 
 # mis a jour des TTC et TVA
 for product in Produit.objects.all():
-    product.update_vats()
+    product.update_vats(keep_clone=False)
 
 # on ajoute des données pour avoir des jolies graphiques de démonstrations
 DailyStat(date="2013-10-01", key="total_ttc", value="234").save()
