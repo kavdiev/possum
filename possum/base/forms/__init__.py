@@ -20,15 +20,24 @@
 
 from django import forms
 from django.forms.extras.widgets import SelectDateWidget
+from possum.base.models import Facture
+from datetime import datetime
 
+if Facture.objects.count():
+    first_year = int(Facture.objects.all()[0].date_creation.year)
+    last_year = int(Facture.objects.latest().date_creation.year)
+else:
+    first_year = int(datetime.now().year)
+    last_year = first_year
 
 weeks_choice = [(unicode(i), i) for i in range(54)]
 months_choice = [(unicode(i), i) for i in range(1, 13)]
-years_choice = [(unicode(i), i) for i in range(2004, 2030)]
+years_choice = [(unicode(i), i) for i in range(first_year, last_year)]
+years_list = [i for i in range(first_year, last_year)]
 
 
 class DateForm(forms.Form):
-    date = forms.DateField(widget=SelectDateWidget())
+    date = forms.DateField(widget=SelectDateWidget(years=years_list))
 
 
 class WeekForm(forms.Form):
