@@ -105,13 +105,14 @@ class Produit(Nom):
         for p in self.produits_ok.distinct():
             product.produits_ok.add(p)
         product.save()
+        logger.debug("[P%s] cloned, new Produit[P%s]" % (self.id, product.id))
         return product
 
     def set_prize(self, prize):
         """With new prize, we have to create a new product to keep statistics
         and historics.
         """
-        if prize != str(self.prix):
+        if Decimal(prize) != Decimal(self.prix):
             product = self._clone_product()
             product.prix = prize
             product.update_vats(keep_clone=False)
@@ -139,7 +140,7 @@ class Produit(Nom):
             value = self.categorie.vat_onsite.value
             vat_onsite = Decimal(self.prix) / (one + value) * value
             if self.categorie.surtaxable:
-                price_surcharged = self.prix + surcharge
+                price_surcharged = Decimal(self.prix) + surcharge
                 vat = Decimal(price_surcharged) / (one + value) * value
                 vat_surcharged = vat
             else:
@@ -151,6 +152,7 @@ class Produit(Nom):
                     self.price_surcharged != price_surcharged or \
                     self.vat_surcharged != vat_surcharged or \
                     self.vat_takeaway != vat_takeaway:
+                logger.debug("[P%s] new values" % self.id)
                 if keep_clone:
                     product = self._clone_product()
                 else:
@@ -160,6 +162,9 @@ class Produit(Nom):
                 product.vat_surcharged = vat_surcharged
                 product.vat_takeaway = vat_takeaway
                 product.save()
+                return product
+            else:
+                return self
         else:
             logger.warning("[%s] categorie without VAT" % self.categorie)
 

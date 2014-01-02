@@ -205,22 +205,9 @@ def products_enable(request, product_id):
     if product.actif:
         # si le produit est a nouveau actif, on mets a jour les informations
         # sur la TVA, ...
-        product.update_vats()
-    return HttpResponseRedirect('/carte/products/%s/' % product_id)
-
-
-def treat_products_change(request, product):
-    name = request.POST.get('name', '').strip()
-    prize = request.POST.get('prize', '').strip().replace(',', '.')
-    if is_valid_product(request, name, prize):
-        product = product.set_prize(prize)
-        product.nom = name
-        try:
-            product.save()
-        except:
-            messages.add_message(request, messages.ERROR,
-                            "Les modifications n'ont pu être enregistrées.")
-            return HttpResponseRedirect('/carte/products/%s/' % product.id)
+        new_product = product.update_vats()
+        product = new_product
+    return HttpResponseRedirect('/carte/products/%s/' % product.id)
 
 
 @permission_required('base.p2')
@@ -229,7 +216,20 @@ def products_change(request, product_id):
     product = get_object_or_404(Produit, pk=product_id)
     data['menu_manager'] = True
     if request.method == 'POST':
-        treat_products_change(request, product)
+        name = request.POST.get('name', '').strip()
+        prize = request.POST.get('prize', '').strip().replace(',', '.')
+        if is_valid_product(request, name, prize):
+            new_product = product.set_prize(prize)
+            new_product.nom = name
+            try:
+                new_product.save()
+            except:
+                messages.add_message(request, messages.ERROR,
+                                "Les modifications n'ont pu etre enregistrees.")
+            else:
+                return HttpResponseRedirect('/carte/products/%s/' % new_product.id)
+        else:
+            logger.debug("[P%s] invalid data" % product.id)
     data['product'] = product
     return render_to_response('base/carte/product_change.html', data,
                               context_instance=RequestContext(request))
