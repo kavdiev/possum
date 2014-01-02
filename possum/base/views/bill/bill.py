@@ -288,19 +288,26 @@ def sold_cooking(request, bill_id, sold_id, cooking_id=-1, menu_id=-1):
     data['sold'] = get_object_or_404(ProduitVendu, pk=sold_id)
     data['cookings'] = Cuisson.objects.order_by('priorite', 'nom')
     data['bill_id'] = bill_id
+    if menu_id > -1:
+        data['menu_id'] = menu_id
     if cooking_id > -1:
         cooking = get_object_or_404(Cuisson, pk=cooking_id)
         old = data['sold'].cuisson
         data['sold'].cuisson = cooking
         data['sold'].save()
+        logger.debug("[S%s] cooking saved" % sold_id)
         if menu_id > -1:
             # this is a menu
+            logger.debug("[S%s] is a subproduct of %s" % (sold_id, menu_id))
             menu = get_object_or_404(ProduitVendu, pk=menu_id)
             category = menu.getFreeCategorie()
             if category:
+                logger.debug("[S%s] menu is not full" % menu_id)
                 url = '/bill/%s/sold/%s/category/%s/select/' % (bill_id,
                       menu.id, category.id)
                 return HttpResponseRedirect(url)
+            else:
+                logger.debug("[S%s] menu is full" % menu_id)
         if old == None:
             # certainement un nouveau produit donc on veut retourner
             # sur le panneau de saisie des produits

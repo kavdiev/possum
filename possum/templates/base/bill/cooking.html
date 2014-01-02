@@ -8,7 +8,7 @@
 <h1>Choix de la cuisson pour: {{sold.produit.nom}}</h1>
 <ul id="cookings">
     {% for cooking in cookings %}
-    <li onclick="window.location='/bill/{{bill_id}}/sold/{{sold.id}}/cooking/{{cooking.id}}/'"
+    <li onclick="window.location='/bill/{{bill_id}}/sold/{% if menu_id %}{{menu_id}}/{% endif %}{{sold.id}}/cooking/{{cooking.id}}/'"
     style="background:{{cooking.color}};">
         {{cooking}}
         </li>
