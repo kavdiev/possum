@@ -524,10 +524,10 @@ class Facture(models.Model):
         dict_vendu = OrderedDict()
         for vendu in self.produits.order_by("produit__categorie__priorite"):
             produit = vendu.produit
-            if produit.nom in dict_vendu:
-                dict_vendu[produit.nom].append(produit.prix)
+            if vendu.produit.nom in dict_vendu:
+                dict_vendu[vendu.produit.nom].append(vendu.prix)
             else:
-                dict_vendu[produit.nom] = [produit.prix]
+                dict_vendu[vendu.produit.nom] = [vendu.prix]
         for nom, prix in dict_vendu.items():
             name = nom[:25]
             prize = "% 3.2f" % sum(prix)
