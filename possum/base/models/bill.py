@@ -103,7 +103,8 @@ class Facture(models.Model):
             date = self.date_creation.strftime("%H:%M %d/%m")
         else:
             date = "--:-- --/--"
-        return u"%s F%06d" % (date, object_id)
+        #return u"%s F%06d" % (date, object_id)
+        return u"%s" % date
 
     def __cmp__(self, other):
         """

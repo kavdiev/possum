@@ -7,8 +7,8 @@
         {% for facture in factures %}
         <li onclick="window.location='/bill/{{facture.id}}/'">
         {{facture}}</br>
+        Table: {% if facture.table %}{{facture.table}}{%else%}T--{% endif %}</br>
         Couverts: {{facture.couverts}}</br>
-        Table: {% if facture.table %}{{facture.table}}{% endif %}</br>
         Montant: {{facture.total_ttc}}€</br>
         </li>
         {% endfor %}
