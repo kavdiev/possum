@@ -214,10 +214,14 @@ init_mine)
     ;;
 init_demo)
     enter_virtualenv
+    rm -f possum.db
+    ./manage.py syncdb --noinput --migrate
     possum/utils/init_demo.py
     ;;
 load_demo)
     enter_virtualenv
+    rm -f possum.db
+    ./manage.py syncdb --noinput --migrate
     ./manage.py loaddata demo
     ;;
 deb_install)
