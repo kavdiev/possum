@@ -5,7 +5,7 @@ Cette documentation est écrite pour Debian, et devrait fonctionner avec toutes 
 
 Voici le schéma général des différentes briques logiciels:
 
-.. image:: images/overview.png
+.. image:: images/overview_apache.png
     :scale: 50
     :alt: Overview
 
@@ -85,7 +85,9 @@ D'autre part, l'impression des tickets nécessite la création et la suppression
 fichiers. Je vous recommande donc d'utiliser un système de fichier virtuel type tmpfs pour
 le répertoire **tickets** qui se trouve par défaut dans le répertoire **possum-software**.
 
-Par exemple, si le chemin absolu vers votre répertoire **tickets' est **/opt/possum-software/tickets/**, il faudra ajouter la ligne suivante dans votre fichier **/etc/fstab**:
+Par exemple, si le chemin absolu vers votre répertoire **tickets** est 
+**/opt/possum-software/tickets/**, il faudra ajouter la ligne suivante dans votre 
+fichier **/etc/fstab**:
 
 ::
 
@@ -118,38 +120,38 @@ Configuration du serveur Web
 ----------------------------
 
 Nous avons besoin maintenant d'un serveur web. Il y a plusieurs possibilités,
-celle conseillée ici est la plus performante mais vous pouvez tout à fait choisir
-une autre solution (**./make deb_install_apache** installera par exemple les paquets
-nécessaires à l'utilisation du serveur web Apache).
+celle-ci se base sur le serveur web `Apache <http://httpd.apache.org/>`_.
 
-La solution préconisée à base de `NGinx <http://nginx.org/>`_, `Gunicorn <http://gunicorn.org/>`_ 
-et `Supervisor <http://supervisord.org/>`_ semble à première
-vue compliquée mais c'est la plus performante dans le cas de Possum (peu de clients
-connectés à l'interface web).
+Si vous préférez `NGinx <http://nginx.org/>`_, il y a un document d'installation dédié ici:
+
+.. install_nginx
+
+
+En bref, le module `mod_wsgi <http://code.google.com/p/modwsgi/>`_ servira à exécuter Possum.
 
 Commençons par installer les paquets nécessaires:
 
 ::
 
-  ./make deb_install_nginx
+  ./make deb_install_apache
 
 
 Il reste la configuration à faire. Pour cela, il y a des configurations type dans 
 le répertoire **possum/utils/**.
 
-On configure maintenant **Supervisor** qui s'occupera de lancer **Possum**:
+Par exemple, pour une configuration standard et sécurisée:
 
 ::
 
-  cp possum/utils/supervisor.conf /etc/supervisor/conf.d/possum.conf
-  /etc/init.d/supervisor restart
+  cp possum/utils/apache2-ssl.conf /etc/apache2/sites-available/possum.conf
 
-Pour **NGinx**:
+Il faudra modifier le fichier **/etc/apache2/sites-available/possum.conf**
+pour l'adapter à votre installation, puis:
 
 ::
 
-  cp possum/utils/nginx-ssl.conf /etc/nginx/sites-enabled/default
-  /etc/init.d/nginx restart
+  a2ensite possum
+  /etc/init.d/apache2 restart
 
 
 La configuration conseillée utilise du **https** afin
@@ -169,8 +171,8 @@ Ici, le serveur s'appelle **possum**.
 ::
 
   # on donne les droits nécessaires au serveur web sur le répertoire
-  # possum-software (en considérant que l'on se trouve dans ce répertoire)
-  chown -R www-data .
+  # possum-software
+  chown -R www-data /opt/possum-software
   # création des certificats SSL
   make-ssl-cert generate-default-snakeoil --force-overwrite
 
