@@ -164,11 +164,10 @@ function deb_install_apache {
     a2dismod authz_groupfile authz_user authz_default
     a2enmod wsgi ssl
     echo 
-    echo "Config example for http in: possum/utils/apache2.conf"
-    echo "Config example for https in: possum/utils/apache2-ssl.conf"
+    echo "Config example for https in: possum/utils/apache2.conf"
     echo "To use one:"
-    echo "  cp possum/utils/apache2-ssl.conf /etc/apache2/sites-available/possum"
-    echo "  a2dissite default"
+    echo "  cp possum/utils/apache2.conf /etc/apache2/sites-available/possum.conf"
+    echo "  a2dissite 000-default.conf"
     echo "  a2ensite possum"
     echo
 }

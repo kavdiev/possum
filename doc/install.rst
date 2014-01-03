@@ -143,13 +143,14 @@ Par exemple, pour une configuration standard et sécurisée:
 
 ::
 
-  cp possum/utils/apache2-ssl.conf /etc/apache2/sites-available/possum.conf
+  cp possum/utils/apache2.conf /etc/apache2/sites-available/possum.conf
 
 Il faudra modifier le fichier **/etc/apache2/sites-available/possum.conf**
 pour l'adapter à votre installation, puis:
 
 ::
 
+  a2dissite 000-default.conf
   a2ensite possum
   /etc/init.d/apache2 restart
 
