@@ -309,7 +309,7 @@ class Facture(models.Model):
                 # in case Produit has no price_surcharged
                 logger.info("[%s] product without price_surcharged" %
                             sold.produit.id)
-                sold.produit.update_vats()
+                sold.produit.update_vats(keep_clone=False)
             if sold.prix != sold.produit.price_surcharged:
                 sold.prix = sold.produit.price_surcharged
                 sold.save()
