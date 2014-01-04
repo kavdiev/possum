@@ -129,6 +129,10 @@ function update {
         # For the moment, we stay with python2.
         virtualenv --prompt=="POSSUM" --python=python2 .virtualenv
     fi
+    if [ -d .git ]
+    then
+        git pull
+    fi
     enter_virtualenv
     pip install --proxy=${http_proxy} --requirement requirements.txt >/dev/null
     if [ "$(python --version 2>&1 | grep -c 'Python 2.6')" == "1" ]
