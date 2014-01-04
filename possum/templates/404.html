@@ -1,1 +1,15 @@
-Cette page n'existe pas !
+{% extends "base.html" %}
+
+{% block menu %}<!-- Connectez-vous pour accéder à Possum. -->{% endblock %}
+
+{% block page %}
+
+<div id="login">
+    <img src="/static/images/logo-192.png"></br>
+    <p>Cette page est actuellement indisponible.</p>
+<ul>
+    <li onclick="window.location='/'">Retour à l'accueil</li>
+</ul>
+</div>
+{% endblock %}
+
