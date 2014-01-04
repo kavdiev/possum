@@ -1,17 +1,37 @@
 {% extends "base.html" %}
 {% block content %}
 
-<ul id="kitchen">
+<table>
+    <tr>
+        <td>Heure</td>
+        <td>Table</td>
+        <td>Couverts</td>
+        <td>Catégorie</td>
+        <td>Plats</td>
+        <td>Sauces</td>
+        <td>Accompagnements</td>
+    <tr>
     {% for facture in factures %}
         {% if facture.following %}
-    <li onclick="window.location='/kitchen/{{facture.id}}/'" 
-    style="background:{{facture.following.latest.category.color}};">
-        Table {{facture.table}}</br>
-        {{facture.following.latest}}
-        </li>
+    <tr>
+        <td>{{facture.following.latest.time}}</td>
+        <td>{{facture.table}}</td>
+        <td>{{facture.couverts}}</td>
+        <td style="background:{{facture.following.latest.category.color}};">{{facture.following.latest.category}}</td>
+            {% for product in facture.following.latest.produits.all %}
+            {% if first %}
+        </tr>
+            {% else %}
+            <tr><td colspan="4"></td>
+            {% endif %}
+            <td>{{product.produit.nom}}{% if product.cuisson %} ({{product.cuisson}}){% endif %}</td>
+            <td>{% if product.sauces.count %}{{product.sauces.all}}{% endif %}</td>
+            <td>{% if product.dishes.count %}{{product.dishes.all}}{% endif %}</td>
+            </tr>
+            {% endfor %}
         {% endif %}
     {% endfor %}
-</ul>
+</table>
 
 {% endblock %}
 

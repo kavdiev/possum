@@ -40,9 +40,9 @@ def kitchen(request):
         if bill.following.count():
             liste.append(bill)
     data['factures'] = liste
-    return render_to_response('base/kitchen/home.html',
-            data,
-            context_instance=RequestContext(request))
+    data['need_auto_refresh'] = True
+    return render_to_response('base/kitchen/home.html', data,
+                              context_instance=RequestContext(request))
 
 
 @login_required
@@ -55,6 +55,5 @@ def kitchen_for_bill(request, bill_id):
                              messages.ERROR,
                              "Cette facture a déjà été soldée.")
         return HttpResponseRedirect('/kitchen/')
-    return render_to_response('base/kitchen/view.html',
-            data,
-            context_instance=RequestContext(request))
+    return render_to_response('base/kitchen/view.html', data,
+                              context_instance=RequestContext(request))

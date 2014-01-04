@@ -36,6 +36,9 @@ class Follow(models.Model):
         app_label = 'base'
         get_latest_by = 'id'
 
+    def time(self):
+        return self.date.strftime("%H:%M")
+
     def __unicode__(self):
         return "[%s] %s" % (self.date.strftime("%H:%M"), self.category.nom)
 
