@@ -1,1 +1,15 @@
-Erreur 500 !
+{% extends "base.html" %}
+
+{% block menu %}<!-- Connectez-vous pour accéder à Possum. -->{% endblock %}
+
+{% block page %}
+
+<div id="login">
+    <img src="/static/images/bandeau-192.png" alt="Possum"/></br>
+    <p>Cette page est actuellement indisponible.</p>
+<ul>
+    <li onclick="window.location='/'">Retour à l'accueil</li>
+</ul>
+</div>
+{% endblock %}
+
