@@ -2,10 +2,24 @@
 Développement
 =============
 
+Numéro de version
+=================
+
 Voici le cycle de développement adopté pour la sortie des versions:
 
 .. image:: images/cycle_de_developpement.png
    :alt: Cycle de développement du projet
+
+Voici un exemple pour la version 1.0:
+
+* 1.0.alpha: début du développement, typiquement la version précédente
+  vient de sortir. Il y a des ajouts de fonctionnalités.
+* 1.0.beta: le développement de la version touche à sa fin, cependant
+  des ajouts de fonctionnalités sont toujours possibles.
+* 1.0.rc?: à partir des versions RC, les ajouts de fonctionnalités sont bloqués. Il y
+  aura seulement des corrections de bugs.
+* 1.0: les versions officiellements stables.
+* 1.0.1: les corrections de bugs de la version stable.
 
 Convention de codage
 ====================

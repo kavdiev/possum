@@ -4,11 +4,11 @@ Mise à jour
 À partir du dépôt git
 ---------------------
 
+On considére que le répertoire **possum-software** se trouve dans **/opt**:
+
 ::
 
-  cd /home/pos/possum-software
-  source /home/pos/bin/activate
-  git pull
-  ./manage.py migrate base
+  cd /opt/possum-software
+  ./make update
   /etc/init.d/apache reload
 
