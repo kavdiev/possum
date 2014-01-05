@@ -25,10 +25,10 @@ from datetime import datetime
 
 if Facture.objects.count():
     first_year = int(Facture.objects.all()[0].date_creation.year)
-    last_year = int(Facture.objects.latest().date_creation.year)
+    last_year = int(Facture.objects.latest().date_creation.year) + 1
 else:
     first_year = int(datetime.now().year)
-    last_year = first_year
+    last_year = first_year + 1
 
 weeks_choice = [(unicode(i), i) for i in range(54)]
 months_choice = [(unicode(i), i) for i in range(1, 13)]

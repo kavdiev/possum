@@ -82,7 +82,8 @@ def rapports_weekly(request):
     DailyStat().update()
     date = datetime.datetime.now()
     year = date.year
-    week = date.strftime("%U")
+    # 01 must be converted to 1
+    week = int(date.strftime("%U"))
     if request.method == 'POST':
         try:
             week = int(request.POST.get('week'))
