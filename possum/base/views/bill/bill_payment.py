@@ -99,7 +99,10 @@ def bill_payment_save(request, bill_id, type_id, left,
                              "La facture a été soldée.")
         return HttpResponseRedirect('/bills/')
     else:
-        return HttpResponseRedirect('/bill/%s/' % bill_id)
+        messages.add_message(request,
+                             messages.SUCCESS,
+                             "Le paiement a été enregistré.")
+        return HttpResponseRedirect('/bill/%s/payment/' % bill_id)
 
 
 @permission_required('base.p3')
