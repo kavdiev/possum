@@ -122,7 +122,8 @@ class MonthlyStat(models.Model):
         for vat in VAT.objects.order_by('name').iterator():
             key = "%s_vat" % vat.id
             value = MonthlyStat().get_value(key, year, month)
-            data['vats'].append("TVA % 6.2f%% : %.2f" % (vat.tax, value))
+            if value:
+                data['vats'].append("TVA % 6.2f%% : %.2f" % (vat.tax, value))
         # restaurant
         for key in ['guests_nb', 'guests_average', 'guests_total_ttc']:
             data[key] = "%.2f" % MonthlyStat().get_value(key, year, month)

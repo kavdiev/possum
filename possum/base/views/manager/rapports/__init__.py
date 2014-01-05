@@ -38,6 +38,16 @@ from possum.base.models import WeeklyStat
 logger = logging.getLogger(__name__)
 
 
+def search_good_results(data):
+    for key in ['nb_bills', 'total_ttc', 'guests_nb', 'guests_average',
+                'guests_total_ttc', 'bar_nb', 'bar_average', 'bar_total_ttc']:
+        ref = 'avg_%s' % key
+        if ref in data.keys():
+            if data[key] > data[ref]:
+                data["%s_better" % key] = True
+    return data
+
+
 @permission_required('base.p1')
 def rapports_daily(request):
     """
@@ -67,6 +77,7 @@ def rapports_daily(request):
         data['last_%s' % key] = "%.2f" % DailyStat().get_value(key, last_year)
         data['max_%s' % key] = DailyStat().get_max(key)
         data['avg_%s' % key] = DailyStat().get_avg(key)
+    data = search_good_results(data)
     return render_to_response('base/manager/rapports/home.html', data,
                               context_instance=RequestContext(request))
 
@@ -101,6 +112,7 @@ def rapports_weekly(request):
         data['last_%s' % key] = "%.2f" % WeeklyStat().get_value(key, last_year, week)
         data['max_%s' % key] = WeeklyStat().get_max(key)
         data['avg_%s' % key] = WeeklyStat().get_avg(key)
+    data = search_good_results(data)
     return render_to_response('base/manager/rapports/home.html', data,
                               context_instance=RequestContext(request))
 
@@ -134,6 +146,7 @@ def rapports_monthly(request):
         data['last_%s' % key] = "%.2f" % MonthlyStat().get_value(key, last_year, month)
         data['max_%s' % key] = MonthlyStat().get_max(key)
         data['avg_%s' % key] = MonthlyStat().get_avg(key)
+    data = search_good_results(data)
     return render_to_response('base/manager/rapports/home.html',
                                 data,
                                 context_instance=RequestContext(request))

@@ -399,7 +399,8 @@ class DailyStat(models.Model):
         for vat in VAT.objects.order_by('name').iterator():
             key = "%s_vat" % vat.id
             value = DailyStat().get_value(key, date)
-            data['vats'].append("TVA % 6.2f%% : %.2f" % (vat.tax, value))
+            if value:
+                data['vats'].append("TVA % 6.2f%% : %.2f" % (vat.tax, value))
         # restaurant
         for key in ['guests_nb', 'guests_average', 'guests_total_ttc']:
             data[key] = "%.2f" % DailyStat().get_value(key, date)
