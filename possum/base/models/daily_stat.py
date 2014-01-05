@@ -413,7 +413,7 @@ class DailyStat(models.Model):
             category.nb = DailyStat().get_value("%s_category_nb" % category.id, date)
             if category.nb > 0:
                 categories.append(category)
-                for product in Produit.objects.filter(categorie=category, actif=True).iterator():
+                for product in Produit.objects.filter(categorie=category):
                     product.nb = DailyStat().get_value("%s_product_nb" % product.id, date)
                     if product.nb > 0:
                         products.append(product)

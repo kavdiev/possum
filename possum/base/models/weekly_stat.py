@@ -131,7 +131,7 @@ class WeeklyStat(models.Model):
             category.nb = WeeklyStat().get_value("%s_category_nb" % category.id, year, week)
             if category.nb > 0:
                 categories.append(category)
-                for product in Produit.objects.filter(categorie=category, actif=True).iterator():
+                for product in Produit.objects.filter(categorie=category).iterator():
                     product.nb = WeeklyStat().get_value("%s_product_nb" % product.id, year, week)
                     if product.nb > 0:
                         products.append(product)

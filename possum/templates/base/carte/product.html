@@ -58,13 +58,16 @@ d'abord activer des catégories de produits ici avant de pouvoir activer des pro
 </ul>
 
 <h2>Produits actifs</h2>
+<p>En cliquant sur un produit, vous l'enlèverais de cette liste.</p>
 <ul id="products">
     <li onclick="window.location='/carte/products/{{product.id}}/produits_ok/select/'">Activer un produit</li>
     {% for sub in product.produits_ok.iterator %}
-        <li 
-            onclick="window.location='/carte/products/{{product.id}}/produits_ok/{{sub.id}}/del/'" 
-            style="background:{{sub.categorie.color}};">{{sub.nom}}
-        </li>
+        {% if sub.actif %}
+            <li 
+                onclick="window.location='/carte/products/{{product.id}}/produits_ok/{{sub.id}}/del/'" 
+                style="background:{{sub.categorie.color}};">{{sub.nom}}
+            </li>
+        {% endif %}
     {% endfor %}
 </ul>
 

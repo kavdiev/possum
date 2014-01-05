@@ -137,8 +137,7 @@ class MonthlyStat(models.Model):
                                                   year, month)
             if category.nb > 0:
                 categories.append(category)
-                for product in Produit.objects.filter(categorie=category,
-                                                      actif=True).iterator():
+                for product in Produit.objects.filter(categorie=category):
                     product.nb = MonthlyStat().get_value("%s_product_nb" % product.id,
                                                          year, month)
                     if product.nb > 0:

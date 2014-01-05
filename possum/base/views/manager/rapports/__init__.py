@@ -67,9 +67,8 @@ def rapports_daily(request):
         data['last_%s' % key] = "%.2f" % DailyStat().get_value(key, last_year)
         data['max_%s' % key] = DailyStat().get_max(key)
         data['avg_%s' % key] = DailyStat().get_avg(key)
-    return render_to_response('base/manager/rapports/home.html',
-                                data,
-                                context_instance=RequestContext(request))
+    return render_to_response('base/manager/rapports/home.html', data,
+                              context_instance=RequestContext(request))
 
 
 @permission_required('base.p1')
@@ -102,9 +101,8 @@ def rapports_weekly(request):
         data['last_%s' % key] = "%.2f" % WeeklyStat().get_value(key, last_year, week)
         data['max_%s' % key] = WeeklyStat().get_max(key)
         data['avg_%s' % key] = WeeklyStat().get_avg(key)
-    return render_to_response('base/manager/rapports/home.html',
-                                data,
-                                context_instance=RequestContext(request))
+    return render_to_response('base/manager/rapports/home.html', data,
+                              context_instance=RequestContext(request))
 
 
 @permission_required('base.p1')
