@@ -43,7 +43,7 @@ def search_good_results(data):
                 'guests_total_ttc', 'bar_nb', 'bar_average', 'bar_total_ttc']:
         ref = 'avg_%s' % key
         if ref in data.keys():
-            if data[key] > data[ref]:
+            if float(data[key]) > float(data[ref]):
                 data["%s_better" % key] = True
     return data
 

@@ -1,19 +1,19 @@
 {% extends "base.html" %}
 {% block content %}
 
-{% if date %}
+{% if date_form %}
 <h1>Rapport du {{date|date:'l d F Y'}}</h1>
 <form method='post' action='/manager/rapports/daily/' name='journalier'>{% csrf_token %}
 <ul id="date_form">
     {{ date_form.as_ul }}
     <li><input type='submit' value='Afficher le jour'></li>
-{% elif week %}
+{% elif week_form %}
 <h1>Rapport semaine {{week}}/{{year}}</h1>
 <form method='post' action='/manager/rapports/weekly/' name='hebdomadaire'>{% csrf_token %}
 <ul id="week_form">
     {{ week_form.as_ul }}
     <li><input type='submit' value='Afficher la semaine'></li>
-{% elif month %}
+{% elif month_form %}
 <h1>Rapport mois {{month}}/{{year}}</h1>
 <form method='post' action='/manager/rapports/monthly/' name='mensuel'>{% csrf_token %}
 <ul id="month_form">
@@ -43,10 +43,10 @@ onclick="window.location='/manager/rapports/monthly/{{year}}/{{month}}/print/'"
 <table>
     <tr>
         <td></td>
-        <td>Valeur actuelle</td>
-        <td>Année passée</td>
-        <td>Moyenne</td>
-        <td>Max.</td>
+        <td align='right'>Valeur actuelle</td>
+        <td align='right'>Année passée</td>
+        <td align='right'>Moyenne</td>
+        <td align='right'>Max.</td>
     </tr>
     <tr>
         <td>Total TTC</td>
