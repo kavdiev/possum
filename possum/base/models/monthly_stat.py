@@ -102,15 +102,14 @@ class MonthlyStat(models.Model):
         result = []
         result.append("  -- %s/%s --" % (month, year))
         result.append("Fait le %s" % datetime.datetime.now().strftime("%d/%m/%Y %H:%M"))
-        nb_bills = self.get_value("nb_bills", year, month)
         total_ttc = self.get_value("total_ttc", year, month)
-        result.append("Total TTC (% 4d fact.): %11.2f" % (
-                nb_bills, total_ttc))
+        result.append("Total TTC: %13.2f" % total_ttc)
         for vat in VAT.objects.iterator():
-            tax = "TVA    % 6.2f%%:" % vat.tax
+            tax = "TVA %.2f%%:" % vat.tax
             key = "%s_vat" % vat.id
-            result.append("%-20s %11.2f" % (
-                    tax, MonthlyStat().get_value(key, year, month)))
+            value = MonthlyStat().get_value(key, year, month)
+            if value:
+                result.append("%s %12.2f" % (tax, value))
         return result
 
     def get_data(self, data, year, month):
@@ -123,7 +122,7 @@ class MonthlyStat(models.Model):
             key = "%s_vat" % vat.id
             value = MonthlyStat().get_value(key, year, month)
             if value:
-                data['vats'].append("TVA % 6.2f%% : %.2f" % (vat.tax, value))
+                data['vats'].append("TVA % 2.2f%% : %.2f" % (vat.tax, value))
         # restaurant
         for key in ['guests_nb', 'guests_average', 'guests_total_ttc']:
             data[key] = "%.2f" % MonthlyStat().get_value(key, year, month)

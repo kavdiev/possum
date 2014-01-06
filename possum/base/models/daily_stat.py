@@ -369,16 +369,15 @@ class DailyStat(models.Model):
         """
         result = []
         result.append("  -- %s --" % date)
-        result.append("Fait le %s" % datetime.datetime.now().strftime("%d/%m/%Y %H:%M"))
-        nb_bills = self.get_value("nb_bills", date)
+        now = datetime.datetime.now()
+        result.append("Fait le %s" % now.strftime("%d/%m/%Y %H:%M"))
         total_ttc = self.get_value("total_ttc", date)
-        result.append("Total TTC (% 4d fact.): %11.2f" % (
-                nb_bills, total_ttc))
+        result.append("Total TTC: %11.2f" % total_ttc)
         for vat in VAT.objects.iterator():
-            tax = "TVA    % 6.2f%%:" % vat.tax
+            tax = "TVA % 2.2f%%:" % vat.tax
             key = "%s_vat" % vat.id
-            result.append("%-20s %11.2f" % (
-                    tax, DailyStat().get_value(key, date)))
+            result.append("%s %11.2f" % (tax, DailyStat().get_value(key, 
+                                                                    date)))
         return result
 
     def update(self):
@@ -400,7 +399,7 @@ class DailyStat(models.Model):
             key = "%s_vat" % vat.id
             value = DailyStat().get_value(key, date)
             if value:
-                data['vats'].append("TVA % 6.2f%% : %.2f" % (vat.tax, value))
+                data['vats'].append("TVA % 2.2f%% : %.2f" % (vat.tax, value))
         # restaurant
         for key in ['guests_nb', 'guests_average', 'guests_total_ttc']:
             data[key] = "%.2f" % DailyStat().get_value(key, date)

@@ -96,16 +96,17 @@ class WeeklyStat(models.Model):
         """
         result = []
         result.append("  -- %s sem. %s --" % (year, week))
-        result.append("Fait le %s" % datetime.datetime.now().strftime("%d/%m/%Y %H:%M"))
-        nb_bills = self.get_value("nb_bills", year, week)
+        now = datetime.datetime.now()
+        result.append("Fait le %s" % now.strftime("%d/%m/%Y %H:%M"))
         total_ttc = self.get_value("total_ttc", year, week)
-        result.append("Total TTC (% 4d fact.): %11.2f" % (
-                nb_bills, total_ttc))
+        result.append("Total TTC: %11.2f" % total_ttc)
         for vat in VAT.objects.iterator():
-            tax = "TVA    % 6.2f%%:" % vat.tax
+            tax = "TVA % 2.2f%%:" % vat.tax
             key = "%s_vat" % vat.id
-            result.append("%-20s %11.2f" % (
-                    tax, WeeklyStat().get_value(key, year, week)))
+            result.append("%s %11.2f" % (tax,
+                                         WeeklyStat().get_value(key,
+                                                                year,
+                                                                week)))
         return result
 
     def get_data(self, data, year, week):
@@ -118,7 +119,7 @@ class WeeklyStat(models.Model):
             key = "%s_vat" % vat.id
             value = WeeklyStat().get_value(key, year, week)
             if value:
-                data['vats'].append("TVA % 6.2f%% : %.2f" % (vat.tax, value))
+                data['vats'].append("TVA % 2.2f%% : %.2f" % (vat.tax, value))
         # restaurant
         for key in ['guests_nb', 'guests_average', 'guests_total_ttc']:
             data[key] = "%.2f" % WeeklyStat().get_value(key, year, week)
