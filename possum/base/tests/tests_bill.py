@@ -3,15 +3,15 @@
 try:
     from collections import OrderedDict
 except:
-    # Needed if you use a python older than 2.7
+    #  Needed if you use a python older than 2.7
     from ordereddict import OrderedDict
 
 from decimal import Decimal
+
 from django.test import TestCase
-from possum.base.models import Facture
-from possum.base.models import Categorie
-from possum.base.models import PaiementType, Paiement
-from possum.base.models import ProduitVendu, Produit
+
+from possum.base.models import Facture, PaiementType, Paiement, \
+    ProduitVendu, Produit
 
 
 class Tests_Bill(TestCase):
@@ -76,9 +76,10 @@ class Tests_Bill(TestCase):
         facture.add_product(plat3)
         facture.add_product(entree)
         facture.add_product(menu)
-        resultat = OrderedDict([('salade normande', [(entree.id, entree)]), 
-                                ('entrecote', [(plat1.id, plat1), (plat2.id, plat2)]), 
-                                ('pave de saumon', [(plat3.id, plat3)]), 
+        resultat = OrderedDict([('salade normande', [(entree.id, entree)]),
+                                ('entrecote', [(plat1.id, plat1), \
+                                               (plat2.id, plat2)]),
+                                ('pave de saumon', [(plat3.id, plat3)]),
                                 ('jus abricot', [(menu.id, menu)])])
         self.assertEqual(resultat, facture.regroup_produits())
 
@@ -110,13 +111,8 @@ class Tests_Bill(TestCase):
         plat.produit = Produit.objects.get(nom="entrecote")
         facture.add_product(plat)
         facture.add_payment(PaiementType.objects.get(nom="CB"), "2")
-        self.assertEqual(facture.restant_a_payer, Decimal(str(plat.prix-2)))
+        self.assertEqual(facture.restant_a_payer, Decimal(str(plat.prix - 2)))
         facture.add_payment(PaiementType.objects.get(nom="Espece"), "10")
         self.assertEqual(facture.restant_a_payer, Decimal(0))
-        self.assertEqual(Decimal(str(plat.prix-12)), facture.paiements.all()[2].montant)        
-
-    
-    
-
-
-
+        self.assertEqual(Decimal(str(plat.prix - 12)), \
+                         (facture.paiements.all()[2]).montant)
