@@ -6,7 +6,7 @@
 </ul>
 
 <h1>Produit: {{product.nom}}</h2>
-<p>Attention, suivant les imprimantes, il faut limiter l'utilisation des accents et des noms longs.</p>
+<p>Attention, en fonction des imprimantes, il est recommandé de limiter l'utilisation des accents et des noms longs.</p>
 <ul id="product_info">
     <li onclick="window.location='/carte/products/{{product.id}}/change/'">
         Nom:</br>
@@ -44,6 +44,35 @@
         TVA à emporter:</br>
         {{product.vat_takeaway}}€</li>
 </ul>
+
+<h2>Options</h2>
+<p>Les options en verts sont les options utilisables pour ce produit. Les options sont
+classées par ordre alphabétique, il est donc recommandé de préfixer, les
+accompagnements par <em>A_</em> et les sauces par <em>S_</em>.</p>
+<p>Exemple: A_Frites, A_Gratin, S_Poivre, S_Moutarde</p>
+<ul id="options">
+    {% for option in options %}
+        <li
+        onclick="window.location='/carte/products/{{product.id}}/option/{{option.id}}/'"
+            {% if option in product.options_ok.all %}
+            class="enabled"{% endif %}>{{option.name}}
+        </li>
+    {% empty %}
+        <li>Aucune option</li>
+    {% endfor %}
+</ul>
+
+<h3>Créer une nouvelle option</h3>
+<form action="/carte/products/{{product.id}}/" method="post">
+    {{ option.non_field_errors }}
+    {% csrf_token %}
+    <table>
+        {{option.as_table}}
+        <tr><td colspan="2">
+                <input type="submit" value="Enregistrer" />
+        </td></tr>
+    </table>
+</form>
 
 <h2>Catégories actives</h2>
 <p>Si ce produit est un menu qui peut contenir d'autres produits (entrées, plats, ...), vous devez

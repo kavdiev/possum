@@ -35,6 +35,7 @@ class Follow(models.Model):
     class Meta:
         app_label = 'base'
         get_latest_by = 'id'
+        ordering = ['date']
 
     def time(self):
         return self.date.strftime("%H:%M")

@@ -20,7 +20,7 @@
 
 from django import forms
 from django.forms.extras.widgets import SelectDateWidget
-from possum.base.models import Facture
+from possum.base.models import Facture, Note, Option
 from datetime import datetime
 
 if Facture.objects.count():
@@ -61,3 +61,13 @@ class LoginForm(forms.Form):
                                attrs={'placeholder': 'identifiant:'}))
     password = forms.CharField(widget=forms.PasswordInput(
                                attrs={'placeholder': 'mot de passe:'}))
+
+
+class NoteForm(forms.ModelForm):
+    class Meta:
+        model = Note
+
+
+class OptionForm(forms.ModelForm):
+    class Meta:
+        model = Option

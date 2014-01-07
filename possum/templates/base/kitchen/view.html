@@ -6,36 +6,37 @@
 <li onclick="window.location='/bill/{{facture.id}}/'">Retour commande</li>
 </ul>
 
-<h1>Table {{facture.table}} ({{facture}})</h1>
+<h1>Table {{facture.table}} / {{facture.couverts}} couv. ({{facture}})</h1>
 
+<table>
+    <tr>
+        <td>Heure</td>
+        <td>Catégorie</td>
+        <td>Plats</td>
+        <td>Options</td>
+        <td>Notes</td>
+    </tr>
 {% for follow in facture.following.iterator %}
-
-<h2>{{follow}}</h2>
-<ul id="kitchen">
-  {% for type_produit, list_produit in follow.regroup_produits.items %}
-  {% if list_produit|length > 1 %}
-  <li id="{{type_produit}}" href="javascript:void(0)" onclick="javascript:myLinkButtonClick(this.id);" style="background:{{list_produit.0.1.produit.categorie.color}}">{{list_produit|length}} x {{type_produit}}</li>
-  <div id="list_{{type_produit}}" style="display: none">
-    {% for vendu_id_in_model, vendu in list_produit %}
-    <li style="background:{{vendu.produit.categorie.color}}" onclick="window.location='/bill/{{facture.id}}/sold/{{vendu_id_in_model}}/view/'">
-      {{vendu}} ({{vendu.produit.get_prize}})
-      {% if vendu.cuisson %}({{vendu.cuisson}}){% endif %}
-      {{ vendu.get_menu_resume }}
-    </li>
-    {% endfor %}
-  </div>
-  {% else %}
-  <li style="background:{{list_produit.0.1.produit.categorie.color}}" id="{{type_produit}}" onclick="window.location='/bill/{{facture.id}}/sold/{{list_produit.0.0}}/view/'">
-    {{list_produit.0.1}} ({{list_produit.0.1.prix}})
-    {% if list_produit.0.1.cuisson %}({{list_produit.0.1.cuisson}}){% endif %}
-    {{ list_produit.0.1.get_menu_resume }}
-  </li> 
-  {% endif %}
-  {% empty %}
-  <li>Aucun produit.</li>
-  {% endfor %}
-</ul>
+    <tr>
+        <td width="5em">{{follow.time}}</td>
+        <td style="background:{{follow.category.color}};">{{follow.category}}</td>
+        {% for product in follow.produits.all %}
+                {% if first %}
+        </tr>
+                {% else %}
+            <tr><td colspan="2"></td>
+                {% endif %}
+            <td>{{product.produit.nom}}{% if product.cuisson %} ({{product.cuisson}}){% endif %}</td>
+            <td>{% for option in product.options.all %}{{option.name}}
+                    {% if not forloop.last %} / {% endif %}
+                {% endfor %}</td>
+            <td>{% for note in product.notes.all %}{{note.message}}
+                    {% if not forloop.last %} / {% endif %}
+                {% endfor %}</td>
+            </tr>
+        {% endfor %}
 {% endfor %}
+</table>
 
 {% endblock %}
 

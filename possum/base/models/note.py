@@ -27,6 +27,7 @@ class Note(models.Model):
 
     class Meta:
         app_label = 'base'
+        ordering = ['message']
 
     def __cmp__(self, other):
         return cmp(self.message, other.message)

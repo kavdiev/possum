@@ -22,8 +22,6 @@ from django.db import models
 
 from generic import Nom, Priorite
 from vat import VAT
-from options import Sauce
-from options import Dish
 
 
 class Categorie(Nom, Priorite):
@@ -36,8 +34,6 @@ class Categorie(Nom, Priorite):
                                    related_name="categorie-vat-onsite")
     vat_takeaway = models.ForeignKey(VAT, null=True, blank=True,
                                      related_name="categorie-vat-takeaway")
-    available_sauces = models.ManyToManyField(Sauce, null=True, blank=True)
-    available_dishes = models.ManyToManyField(Dish, null=True, blank=True)
 
     def __cmp__(self, other):
         """ Classement par priorite_facture (plus la valeur est petite,

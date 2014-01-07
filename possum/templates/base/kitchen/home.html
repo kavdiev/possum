@@ -8,15 +8,15 @@
         <td>Couverts</td>
         <td>Catégorie</td>
         <td>Plats</td>
-        <td>Sauces</td>
-        <td>Accompagnements</td>
-    <tr>
+        <td>Options</td>
+        <td>Notes</td>
+    </tr>
     {% for facture in factures %}
         {% if facture.following %}
     <tr>
-        <td>{{facture.following.latest.time}}</td>
-        <td>{{facture.table}}</td>
-        <td>{{facture.couverts}}</td>
+        <td width="5em">{{facture.following.latest.time}}</td>
+        <td width="5em">{{facture.table}}</td>
+        <td width="5em">{{facture.couverts}}</td>
         <td style="background:{{facture.following.latest.category.color}};">{{facture.following.latest.category}}</td>
             {% for product in facture.following.latest.produits.all %}
             {% if first %}
@@ -25,8 +25,12 @@
             <tr><td colspan="4"></td>
             {% endif %}
             <td>{{product.produit.nom}}{% if product.cuisson %} ({{product.cuisson}}){% endif %}</td>
-            <td>{% if product.sauces.count %}{{product.sauces.all}}{% endif %}</td>
-            <td>{% if product.dishes.count %}{{product.dishes.all}}{% endif %}</td>
+            <td>{% for option in product.options.all %}{{option.name}}
+                    {% if not forloop.last %} / {% endif %}
+                {% endfor %}</td>
+            <td>{% for note in product.notes.all %}{{note.message}}
+                    {% if not forloop.last %} / {% endif %}
+                {% endfor %}</td>
             </tr>
             {% endfor %}
         {% endif %}

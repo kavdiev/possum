@@ -20,12 +20,15 @@
 
 from django.contrib import messages
 from django.http import HttpResponseRedirect
+from django.shortcuts import redirect
 import logging
 from django.shortcuts import render_to_response, get_object_or_404
 from django.template import RequestContext
 from possum.base.models import Categorie
 from possum.base.models import Produit
+from possum.base.models import Option
 from possum.base.views import get_user, permission_required
+from possum.base.forms import OptionForm
 
 
 logger = logging.getLogger(__name__)
@@ -62,9 +65,27 @@ def products_view(request, product_id):
     data = get_user(request)
     data['product'] = get_object_or_404(Produit, pk=product_id)
     data['menu_manager'] = True
-    return render_to_response('base/carte/product.html',
-                                data,
-                                context_instance=RequestContext(request))
+    if request.method == 'POST':
+        data['option'] = OptionForm(request.POST)
+        if data['option'].is_valid():
+            data['option'].save()
+    else:
+        data['option'] = OptionForm()
+    data['options'] = Option.objects.all()
+    return render_to_response('base/carte/product.html', data,
+                              context_instance=RequestContext(request))
+
+
+@permission_required('base.p2')
+def products_option(request, product_id, option_id):
+    product = get_object_or_404(Produit, pk=product_id)
+    option = get_object_or_404(Option, pk=option_id)
+    if option in product.options_ok.all():
+        product.options_ok.remove(option)
+    else:
+        product.options_ok.add(option)
+    product.save()
+    return redirect('products_view', product_id)
 
 
 def treat_product_new(request, category):

@@ -38,7 +38,7 @@
     <div id="list_{{type_produit}}" style="display: none">
       {% for vendu_id_in_model, vendu in list_produit %}
       <li style="background:{{vendu.produit.categorie.color}}" onclick="window.location='/bill/{{facture.id}}/sold/{{vendu_id_in_model}}/view/'">
-	{{vendu}} ({{vendu.prix}})
+      {% if vendu.notes.count %}* {%endif%}{{vendu}} ({{vendu.prix}})
 	{% if vendu.cuisson %}({{vendu.cuisson}}){% endif %}
 	{{ vendu.get_menu_resume }}
       </li>

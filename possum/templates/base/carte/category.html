@@ -78,30 +78,6 @@
     {% endfor %}
 </ul>
 
-<h2>Accompagnements utilisables</h2>
-<ul id="dishes">
-    <li onclick="window.location='/dishes/new/'">Ajouter</li>
-    {% for dish in dishes %}
-        <li 
-            onclick="window.location='/category/{{category.id}}/dishes/dish.id/'" 
-            {% if dish in category.available_dishes.all %}
-            class="enabled"{% endif %}>{{dish.nom}} ({{dish.nom_facture}})
-        </li>
-    {% endfor %}
-</ul>
-
-<h2>Sauces utilisables</h2>
-<ul id="sauces">
-    <li onclick="window.location='/sauces/new/'">Ajouter</li>
-    {% for sauce in sauces %}
-        <li 
-            onclick="window.location='/category/{{category.id}}/sauces/sauce.id/'" 
-            {% if sauce in category.available_sauces.all %}
-            class="enabled"{% endif %}>{{sauce.nom}} ({{sauce.nom_facture}})
-        </li>
-    {% endfor %}
-</ul>
-
 <h2>Anciens produits</h2>
 <ul id="products">
     {% for product in products_disable %}

@@ -24,7 +24,7 @@ import logging
 from category import Categorie
 from generic import NomDouble
 from product import Produit
-from options import Cuisson, Sauce, Dish
+from options import Cuisson, Option
 from config import Config
 from note import Note
 
@@ -34,15 +34,15 @@ logger = logging.getLogger(__name__)
 
 class ProduitVendu(models.Model):
     """le prix sert a affiche correctement les prix pour les surtaxes
+
+    options1 et options2 sont les options sélectionnées.
     """
     date = models.DateTimeField(auto_now_add=True)
     produit = models.ForeignKey(Produit, related_name="produitvendu-produit")
     cuisson = models.ForeignKey(Cuisson, null=True, blank=True,
                                 related_name="produitvendu-cuisson")
     prix = models.DecimalField(max_digits=7, decimal_places=2, default=0)
-    sauces = models.ManyToManyField(Sauce, null=True, blank=True,
-                                   related_name="produitvendu-sauce")
-    dishes = models.ManyToManyField(Dish, null=True, blank=True)
+    options = models.ManyToManyField(Option, null=True, blank=True)
     # dans le cas d'un menu, peut contenir d'autres produits
     contient = models.ManyToManyField('self')
     notes = models.ManyToManyField(Note, null=True, blank=True)

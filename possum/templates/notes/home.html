@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h1>Liste des notes</h1>
+<p>Ces notes peuvent ajouter un produit au moment de l'enregistrement
+d'une commande.</p>
+
+<ul id="notes">
+    <li onclick="window.location='/notes/add/'">Ajouter</li>
+    {% for note in notes %}
+    <li onclick="window.location='/notes/{{note.id}}/'">
+        {{note.message}}
+        </li>
+    {% endfor %}
+</ul>
+
+{% if note %}
+{% if note.instance.id %}
+<h2>Note sélectionnée</h2>
+{% else %}
+<h2>Nouvelle note</h2>
+{% endif %}
+<form action="/notes/{% if note.instance.id %}{{note.instance.id}}{% else %}add{% endif %}/" method="post">
+    {{ note.non_field_errors }}
+    {% csrf_token %}
+    <table>
+        {{note.as_table}}
+        <tr><td colspan="2">
+            <input type="submit" value="Enregistrer" /></form>
+    {% if note.instance.id %}
+        <form action="/notes/{{ note.instance.id }}/del/">
+            <input type="submit" value="Supprimer" />
+        </form>
+    {% endif %}
+        </td></tr>
+    </table>
+{% endif %}
+{% endblock %}
+

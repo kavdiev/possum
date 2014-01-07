@@ -20,6 +20,7 @@
 
 from django.contrib import messages
 from django.http import HttpResponseRedirect
+from django.shortcuts import redirect
 import logging
 from django.shortcuts import render_to_response, get_object_or_404
 from django.template import RequestContext
@@ -30,6 +31,9 @@ from possum.base.models import Printer
 from possum.base.models import Cuisson
 from possum.base.models import Produit, ProduitVendu
 from possum.base.views import get_user, permission_required
+from possum.base.models import Note
+from possum.base.models import Option
+from possum.base.forms import NoteForm
 
 
 logger = logging.getLogger(__name__)
@@ -204,8 +208,40 @@ def sold_view(request, bill_id, sold_id):
     data['menu_bills'] = True
     data['bill_id'] = bill_id
     data['sold'] = get_object_or_404(ProduitVendu, pk=sold_id)
+    if request.method == 'POST':
+        data['note'] = NoteForm(request.POST)
+        if data['note'].is_valid():
+            data['note'].save()
+    else:
+        data['note'] = NoteForm()
+    data['notes'] = Note.objects.all()
+    data['options'] = Option.objects.all()
     return render_to_response('base/bill/sold.html', data,
                               context_instance=RequestContext(request))
+
+
+@permission_required('base.p3')
+def sold_option(request, bill_id, sold_id, option_id):
+    sold = get_object_or_404(ProduitVendu, pk=sold_id)
+    option = get_object_or_404(Option, pk=option_id)
+    if option in sold.options.all():
+        sold.options.remove(option)
+    else:
+        sold.options.add(option)
+    sold.save()
+    return redirect('sold_view', bill_id, sold_id)
+
+
+@permission_required('base.p3')
+def sold_note(request, bill_id, sold_id, note_id):
+    sold = get_object_or_404(ProduitVendu, pk=sold_id)
+    note = get_object_or_404(Note, pk=note_id)
+    if note in sold.notes.all():
+        sold.notes.remove(note)
+    else:
+        sold.notes.add(note)
+    sold.save()
+    return redirect('sold_view', bill_id, sold_id)
 
 
 @permission_required('base.p3')

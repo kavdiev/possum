@@ -23,6 +23,7 @@ from django.db import models
 import logging
 from category import Categorie
 from generic import Nom
+from options import Option
 from config import Config
 
 
@@ -30,14 +31,18 @@ logger = logging.getLogger(__name__)
 
 
 class Produit(Nom):
+    """Produit qui peut être vendu.
+
+    options_ok: liste des options autorisées pour ce produit
+
+    Pour la partie Menu/Formule:
+    categories_ok: les catégories autorisées
+    produits_ok: les produits autorisés
+    """
     categorie = models.ForeignKey(Categorie, related_name="produit-categorie")
     choix_cuisson = models.BooleanField(default=False)
-    choix_dish = models.BooleanField(default=False)
-    choix_sauce = models.BooleanField(default=False)
-    # pour les menus / formules
-    # categories authorisees
+    options_ok = models.ManyToManyField(Option, null=True, blank=True)
     categories_ok = models.ManyToManyField(Categorie)
-    # produits authorises
     produits_ok = models.ManyToManyField('self')
     actif = models.BooleanField(default=True)
     # max_digits: la longueur totale du nombre (avec les décimaux)
@@ -92,14 +97,14 @@ class Produit(Nom):
         product.prix = self.prix
         product.nom = self.nom
         product.choix_cuisson = self.choix_cuisson
-        product.choix_dish = self.choix_dish
-        product.choix_sauce = self.choix_sauce
         product.categorie = self.categorie
         product.price_surcharged = self.price_surcharged
         product.vat_onsite = self.vat_onsite
         product.vat_surcharged = self.vat_surcharged
         product.vat_takeaway = self.vat_takeaway
         product.save()
+        for option in self.options_ok.distinct():
+            product.options_ok.add(option)
         for c in self.categories_ok.distinct():
             product.categories_ok.add(c)
         for p in self.produits_ok.distinct():

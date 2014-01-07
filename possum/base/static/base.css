@@ -381,6 +381,10 @@ li.surtaxe {
     width:200px;
     height:40px;
 }
+#options li {
+    width:160px;
+    height:20px;
+}
 #categories li {
     width:160px;
     height:20px;
