@@ -21,7 +21,7 @@
 import logging
 from django.shortcuts import redirect
 from django.shortcuts import render
-from django.shortcuts import render_to_response, get_object_or_404
+from django.shortcuts import get_object_or_404
 from django.template import RequestContext
 from possum.base.models import Note
 from possum.base.views import get_user, permission_required
@@ -40,10 +40,8 @@ def get_notes(request):
 
 @permission_required('base.p1')
 def home(request):
-    data = get_notes(request)
-#    return render_to_response('notes/home.html', data,
-#                              context_instance=RequestContext(request))
-    return render(request, 'notes/home.html', data)
+    context = get_notes(request)
+    return render(request, 'notes/home.html', context)
 
 
 @permission_required('base.p1')
@@ -55,25 +53,24 @@ def delete(request, note_id):
 
 @permission_required('base.p1')
 def view(request, note_id=None):
-    data = get_notes(request)
+    context = get_notes(request)
     if request.method == 'POST':
         if note_id:
             # note already exist
             note = get_object_or_404(Note, pk=note_id)
-            data['note'] = NoteForm(request.POST, instance=note)
+            context['note'] = NoteForm(request.POST, instance=note)
         else:
             # new note
-            data['note'] = NoteForm(request.POST)
-        if data['note'].is_valid():
-            data['note'].save()
+            context['note'] = NoteForm(request.POST)
+        if context['note'].is_valid():
+            context['note'].save()
     else:
         if note_id:
             # note already exist
             note = get_object_or_404(Note, pk=note_id)
-            data['note'] = NoteForm(instance=note)
+            context['note'] = NoteForm(instance=note)
         else:
             # new note
-            data['note'] = NoteForm()
-    return render_to_response('notes/home.html', data,
-                              context_instance=RequestContext(request))
+            context['note'] = NoteForm()
+    return render(request, 'notes/home.html', context)
 

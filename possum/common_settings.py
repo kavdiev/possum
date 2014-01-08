@@ -154,8 +154,6 @@ INSTALLED_APPS = (
     # 'django.contrib.admindocs',
 )
 
-SESSION_ENGINE = 'django.contrib.sessions.backends.cache'
-
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': True,
