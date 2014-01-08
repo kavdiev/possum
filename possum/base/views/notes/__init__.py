@@ -20,6 +20,7 @@
 
 import logging
 from django.shortcuts import redirect
+from django.shortcuts import render
 from django.shortcuts import render_to_response, get_object_or_404
 from django.template import RequestContext
 from possum.base.models import Note
@@ -40,8 +41,9 @@ def get_notes(request):
 @permission_required('base.p1')
 def home(request):
     data = get_notes(request)
-    return render_to_response('notes/home.html', data,
-                              context_instance=RequestContext(request))
+#    return render_to_response('notes/home.html', data,
+#                              context_instance=RequestContext(request))
+    return render(request, 'notes/home.html', data)
 
 
 @permission_required('base.p1')
