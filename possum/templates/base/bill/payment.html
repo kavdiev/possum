@@ -2,38 +2,54 @@
 {% block content %}
 
 <ul id="back">
-    <li onclick="window.location='/bill/{{bill_id}}/'">Retour facture</li>
+    <li onclick='window.location="{% url 'bill_view' bill_id %}"'>Retour facture</li>
 </ul>
 
 <h1>Nouveau paiement</h1>
-<h2>Type</h2>
+<h2>1. Type</h2>
 <ul id="type_payment">
     {% for type in type_payments %}
         <li {% if type == type_selected %}class="enabled"{% endif %}
-            onclick="window.location='/bill/{{bill_id}}/payment/{{type.id}}/'" >
+        onclick='window.location="{% url 'type_payment' bill_id type.id %}"' >
         {{type.nom}}</li>
     {% empty %}
         <li>Aucun type de paiement disponible.</li>
     {% endfor %}
 </ul>
 
-<h2>Montant</h2>
-<ul id="payment_tickets">
+<h2>2. Montant</h2>
 {% if type_selected %}
     {% if type_selected.fixed_value %}
-    <li onclick="window.location='/bill/{{bill_id}}/payment/{{type_selected.id}}/{{left}}.{{right}}/{{tickets_count}}/set/'" >
-    Valeur d'un ticket: {{left}}.{{right}}€</li>
-    <li onclick="window.location='/bill/{{bill_id}}/payment/{{type_selected.id}}/{{left}}.{{right}}/count/'" >
-     Nb tickets: {{tickets_count}}</li>
-    <li onclick="window.location='/bill/{{bill_id}}/payment/{{type_selected.id}}/{{left}}.{{right}}/{{tickets_count}}/save/'"> Enregistrer le paiement</li>
-
+    <ul id="numbers">
+    <li onclick='window.location="{% url 'payment_count' bill_id 1 %}"'>1</li>
+    <li onclick='window.location="{% url 'payment_count' bill_id 2 %}"'>2</li>
+    <li onclick='window.location="{% url 'payment_count' bill_id 3 %}"'>3</li>
+    <li onclick='window.location="{% url 'payment_count' bill_id 4 %}"'>4</li>
+    <li onclick='window.location="{% url 'payment_count' bill_id 5 %}"'>5</li>
+    <li onclick='window.location="{% url 'payment_count' bill_id 6 %}"'>6</li>
+    <li onclick='window.location="{% url 'payment_count' bill_id 7 %}"'>7</li>
+    <li onclick='window.location="{% url 'payment_count' bill_id 8 %}"'>8</li>
+    <li onclick='window.location="{% url 'payment_count' bill_id 9 %}"'>9</li>
+    <li onclick='window.location="{% url 'payment_count' bill_id 10 %}"'>10</li>
+    <li onclick='window.location="{% url 'payment_count' bill_id 11 %}"'>11</li>
+    <li onclick='window.location="{% url 'payment_count' bill_id 12 %}"'>12</li>
+    <li onclick='window.location="{% url 'payment_count' bill_id 13 %}"'>13</li>
+    <li onclick='window.location="{% url 'payment_count' bill_id 14 %}"'>14</li>
+    <li onclick='window.location="{% url 'payment_count' bill_id 15 %}"'>15</li>
+    </ul><h3></h3>
+    <ul id="payment_tickets">
+        <li onclick='window.location="{% url 'amount_payment' %}"'>
+            Valeur d'un ticket: {{left}}.{{right}}€</li>
+        <li>Nb tickets: {{tickets_count}}</li>
+        <li onclick='window.location="{% url 'save_payment' bill_id %}"'>Enregistrer le paiement</li>
     {% else %}
-    <li onclick="window.location='/bill/{{bill_id}}/payment/{{type_selected.id}}/{{left}}.{{right}}/0/set/'" >
+    <ul id="payment_tickets">
+        <li onclick='window.location="{% url 'amount_payment' %}"'>
     Montant: {{left}},{{right}}€</li>
-    <li onclick="window.location='/bill/{{bill_id}}/payment/{{type_selected.id}}/{{left}}.{{right}}/0/save/'">Enregistrer le paiement
-        </li>
+        <li onclick='window.location="{% url 'save_payment' bill_id %}"'>Enregistrer le paiement</li>
     {% endif %}
 {% else %}
+<ul id="payment_tickets">
     <li>Montant: {{left}},{{right}}€</li>
     <li>Enregistrer le paiement</li>
 {% endif %}

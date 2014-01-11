@@ -19,6 +19,7 @@
 #
 from django.db import models
 from generic import Nom
+from config import Config
 
 
 class PaiementType(Nom):
@@ -28,7 +29,21 @@ class PaiementType(Nom):
 
     class Meta:
         app_label = 'base'
+        ordering = ['nom']
 
+    def get_default(self):
+        """If exist, return default PaiementType for payment webpage
+        """
+        default = Config.objects.filter(key="default_type_payment")
+        if default:
+            try:
+                payment = PaiementType.objects.get(id=default[0].value)
+            except PaiementType.DoesNotExist:
+                return None
+            else:
+                return payment
+        else:
+            return None
 
 class Paiement(models.Model):
     """valeur_unitaire: pour gerer les montants des tickets restos"""

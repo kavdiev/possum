@@ -22,6 +22,7 @@ from django.contrib import messages
 from django.http import HttpResponseRedirect
 import logging
 from django.shortcuts import render
+from django.shortcuts import redirect
 from django.shortcuts import render_to_response, get_object_or_404
 from django.template import RequestContext
 from possum.base.models import Facture
@@ -33,30 +34,6 @@ logger = logging.getLogger(__name__)
 
 
 @permission_required('base.p3')
-def bill_payment_set_right(request, bill_id, type_id, left,
-                           right, number, count):
-    data = get_user(request)
-    data['menu_bills'] = True
-    data['bill_id'] = bill_id
-    data['type_id'] = type_id
-    result = number + right
-    return HttpResponseRedirect('/bill/%s/payment/%s/%s.%s/%s/set/right/' % (
-            bill_id, type_id, left, result, count))
-
-
-@permission_required('base.p3')
-def bill_payment_set_left(request, bill_id, type_id, left,
-                          right, number, count):
-    data = get_user(request)
-    data['menu_bills'] = True
-    data['bill_id'] = bill_id
-    data['type_id'] = type_id
-    result = int(left) * 10 + int(number)
-    return HttpResponseRedirect('/bill/%s/payment/%s/%d.%s/%s/set/' % (
-            bill_id, type_id, result, right, count))
-
-
-@permission_required('base.p3')
 def bill_payment_delete(request, bill_id, payment_id):
     data = get_user(request)
     data['menu_bills'] = True
@@ -64,110 +41,183 @@ def bill_payment_delete(request, bill_id, payment_id):
     payment = get_object_or_404(Paiement, pk=payment_id)
     bill = get_object_or_404(Facture, pk=bill_id)
     bill.del_payment(payment)
-    return HttpResponseRedirect('/bill/%s/' % bill_id)
+    return redirect('bill_view', bill_id)
 
 
 @permission_required('base.p3')
 def bill_payment_view(request, bill_id, payment_id):
-    data = get_user(request)
-    data['menu_bills'] = True
-    data['bill_id'] = bill_id
-    data['payment'] = get_object_or_404(Paiement, pk=payment_id)
-    return render_to_response('base/bill/payment_view.html',
-                                data,
-                                context_instance=RequestContext(request))
+    context = get_user(request)
+    context['menu_bills'] = True
+    context['bill_id'] = bill_id
+    context['payment'] = get_object_or_404(Paiement, pk=payment_id)
+    return render(request, 'base/bill/payment_view.html', context)
 
 
 @permission_required('base.p3')
-def bill_payment_save(request, bill_id, type_id, left,
-                      right, count):
+def amount_payment(request):
+    """Permet de définir le montant d'un paiement
+    bill_id doit etre dans request.session
+    """
+    context = get_user(request)
+    bill_id = request.session.get('bill_id', False)
+    if not bill_id:
+        messages.add_message(request, messages.ERROR, "Facture invalide")
+        return redirect('home_factures')
+
+    context['menu_bills'] = True
+    context['bill_id'] = bill_id
+    context['left'] = request.session.get('left', "0000")
+    context['right'] = request.session.get('right', "00")
+    return render(request, 'base/bill/payments/amount.html', context)
+    
+
+@permission_required('base.p3')
+def amount_payment_del(request):
+    """Permet d'effacer la partie gauche et droite
+    """
+    request.session['left'] = "0000"
+    request.session['right'] = "00"
+    request.session['is_left'] = True
+    return redirect("amount_payment")
+
+
+@permission_required('base.p3')
+def amount_payment_right(request):
+    """Permet de passer à la partie droite
+    """
+    request.session['is_left'] = False
+    return redirect("amount_payment")
+
+
+@permission_required('base.p3')
+def amount_payment_add(request, number):
+    """Permet d'ajouter un chiffre au montant
+    """
+    if request.session.get('is_left', True):
+        key = 'left'
+    else:
+        key = 'right'
+    value = int(request.session.get(key, 0))
+    try:
+        new = int(number)
+    except:
+        messages.add_message(request, messages.ERROR, "Chiffre invalide")
+    else:
+        result = value * 10 + new
+        tmp = "%04d" % result
+        if request.session.get('is_left', True):
+            # on veut seulement les 4 derniers chiffres
+            request.session['left'] = tmp[-4:]
+        else:
+            request.session['right'] = tmp[-2:]
+    return redirect("amount_payment")
+    
+
+@permission_required('base.p3')
+def type_payment(request, bill_id, type_id):
+    type_payment = get_object_or_404(PaiementType, pk=type_id)
+    request.session['type_selected'] = type_payment
+    return redirect('prepare_payment', bill_id)
+
+
+@permission_required('base.p3')
+def payment_count(request, bill_id, number):
+    request.session['tickets_count'] = number
+    return redirect('prepare_payment', bill_id)
+
+
+def cleanup_payment(request):
+    """Remove all variables used for a new payment
+    """
+    keys = ['is_left', 'left', 'right', 'type_selected', 'tickets_count',
+            'ticket_value']
+    for key in keys:
+        if key in request.session.keys():
+            request.session.pop(key)
+
+
+@permission_required('base.p3')
+def save_payment(request, bill_id):
     """Enregistre le paiement
     """
-    type_payment = get_object_or_404(PaiementType, pk=type_id)
     bill = get_object_or_404(Facture, pk=bill_id)
+    if request.session.get('type_selected', False):
+        type_payment = request.session['type_selected']
+    else:
+        messages.add_message(request, messages.ERROR, "Paiement invalide")
+        return redirect('prepare_payment', bill_id)
+    if type(type_payment) != type(PaiementType()):
+        messages.add_message(request, messages.ERROR, "Paiement invalide")
+        return redirect('prepare_payment', bill_id)
+    left = request.session.get('left', "0")
+    right = request.session.get('right', "0")
     montant = "%s.%s" % (left, right)
     if type_payment.fixed_value:
-        result = bill.add_payment(type_payment, count, montant)
+        count = request.session.get('tickets_count', "1")
+        try:
+            result = bill.add_payment(type_payment, count, montant)
+        except:
+            messages.add_message(request, messages.ERROR, "Paiement invalide")
+            return redirect('prepare_payment', bill_id)
     else:
-        result = bill.add_payment(type_payment, montant)
+        try:
+            result = bill.add_payment(type_payment, montant)
+        except:
+            messages.add_message(request, messages.ERROR, "Paiement invalide")
+            return redirect('prepare_payment', bill_id)
     if not result:
         messages.add_message(request,
                              messages.ERROR,
                              "Le paiement n'a pu être enregistré.")
+        return redirect('prepare_payment', bill_id)
+    cleanup_payment(request)
     if bill.est_soldee():
         messages.add_message(request,
                              messages.SUCCESS,
                              "La facture a été soldée.")
-        return HttpResponseRedirect('/bills/')
+        return redirect('home_factures')
     else:
         messages.add_message(request,
                              messages.SUCCESS,
                              "Le paiement a été enregistré.")
-        return HttpResponseRedirect('/bill/%s/payment/' % bill_id)
+        return redirect('prepare_payment', bill_id)
 
+
+def init_montant(request, montant):
+    """Init left/right with a montant in str"""
+    (left, right) = montant.split(".")
+    request.session['left'] = "%04d" % int(left)
+    request.session['right'] = "%02d" % int(right)
 
 @permission_required('base.p3')
-def bill_payment_set(request, bill_id, type_id, left, right,
-                     count, part="left"):
-    """if part == "left" alors on fait la partie gauche du nombre
-    sinon on fait la partie droite
+def prepare_payment(request, bill_id):
+    """Remplace bill_payment
     """
-    data = get_user(request)
-    data['menu_bills'] = True
-    data['bill_id'] = bill_id
-    data['type_id'] = type_id
-    tmp = "%04d" % int(left)
-    data['left'] = tmp[-4:]
-    tmp = "%02d" % int(right)
-    data['right'] = tmp[:2]
-    data['count'] = count
-    if part == "left":
-        data["part"] = "left"
-    else:
-        data["part"] = "right"
-    return render_to_response('base/bill/payment_set.html',
-                                data,
-                                context_instance=RequestContext(request))
-
-
-@permission_required('base.p3')
-def bill_payment_count(request, bill_id, type_id, left, right):
-    data = get_user(request)
-    data['menu_bills'] = True
-    data['bill_id'] = bill_id
-    data['type_id'] = type_id
-    data['left'] = left
-    data['right'] = right
-    data['tickets_count'] = range(35)
-    return render_to_response('base/bill/payment_count.html',
-                                data,
-                                context_instance=RequestContext(request))
-
-
-@permission_required('base.p3')
-def bill_payment(request, bill_id, type_id=-1, count=-1, left=0, right=0):
-    data = get_user(request)
     bill = get_object_or_404(Facture, pk=bill_id)
-    if bill.restant_a_payer == 0:
+    if bill.est_soldee():
         messages.add_message(request, messages.ERROR, "Il n'y a rien à payer.")
-        return HttpResponseRedirect('/bill/%s/' % bill.id)
-    data['bill_id'] = bill_id
-    data['type_payments'] = PaiementType.objects.order_by("nom")
-    data['menu_bills'] = True
-    data['left'] = left
-    data['right'] = right
-    if type_id > -1:
-        data['type_selected'] = get_object_or_404(PaiementType, pk=type_id)
-        if data['type_selected'].fixed_value:
-            if count > 0:
-                data['tickets_count'] = count
-            else:
-                data['tickets_count'] = 0
-            data['ticket_value'] = "0.0"
-        else:
-            if left == 0 and right == 0:
-                montant = u"%.2f" % bill.restant_a_payer
-                (data['left'], data['right']) = montant.split(".")
-    return render_to_response('base/bill/payment.html',
-                                data,
-                                context_instance=RequestContext(request))
+        return redirect('bill_view', bill.id)
+    # on nettoie la variable
+    if 'is_left' in request.session.keys():
+        request.session.pop('is_left')
+    context = get_user(request)
+    context['bill_id'] = bill_id
+    request.session['bill_id'] = bill_id
+    context['type_payments'] = PaiementType.objects.all()
+    context['menu_bills'] = True
+    default = PaiementType().get_default()
+    if request.session.get('type_selected', False):
+        context['type_selected'] = request.session['type_selected']
+    else:
+        if default:
+            request.session['type_selected'] = default
+            context['type_selected'] = default
+    context['left'] = request.session.get('left', "0000")
+    context['right'] = request.session.get('right', "00")
+    if context['left'] == "0000" and context['right'] == "00":
+        init_montant(request, u"%.2f" % bill.restant_a_payer)
+        context['left'] = request.session.get('left')
+        context['right'] = request.session.get('right')
+    context['tickets_count'] = request.session.get('tickets_count', "1")
+    context['ticket_value'] = request.session.get('ticket_value', "0.0")
+    return render(request, 'base/bill/payment.html', context)

@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h1>Sélection d'un montant</h1>
+<ul id="lcd">
+    {% for i in left %}
+    <li><img src="/static/images/numbers/orange/digit_{{i}}.png"></li>
+    {% endfor %}
+    <li><img src="/static/images/numbers/orange/dot.png"></li>
+    {% for i in right %}
+    <li><img src="/static/images/numbers/orange/digit_{{i}}.png"></li>
+    {% endfor %}
+</ul>
+<ul id="lcd_save">
+    <li onclick='window.location="{% url 'prepare_payment' bill_id %}"'>Valider</li>
+</ul>
+</br></br>
+<ul id="calc">
+    <li onclick='window.location="{% url 'amount_payment_add' 7 %}"'>7</li>
+    <li onclick='window.location="{% url 'amount_payment_add' 8 %}"'>8</li>
+    <li onclick='window.location="{% url 'amount_payment_add' 9 %}"'>9</li>
+    </br></br></br></br>
+    <li onclick='window.location="{% url 'amount_payment_add' 4 %}"'>4</li>
+    <li onclick='window.location="{% url 'amount_payment_add' 5 %}"'>5</li>
+    <li onclick='window.location="{% url 'amount_payment_add' 6 %}"'>6</li>
+    </br></br></br></br>
+    <li onclick='window.location="{% url 'amount_payment_add' 1 %}"'>1</li>
+    <li onclick='window.location="{% url 'amount_payment_add' 2 %}"'>2</li>
+    <li onclick='window.location="{% url 'amount_payment_add' 3 %}"'>3</li>
+    </br></br></br></br>
+    <li onclick='window.location="{% url 'amount_payment_add' 0 %}"'>0</li>
+    <li onclick='window.location="{% url 'amount_payment_right' %}"'>.</li>
+    <li onclick='window.location="{% url 'amount_payment_del' %}"'>DEL</li>
+</ul>
+
+{% endblock %}
+
