@@ -40,7 +40,7 @@ def kitchen(request):
         if bill.following.count():
             liste.append(bill)
     data['factures'] = liste
-    data['need_auto_refresh'] = True
+    data['need_auto_refresh'] = 60
     return render_to_response('base/kitchen/home.html', data,
                               context_instance=RequestContext(request))
 
