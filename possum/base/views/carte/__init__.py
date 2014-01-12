@@ -21,6 +21,7 @@
 from django.contrib import messages
 from django.http import HttpResponseRedirect
 from django.shortcuts import redirect
+from django.shortcuts import render
 import logging
 from django.shortcuts import render_to_response, get_object_or_404
 from django.template import RequestContext
@@ -88,32 +89,27 @@ def products_option(request, product_id, option_id):
     return redirect('products_view', product_id)
 
 
-def treat_product_new(request, category):
-    name = request.POST.get('name', '').strip()
-    prize = request.POST.get('prize', '').strip()
-    if is_valid_product(request, name, prize):
-        try:
-            product = Produit(nom=name, prix=prize)
-            product.set_category(category)
-            product.save()
-        except Exception as ex:
-            messages.add_message(request,
-                                 messages.ERROR,
-                                 "Les modifications n'ont pu être enregistrées. ('{}')".format(ex))
-        else:
-            return HttpResponseRedirect('/carte/categories/%s/' % category.id)
-
-
 @permission_required('base.p2')
 def products_new(request, cat_id):
     data = get_user(request)
     data['menu_manager'] = True
     data['category'] = get_object_or_404(Categorie, pk=cat_id)
     if request.method == 'POST':
-        treat_product_new(request, data['category'])
-    return render_to_response('base/carte/product_new.html',
-                                data,
-                                context_instance=RequestContext(request))
+        name = request.POST.get('name', '').strip()
+        prize = request.POST.get('prize', '').strip()
+        if is_valid_product(request, name, prize):
+            try:
+                product = Produit(nom=name, prix=prize)
+                product.set_category(data['category'])
+                product.save()
+            except Exception as ex:
+                messages.add_message(request,
+                                     messages.ERROR,
+                                     "Les modifications n'ont pu être "
+                                     "enregistrées. ('{}')".format(ex))
+            else:
+                return redirect('categories_view', data['category'].id)
+    return render(request, 'base/carte/product_new.html', data)
 
 
 @permission_required('base.p2')
