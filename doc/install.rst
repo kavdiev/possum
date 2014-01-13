@@ -178,6 +178,41 @@ Ici, le serveur s'appelle **possum**.
   make-ssl-cert generate-default-snakeoil --force-overwrite
 
 
+Rapports & statistiques
+-----------------------
+
+Afin de construire les différents rapports et d'afficher les graphiques
+un certain nombre de statistiques doivent être calculés sur les factures
+qui sont soldées. Ces calculs peuvent être couteux en temps, cela est
+visible lorsque l'on accède à la partie **Manager/rapports**.
+
+Pour palier à ce problème, il est recommandé de mettre à jour ces informations
+tout au long de la journée en utilisant la crontab GNU/Linux.
+
+Pour cela, il faudra adapter le fichier **possum/utils/update_stats.py** dans 
+lequel vous devrez modifier la ligne suivante en indiquant votre répertoire
+d'installation:
+
+::
+
+  sys.path.append('/opt/possum-software')
+
+
+Ensuite, il suffit d'enregistrer l'exécution automatique de cette commande
+à l'aide de la commande **crontab -e** (pour plus d'informations: **man crontab**).
+
+Voici un exemple:
+
+::
+
+  # à 11h20 tous les jours
+  20 11 * * * /opt/possum-software/possum/utils/update_stats.py
+  # après le service du midi, à 14h30 tous les jours
+  30 14 * * * /opt/possum-software/possum/utils/update_stats.py
+  # avant le service du soir, à 18h30 tous les jours
+  30 18 * * * /opt/possum-software/possum/utils/update_stats.py
+
+
 Mail
 ----
 
