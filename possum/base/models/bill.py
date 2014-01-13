@@ -531,7 +531,7 @@ class Facture(models.Model):
                 dict_vendu[vendu.produit.nom] = [vendu.prix]
         for nom, prix in dict_vendu.items():
             name = nom[:25]
-            prize = "% 3.2f" % sum(prix)
+            prize = "% 3.2f" % prix[0]
             # la largeur disponible correspond à la largeur du ticket
             # sans la 1er partie (" 1 ") et sans la largeur du prix
             # " 1 largeur_dispo PRIX"
