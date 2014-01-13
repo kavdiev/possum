@@ -189,13 +189,13 @@ visible lorsque l'on accède à la partie **Manager/rapports**.
 Pour palier à ce problème, il est recommandé de mettre à jour ces informations
 tout au long de la journée en utilisant la crontab GNU/Linux.
 
-Pour cela, il faudra adapter le fichier **possum/utils/update_stats.py** dans 
+Pour cela, il faudra adapter le fichier **possum/utils/update_stats.sh** dans 
 lequel vous devrez modifier la ligne suivante en indiquant votre répertoire
 d'installation:
 
 ::
 
-  sys.path.append('/opt/possum-software')
+  pushd /opt/possum-software >/dev/null
 
 
 Ensuite, il suffit d'enregistrer l'exécution automatique de cette commande
@@ -206,11 +206,11 @@ Voici un exemple:
 ::
 
   # à 11h20 tous les jours
-  20 11 * * * /opt/possum-software/possum/utils/update_stats.py
+  20 11 * * * /opt/possum-software/possum/utils/update_stats.sh
   # après le service du midi, à 14h30 tous les jours
-  30 14 * * * /opt/possum-software/possum/utils/update_stats.py
+  30 14 * * * /opt/possum-software/possum/utils/update_stats.sh
   # avant le service du soir, à 18h30 tous les jours
-  30 18 * * * /opt/possum-software/possum/utils/update_stats.py
+  30 18 * * * /opt/possum-software/possum/utils/update_stats.sh
 
 
 Mail
