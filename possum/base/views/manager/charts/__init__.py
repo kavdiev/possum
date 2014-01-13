@@ -46,7 +46,6 @@ def charts_year(request, choice='ttc'):
 #    data['charts'] = True
     data['cat_list'] = Categorie.objects.order_by('priorite', 'nom')
     data['menu_manager'] = True
-    DailyStat().update()
     year = datetime.datetime.now().year
     if request.method == 'POST':
         try:

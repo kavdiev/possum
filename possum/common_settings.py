@@ -138,6 +138,8 @@ TEMPLATE_DIRS = (
     normpath(join(DJANGO_ROOT, SITE_NAME, 'templates')),
 )
 
+LOCK_STATS = '/tmp/possum-stats.lock'
+
 INSTALLED_APPS = (
     'south',
     'django.contrib.auth',

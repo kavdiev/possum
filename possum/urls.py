@@ -246,6 +246,7 @@ urlpatterns += patterns('possum.base.views.manager.tables',
 
 urlpatterns += patterns('possum.base.views.manager.rapports',
     url(r'^manager/rapports/$', 'rapports_daily', name='rapports_home'),
+    url(r'^manager/rapports/update/$', 'update_rapports', name='update_rapports'),
     url(r'^manager/rapports/daily/$', 'rapports_daily', name='rapports_daily'),
     url(r'^manager/rapports/(?P<year>\d{4})/(?P<month>\d+)/(?P<day>\d+)/vats/print/$', 'rapports_daily_vats_print', name='rapports_daily_vats_print'),
     url(r'^manager/rapports/(?P<year>\d{4})/(?P<month>\d+)/(?P<day>\d+)/vats/send/$', 'rapports_daily_vats_send', name='rapports_daily_vats_send'),

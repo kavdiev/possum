@@ -22,7 +22,8 @@ import datetime
 from decimal import Decimal
 from django.db import models
 import logging
-
+import os
+from django.conf import settings
 from django.db.models import Max, Avg
 
 from monthly_stat import MonthlyStat
@@ -383,10 +384,17 @@ class DailyStat(models.Model):
     def update(self):
         """Update statistics with new bills
         """
-        for bill in Facture.objects.filter(saved_in_stats=False).iterator():
-            logger.info("[%s] update daily stats for bill %d" % (
-                        bill.date_creation.strftime("%Y-%m-%d"), bill.id))
-            DailyStat().add_bill(bill)
+        if not os.path.isfile(settings.LOCK_STATS):
+            fd = open(settings.LOCK_STATS, "w")
+            fd.close()
+            for bill in Facture.objects.filter(saved_in_stats=False).iterator():
+                logger.info("[%s] update daily stats for bill %d" % (
+                            bill.date_creation.strftime("%Y-%m-%d"), bill.id))
+                DailyStat().add_bill(bill)
+            os.remove(settings.LOCK_STATS)
+            return True
+        else:
+            return False
 
     def get_data(self, data, date):
         """Recupere les donnees pour une date, retourne data

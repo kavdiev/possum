@@ -25,6 +25,7 @@ from django.http import HttpResponseRedirect
 import logging
 from django.conf import settings
 from django.shortcuts import render_to_response
+from django.shortcuts import redirect
 from django.template import RequestContext
 from possum.base.models import DailyStat
 from possum.base.forms import DateForm, WeekForm, MonthForm
@@ -49,13 +50,25 @@ def search_good_results(data):
 
 
 @permission_required('base.p1')
+def update_rapports(request):
+    """Update statistics
+    """
+    if DailyStat().update():
+        messages.add_message(request, messages.SUCCESS,
+                             "Les données sont à jour")
+    else:
+        messages.add_message(request, messages.ERROR,
+                             "Les données ne peuvent être mis à jour")
+    return redirect("manager")
+
+
+@permission_required('base.p1')
 def rapports_daily(request):
     """
     Affiche le rapport pour une journée
     """
     data = get_user(request)
     data['menu_manager'] = True
-    DailyStat().update()
     date = datetime.datetime.now()
     if request.method == 'POST':
         try:
@@ -89,7 +102,6 @@ def rapports_weekly(request):
     """
     data = get_user(request)
     data['menu_manager'] = True
-    DailyStat().update()
     date = datetime.datetime.now()
     year = date.year
     # 01 must be converted to 1
@@ -124,7 +136,6 @@ def rapports_monthly(request):
     """
     data = get_user(request)
     data['menu_manager'] = True
-    DailyStat().update()
     date = datetime.datetime.now()
     year = date.year
     month = date.month

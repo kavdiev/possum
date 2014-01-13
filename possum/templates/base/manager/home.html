@@ -16,20 +16,22 @@
     <li onclick="window.location='/manager/users/'">Utilisateurs</li>
 </ul>
 
-<h2>Rapports</h2>
-<p>L'affichage des rapports nécessite le calcul des statistiques sur les nouvelles
-factures. Si beaucoup de factures ont été créées depuis le dernier accès, cette
-opération peut prendre du temps (voir plusieurs minutes). Merci d'être patient.</p>
+<h2>Résultats</h2>
+<p>L'affichage des informations nécessite la mise à jour des statistiques avec
+les dernières factures. S'il y a beaucoup de nouvelles factures, cette
+opération peut prendre du temps (voir plusieurs minutes).</p>
+<ul id="manager">
+    <li onclick='window.location="{% url 'update_rapports' %}"'>Mettre à jour</li>
+</ul>
+
+<h3>Rapports</h3>
 <ul id="manager">
     <li onclick="window.location='/manager/rapports/daily/'">jour</li>
     <li onclick="window.location='/manager/rapports/weekly/'">semaine</li>
     <li onclick="window.location='/manager/rapports/monthly/'">mois</li>
 </ul>
 
-<h2>Graphiques</h2>
-<p>Comme pour la partie Rapports, l'affichage des graphiques nécessite la mise
-à jour des statistiques avec les nouvelles factures. Cette opération peut prendre
-du temps, merci de votre patiente.</p>
+<h3>Graphiques</h3>
 <ul id="manager">
     <li onclick="window.location='/manager/charts/year/'">année</li>
 </ul>
