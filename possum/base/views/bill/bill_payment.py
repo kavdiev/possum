@@ -71,13 +71,19 @@ def amount_payment(request):
     return render(request, 'base/bill/payments/amount.html', context)
     
 
-@permission_required('base.p3')
-def amount_payment_del(request):
+def amount_payment_zero(request):
     """Permet d'effacer la partie gauche et droite
     """
     request.session['left'] = "0000"
     request.session['right'] = "00"
     request.session['is_left'] = True
+
+
+@permission_required('base.p3')
+def amount_payment_del(request):
+    """Permet d'effacer la partie gauche et droite
+    """
+    amount_payment_zero(request)
     return redirect("amount_payment")
 
 
@@ -93,6 +99,12 @@ def amount_payment_right(request):
 def amount_payment_add(request, number):
     """Permet d'ajouter un chiffre au montant
     """
+    if request.session.get('init_montant', False):
+        # if add a number with init_montant,
+        # we should want enter a new number
+        # so we del default montant
+        amount_payment_zero(request)
+        request.session.pop('init_montant')
     if request.session.get('is_left', True):
         key = 'left'
     else:
@@ -130,7 +142,7 @@ def cleanup_payment(request):
     """Remove all variables used for a new payment
     """
     keys = ['is_left', 'left', 'right', 'type_selected', 'tickets_count',
-            'ticket_value']
+            'ticket_value', 'init_montant']
     for key in keys:
         if key in request.session.keys():
             request.session.pop(key)
@@ -188,6 +200,7 @@ def init_montant(request, montant):
     (left, right) = montant.split(".")
     request.session['left'] = "%04d" % int(left)
     request.session['right'] = "%02d" % int(right)
+    request.session['init_montant'] = True
 
 @permission_required('base.p3')
 def prepare_payment(request, bill_id):

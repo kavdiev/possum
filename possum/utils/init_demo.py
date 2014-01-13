@@ -92,6 +92,10 @@ PaiementType(nom='Tic. Resto.', fixed_value=True).save()
 id_type_paiement = PaiementType.objects.get(nom="Espece").id
 Config(key="payment_for_refunds", value=id_type_paiement).save()
 
+# Default PaymentType to select by default on the payment page
+id_type_paiement = PaiementType.objects.get(nom="Espece").id
+Config(key="default_type_payment", value=id_type_paiement).save()
+
 # Montant de la surtaxe
 Config(key="price_surcharge", value="0.20").save()
 
@@ -110,13 +114,13 @@ for i in xrange(15, 26):
 
 # TVA
 vat_alcool = VAT(name="alcool")
-vat_alcool.set_tax("19.6")
+vat_alcool.set_tax("20")
 vat_alcool.save()
 vat_onsite = VAT(name="sur place")
-vat_onsite.set_tax("7")
+vat_onsite.set_tax("10")
 vat_onsite.save()
 vat_takeaway = VAT(name=u"à emporter")
-vat_takeaway.set_tax("5")
+vat_takeaway.set_tax("7")
 vat_takeaway.save()
 
 # on entre les nouveaux produits, les prix sont TTC
