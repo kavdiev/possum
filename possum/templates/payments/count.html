@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h1>Nombre de tickets</h1>
+<ul id="numbers">
+    {% for i in range %}
+    <li onclick='window.location="{% url 'payment_count' bill_id i %}"'
+        {% if i == tickets_count %}class=enabled{% endif %}
+        >{{i}}</li>
+    {% empty %}
+    <li>!</li>
+    {% endfor %}
+</ul>
+
+{% endblock %}
+

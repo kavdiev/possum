@@ -20,27 +20,20 @@
 <h2>2. Montant</h2>
 {% if type_selected %}
     {% if type_selected.fixed_value %}
+    <h3>2.1 Nombre de tickets</h3>
     <ul id="numbers">
-    <li onclick='window.location="{% url 'payment_count' bill_id 1 %}"'>1</li>
-    <li onclick='window.location="{% url 'payment_count' bill_id 2 %}"'>2</li>
-    <li onclick='window.location="{% url 'payment_count' bill_id 3 %}"'>3</li>
-    <li onclick='window.location="{% url 'payment_count' bill_id 4 %}"'>4</li>
-    <li onclick='window.location="{% url 'payment_count' bill_id 5 %}"'>5</li>
-    <li onclick='window.location="{% url 'payment_count' bill_id 6 %}"'>6</li>
-    <li onclick='window.location="{% url 'payment_count' bill_id 7 %}"'>7</li>
-    <li onclick='window.location="{% url 'payment_count' bill_id 8 %}"'>8</li>
-    <li onclick='window.location="{% url 'payment_count' bill_id 9 %}"'>9</li>
-    <li onclick='window.location="{% url 'payment_count' bill_id 10 %}"'>10</li>
-    <li onclick='window.location="{% url 'payment_count' bill_id 11 %}"'>11</li>
-    <li onclick='window.location="{% url 'payment_count' bill_id 12 %}"'>12</li>
-    <li onclick='window.location="{% url 'payment_count' bill_id 13 %}"'>13</li>
-    <li onclick='window.location="{% url 'payment_count' bill_id 14 %}"'>14</li>
-    <li onclick='window.location="{% url 'payment_count' bill_id 15 %}"'>15</li>
-    </ul><h3></h3>
+        {% for i in range %}
+        <li onclick='window.location="{% url 'payment_count' bill_id i %}"'
+            {% if i == tickets_count %}class=enabled{% endif %}
+        >{{i}}</li>
+        {% endfor %}
+        <li onclick='window.location="{% url 'amount_count' %}"'>+</li>
+    </ul>
+    <h3>2.2 Total</h3>
     <ul id="payment_tickets">
         <li onclick='window.location="{% url 'amount_payment' %}"'>
             Valeur d'un ticket: {{left}}.{{right}}€</li>
-        <li>Nb tickets: {{tickets_count}}</li>
+        <li onclick='window.location="{% url 'amount_count' %}"'>Nb tickets: {{tickets_count}}</li>
         <li onclick='window.location="{% url 'save_payment' bill_id %}"'>Enregistrer le paiement</li>
     {% else %}
     <ul id="payment_tickets">

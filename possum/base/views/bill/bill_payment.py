@@ -23,8 +23,7 @@ from django.http import HttpResponseRedirect
 import logging
 from django.shortcuts import render
 from django.shortcuts import redirect
-from django.shortcuts import render_to_response, get_object_or_404
-from django.template import RequestContext
+from django.shortcuts import get_object_or_404
 from possum.base.models import Facture
 from possum.base.models import PaiementType, Paiement
 from possum.base.views import get_user, permission_required
@@ -50,7 +49,7 @@ def bill_payment_view(request, bill_id, payment_id):
     context['menu_bills'] = True
     context['bill_id'] = bill_id
     context['payment'] = get_object_or_404(Paiement, pk=payment_id)
-    return render(request, 'base/bill/payment_view.html', context)
+    return render(request, 'payments/view.html', context)
 
 
 @permission_required('base.p3')
@@ -68,7 +67,24 @@ def amount_payment(request):
     context['bill_id'] = bill_id
     context['left'] = request.session.get('left', "0000")
     context['right'] = request.session.get('right', "00")
-    return render(request, 'base/bill/payments/amount.html', context)
+    return render(request, 'payments/amount.html', context)
+    
+
+@permission_required('base.p3')
+def amount_count(request):
+    """Le nombre de tickets pour un paiement
+    """
+    context = get_user(request)
+    bill_id = request.session.get('bill_id', False)
+    if not bill_id:
+        messages.add_message(request, messages.ERROR, "Facture invalide")
+        return redirect('home_factures')
+
+    context['menu_bills'] = True
+    context['bill_id'] = bill_id
+    context['tickets_count'] = request.session.get('tickets_count', 1)
+    context['range'] = range(1, 50)
+    return render(request, 'payments/count.html', context)
     
 
 def amount_payment_zero(request):
@@ -134,8 +150,13 @@ def type_payment(request, bill_id, type_id):
 
 @permission_required('base.p3')
 def payment_count(request, bill_id, number):
-    request.session['tickets_count'] = number
-    return redirect('prepare_payment', bill_id)
+    try:
+        request.session['tickets_count'] = int(number)
+    except:
+        messages.add_message(request, messages.ERROR, "Nombre invalide")
+        return redirect('prepare_payment', bill_id)
+    else:
+        return redirect('prepare_payment', bill_id)
 
 
 def cleanup_payment(request):
@@ -165,7 +186,7 @@ def save_payment(request, bill_id):
     right = request.session.get('right', "0")
     montant = "%s.%s" % (left, right)
     if type_payment.fixed_value:
-        count = request.session.get('tickets_count', "1")
+        count = request.session.get('tickets_count', 1)
         try:
             result = bill.add_payment(type_payment, count, montant)
         except:
@@ -231,6 +252,7 @@ def prepare_payment(request, bill_id):
         init_montant(request, u"%.2f" % bill.restant_a_payer)
         context['left'] = request.session.get('left')
         context['right'] = request.session.get('right')
-    context['tickets_count'] = request.session.get('tickets_count', "1")
+    context['tickets_count'] = request.session.get('tickets_count', 1)
+    context['range'] = range(1, 15)
     context['ticket_value'] = request.session.get('ticket_value', "0.0")
-    return render(request, 'base/bill/payment.html', context)
+    return render(request, 'payments/home.html', context)

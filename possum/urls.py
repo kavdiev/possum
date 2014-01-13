@@ -171,6 +171,7 @@ urlpatterns += patterns('possum.base.views.bill',
     url(r'^amount/del/$', 'amount_payment_del', name='amount_payment_del'),
     url(r'^amount/add/(?P<number>\d)/$', 'amount_payment_add', name='amount_payment_add'),
     url(r'^amount/right/$', 'amount_payment_right', name='amount_payment_right'),
+    url(r'^amount/count/$', 'amount_count', name='amount_count'),
 )
 
 urlpatterns += patterns('possum.base.views.jukebox',
