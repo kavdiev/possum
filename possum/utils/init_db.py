@@ -91,5 +91,9 @@ PaiementType(nom='Tic. Resto.', fixed_value=True).save()
 id_type_paiement = PaiementType.objects.get(nom="Espece").id
 Config(key="payment_for_refunds", value=id_type_paiement).save()
 
+# Default PaymentType to select by default on the payment page
+id_type_paiement = PaiementType.objects.get(nom="Espece").id
+Config(key="default_type_payment", value=id_type_paiement).save()
+
 # Le montant de surtaxe
 Config(key="price_surcharge", value="0.20").save()
