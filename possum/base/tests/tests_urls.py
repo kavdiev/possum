@@ -79,7 +79,7 @@ class Tests_urls(TestCase):
     def test_bill(self):
         ''' Test that the bill urls work. '''
         urls = [
-            reverse('home_factures'),
+            reverse('bill_home'),
             reverse('bill_new'),
             reverse('table_select', args=('4',)),
             reverse('table_set', args=('5', '2')),

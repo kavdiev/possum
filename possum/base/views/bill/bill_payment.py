@@ -61,7 +61,7 @@ def amount_payment(request):
     bill_id = request.session.get('bill_id', False)
     if not bill_id:
         messages.add_message(request, messages.ERROR, "Facture invalide")
-        return redirect('home_factures')
+        return redirect('bill_home')
 
     context['menu_bills'] = True
     context['bill_id'] = bill_id
@@ -78,7 +78,7 @@ def amount_count(request):
     bill_id = request.session.get('bill_id', False)
     if not bill_id:
         messages.add_message(request, messages.ERROR, "Facture invalide")
-        return redirect('home_factures')
+        return redirect('bill_home')
 
     context['menu_bills'] = True
     context['bill_id'] = bill_id
@@ -208,7 +208,7 @@ def save_payment(request, bill_id):
         messages.add_message(request,
                              messages.SUCCESS,
                              "La facture a été soldée.")
-        return redirect('home_factures')
+        return redirect('bill_home')
     else:
         messages.add_message(request,
                              messages.SUCCESS,

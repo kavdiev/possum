@@ -122,7 +122,7 @@ urlpatterns += patterns('possum.base.views.carte',
                         )
 
 urlpatterns += patterns('possum.base.views.bill',
-    url(r'^bills/$', 'factures', name='home_factures'),
+    url(r'^bills/$', 'bill_home', name='bill_home'),
     url(r'^bill/new/$', 'bill_new', name='bill_new'),
     url(r'^bill/(?P<bill_id>\d+)/table/select/$', 'table_select',
         name='table_select'),

@@ -378,7 +378,7 @@ def couverts_set(request, bill_id, number):
 
 
 @permission_required('base.p3')
-def factures(request):
+def bill_home(request):
     data = get_user(request)
     data['menu_bills'] = True
     data['need_auto_refresh'] = 30

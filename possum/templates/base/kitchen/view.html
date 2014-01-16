@@ -2,8 +2,8 @@
 {% block content %}
 
 <ul id="back">
-<li onclick="window.location='/kitchen/'">Retour cuisine</li>
-<li onclick="window.location='/bill/{{facture.id}}/'">Retour commande</li>
+    <li onclick='window.location="{% url 'kitchen' %}"'>Retour cuisine</li>
+    <li onclick='window.location="{% url 'bill_view' facture.id %}"'>Retour commande</li>
 </ul>
 
 <h1>Table {{facture.table}} / {{facture.couverts}} couv. ({{facture}})</h1>

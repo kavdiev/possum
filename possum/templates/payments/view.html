@@ -2,7 +2,7 @@
 {% block content %}
 
 <ul id="back">
-    <li onclick="window.location='/bill/{{bill_id}}/'">Retour facture</li>
+    <li onclick='window.location="{% url 'bill_view' bill_id %}"'>Retour facture</li>
 </ul>
 
 <h1>Paiement {{payment.type}}</h1>
@@ -12,7 +12,8 @@
 <li>Nb tickets: {{payment.nb_tickets}}</li>
 {% endif %}
 <li>Total: {{payment.montant}}€</li>
-<li onclick="window.location='/bill/{{bill_id}}/payment/delete/{{payment.id}}/'" class="critical">Supprimer ce paiement</li>
+<li onclick='window.location="{% url 'bill_payment_delete' bill_id payment.id %}"' 
+    class="critical">Supprimer ce paiement</li>
 </ul>
 
 {% endblock %}

@@ -6,9 +6,9 @@
 d'une commande.</p>
 
 <ul id="notes">
-    <li onclick="window.location='/notes/add/'">Ajouter</li>
+    <li onclick='window.location="{% url 'notes_add' %}"'>Ajouter</li>
     {% for note in notes %}
-    <li onclick="window.location='/notes/{{note.id}}/'">
+    <li onclick='window.location="{% url 'notes_view' note.id %}"'>
         {{note.message}}
         </li>
     {% endfor %}
@@ -20,15 +20,20 @@ d'une commande.</p>
 {% else %}
 <h2>Nouvelle note</h2>
 {% endif %}
-<form action="/notes/{% if note.instance.id %}{{note.instance.id}}{% else %}add{% endif %}/" method="post">
+{% if note.instance.id %}
+<form action="{% url 'notes_view' note.instance.id %}" method="post">
+{% else %}
+<form action="{% url 'notes_add' %}" method="post">
+{% endif %}
     {{ note.non_field_errors }}
     {% csrf_token %}
     <table>
         {{note.as_table}}
         <tr><td colspan="2">
-            <input type="submit" value="Enregistrer" /></form>
+            <input type="submit" value="Enregistrer" />
+</form>
     {% if note.instance.id %}
-        <form action="/notes/{{ note.instance.id }}/del/">
+        <form action="{% url 'notes_del' note.instance.id %}">
             <input type="submit" value="Supprimer" />
         </form>
     {% endif %}

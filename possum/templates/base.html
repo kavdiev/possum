@@ -25,41 +25,42 @@
 <body>
     {% block menu %}
     <ul id="menu">
+        <li 
         {% if menu_bills %}
-            <li class="menuSelected" onclick="window.location='/bills/'">
-        {% else %}
-            <li onclick="window.location='/bills/'">
+            class="menuSelected"
         {% endif %}
+            onclick='window.location="{% url 'bill_home' %}"'>
                 Commandes
-            </li>
-            {% if menu_kitchen %}
-                <li class="menuSelected" onclick="window.location='/kitchen/'">
-            {% else %}
-                <li onclick="window.location='/kitchen/'">
-            {% endif %}
-                    Cuisine
-                </li>
-            {% if menu_manager %}
-                <li class="menuSelected" onclick="window.location='/manager/'">
-            {% else %}
-                <li onclick="window.location='/manager/'">
-            {% endif %}
-                    Manager
-                </li>
+        </li>
+        <li
+        {% if menu_kitchen %}
+            class="menuSelected"
+        {% endif %}
+            onclick='window.location="{% url 'kitchen' %}"'>
+                Cuisine
+        </li>
+        <li
+        {% if menu_manager %}
+            class="menuSelected"
+        {% endif %}
+            onclick='window.location="{% url 'manager' %}"'>
+                Manager
+        </li>
         <li>
             <div id="myclock">
                 <script type="text/javascript">window.onload = date_heure('myclock');</script>
             </div>
         </li>
         {% if user.is_authenticated %}
-            <li class="{% if menu_profile %}menuSelected{% endif %}" onclick="window.location='/profile/'">
+            <li class="{% if menu_profile %}menuSelected{% endif %}"
+            onclick='window.location="{% url 'profile' %}"'>
                 {{user.username}}
             </li>
-            <li onclick="window.location='/users/logout/'">
+            <li onclick='window.location="{% url 'logout' %}"'>
                 Déconnexion
             </li>
         {% else %}
-            <li onclick="window.location='/users/login/'">
+            <li onclick='window.location="{% url 'login' %}"'>
                 Connexion
             </li>
         {% endif %}
