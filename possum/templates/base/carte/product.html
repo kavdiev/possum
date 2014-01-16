@@ -2,33 +2,34 @@
 {% block content %}
 
 <ul id="back">
-    <li onclick="window.location='/carte/categories/{{product.categorie.id}}/'">Retour catégorie</li>
+    <li onclick='window.location="{% url 'categories_view' product.categorie.id %}"'>
+        Retour catégorie</li>
 </ul>
 
 <h1>Produit: {{product.nom}}</h2>
 <p>Attention, en fonction des imprimantes, il est recommandé de limiter l'utilisation des accents et des noms longs.</p>
 <ul id="product_info">
-    <li onclick="window.location='/carte/products/{{product.id}}/change/'">
+    <li onclick='window.location="{% url 'products_view' product.id %}"'>
         Nom:</br>
         {{product.nom}}</li>
-    <li onclick="window.location='/carte/products/{{product.id}}/category/'" 
+        <li onclick='window.location="{% url 'products_category' product.id %}"' 
         style="background:{{product.categorie.color}};">
         Catégorie:</br>{{product.categorie}}</li>
-    <li onclick="window.location='/carte/products/{{product.id}}/enable/'"
+        <li onclick='window.location="{% url 'products_enable' product.id %}"'
         {% if product.actif %}
             class="enabled"> Est actif
         {% else %}
             class="disabled"> N'est pas actif
         {% endif %}
     </li>
-    <li onclick="window.location='/carte/products/{{product.id}}/cooking/'"
+    <li onclick='window.location="{% url 'products_cooking' product.id %}"'
         {% if product.choix_cuisson %}
             class="enabled">Peux choisir la cuisson
         {% else %}
             class="disabled">Ne peux pas choisir la cuisson
         {% endif %}
     </li>
-    <li onclick="window.location='/carte/products/{{product.id}}/change/'">
+    <li onclick='window.location="{% url 'products_change' product.id %}"'>
         Prix TTC:</br>
         {{product.prix}}€</li>
     <li>
@@ -53,7 +54,7 @@ accompagnements par <em>A_</em> et les sauces par <em>S_</em>.</p>
 <ul id="options">
     {% for option in options %}
         <li
-        onclick="window.location='/carte/products/{{product.id}}/option/{{option.id}}/'"
+        onclick='window.location="{% url 'products_option' product.id option.id %}"'
             {% if option in product.options_ok.all %}
             class="enabled"{% endif %}>{{option.name}}
         </li>
@@ -63,7 +64,7 @@ accompagnements par <em>A_</em> et les sauces par <em>S_</em>.</p>
 </ul>
 
 <h3>Créer une nouvelle option</h3>
-<form action="/carte/products/{{product.id}}/" method="post">
+<form action="{% url 'products_view' product.id %}" method="post">
     {{ option.non_field_errors }}
     {% csrf_token %}
     <table>
@@ -78,9 +79,11 @@ accompagnements par <em>A_</em> et les sauces par <em>S_</em>.</p>
 <p>Si ce produit est un menu qui peut contenir d'autres produits (entrées, plats, ...), vous devez
 d'abord activer des catégories de produits ici avant de pouvoir activer des produits ci-dessous.</p>
 <ul id="categories">
-    <li onclick="window.location='/carte/products/{{product.id}}/categories_ok/select/'">Activer une catégorie</li>
+    <li onclick='window.location="{% url 'products_select_categories_ok' product.id %}"'>
+        Activer une catégorie</li>
     {% for category in product.categories_ok.iterator %}
-    <li onclick="window.location='/carte/products/{{product.id}}/categories_ok/{{category.id}}/del/'" style="background:{{category.color}};">
+    <li onclick='window.location="{% url 'products_del_categories_ok' product.id category.id %}"' 
+        style="background:{{category.color}};">
         {{category.nom}}
         </li>
     {% endfor %}
@@ -89,11 +92,12 @@ d'abord activer des catégories de produits ici avant de pouvoir activer des pro
 <h2>Produits actifs</h2>
 <p>En cliquant sur un produit, vous l'enlèverais de cette liste.</p>
 <ul id="products">
-    <li onclick="window.location='/carte/products/{{product.id}}/produits_ok/select/'">Activer un produit</li>
+    <li onclick='window.location="{% url 'products_select_produits_ok' product.id %}"'>
+        Activer un produit</li>
     {% for sub in product.produits_ok.iterator %}
         {% if sub.actif %}
             <li 
-                onclick="window.location='/carte/products/{{product.id}}/produits_ok/{{sub.id}}/del/'" 
+            onclick='window.location="{% url 'products_del_produits_ok' product.id sub.id %}"' 
                 style="background:{{sub.categorie.color}};">{{sub.nom}}
             </li>
         {% endif %}
