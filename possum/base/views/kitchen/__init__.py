@@ -38,10 +38,15 @@ def kitchen(request):
     liste = []
     for bill in Facture().non_soldees():
         if bill.following.count():
+            bill.follow = bill.following.latest()
+            if bill.category_to_follow:
+                category_to_follow = bill.category_to_follow
+                after = bill.get_products_for_category(category_to_follow)
+                bill.after = bill.reduce_sold_list(after)
             liste.append(bill)
     data['factures'] = liste
     data['need_auto_refresh'] = 60
-    return render_to_response('base/kitchen/home.html', data,
+    return render_to_response('kitchen/home.html', data,
                               context_instance=RequestContext(request))
 
 
@@ -55,5 +60,5 @@ def kitchen_for_bill(request, bill_id):
                              messages.ERROR,
                              "Cette facture a déjà été soldée.")
         return HttpResponseRedirect('/kitchen/')
-    return render_to_response('base/kitchen/view.html', data,
+    return render_to_response('kitchen/view.html', data,
                               context_instance=RequestContext(request))

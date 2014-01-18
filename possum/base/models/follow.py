@@ -44,6 +44,8 @@ class Follow(models.Model):
         return "[%s] %s" % (self.date.strftime("%H:%M"), self.category.nom)
 
     def regroup_produits(self):
+        """Devrait bientot ne plus etre utilisé
+        """
         dict_produits = {}
         for produit in self.produits.iterator():
             if str(produit) in dict_produits:

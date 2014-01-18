@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+{% block content %}
+
+<table>
+    <tr>
+        <td>Heure</td>
+        <td>Table</td>
+        <td>Couverts</td>
+        <td>Catégorie</td>
+        <td>Plats</td>
+        <td>Options</td>
+        <td>Notes</td>
+    </tr>
+    {% for facture in factures %}
+        {% if facture.following %}
+    <tr>
+        <td width="5em">{{facture.following.latest.time}}</td>
+        <td width="5em">{{facture.table}}</td>
+        <td width="5em">{{facture.couverts}}</td>
+        <td style="background:{{facture.follow.category.color}};">
+            {{facture.follow.category}}</td>
+            {% for product in facture.get_sold_list_on_last_follow %}
+            {% if not forloop.first %}
+                <tr><td colspan="4"></td>
+            {% endif %}
+            <td>{{product.count}}x {{product.produit.nom}}
+                {% if product.cuisson %} ({{product.cuisson}}){% endif %}</td>
+            <td>{% for option in product.options.all %}{{option.name}}
+                    {% if not forloop.last %} / {% endif %}
+                {% endfor %}</td>
+            <td>{% for note in product.notes.all %}{{note.message}}
+                    {% if not forloop.last %} / {% endif %}
+                {% endfor %}</td>
+            </tr>
+            {% endfor %}
+            <!-- There are a category to follow -->
+            {% if facture.after %}
+            <tr><td colspan="3" align="center">SUITE</td>
+                <td style="background:{{facture.category_to_follow.color}};">
+                    {{facture.category_to_follow}}</td>
+                {% for product in facture.after %}
+                {% if not forloop.first %}
+                    <tr><td colspan="4"></td>
+                {% endif %}
+                <td>{{product.count}}x {{product.produit.nom}}
+                    {% if product.cuisson %} ({{product.cuisson}}){% endif %}</td>
+                <td>{% for option in product.options.all %}{{option.name}}
+                        {% if not forloop.last %} / {% endif %}
+                    {% endfor %}</td>
+                <td>{% for note in product.notes.all %}{{note.message}}
+                        {% if not forloop.last %} / {% endif %}
+                    {% endfor %}</td>
+            </tr>
+            {% endfor %}
+            {% endif %}
+        {% endif %}
+    {% endfor %}
+</table>
+
+{% endblock %}
+

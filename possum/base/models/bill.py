@@ -179,6 +179,20 @@ class Facture(models.Model):
             todolist.append(" ")
         return todolist
 
+    def get_products_for_category(self, category):
+        """Return ProduitVendu list for this category
+        """
+        products_list = []
+        for product in self.produits.iterator():
+            if product.est_un_menu():
+                for sub in product.contient.iterator():
+                    if not sub.sent and sub.made_with == category:
+                        products_list.append(sub)
+            else:
+                if not product.sent and product.made_with == category:
+                    products_list.append(product)
+        return products_list
+
     def send_in_the_kitchen(self):
         """We send the first category available to the kitchen.
         """
@@ -194,23 +208,11 @@ class Facture(models.Model):
             todolist.append(" ")
             nb_products_sent = self.produits.filter(sent=True).count()
             # liste des produits qui doivent etre envoyés en cuisine
-            products = []
-            for product in self.produits.iterator():
-                if product.est_un_menu():
-                    # on veut les produits du menu
-                    for sub in product.contient.iterator():
-                        if not sub.sent and sub.made_with == follow.category:
-                            sub.sent = True
-                            products.append(sub)
-                            follow.produits.add(sub)
-                            sub.save()
-                else:
-                    if not product.sent \
-                       and product.made_with == follow.category:
-                        product.sent = True
-                        products.append(product)
-                        follow.produits.add(product)
-                        product.save()
+            products = self.get_products_for_category(follow.category)
+            for product in products:
+                product.sent = True
+                product.save()
+            follow.produits = products
             if nb_products_sent == 0:
                 # on crée le ticket avec la liste des produits et
                 # des suites
@@ -565,3 +567,29 @@ class Facture(models.Model):
             return self.date_creation - datetime.timedelta(days=1)
         else:
             return self.date_creation
+
+    def reduce_sold_list(self, sold_list):
+        """les élèments ProduitVendu de sold_list
+        sont regroupés par 'élèment identique en fonction
+        de leur Produit d'origine, de leurs options et de leurs
+        notes
+        """
+        sold_dict = {}
+        for sold in sold_list:
+            if not sold.est_un_menu():
+                key = sold.get_identifier()
+                if key in sold_dict:
+                    logger.debug("[%s] increment count for this key" % key)
+                    sold_dict[key].count += 1
+                else:
+                    logger.debug("[%s] new key" % key)
+                    sold_dict[key] = sold
+                    sold_dict[key].count = 1
+        return sold_dict.values()
+
+    def get_sold_list_on_last_follow(self):
+        if self.following.count():
+            follow = self.following.latest()
+            return self.reduce_sold_list(follow.produits.all())
+        else:
+            return []
