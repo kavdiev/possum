@@ -77,7 +77,7 @@ class Tests_Bill(TestCase):
         facture.add_product(entree)
         facture.add_product(menu)
         resultat = OrderedDict([('salade normande', [(entree.id, entree)]),
-                                ('entrecote', [(plat1.id, plat1), \
+                                ('entrecote', [(plat1.id, plat1),
                                                (plat2.id, plat2)]),
                                 ('pave de saumon', [(plat3.id, plat3)]),
                                 ('jus abricot', [(menu.id, menu)])])
@@ -114,5 +114,5 @@ class Tests_Bill(TestCase):
         self.assertEqual(facture.restant_a_payer, Decimal(str(plat.prix - 2)))
         facture.add_payment(PaiementType.objects.get(nom="Espece"), "10")
         self.assertEqual(facture.restant_a_payer, Decimal(0))
-        self.assertEqual(Decimal(str(plat.prix - 12)), \
+        self.assertEqual(Decimal(str(plat.prix - 12)),
                          (facture.paiements.all()[2]).montant)
