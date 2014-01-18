@@ -35,7 +35,7 @@
             {% endfor %}
             <!-- There are a category to follow -->
             {% if facture.after %}
-            <tr><td colspan="3" align="center">SUITE</td>
+            <tr><td colspan="3" align="center">A suivre ...</td>
                 <td style="background:{{facture.category_to_follow.color}};">
                     {{facture.category_to_follow}}</td>
                 {% for product in facture.after %}
