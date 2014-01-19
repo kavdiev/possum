@@ -182,6 +182,8 @@ urlpatterns += patterns('possum.base.views.kitchen',
                         url(r'^kitchen/$', 'kitchen', name='kitchen'),
                         url(r'^kitchen/(?P<bill_id>\d+)/$', 'kitchen_for_bill',
                             name='kitchen_for_bill'),
+                        url(r'^follow/(?P<follow_id>\d+)/done/$', 'follow_done',
+                            name='follow_done'),
                         )
 
 urlpatterns += patterns('possum.base.views.manager',

@@ -31,6 +31,7 @@ class Follow(models.Model):
     date = models.DateTimeField('depuis le', auto_now_add=True)
     produits = models.ManyToManyField(ProduitVendu,
                                       related_name="les produits envoyes")
+    done = models.BooleanField(default=False)
 
     class Meta:
         app_label = 'base'

@@ -31,6 +31,10 @@
             <td>{% for note in product.notes.all %}{{note.message}}
                     {% if not forloop.last %} / {% endif %}
                 {% endfor %}</td>
+            {% if forloop.first %}
+            <td onclick='window.location="{% url 'follow_done' facture.follow.id %}"'
+                align='center'>Fait ?</td>
+            {% endif %}
             </tr>
             {% endfor %}
             <!-- There are a category to follow -->

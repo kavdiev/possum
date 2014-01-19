@@ -19,12 +19,11 @@
 #
 
 from django.contrib import messages
-from django.http import HttpResponseRedirect
 import logging
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import render_to_response, get_object_or_404
-from django.template import RequestContext
+from django.shortcuts import render, get_object_or_404, redirect
 from possum.base.models import Facture
+from possum.base.models import Follow
 from possum.base.views import get_user
 
 
@@ -33,32 +32,44 @@ logger = logging.getLogger(__name__)
 
 @login_required
 def kitchen(request):
-    data = get_user(request)
-    data['menu_kitchen'] = True
+    """Affiche la liste plats qui ne sont pas encore
+    préparés
+    """
+    context = get_user(request)
+    context['menu_kitchen'] = True
     liste = []
     for bill in Facture().non_soldees():
         if bill.following.count():
             bill.follow = bill.following.latest()
-            if bill.category_to_follow:
-                category_to_follow = bill.category_to_follow
-                after = bill.get_products_for_category(category_to_follow)
-                bill.after = bill.reduce_sold_list(after)
-            liste.append(bill)
-    data['factures'] = liste
-    data['need_auto_refresh'] = 60
-    return render_to_response('kitchen/home.html', data,
-                              context_instance=RequestContext(request))
+            if not bill.follow.done:
+                if bill.category_to_follow:
+                    category_to_follow = bill.category_to_follow
+                    after = bill.get_products_for_category(category_to_follow)
+                    bill.after = bill.reduce_sold_list(after)
+                liste.append(bill)
+    context['factures'] = liste
+    context['need_auto_refresh'] = 60
+    return render(request, 'kitchen/home.html', context)
+
+
+@login_required
+def follow_done(request, follow_id):
+    """All is ready for this table ?
+    """
+    follow = get_object_or_404(Follow, pk=follow_id)
+    follow.done = True
+    follow.save()
+    return redirect('kitchen')
 
 
 @login_required
 def kitchen_for_bill(request, bill_id):
-    data = get_user(request)
-    data['menu_kitchen'] = True
-    data['facture'] = get_object_or_404(Facture, pk=bill_id)
-    if data['facture'].est_soldee():
+    context = get_user(request)
+    context['menu_kitchen'] = True
+    context['facture'] = get_object_or_404(Facture, pk=bill_id)
+    if context['facture'].est_soldee():
         messages.add_message(request,
                              messages.ERROR,
                              "Cette facture a déjà été soldée.")
-        return HttpResponseRedirect('/kitchen/')
-    return render_to_response('kitchen/view.html', data,
-                              context_instance=RequestContext(request))
+        return redirect('kitchen')
+    return render(request, 'kitchen/view.html', context)
