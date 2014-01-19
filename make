@@ -90,6 +90,14 @@ function fasttu {
     python -Wall manage.py test base --settings=possum.settings_tests --verbosity=2 --traceback
 }
 
+function fastcoverage {
+    install_tests
+    enter_virtualenv
+    coverage run --source=possum manage.py test base --settings=possum.settings_tests --verbosity=2 --traceback
+    coverage html
+    firefox htmlcov/index.html
+}
+
 function update_js {
     # update javascript part
     if [ ! -e possum/base/static/jquery.min.js ]
@@ -235,6 +243,9 @@ deb_install_apache)
     ;;
 fasttu)
     fasttu
+    ;;
+fastcoverage)
+    fastcoverage
     ;;
 deb_install_nginx)
     deb_install_nginx
