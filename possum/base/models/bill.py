@@ -20,7 +20,7 @@
 try:
     from collections import OrderedDict
 except:
-    # Needed if you use a python older than 2.7
+    #  Needed if you use a python older than 2.7
     from ordereddict import OrderedDict
 
 import datetime
@@ -95,21 +95,17 @@ class Facture(models.Model):
         )
 
     def __unicode__(self):
-        if self.id:
-            object_id = self.id
-        else:
-            object_id = 0
         if self.date_creation:
+            # TODO strftime copy pasted =~ 20 time (Date class ?)
             date = self.date_creation.strftime("%H:%M %d/%m")
         else:
             date = "--:-- --/--"
-        #return u"%s F%06d" % (date, object_id)
         return u"%s" % date
 
     def __cmp__(self, other):
         """
             Les factures sont triees par date_creation.
-            D'abord les plus récentes, puis les plus vielles.
+            D'abord les plus récentes, puis les plus vieilles.
         """
         return cmp(self.date_creation, other.date_creation)
 
@@ -224,7 +220,7 @@ class Facture(models.Model):
             for printer in Printer.objects.filter(kitchen=True):
                 result = printer.regroup_list_and_print(todolist,
                                                         "kitchen-%s-%s" % (
-                                                        self.id, 
+                                                        self.id,
                                                         follow.category.id))
                 if not result:
                     return False
@@ -307,7 +303,7 @@ class Facture(models.Model):
             if not sold.produit.price_surcharged:
                 # TODO: just in case for backwards comtability
                 # in case Produit has no price_surcharged
-                logger.info("[%s] product without price_surcharged" %
+                logger.info("[%s] product without price_surcharged" % 
                             sold.produit.id)
                 sold.produit.update_vats(keep_clone=False)
             if sold.prix != sold.produit.price_surcharged:
@@ -392,9 +388,8 @@ class Facture(models.Model):
             self.compute_total()
         else:
             logger.warning("[%s] on essaye de supprimer un paiement "
-                           "qui n'est pas dans la facture: %s %s %s %s"
-                           % (self, payment.id, payment.date,
-                              payment.type.nom, payment.montant))
+                           "qui n'est pas dans la facture: %s"
+                           % (self, payment))
 
     def is_valid_payment(self, montant):
         ''' Vérifie un paiement avant add_payment '''
@@ -524,7 +519,6 @@ class Facture(models.Model):
         ticket.append(separateur)
         dict_vendu = OrderedDict()
         for vendu in self.produits.order_by("produit__categorie__priorite"):
-            produit = vendu.produit
             if vendu.produit.nom in dict_vendu:
                 dict_vendu[vendu.produit.nom].append(vendu.prix)
             else:
