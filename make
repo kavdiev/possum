@@ -13,6 +13,7 @@ List of commands:
     deb_install        :  install required packages on Debian/Ubuntu (*)
     deb_install_apache :  install apache on Debian/Ubuntu (*)
     deb_install_nginx  :  install nginx on Debian/Ubuntu (*)
+    fastcoverage       :  make only the unit tests and display the coverage in your browser
     fasttu             :  make only the unit tests
     help               :  this help
     init_demo          :  erase database with data of demonstration
@@ -95,7 +96,7 @@ function fastcoverage {
     enter_virtualenv
     coverage run --source=possum manage.py test base --settings=possum.settings_tests --verbosity=2 --traceback
     coverage html
-    firefox htmlcov/index.html
+    x-www-browser htmlcov/index.html
 }
 
 function update_js {
