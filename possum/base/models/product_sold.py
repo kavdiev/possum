@@ -17,17 +17,13 @@
 #    You should have received a copy of the GNU General Public License
 #    along with POSSUM.  If not, see <http://www.gnu.org/licenses/>.
 #
-from datetime import datetime
-from decimal import Decimal
+
 from django.db import models
 import logging
 from category import Categorie
-from generic import NomDouble
 from product import Produit
 from options import Cuisson, Option
-from config import Config
 from note import Note
-
 
 logger = logging.getLogger(__name__)
 

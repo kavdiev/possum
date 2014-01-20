@@ -92,7 +92,7 @@ class Tests_urls(TestCase):
 #            reverse('product_select_made_with', args=('42', '73')),
 #            reverse('product_set_made_with', args=('42', '73', '51')),
 #            reverse('subproduct_select', args=('42', '73', "51")),
-#            reverse('sold_view', args=('42', '73')),
+            reverse('sold_view', args=('1', '13')),
 #            reverse('sold_cooking', args=('42', '73', '51')),
 #            reverse('sold_cooking', args=('42', '73', '51', '13')),
 #            reverse('sold_cooking', args=('42', '73')),

@@ -19,7 +19,7 @@
 
 
 from django.db import models
-from generic import Nom, Priorite, NomDouble
+from generic import Priorite, NomDouble
 
 
 class Cuisson(NomDouble, Priorite):
