@@ -31,6 +31,7 @@ class Follow(models.Model):
     date = models.DateTimeField('depuis le', auto_now_add=True)
     produits = models.ManyToManyField(ProduitVendu,
                                       related_name="les produits envoyes")
+    done = models.BooleanField(default=False)
 
     class Meta:
         app_label = 'base'
@@ -44,6 +45,8 @@ class Follow(models.Model):
         return "[%s] %s" % (self.date.strftime("%H:%M"), self.category.nom)
 
     def regroup_produits(self):
+        """Devrait bientot ne plus etre utilisé
+        """
         dict_produits = {}
         for produit in self.produits.iterator():
             if str(produit) in dict_produits:

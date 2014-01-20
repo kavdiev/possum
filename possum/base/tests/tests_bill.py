@@ -13,8 +13,6 @@ from possum.base.models import Facture, PaiementType, Paiement, ProduitVendu, \
     Produit
 
 
-
-
 class Tests_Bill(TestCase):
     fixtures = ['demo.json']
 
@@ -102,9 +100,8 @@ class Tests_Bill(TestCase):
         self.facture.add_payment(PaiementType.objects.get(nom="CB"), "2")
         self.assertEqual(self.facture.restant_a_payer, Decimal(str(self.plat.prix - 2)))
         self.facture.add_payment(PaiementType.objects.get(nom="Espece"), "10")
-        self.assertEqual(1, self.facture.guest_couverts())
         self.assertEqual(self.facture.restant_a_payer, Decimal(0))
-        self.assertEqual(Decimal(str(self.plat.prix - 12)), \
+        self.assertEqual(Decimal(str(self.plat.prix - 12)),
                          (self.facture.paiements.all()[2]).montant)
         # TODO This is done just to execute more code
         # An assertion should be verified

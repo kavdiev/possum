@@ -111,3 +111,24 @@ class ProduitVendu(models.Model):
         else:
             logger.warning("Product [%s] have no categories_ok, return None" % self.id)
         return None
+
+    def get_identifier(self):
+        """Retourne un identifiant qui défini le Produit() et ses options
+        """
+        if self.notes.count():
+            notes = "N".join([str(i.id) for i in self.notes.all()])
+        else:
+            notes = ""
+        if self.options.count():
+            options = "O".join([str(i.id) for i in self.options.all()])
+        else:
+            options = ""
+        if self.cuisson:
+            cuisson = "C%s" % self.cuisson.id
+        else:
+            cuisson = ""
+        if self.produit:
+            produit = str(self.produit.id)
+        else:
+            produit = ""
+        return "P%s_C%s_O%s_N%s" % (produit, cuisson, options, notes)
