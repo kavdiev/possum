@@ -132,6 +132,7 @@ function update {
     echo "And you must have some packages installed:"
     echo "Debian/Ubuntu> ./make deb_install"
     echo
+    chmod 755 possum/static/
     if [ ! -d .virtualenv ]
     then
         # For the moment, we stay with python2.
