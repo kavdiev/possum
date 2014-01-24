@@ -19,9 +19,8 @@
 #
 
 from django.template.context import RequestContext
-
 from django.shortcuts import render_to_response
-
+from possum.base.models import Facture
 from possum.base.views import permission_required, get_user
 
 
@@ -38,6 +37,9 @@ def credits(request):
 def manager(request):
     data = get_user(request)
     data['menu_manager'] = True
+    bills_to_update = Facture.objects.filter(saved_in_stats=False).count()
+    if bills_to_update:
+        data['bills_to_update'] = bills_to_update
     return render_to_response('base/manager/home.html',
                               data,
                               context_instance=RequestContext(request))
