@@ -25,7 +25,6 @@ import logging
 import os
 from django.conf import settings
 from django.db.models import Max, Avg
-
 from monthly_stat import MonthlyStat
 from bill import Facture
 from category import Categorie

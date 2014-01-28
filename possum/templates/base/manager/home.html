@@ -3,12 +3,9 @@
 
 <ul id="manager">
     <li onclick="window.location='/manager/archives/'">Archives</li>
-    <li onclick="window.location='/manager/credits/'">Crédits</li>
-</ul>
-
-<h2>Configuration</h2>
-<ul id="manager">
     <li onclick="window.location='/carte/categories/'">Carte</li>
+    <li onclick="window.location='/manager/credits/'">Crédits</li>
+    <li onclick="window.location='/editions/'">Éditions</li>
     <li onclick="window.location='/manager/printers/'">Imprimantes</li>
     <li onclick="window.location='/notes/'">Notes</li>
     <li onclick="window.location='/manager/tables/'">Tables</li>
@@ -16,18 +13,22 @@
     <li onclick="window.location='/manager/users/'">Utilisateurs</li>
 </ul>
 
-<h2>Résultats</h2>
+<h2>Chiffres & Résultats</h2>
 <p>L'affichage des informations nécessite la mise à jour des statistiques avec
 les dernières factures. S'il y a beaucoup de nouvelles factures, cette
 opération peut prendre du temps (voir plusieurs minutes).</p>
 
+{% if working_on_update %}
+<p>La mise à jour est en cours, vous ne devez pas éteindre le serveur.</p>
+{% else %}
 {% if bills_to_update %}
-<p>Il y a actuellement {{bills_to_update}} en attente.</p>
+<p>Il y a actuellement {{bills_to_update}} facture(s) soldée(s) en attente.</p>
 <ul id="manager">
     <li onclick='window.location="{% url 'update_rapports' %}"'>Mettre à jour</li>
 </ul>
 {% else %}
-<p>Il n'y a pas de facture en attente.</p>
+<p>Il n'y a pas de facture en attente, les données sont à jours.</p>
+{% endif %}
 {% endif %}
 
 <h3>Rapports</h3>

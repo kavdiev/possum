@@ -223,6 +223,7 @@ def init_montant(request, montant):
     request.session['right'] = "%02d" % int(right)
     request.session['init_montant'] = True
 
+
 @permission_required('base.p3')
 def prepare_payment(request, bill_id):
     """Remplace bill_payment

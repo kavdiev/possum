@@ -191,6 +191,14 @@ urlpatterns += patterns('possum.base.views.manager',
                         url(r'^manager/credits/$', 'credits', name='credits'),
                         )
 
+
+urlpatterns += patterns('possum.base.views.editions',
+                        url(r'^editions/$', 'editions_home', name='editions_home'),
+                        url(r'^editions/(?P<bill_id>\d+)/$', 'editions_view',
+                            name='editions_view'),
+                        )
+
+
 urlpatterns += patterns('possum.base.views.manager.archives',
                         url(r'^manager/archives/$', 'archives',
                             name='archives'),

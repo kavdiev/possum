@@ -18,28 +18,33 @@
 #    along with POSSUM.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-from django.template.context import RequestContext
-from django.shortcuts import render_to_response
+from django.shortcuts import render
 from possum.base.models import Facture
 from possum.base.views import permission_required, get_user
+import os
+from django.conf import settings
+
 
 
 @permission_required('base.p1')
 def credits(request):
-    data = get_user(request)
-    data['menu_manager'] = True
-    return render_to_response('base/manager/credits.html',
-                              data,
-                              context_instance=RequestContext(request))
+    context = get_user(request)
+    context['menu_manager'] = True
+    return render(request, 'base/manager/credits.html', context)
 
 
 @permission_required('base.p1')
 def manager(request):
-    data = get_user(request)
-    data['menu_manager'] = True
-    bills_to_update = Facture.objects.filter(saved_in_stats=False).count()
-    if bills_to_update:
-        data['bills_to_update'] = bills_to_update
-    return render_to_response('base/manager/home.html',
-                              data,
-                              context_instance=RequestContext(request))
+    context = get_user(request)
+    context['menu_manager'] = True
+    if os.path.isfile(settings.LOCK_STATS):
+        context['working_on_update'] = True
+    else:
+        bills_to_update = Facture.objects.filter(saved_in_stats=False,
+                                                 restant_a_payer=0)
+        count = bills_to_update.exclude(produits__isnull=True).count()
+#                                            ).exclude(produits__isnull=True
+#                                                     ).count()
+        if count:
+            context['bills_to_update'] = count
+    return render(request, 'base/manager/home.html', context)

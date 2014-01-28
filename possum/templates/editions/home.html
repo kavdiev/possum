@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h1>Liste des factures en cours d'édition</h1>
+<p>Les factures ci-dessous sont les factures en cours d'éditions (ajout de produits
+ou ajout de paiements) et qui ne sont pas soldées. Si une facture est en cours
+d'édition, quelqu'un d'autre ne pourra pas ajouter un produit ou ajouter un paiement
+sur cette facture.
+</p>
+
+<p>Vous pouvez enlever le status d'édition d'une facture en cliquant sur la case
+correspondante ci-dessous. Dans ce cas, l'utilisateur en cours d'édition ne pourra
+pas enregistrer ces modifications.
+</p>
+
+<p>Dernière remarque importante, vous ne devriez <u>jamais</u> avoir besoin d'utiliser
+cette possibilité.</p>
+
+
+<ul id="editions">
+    {% for bill in editions %}
+    <li onclick='window.location="{% url 'editions_view' bill.id %}"'>
+        {{bill}} par {{bill.in_use_by}}
+    </li>
+    {% empty %}
+    <li>Aucune édition</li>
+    {% endfor %}
+</ul>
+
+{% endblock %}
+

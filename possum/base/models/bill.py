@@ -33,6 +33,7 @@ from follow import Follow
 from payment import Paiement, PaiementType
 from printer import Printer
 from product_sold import ProduitVendu
+from django.contrib.auth.models import User
 
 
 logger = logging.getLogger(__name__)
@@ -46,7 +47,7 @@ class Facture(models.Model):
     following: liste des envois en cuisine
     next: si présent, la prochaine catégorie a envoyée en
         cuisine
-
+    in_use_by: 1 seule personne peut éditer une facture en cours
     """
     date_creation = models.DateTimeField('creer le', auto_now_add=True)
     table = models.ForeignKey('Table',
@@ -72,6 +73,7 @@ class Facture(models.Model):
                                           decimal_places=2,
                                           default=0)
     saved_in_stats = models.BooleanField(default=False)
+    in_use_by = models.ForeignKey(User, null=True, blank=True)
     onsite = models.BooleanField(default=True)
     surcharge = models.BooleanField(default=False)
     following = models.ManyToManyField('Follow',
@@ -277,7 +279,9 @@ class Facture(models.Model):
 
     def non_soldees(self):
         """ Return the list of unpaid facture
-        :return: A list of Facture """
+        :return: A list of Facture
+        TODO: est ce encore utile ?
+        """
         liste = []
         for i in Facture.objects.exclude(restant_a_payer=0).iterator():
             liste.append(i)
