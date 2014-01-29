@@ -20,6 +20,7 @@ opération peut prendre du temps (voir plusieurs minutes).</p>
 
 {% if working_on_update %}
 <p>La mise à jour est en cours, vous ne devez pas éteindre le serveur.</p>
+<ul id="manager"><li>Travail en cours...</li></ul>
 {% else %}
 {% if bills_to_update %}
 <p>Il y a actuellement {{bills_to_update}} facture(s) soldée(s) en attente.</p>
@@ -28,6 +29,7 @@ opération peut prendre du temps (voir plusieurs minutes).</p>
 </ul>
 {% else %}
 <p>Il n'y a pas de facture en attente, les données sont à jours.</p>
+<ul id="manager"><li>Données à jour</li></ul>
 {% endif %}
 {% endif %}
 
