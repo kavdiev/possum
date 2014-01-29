@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block content %}
+
+<ul id="bigmenu">
+    <li onclick='window.location="{% url 'bill_home' %}"'>Commandes</br>
+        <img src="/static/images/order_color.jpg" alt="Commandes"/></li>
+    <li onclick='window.location="{% url 'kitchen' %}"'>Cuisine</br>
+        <img src="/static/images/kitchen_color.jpg" alt="Cuisine"/></li>
+    <li onclick='window.location="{% url 'manager' %}"'>Manager</br>
+        <img src="/static/images/manager_color.jpg" alt="Manager"/></li>
+    <li onclick='window.location="{% url 'logout' %}"'>Déconnexion</br>
+        <img src="/static/images/manager_color.jpg" alt="Manager"/></li>
+    <li onclick='window.location="{% url 'logout' %}"'>Eteindre le serveur</br>
+        <img src="/static/images/manager_color.jpg" alt="Manager"/></li>
+<ul>
+
+{% endblock %}
+

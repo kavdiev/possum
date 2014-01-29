@@ -11,7 +11,6 @@ from django.conf.urls import patterns, url
 # url(r'^admin/', include(admin.site.urls)),
 urlpatterns = patterns('possum.base.views',
                        url(r'^$', 'home', name='home'),
-                       url(r'^accueil$', 'home'),
                        )
 
 urlpatterns += patterns('possum.base.views.carte.categories',
@@ -207,7 +206,7 @@ urlpatterns += patterns('possum.base.views.manager.archives',
                         )
 
 urlpatterns += patterns('possum.base.views.manager.printers',
-    url(r'^manager/printers/$', 'home', name='home'),
+    url(r'^manager/printers/$', 'home', name='printer_home'),
     url(r'^manager/printer/add/$', 'printer_add', name='printer_add'),
     url(r'^manager/printer/add/(?P<name>[a-zA-Z0-9_-]+)/$', 'printer_added', name='printer_added'),
     url(r'^manager/printer/(?P<printer_id>\d+)/$', 'printer_view', name='printer_view'),

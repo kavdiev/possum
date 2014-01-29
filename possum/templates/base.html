@@ -26,26 +26,30 @@
     {% block menu %}
     <ul id="menu">
         <li 
+        {% if menu_home %}
+            class="menuSelected"
+        {% endif %}
+            onclick='window.location="{% url 'home' %}"'>
+            Accueil
+        </li>
         {% if menu_bills %}
-            class="menuSelected"
-        {% endif %}
-            onclick='window.location="{% url 'bill_home' %}"'>
+            <li class="menuSelected" 
+                onclick='window.location="{% url 'bill_home' %}"'>
                 Commandes
-        </li>
-        <li
+            </li>
+        {% endif %}
         {% if menu_kitchen %}
-            class="menuSelected"
-        {% endif %}
-            onclick='window.location="{% url 'kitchen' %}"'>
+            <li class="menuSelected"
+                onclick='window.location="{% url 'kitchen' %}"'>
                 Cuisine
-        </li>
-        <li
-        {% if menu_manager %}
-            class="menuSelected"
+            </li>
         {% endif %}
-            onclick='window.location="{% url 'manager' %}"'>
+        {% if menu_manager %}
+            <li class="menuSelected"
+                onclick='window.location="{% url 'manager' %}"'>
                 Manager
-        </li>
+            </li>
+        {% endif %}
         <li>
             <div id="myclock">
                 <script type="text/javascript">window.onload = date_heure('myclock');</script>
@@ -55,13 +59,6 @@
             <li class="{% if menu_profile %}menuSelected{% endif %}"
             onclick='window.location="{% url 'profile' %}"'>
                 {{user.username}}
-            </li>
-            <li onclick='window.location="{% url 'logout' %}"'>
-                Déconnexion
-            </li>
-        {% else %}
-            <li onclick='window.location="{% url 'login' %}"'>
-                Connexion
             </li>
         {% endif %}
     </ul>

@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% block content %}
-
+<p>Cette page est automatiquement rechargée toutes les {{need_auto_refresh}} secondes.</p>
 <ul id="bills">
     <li onclick="window.location='/bill/new/'">Nouvelle commande</li>
     {% if factures %}

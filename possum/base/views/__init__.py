@@ -20,7 +20,7 @@
 
 from django.contrib import messages
 from django.contrib.auth.context_processors import PermWrapper
-from django.http import HttpResponseRedirect
+from django.shortcuts import render, redirect
 import logging
 
 from django.contrib.auth.decorators import login_required
@@ -39,7 +39,9 @@ create_default_directory()
 
 @login_required
 def home(request):
-    return HttpResponseRedirect('/bills/')
+    context = get_user(request)
+    context['menu_home'] = True
+    return render(request, 'home.html', context)
 
 
 def get_user(request):
@@ -62,6 +64,6 @@ def permission_required(perm, **kwargs):
                 messages.add_message(request, messages.ERROR, "Vous n'avez pas"
                                      " les droits nécessaires (%s)." % 
                                      perm.split('.')[1])
-                return HttpResponseRedirect('/kitchen/')
+                return redirect('home')
         return wraps(view_func)(_wrapped_view)
     return decorator

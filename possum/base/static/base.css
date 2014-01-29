@@ -313,6 +313,10 @@ li.selected {
     width:220px;
     height:40px;
 }
+#bigmenu li {
+    width:140px;
+    height:80px;
+}
 #manager li {
     width:140px;
     height:40px;
