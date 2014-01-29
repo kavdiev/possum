@@ -76,6 +76,11 @@ function tests {
     then
         mkdir reports
     fi
+    ./manage.py validate_templates
+    if [ ! $? == 0 ]
+    then
+        exit $?
+    fi
     csslint possum/base/static/ --format=lint-xml --exclude-list=possum/base/static/jquery.min.js,possum/base/static/highcharts > reports/csslint.report
     flake8 --exclude=migrations --max-complexity 12 possum > reports/flake8.report
     clonedigger --cpd-output -o reports/clonedigger.xml $(find possum -name "*.py" | fgrep -v '/migrations/' | fgrep -v '/tests/' | xargs echo )
