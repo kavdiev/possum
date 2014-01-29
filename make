@@ -149,7 +149,7 @@ function update {
         git pull
     fi
     enter_virtualenv
-    pip install --proxy=${http_proxy} --requirement requirements.txt 
+    pip -q install --proxy=${http_proxy} --requirement requirements.txt 
     if [ "$(python --version 2>&1 | grep -c 'Python 2.6')" == "1" ]
     then
         pip install --proxy=${http_proxy} ordereddict
