@@ -86,7 +86,7 @@ def shutdown(request):
                              "réessayer plus tard")
     else:
         if request.method == 'POST':
-            os.system(cmd.value)
+            os.system(cmd)
             messages.add_message(request, messages.SUCCESS,
                                  "Serveur en cours d'arrêt")
             return redirect('home')
