@@ -3,15 +3,15 @@
 
 <ul id="bigmenu">
     <li onclick='window.location="{% url 'bill_home' %}"'>Commandes</br>
-        <img src="/static/images/order_color.jpg" alt="Commandes"/></li>
+        <img src="/static/images/order.png" alt="Commandes"/></li>
     <li onclick='window.location="{% url 'kitchen' %}"'>Cuisine</br>
-        <img src="/static/images/kitchen_color.jpg" alt="Cuisine"/></li>
+        <img src="/static/images/kitchen.png" alt="Cuisine"/></li>
     <li onclick='window.location="{% url 'manager' %}"'>Manager</br>
-        <img src="/static/images/manager_color.jpg" alt="Manager"/></li>
-    <li onclick='window.location="{% url 'logout' %}"'>Déconnexion</br>
-        <img src="/static/images/manager_color.jpg" alt="Manager"/></li>
+        <img src="/static/images/manager.png" alt="Manager"/></li>
+    <li onclick='window.location="{% url 'shutdown' %}"'>Déconnexion</br>
+        <img src="/static/images/logout.png" alt="Déconnexion"/></li>
     <li onclick='window.location="{% url 'logout' %}"'>Eteindre le serveur</br>
-        <img src="/static/images/manager_color.jpg" alt="Manager"/></li>
+        <img src="/static/images/shutdown.png" alt="Shutdown"/></li>
 <ul>
 
 {% endblock %}

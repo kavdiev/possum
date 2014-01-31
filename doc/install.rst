@@ -257,3 +257,15 @@ sa sauvegarde se limite à la copie d'un fichier.
 
 Pour accéder à POSSUM, il suffit de lancer un navigateur web.
 
+Arrêt du serveur
+----------------
+
+Afin d'arrêter proprement le serveur, on peut configurer une commande **sudo**
+qui permettra au serveur Apache de lancer l'arrêt du serveur (à condition qu'il
+n'y ai pas de calcul des statistiques en cours). Avec la commande **visudo**,
+vous pouvez ajouter la ligne suivante:
+
+::
+
+  www-data ALL=(ALL) NOPASSWD: /sbin/shutdown
+

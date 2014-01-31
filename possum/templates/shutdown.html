@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block content %}
+
+<p>Attention, vous allez éteindre le serveur !</p>
+
+<form action="{% url 'shutdown' %}" method="post">
+    {% csrf_token %}
+    <input type="submit" value="Arrêter" />
+</form>
+
+{% endblock %}
+

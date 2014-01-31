@@ -22,11 +22,12 @@ from django.contrib import messages
 from django.contrib.auth.context_processors import PermWrapper
 from django.shortcuts import render, redirect
 import logging
-
+import os
 from django.contrib.auth.decorators import login_required
 from django.utils.functional import wraps
-
 from possum.base.utils import create_default_directory
+from possum.base.models import Config
+from django.conf import settings
 
 
 logger = logging.getLogger(__name__)
@@ -67,3 +68,26 @@ def permission_required(perm, **kwargs):
                 return redirect('home')
         return wraps(view_func)(_wrapped_view)
     return decorator
+
+
+@permission_required('base.p3')
+def shutdown(request):
+    context = get_user(request)
+    context['menu_home'] = True
+    config = Config.objects.filter(key="default_shutdown")
+    if config:
+        cmd = config[0].value
+    else:
+        cmd = "sudo /sbin/shutdown -h now"
+
+    if os.path.isfile(settings.LOCK_STATS):
+        messages.add_message(request, messages.ERROR,
+                             "Statistiques en cours de calcul,"
+                             "réessayer plus tard")
+    else:
+        if request.method == 'POST':
+            os.system(cmd.value)
+            messages.add_message(request, messages.SUCCESS,
+                                 "Serveur en cours d'arrêt")
+            return redirect('home')
+    return render(request, 'shutdown.html', context)

@@ -11,6 +11,7 @@ from django.conf.urls import patterns, url
 # url(r'^admin/', include(admin.site.urls)),
 urlpatterns = patterns('possum.base.views',
                        url(r'^$', 'home', name='home'),
+                       url(r'^shutdown/$', 'shutdown', name='shutdown'),
                        )
 
 urlpatterns += patterns('possum.base.views.carte.categories',
