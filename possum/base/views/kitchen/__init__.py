@@ -34,7 +34,7 @@ def kitchen(request):
     """Affiche la liste plats qui ne sont pas encore
     préparés
     """
-    context = { 'menu_kitchen': true, }
+    context = {'menu_kitchen': True, }
     liste = []
     for bill in Facture().non_soldees():
         if bill.following.count():
@@ -62,7 +62,7 @@ def follow_done(request, follow_id):
 
 @login_required
 def kitchen_for_bill(request, bill_id):
-    context = { 'menu_kitchen': true, }
+    context = {'menu_kitchen': True, }
     context['facture'] = get_object_or_404(Facture, pk=bill_id)
     if context['facture'].est_soldee():
         messages.add_message(request,
