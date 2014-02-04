@@ -115,8 +115,9 @@ class Facture(models.Model):
         """mark bill as 'in edition by user', only one
             person can edit a bill at a time
         """
-        self.in_use_by = user
-        self.save()
+        if user != self.in_use_by:
+            self.in_use_by = user
+            self.save()
 
     def regroup_produits(self):
         dict_produits = OrderedDict()

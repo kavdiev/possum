@@ -24,7 +24,7 @@ import logging
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, get_object_or_404, redirect
-from possum.base.views import permission_required
+from possum.base.views import permission_required, remove_edition
 
 
 logger = logging.getLogger(__name__)
@@ -32,6 +32,7 @@ logger = logging.getLogger(__name__)
 
 @login_required
 def profile(request):
+    request = remove_edition(request)
     context = {'menu_profile': True, }
     context['perms_list'] = settings.PERMS
     old = request.POST.get('old', '').strip()

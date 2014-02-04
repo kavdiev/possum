@@ -26,7 +26,7 @@ import os
 from django.contrib.auth.decorators import login_required
 from django.utils.functional import wraps
 from possum.base.utils import create_default_directory
-from possum.base.models import Config
+from possum.base.models import Config, Facture
 from django.conf import settings
 
 
@@ -38,8 +38,25 @@ logger = logging.getLogger(__name__)
 create_default_directory()
 
 
+def remove_edition(request):
+    """Remove 'bill_in_use' and update bill if found.
+       This is use to reserve access to a bill.
+    """
+    if "bill_in_use" in request.session.keys():
+        old_bill_id = request.session['bill_in_use']
+        try:
+            old_bill = Facture.objects.get(pk=old_bill_id)
+        except Facture.DoesNotExist:
+            logger("[%s] bill is not here!" % old_bill_id)
+        else:
+            old_bill.used_by()
+        request.session.pop("bill_in_use")
+    return request
+
+
 @login_required
 def home(request):
+    request = remove_edition(request)
     context = { 'menu_home': True, }
     return render(request, 'home.html', context)
 
