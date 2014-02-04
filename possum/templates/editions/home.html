@@ -18,7 +18,7 @@ cette possibilité.</p>
 
 
 <ul id="editions">
-    {% for bill in editions %}
+    {% for bill in bills %}
     <li onclick='window.location="{% url 'editions_view' bill.id %}"'>
         {{bill}} par {{bill.in_use_by}}
     </li>

@@ -19,12 +19,10 @@
 #
 
 from django.contrib import messages
-from django.http import HttpResponseRedirect
 import logging
-from django.shortcuts import render_to_response, get_object_or_404
-from django.template import RequestContext
+from django.shortcuts import render, get_object_or_404
 from possum.base.models import Zone, Table
-from possum.base.views import get_user, permission_required
+from possum.base.views import permission_required
 
 
 logger = logging.getLogger(__name__)
@@ -35,7 +33,7 @@ def tables_zone_delete(request, zone_id):
     zone = get_object_or_404(Zone, pk=zone_id)
     Table.objects.filter(zone=zone).delete()
     zone.delete()
-    return HttpResponseRedirect('/manager/tables/')
+    return redirect('tables')
 
 
 @permission_required('base.p1')
@@ -43,58 +41,52 @@ def tables_table_new(request, zone_id):
     zone = get_object_or_404(Zone, pk=zone_id)
     table = Table(zone=zone)
     table.save()
-    return HttpResponseRedirect('/manager/tables/%s/%s/' % (zone.id, table.id))
+    return redirect('tables_table', zone.id, table.id)
 
 
 @permission_required('base.p1')
 def tables_zone_new(request):
     zone = Zone()
     zone.save()
-    return HttpResponseRedirect('/manager/tables/%s/' % zone.id)
+    return redirect('tables_zone', zone.id)
 
 
 @permission_required('base.p1')
 def tables_table(request, zone_id, table_id):
-    data = get_user(request)
-    data['table'] = get_object_or_404(Table, pk=table_id)
-    data['menu_manager'] = True
+    context = { 'menu_manager': True, }
+    context['table'] = get_object_or_404(Table, pk=table_id)
     if request.method == 'POST':
         name = request.POST.get('name', '').strip()
-        data['table'].nom = name
+        context['table'].nom = name
         try:
-            data['table'].save()
+            context['table'].save()
         except:
             messages.add_message(request, messages.ERROR, "Les modifications "
                                  "n'ont pu être enregistrées.")
         else:
-            return HttpResponseRedirect('/manager/tables/')
-    return render_to_response('base/manager/tables/table.html', data,
-                              context_instance=RequestContext(request))
+            return redirect('tables')
+    return render(request, 'base/manager/tables/table.html', context)
 
 
 @permission_required('base.p1')
 def tables_zone(request, zone_id):
-    data = get_user(request)
-    data['zone'] = get_object_or_404(Zone, pk=zone_id)
-    data['menu_manager'] = True
+    context = { 'menu_manager': True, }
+    context['zone'] = get_object_or_404(Zone, pk=zone_id)
     if request.method == 'POST':
         name = request.POST.get('name', '').strip()
-        data['zone'].nom = name
+        context['zone'].nom = name
         try:
-            data['zone'].save()
+            context['zone'].save()
         except:
             messages.add_message(request, messages.ERROR, "Les modifications "
                                  "n'ont pu être enregistrées.")
         else:
-            return HttpResponseRedirect('/manager/tables/')
-    return render_to_response('base/manager/tables/zone.html', data,
-                              context_instance=RequestContext(request))
+            return redirect('tables')
+    return render(request, 'base/manager/tables/zone.html', context)
 
 
 @permission_required('base.p1')
 def tables(request):
-    data = get_user(request)
-    data['menu_manager'] = True
-    data['zones'] = Zone.objects.all()
-    return render_to_response('base/manager/tables/home.html', data,
-                              context_instance=RequestContext(request))
+    context = { 'menu_manager': True, }
+    context['zones'] = Zone.objects.all()
+    return render(request, 'base/manager/tables/home.html', context)

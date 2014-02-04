@@ -20,13 +20,11 @@
 
 import datetime
 from django.contrib import messages
-from django.http import HttpResponseRedirect
 import logging
-from django.shortcuts import render_to_response, get_object_or_404
-from django.template import RequestContext
+from django.shortcuts import render, get_object_or_404, redirect
 from possum.base.models import Facture
 from possum.base.forms import DateForm
-from possum.base.views import get_user, permission_required
+from possum.base.views import permission_required
 
 
 logger = logging.getLogger(__name__)
@@ -34,8 +32,7 @@ logger = logging.getLogger(__name__)
 
 @permission_required('base.p1')
 def archives(request):
-    data = get_user(request)
-    data['menu_manager'] = True
+    context = { 'menu_manager': True, }
     if request.method == 'POST':
         try:
             year = int(request.POST.get('date_year'))
@@ -48,21 +45,18 @@ def archives(request):
             date = datetime.datetime.today()
     else:
         date = datetime.datetime.today()
-    data['date_form'] = DateForm({'date': date, })
-    data['factures'] = Facture().get_bills_for(date)
-    data['date'] = date
-    return render_to_response('base/manager/archives/home.html', data,
-                              context_instance=RequestContext(request))
+    context['date_form'] = DateForm({'date': date, })
+    context['factures'] = Facture().get_bills_for(date)
+    context['date'] = date
+    return render(request, 'base/manager/archives/home.html', context)
 
 
 @permission_required('base.p1')
 def archives_bill(request, bill_id):
-    data = get_user(request)
-    data['facture'] = get_object_or_404(Facture, pk=bill_id)
-    if not data['facture'].est_soldee():
+    context = { 'menu_manager': True, }
+    context['facture'] = get_object_or_404(Facture, pk=bill_id)
+    if not context['facture'].est_soldee():
         messages.add_message(request, messages.ERROR,
                              "Cette facture n'est pas encore soldée.")
-        return HttpResponseRedirect('/manager/archives/')
-    data['menu_manager'] = True
-    return render_to_response('base/manager/archives/invoice.html', data,
-                              context_instance=RequestContext(request))
+        return redirect('archives')
+    return render(request, 'base/manager/archives/invoice.html', context)

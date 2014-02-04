@@ -21,18 +21,16 @@
 import datetime
 from django.contrib import messages
 from django.core.mail import send_mail
-from django.http import HttpResponseRedirect
 import logging
 from django.conf import settings
-from django.shortcuts import render_to_response
+from django.shortcuts import render
 from django.shortcuts import redirect
-from django.template import RequestContext
 from possum.base.models import DailyStat
 from possum.base.forms import DateForm, WeekForm, MonthForm
 from possum.base.models import Printer
 from possum.base.models import MonthlyStat
 from possum.base.utils import get_last_year
-from possum.base.views import get_user, permission_required
+from possum.base.views import permission_required
 from possum.base.models import WeeklyStat
 
 
@@ -67,8 +65,7 @@ def rapports_daily(request):
     """
     Affiche le rapport pour une journée
     """
-    data = get_user(request)
-    data['menu_manager'] = True
+    context = {'menu_manager': True, }
     date = datetime.datetime.now()
     if request.method == 'POST':
         try:
@@ -80,19 +77,18 @@ def rapports_daily(request):
             messages.add_message(request,
                                  messages.ERROR,
                                  "La date saisie n'est pas valide.")
-    data['date_form'] = DateForm({'date': date, })
-    data['date'] = date
-    data = DailyStat().get_data(data, date)
+    context['date_form'] = DateForm({'date': date, })
+    context['date'] = date
+    context = DailyStat().get_data(context, date)
     # les stats de l'année précédente
     last_year = get_last_year(date)
     for key in ['nb_bills', 'total_ttc', 'guests_nb', 'guests_average',
                 'guests_total_ttc', 'bar_nb', 'bar_average', 'bar_total_ttc']:
-        data['last_%s' % key] = "%.2f" % DailyStat().get_value(key, last_year)
-        data['max_%s' % key] = DailyStat().get_max(key)
-        data['avg_%s' % key] = DailyStat().get_avg(key)
-    data = search_good_results(data)
-    return render_to_response('base/manager/rapports/home.html', data,
-                              context_instance=RequestContext(request))
+        context['last_%s' % key] = "%.2f" % DailyStat().get_value(key, last_year)
+        context['max_%s' % key] = DailyStat().get_max(key)
+        context['avg_%s' % key] = DailyStat().get_avg(key)
+    context = search_good_results(context)
+    return render(request, 'base/manager/rapports/home.html', context)
 
 
 @permission_required('base.p1')
@@ -100,8 +96,7 @@ def rapports_weekly(request):
     """
     Affiche le rapport pour une semaine
     """
-    data = get_user(request)
-    data['menu_manager'] = True
+    context = {'menu_manager': True, }
     date = datetime.datetime.now()
     year = date.year
     # 01 must be converted to 1
@@ -114,19 +109,18 @@ def rapports_weekly(request):
             messages.add_message(request,
                                  messages.ERROR,
                                  "La date saisie n'est pas valide.")
-    data['week_form'] = WeekForm({'year': year, 'week': week})
-    data['week'] = week
-    data['year'] = year
+    context['week_form'] = WeekForm({'year': year, 'week': week})
+    context['week'] = week
+    context['year'] = year
     last_year = year - 1
-    data = WeeklyStat().get_data(data, year, week)
+    context = WeeklyStat().get_data(context, year, week)
     for key in ['nb_bills', 'total_ttc', 'guests_nb', 'guests_average',
                 'guests_total_ttc', 'bar_nb', 'bar_average', 'bar_total_ttc']:
-        data['last_%s' % key] = "%.2f" % WeeklyStat().get_value(key, last_year, week)
-        data['max_%s' % key] = WeeklyStat().get_max(key)
-        data['avg_%s' % key] = WeeklyStat().get_avg(key)
-    data = search_good_results(data)
-    return render_to_response('base/manager/rapports/home.html', data,
-                              context_instance=RequestContext(request))
+        context['last_%s' % key] = "%.2f" % WeeklyStat().get_value(key, last_year, week)
+        context['max_%s' % key] = WeeklyStat().get_max(key)
+        context['avg_%s' % key] = WeeklyStat().get_avg(key)
+    context = search_good_results(context)
+    return render(request, 'base/manager/rapports/home.html', context)
 
 
 @permission_required('base.p1')
@@ -134,8 +128,7 @@ def rapports_monthly(request):
     """
     Affiche le rapport pour un mois
     """
-    data = get_user(request)
-    data['menu_manager'] = True
+    context = {'menu_manager': True, }
     date = datetime.datetime.now()
     year = date.year
     month = date.month
@@ -147,20 +140,18 @@ def rapports_monthly(request):
             messages.add_message(request,
                                  messages.ERROR,
                                  "La date saisie n'est pas valide.")
-    data['month_form'] = MonthForm({'year': year, 'month': month})
-    data['month'] = month
-    data['year'] = year
+    context['month_form'] = MonthForm({'year': year, 'month': month})
+    context['month'] = month
+    context['year'] = year
     last_year = year - 1
-    data = MonthlyStat().get_data(data, year, month)
+    context = MonthlyStat().get_data(context, year, month)
     for key in ['nb_bills', 'total_ttc', 'guests_nb', 'guests_average',
                 'guests_total_ttc', 'bar_nb', 'bar_average', 'bar_total_ttc']:
-        data['last_%s' % key] = "%.2f" % MonthlyStat().get_value(key, last_year, month)
-        data['max_%s' % key] = MonthlyStat().get_max(key)
-        data['avg_%s' % key] = MonthlyStat().get_avg(key)
-    data = search_good_results(data)
-    return render_to_response('base/manager/rapports/home.html',
-                                data,
-                                context_instance=RequestContext(request))
+        context['last_%s' % key] = "%.2f" % MonthlyStat().get_value(key, last_year, month)
+        context['max_%s' % key] = MonthlyStat().get_max(key)
+        context['avg_%s' % key] = MonthlyStat().get_avg(key)
+    context = search_good_results(context)
+    return render(request, 'base/manager/rapports/home.html', context)
 
 
 def rapports_send(request, subject, data):
@@ -217,7 +208,7 @@ def rapports_daily_send(request, year, month, day):
     data = DailyStat().get_data(data, date)
     subject = "Rapport du %s" % date
     rapports_send(request, subject, data)
-    return HttpResponseRedirect('/manager/rapports/daily/')
+    return redirect('rapports_daily')
 
 
 @permission_required('base.p1')
@@ -226,7 +217,7 @@ def rapports_weekly_send(request, year, week):
     data = WeeklyStat().get_data(data, year, week)
     subject = "Rapport semaine %s/%s" % (week, year)
     rapports_send(request, subject, data)
-    return HttpResponseRedirect('/manager/rapports/weekly/')
+    return redirect('rapports_weekly')
 
 
 @permission_required('base.p1')
@@ -235,7 +226,7 @@ def rapports_monthly_send(request, year, month):
     data = MonthlyStat().get_data(data, year, month)
     subject = "Rapport mensuel %s/%s" % (month, year)
     rapports_send(request, subject, data)
-    return HttpResponseRedirect('/manager/rapports/monthly/')
+    return redirect('rapports_monthly')
 
 
 def rapports_print(request, subject, data):
@@ -290,7 +281,7 @@ def rapports_daily_print(request, year, month, day):
     data = DailyStat().get_data(data, date)
     subject = "Rapport du %s" % date
     rapports_print(request, subject, data)
-    return HttpResponseRedirect('/manager/rapports/daily/')
+    return redirect('rapports_daily')
 
 
 @permission_required('base.p1')
@@ -299,7 +290,7 @@ def rapports_weekly_print(request, year, week):
     data = WeeklyStat().get_data(data, year, week)
     subject = "Rapport semaine %s/%s" % (week, year)
     rapports_print(request, subject, data)
-    return HttpResponseRedirect('/manager/rapports/weekly/')
+    return redirect('rapports_weekly')
 
 
 @permission_required('base.p1')
@@ -308,7 +299,7 @@ def rapports_monthly_print(request, year, month):
     data = MonthlyStat().get_data(data, year, month)
     subject = "Rapport mensuel %s/%s" % (month, year)
     rapports_print(request, subject, data)
-    return HttpResponseRedirect('/manager/rapports/monthly/')
+    return redirect('rapports_monthly')
 
 
 def rapports_vats_send(request, subject, data):
@@ -338,7 +329,7 @@ def rapports_daily_vats_send(request, year, month, day):
     data = DailyStat().get_common(date)
     subject = "Rapport du %s" % date
     rapports_vats_send(request, subject, data)
-    return HttpResponseRedirect('/manager/rapports/daily/')
+    return redirect('rapports_daily')
 
 
 @permission_required('base.p1')
@@ -346,7 +337,7 @@ def rapports_weekly_vats_send(request, year, week):
     data = WeeklyStat().get_common(year, week)
     subject = "Rapport semaine %s/%s" % (week, year)
     rapports_vats_send(request, subject, data)
-    return HttpResponseRedirect('/manager/rapports/weekly/')
+    return redirect('rapports_weekly')
 
 
 @permission_required('base.p1')
@@ -354,7 +345,7 @@ def rapports_monthly_vats_send(request, year, month):
     data = MonthlyStat().get_common(year, month)
     subject = "Rapport mois %s/%s" % (month, year)
     rapports_vats_send(request, subject, data)
-    return HttpResponseRedirect('/manager/rapports/monthly/')
+    return redirect('rapports_monthly')
 
 
 def rapports_vats_print(request, data):
@@ -377,18 +368,18 @@ def rapports_daily_vats_print(request, year, month, day):
     date = "%s-%s-%s" % (year, month, day)
     data = DailyStat().get_common(date)
     rapports_vats_print(request, data)
-    return HttpResponseRedirect('/manager/rapports/daily/')
+    return redirect('rapports_daily')
 
 
 @permission_required('base.p1')
 def rapports_weekly_vats_print(request, year, week):
     data = WeeklyStat().get_common(year, week)
     rapports_vats_print(request, data)
-    return HttpResponseRedirect('/manager/rapports/weekly/')
+    return redirect('rapports_weekly')
 
 
 @permission_required('base.p1')
 def rapports_monthly_vats_print(request, year, month):
     data = MonthlyStat().get_common(year, month)
     rapports_vats_print(request, data)
-    return HttpResponseRedirect('/manager/rapports/monthly/')
+    return redirect('rapports_monthly')

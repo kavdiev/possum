@@ -19,13 +19,11 @@
 #
 
 from django.contrib import messages
-from django.http import HttpResponseRedirect
 import logging
-from django.shortcuts import render_to_response, get_object_or_404
-from django.template import RequestContext
+from django.shortcuts import render, redirect, get_object_or_404
 from possum.base.models import Produit
 from possum.base.models import VAT
-from possum.base.views import get_user, permission_required
+from possum.base.views import permission_required
 
 
 logger = logging.getLogger(__name__)
@@ -33,20 +31,16 @@ logger = logging.getLogger(__name__)
 
 @permission_required('base.p1')
 def vats(request):
-    data = get_user(request)
-    data['vats'] = VAT.objects.order_by('name')
-    data['menu_manager'] = True
-    return render_to_response('base/manager/vats/home.html', data,
-                              context_instance=RequestContext(request))
+    context = {'menu_manager': True, }
+    context['vats'] = VAT.objects.order_by('name')
+    return render(request, 'base/manager/vats/home.html', context)
 
 
 @permission_required('base.p1')
 def vats_view(request, vat_id):
-    data = get_user(request)
-    data['menu_manager'] = True
-    data['vat'] = get_object_or_404(VAT, pk=vat_id)
-    return render_to_response('base/manager/vats/view.html', data,
-                              context_instance=RequestContext(request))
+    context = {'menu_manager': True, }
+    context['vat'] = get_object_or_404(VAT, pk=vat_id)
+    return render(request, 'base/manager/vats/view.html', context)
 
 
 def check_name_and_tax(request, name, tax):
@@ -60,36 +54,33 @@ def check_name_and_tax(request, name, tax):
 
 @permission_required('base.p1')
 def vats_change(request, vat_id):
-    data = get_user(request)
-    data['vat'] = get_object_or_404(VAT, pk=vat_id)
-    data['menu_manager'] = True
+    context = {'menu_manager': True, }
+    context['vat'] = get_object_or_404(VAT, pk=vat_id)
     if request.method == 'POST':
         name = request.POST.get('name', '').strip()
         tax = request.POST.get('tax', '').strip().replace(',', '.')
         check_name_and_tax(request, name, tax)
         try:
-            data['vat'].name = name
-            data['vat'].save()
-            data['vat'].set_tax(tax)
-            for product in Produit.objects.filter(categorie__vat_onsite=data['vat']):
+            context['vat'].name = name
+            context['vat'].save()
+            context['vat'].set_tax(tax)
+            for product in Produit.objects.filter(categorie__vat_onsite=context['vat']):
                 product.update_vats()
-            for product in Produit.objects.filter(categorie__vat_takeaway=data['vat']):
+            for product in Produit.objects.filter(categorie__vat_takeaway=context['vat']):
                 product.update_vats()
         except:
             messages.add_message(request, messages.ERROR,
                                  "Les modifications n'ont pu être "
                                  "enregistrées.")
         else:
-            return HttpResponseRedirect('/manager/vats/')
-    return render_to_response('base/manager/vats/change.html', data,
-                              context_instance=RequestContext(request))
+            return redirect('vats')
+    return render(request, 'base/manager/vats/change.html', context)
 
 
 @permission_required('base.p1')
 def vat_new(request):
-    data = get_user(request)
-    data['menu_manager'] = True
-    data['vats'] = VAT.objects.order_by('name')
+    context = {'menu_manager': True, }
+    context['vats'] = VAT.objects.order_by('name')
     if request.method == 'POST':
         name = request.POST.get('name', '').strip()
         tax = request.POST.get('tax', '').strip().replace(",", ".")
@@ -103,6 +94,5 @@ def vat_new(request):
                                  "Les modifications n'ont pu être "
                                  "enregistrées.")
         else:
-            return HttpResponseRedirect('/manager/vats/')
-    return render_to_response('base/manager/vats/new.html', data,
-                              context_instance=RequestContext(request))
+            return redirect('vats')
+    return render(request, 'base/manager/vats/new.html', context)

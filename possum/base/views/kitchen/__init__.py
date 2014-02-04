@@ -24,7 +24,6 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, get_object_or_404, redirect
 from possum.base.models import Facture
 from possum.base.models import Follow
-from possum.base.views import get_user
 
 
 logger = logging.getLogger(__name__)
@@ -35,8 +34,7 @@ def kitchen(request):
     """Affiche la liste plats qui ne sont pas encore
     préparés
     """
-    context = get_user(request)
-    context['menu_kitchen'] = True
+    context = { 'menu_kitchen': true, }
     liste = []
     for bill in Facture().non_soldees():
         if bill.following.count():
@@ -64,8 +62,7 @@ def follow_done(request, follow_id):
 
 @login_required
 def kitchen_for_bill(request, bill_id):
-    context = get_user(request)
-    context['menu_kitchen'] = True
+    context = { 'menu_kitchen': true, }
     context['facture'] = get_object_or_404(Facture, pk=bill_id)
     if context['facture'].est_soldee():
         messages.add_message(request,

@@ -20,7 +20,7 @@
 
 from django.shortcuts import render
 from possum.base.models import Facture
-from possum.base.views import permission_required, get_user
+from possum.base.views import permission_required
 import os
 from django.conf import settings
 
@@ -28,23 +28,19 @@ from django.conf import settings
 
 @permission_required('base.p1')
 def credits(request):
-    context = get_user(request)
-    context['menu_manager'] = True
+    context = { 'menu_manager': True, }
     return render(request, 'base/manager/credits.html', context)
 
 
 @permission_required('base.p1')
 def manager(request):
-    context = get_user(request)
-    context['menu_manager'] = True
+    context = { 'menu_manager': True, }
     if os.path.isfile(settings.LOCK_STATS):
         context['working_on_update'] = True
     else:
         bills_to_update = Facture.objects.filter(saved_in_stats=False,
                                                  restant_a_payer=0)
         count = bills_to_update.exclude(produits__isnull=True).count()
-#                                            ).exclude(produits__isnull=True
-#                                                     ).count()
         if count:
             context['bills_to_update'] = count
     return render(request, 'base/manager/home.html', context)

@@ -20,17 +20,15 @@
 
 from django.contrib import messages
 from django.core.mail import send_mail
-from django.http import HttpResponseRedirect
 import logging
 from django.conf import settings
-from django.shortcuts import render_to_response, get_object_or_404
-from django.template import RequestContext
+from django.shortcuts import render, redirect, get_object_or_404
 from possum.base.models import Categorie
 from possum.base.models import DailyStat
 from possum.base.models import Printer
 from possum.base.models import Produit
 from possum.base.models import VAT
-from possum.base.views import get_user, permission_required
+from possum.base.views import permission_required
 
 
 logger = logging.getLogger(__name__)
@@ -57,7 +55,7 @@ def categories_send(request):
     else:
         messages.add_message(request, messages.ERROR,
                              u"Vous n'avez pas d'adresse mail.")
-    return HttpResponseRedirect('/carte/categories/')
+    return redirect('categories')
 
 
 @permission_required('base.p2')
@@ -80,24 +78,21 @@ def categories_print(request):
     else:
         messages.add_message(request, messages.ERROR,
                              "Il n'y a rien dans la carte.")
-    return HttpResponseRedirect('/carte/categories/')
+    return redirect('categories')
 
 
 @permission_required('base.p2')
 def categories(request):
-    data = get_user(request)
-    data['menu_manager'] = True
-    data['categories'] = Categorie.objects.order_by('priorite', 'nom')
-    return render_to_response('base/carte/categories.html', data,
-                              context_instance=RequestContext(request))
+    context = {'menu_manager': True, }
+    context['categories'] = Categorie.objects.order_by('priorite', 'nom')
+    return render(request, 'base/carte/categories.html', context)
 
 
 @permission_required('base.p2')
 def categories_delete(request, cat_id):
-    data = get_user(request)
-    data['menu_manager'] = True
-    data['current_cat'] = get_object_or_404(Categorie, pk=cat_id)
-    data['categories'] = Categorie.objects.order_by('priorite', 'nom').exclude(id=cat_id)
+    context = {'menu_manager': True, }
+    context['current_cat'] = get_object_or_404(Categorie, pk=cat_id)
+    context['categories'] = Categorie.objects.order_by('priorite', 'nom').exclude(id=cat_id)
     cat_report_id = request.POST.get('cat_report', '').strip()
     action = request.POST.get('valide', '').strip()
     if action == "Supprimer":
@@ -127,10 +122,10 @@ def categories_delete(request, cat_id):
                     product.save()
             except Categorie.DoesNotExist:
                 logger.warning("[%s] categorie [%s] doesn't exist" % (
-                               data['user'].username, cat_report_id))
+                               request.user.username, cat_report_id))
                 messages.add_message(request, messages.ERROR, "La catégorie "
                                      "n'existe pas.")
-                return HttpResponseRedirect('/carte/categories/%s/delete/' % cat_id)
+                return redirect('categoriesr_delete', cat_id)
         # now, we have to delete the categories and remove all products remains
         for product in Produit.objects.filter(categorie__id=cat_id):
             DailyStat.objects.filter(key="%s_product_nb" % product.id).delete()
@@ -138,39 +133,33 @@ def categories_delete(request, cat_id):
             product.delete()
         DailyStat.objects.filter(key="%s_category_nb" % cat_id).delete()
         DailyStat.objects.filter(key="%s_category_value" % cat_id).delete()
-        logger.info("[%s] categorie [%s] deleted" % (data['user'].username,
-                                                     data['current_cat'].nom))
-        data['current_cat'].delete()
-        return HttpResponseRedirect('/carte/categories/')
+        logger.info("[%s] categorie [%s] deleted" % (request.user.username,
+                                                     context['current_cat'].nom))
+        context['current_cat'].delete()
+        return redirect('categories')
     elif action == "Annuler":
-        return HttpResponseRedirect('/carte/categories/')
-    return render_to_response('base/categories_delete.html', data,
-                              context_instance=RequestContext(request))
+        return redirect('categories')
+    return render(request, 'base/categories_delete.html', context)
 
 
 @permission_required('base.p2')
 def categories_view(request, cat_id):
-    data = get_user(request)
-    data['category'] = get_object_or_404(Categorie, pk=cat_id)
-    data['menu_manager'] = True
+    context = {'menu_manager': True, }
+    context['category'] = get_object_or_404(Categorie, pk=cat_id)
     products = Produit.objects.filter(categorie__id=cat_id)
-    data['products_enable'] = products.filter(actif=True)
-    data['products_disable'] = products.filter(actif=False)
-    return render_to_response('base/carte/category.html', data,
-                              context_instance=RequestContext(request))
+    context['products_enable'] = products.filter(actif=True)
+    context['products_disable'] = products.filter(actif=False)
+    return render(request, 'base/carte/category.html', context)
 
 
 @permission_required('base.p2')
 def categories_add(request):
-    data = get_user(request)
-    data['menu_manager'] = True
-    return render_to_response('base/carte/categories_add.html', data,
-                              context_instance=RequestContext(request))
+    context = {'menu_manager': True, }
+    return render(request, 'base/carte/categories_add.html', context)
 
 
 @permission_required('base.p2')
 def categories_new(request):
-    data = get_user(request)
     priority = request.POST.get('priority', '').strip()
     name = request.POST.get('name', '').strip()
     if name:
@@ -180,59 +169,54 @@ def categories_new(request):
             cat.priorite = priority
         try:
             cat.save()
-            logger.info("[%s] new categorie [%s]" % (data['user'].username,
+            logger.info("[%s] new categorie [%s]" % (request.user.username,
                                                      name))
         except:
             logger.warning("[%s] new categorie failed: [%s] [%s]" % (
-                           data['user'].username, cat.priorite, cat.nom))
+                           request.user.username, cat.priorite, cat.nom))
             messages.add_message(request, messages.ERROR, "La nouvelle "
                                  "catégorie n'a pu être créée.")
     else:
         messages.add_message(request, messages.ERROR, "Vous devez choisir "
                              "un nom pour la nouvelle catégorie.")
-    return HttpResponseRedirect('/carte/categories/')
+    return redirect('categories')
 
 
 @permission_required('base.p2')
 def categories_name(request, cat_id):
-    data = get_user(request)
-    data['category'] = get_object_or_404(Categorie, pk=cat_id)
-    return render_to_response('base/carte/name.html', data,
-                              context_instance=RequestContext(request))
+    context = {'menu_manager': True, }
+    context['category'] = get_object_or_404(Categorie, pk=cat_id)
+    return render(request, 'base/carte/name.html', context)
 
 
 @permission_required('base.p2')
 def categories_color(request, cat_id):
-    data = get_user(request)
-    data['category'] = get_object_or_404(Categorie, pk=cat_id)
-    data['categories'] = Categorie.objects.order_by('priorite', 'nom')
-    return render_to_response('base/carte/color.html', data,
-                              context_instance=RequestContext(request))
+    context = {'menu_manager': True, }
+    context['category'] = get_object_or_404(Categorie, pk=cat_id)
+    context['categories'] = Categorie.objects.order_by('priorite', 'nom')
+    return render(request, 'base/carte/color.html', context)
 
 
 @permission_required('base.p2')
 def categories_less_priority(request, cat_id, nb=1):
-    data = get_user(request)
     cat = get_object_or_404(Categorie, pk=cat_id)
     cat.set_less_priority(nb)
-    logger.info("[%s] cat [%s] priority - %d" % (data['user'].username,
+    logger.info("[%s] cat [%s] priority - %d" % (request.user.username,
                                                  cat.nom, nb))
-    return HttpResponseRedirect('/carte/categories/%s/' % cat_id)
+    return redirect('categories_view', cat_id)
 
 
 @permission_required('base.p2')
 def categories_more_priority(request, cat_id, nb=1):
-    data = get_user(request)
     cat = get_object_or_404(Categorie, pk=cat_id)
     cat.set_more_priority(nb)
-    logger.info("[%s] cat [%s] priority + %d" % (data['user'].username,
+    logger.info("[%s] cat [%s] priority + %d" % (request.user.username,
                                                  cat.nom, nb))
-    return HttpResponseRedirect('/carte/categories/%s/' % cat_id)
+    return redirect('categories_view', cat_id)
 
 
 @permission_required('base.p2')
 def categories_surtaxable(request, cat_id):
-    data = get_user(request)
     cat = get_object_or_404(Categorie, pk=cat_id)
     new = not cat.surtaxable
     cat.surtaxable = new
@@ -241,21 +225,19 @@ def categories_surtaxable(request, cat_id):
     cat.save()
     for product in Produit.objects.filter(categorie=cat).iterator():
         product.update_vats()
-    logger.info("[%s] cat [%s] surtaxable: %s" % (data['user'].username,
+    logger.info("[%s] cat [%s] surtaxable: %s" % (request.user.username,
                 cat.nom, cat.surtaxable))
-    return HttpResponseRedirect('/carte/categories/%s/' % cat_id)
+    return redirect('categories_view', cat_id)
 
 
 @permission_required('base.p2')
 def categories_vat_takeaway(request, cat_id):
-    data = get_user(request)
-    data['category'] = get_object_or_404(Categorie, pk=cat_id)
-    data['type_vat'] = 'TVA à emporter'
-    data['url_vat'] = 'vat_takeaway'
-    data['vats'] = VAT.objects.order_by('name')
-    data['menu_manager'] = True
-    return render_to_response('base/carte/categories/select_vat.html', data,
-                              context_instance=RequestContext(request))
+    context = {'menu_manager': True, }
+    context['category'] = get_object_or_404(Categorie, pk=cat_id)
+    context['type_vat'] = 'TVA à emporter'
+    context['url_vat'] = 'vat_takeaway'
+    context['vats'] = VAT.objects.order_by('name')
+    return render(request, 'base/carte/categories/select_vat.html', context)
 
 
 @permission_required('base.p2')
@@ -266,7 +248,7 @@ def categories_set_vat_takeaway(request, cat_id, vat_id):
     for product in Produit.objects.filter(categorie=category,
                                           actif=True).iterator():
         product.update_vats()
-    return HttpResponseRedirect('/carte/categories/%s/' % cat_id)
+    return redirect('categories_view', cat_id)
 
 
 @permission_required('base.p2')
@@ -277,28 +259,25 @@ def categories_set_vat_onsite(request, cat_id, vat_id):
     for product in Produit.objects.filter(categorie=category,
                                           actif=True).iterator():
         product.update_vats()
-    return HttpResponseRedirect('/carte/categories/%s/' % cat_id)
+    return redirect('categories_view', cat_id)
 
 
 @permission_required('base.p2')
 def categories_vat_onsite(request, cat_id):
-    data = get_user(request)
-    data['menu_manager'] = True
-    data['category'] = get_object_or_404(Categorie, pk=cat_id)
-    data['type_vat'] = 'TVA sur place'
-    data['url_vat'] = 'vat_onsite'
-    data['vats'] = VAT.objects.order_by('name')
-    return render_to_response('base/carte/categories/select_vat.html', data,
-                              context_instance=RequestContext(request))
+    context = {'menu_manager': True, }
+    context['category'] = get_object_or_404(Categorie, pk=cat_id)
+    context['type_vat'] = 'TVA sur place'
+    context['url_vat'] = 'vat_onsite'
+    context['vats'] = VAT.objects.order_by('name')
+    return render(request, 'base/carte/categories/select_vat.html', context)
 
 
 @permission_required('base.p2')
 def categories_set_color(request, cat_id):
-    data = get_user(request)
     color = request.POST.get('color', '').strip()
     cat = get_object_or_404(Categorie, pk=cat_id)
     if not cat.color or color != cat.color:
-        logger.info("[%s] new categorie color [%s]" % (data['user'].username,
+        logger.info("[%s] new categorie color [%s]" % (request.user.username,
                                                        cat.nom))
         cat.color = color
         try:
@@ -306,17 +285,16 @@ def categories_set_color(request, cat_id):
         except:
             messages.add_message(request, messages.ERROR, "Les modifications "
                                  "n'ont pu être enregistrées.")
-    return HttpResponseRedirect('/carte/categories/%s/' % cat_id)
+    return redirect('categories_view', cat_id)
 
 
 @permission_required('base.p2')
 def categories_set_name(request, cat_id):
-    data = get_user(request)
     name = request.POST.get('name', '').strip()
     cat = get_object_or_404(Categorie, pk=cat_id)
     if name != cat.nom:
         logger.info("[%s] new categorie name: [%s] > [%s]" % (
-                    data['user'].username, cat.nom, name))
+                    request.user.username, cat.nom, name))
         cat.nom = name
 
     try:
@@ -325,8 +303,8 @@ def categories_set_name(request, cat_id):
         messages.add_message(request, messages.ERROR, "Les modifications "
                              "n'ont pu être enregistrées.")
         logger.warning("[%s] save failed for [%s]" % (
-                       data['user'].username, cat.nom))
-    return HttpResponseRedirect('/carte/categories/%s/' % cat_id)
+                       request.user.username, cat.nom))
+    return redirect('categories_view', cat_id)
 
 
 @permission_required('base.p2')
@@ -335,7 +313,7 @@ def categories_set_kitchen(request, cat_id):
     new = not cat.made_in_kitchen
     cat.made_in_kitchen = new
     cat.save()
-    return HttpResponseRedirect('/carte/categories/%s/' % cat_id)
+    return redirect('categories_view', cat_id)
 
 
 @permission_required('base.p2')
@@ -346,4 +324,4 @@ def categories_disable_surtaxe(request, cat_id):
     if cat.disable_surtaxe:
         cat.surtaxable = False
     cat.save()
-    return HttpResponseRedirect('/carte/categories/%s/' % cat_id)
+    return redirect('categories_view', cat_id)

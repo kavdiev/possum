@@ -19,14 +19,13 @@
 #
 
 from django.contrib import messages
-from django.http import HttpResponseRedirect
 import logging
 from django.shortcuts import render
 from django.shortcuts import redirect
 from django.shortcuts import get_object_or_404
 from possum.base.models import Facture
 from possum.base.models import PaiementType, Paiement
-from possum.base.views import get_user, permission_required
+from possum.base.views import permission_required
 
 
 logger = logging.getLogger(__name__)
@@ -34,9 +33,6 @@ logger = logging.getLogger(__name__)
 
 @permission_required('base.p3')
 def bill_payment_delete(request, bill_id, payment_id):
-    data = get_user(request)
-    data['menu_bills'] = True
-    data['bill_id'] = bill_id
     payment = get_object_or_404(Paiement, pk=payment_id)
     bill = get_object_or_404(Facture, pk=bill_id)
     bill.del_payment(payment)
@@ -45,8 +41,7 @@ def bill_payment_delete(request, bill_id, payment_id):
 
 @permission_required('base.p3')
 def bill_payment_view(request, bill_id, payment_id):
-    context = get_user(request)
-    context['menu_bills'] = True
+    context = { 'menu_bills': True, }
     context['bill_id'] = bill_id
     context['payment'] = get_object_or_404(Paiement, pk=payment_id)
     return render(request, 'payments/view.html', context)
@@ -57,13 +52,12 @@ def amount_payment(request):
     """Permet de définir le montant d'un paiement
     bill_id doit etre dans request.session
     """
-    context = get_user(request)
     bill_id = request.session.get('bill_id', False)
     if not bill_id:
         messages.add_message(request, messages.ERROR, "Facture invalide")
         return redirect('bill_home')
 
-    context['menu_bills'] = True
+    context = { 'menu_bills': True, }
     context['bill_id'] = bill_id
     context['left'] = request.session.get('left', "0000")
     context['right'] = request.session.get('right', "00")
@@ -74,13 +68,12 @@ def amount_payment(request):
 def amount_count(request):
     """Le nombre de tickets pour un paiement
     """
-    context = get_user(request)
     bill_id = request.session.get('bill_id', False)
     if not bill_id:
         messages.add_message(request, messages.ERROR, "Facture invalide")
         return redirect('bill_home')
 
-    context['menu_bills'] = True
+    context = { 'menu_bills': True, }
     context['bill_id'] = bill_id
     context['tickets_count'] = request.session.get('tickets_count', 1)
     context['range'] = range(1, 50)
@@ -174,6 +167,10 @@ def save_payment(request, bill_id):
     """Enregistre le paiement
     """
     bill = get_object_or_404(Facture, pk=bill_id)
+    if bill.in_use_by != request.user:
+        messages.add_message(request, messages.ERROR, "Facture en cours"
+                             " d'édition par %s" % request.user)
+        return redirect('bill_view', bill.id)
     if request.session.get('type_selected', False):
         type_payment = request.session['type_selected']
     else:
@@ -208,6 +205,7 @@ def save_payment(request, bill_id):
         messages.add_message(request,
                              messages.SUCCESS,
                              "La facture a été soldée.")
+        bill.used_by()
         return redirect('bill_home')
     else:
         messages.add_message(request,
@@ -226,7 +224,8 @@ def init_montant(request, montant):
 
 @permission_required('base.p3')
 def prepare_payment(request, bill_id):
-    """Remplace bill_payment
+    """Only one user can add a payment or a products
+    on a bill at a time.
     """
     bill = get_object_or_404(Facture, pk=bill_id)
     if bill.est_soldee():
@@ -235,11 +234,18 @@ def prepare_payment(request, bill_id):
     # on nettoie la variable
     if 'is_left' in request.session.keys():
         request.session.pop('is_left')
-    context = get_user(request)
+    if bill.in_use_by:
+        if bill.in_use_by != request.user:
+            messages.add_message(request, messages.ERROR,
+                                 "Facture en cours d'édition par %s"
+                                 % request.user)
+            return redirect('bill_view', bill.id)
+    else:
+        bill.used_by(request.user)
+    context = { 'menu_bills': True, }
     context['bill_id'] = bill_id
     request.session['bill_id'] = bill_id
     context['type_payments'] = PaiementType.objects.all()
-    context['menu_bills'] = True
     default = PaiementType().get_default()
     if request.session.get('type_selected', False):
         context['type_selected'] = request.session['type_selected']

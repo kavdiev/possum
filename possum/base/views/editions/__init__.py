@@ -21,7 +21,7 @@
 import logging
 from django.shortcuts import render, get_object_or_404, redirect
 from possum.base.models import Facture
-from possum.base.views import get_user, permission_required
+from possum.base.views import permission_required
 
 
 logger = logging.getLogger(__name__)
@@ -29,7 +29,7 @@ logger = logging.getLogger(__name__)
 
 @permission_required('base.p1')
 def editions_home(request):
-    context = get_user(request)
+    context = {}
     context['bills'] = Facture.objects.exclude(in_use_by__isnull=True)
     return render(request, 'editions/home.html', context)
 

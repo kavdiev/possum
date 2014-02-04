@@ -40,17 +40,8 @@ create_default_directory()
 
 @login_required
 def home(request):
-    context = get_user(request)
-    context['menu_home'] = True
+    context = { 'menu_home': True, }
     return render(request, 'home.html', context)
-
-
-def get_user(request):
-    data = {}
-    data['perms'] = PermWrapper(request.user)
-    data['user'] = request.user
-#    data.update(csrf(request))
-    return data
 
 
 def permission_required(perm, **kwargs):
@@ -72,8 +63,7 @@ def permission_required(perm, **kwargs):
 
 @permission_required('base.p3')
 def shutdown(request):
-    context = get_user(request)
-    context['menu_home'] = True
+    context = { 'menu_home': True, }
     config = Config.objects.filter(key="default_shutdown")
     if config:
         cmd = config[0].value

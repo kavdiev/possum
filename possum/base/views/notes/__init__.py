@@ -22,9 +22,8 @@ import logging
 from django.shortcuts import redirect
 from django.shortcuts import render
 from django.shortcuts import get_object_or_404
-from django.template import RequestContext
 from possum.base.models import Note
-from possum.base.views import get_user, permission_required
+from possum.base.views import permission_required
 from possum.base.forms import NoteForm
 
 
@@ -32,10 +31,9 @@ logger = logging.getLogger(__name__)
 
 
 def get_notes(request):
-    data = get_user(request)
-    data['menu_manager'] = True
-    data['notes'] = Note.objects.all()
-    return data
+    context = { 'menu_manager': True, }
+    context['notes'] = Note.objects.all()
+    return context
 
 
 @permission_required('base.p1')

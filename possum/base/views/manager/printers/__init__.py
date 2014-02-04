@@ -19,122 +19,105 @@
 #
 
 from django.contrib import messages
-from django.http import HttpResponseRedirect
 import logging
-from django.shortcuts import render_to_response, get_object_or_404
-from django.template import RequestContext
+from django.shortcuts import render, redirect, get_object_or_404
 from possum.base.models import Printer
-from possum.base.views import get_user, permission_required
+from possum.base.views import permission_required
 
 
 logger = logging.getLogger(__name__)
 
 
-
 @permission_required('base.p1')
 def home(request):
-    data = get_user(request)
-    data['menu_manager'] = True
-    data['printers'] = Printer.objects.all()
-    return render_to_response('base/manager/printers.html', data,
-                              context_instance=RequestContext(request))
+    context = { 'menu_manager': True, }
+    context['printers'] = Printer.objects.all()
+    return render(request, 'base/manager/printers.html', context)
 
 
 @permission_required('base.p1')
 def printer_add(request):
-    data = get_user(request)
-    data['menu_manager'] = True
-    data['printers'] = Printer().get_available_printers()
-    return render_to_response('base/manager/printer_add.html', data,
-                              context_instance=RequestContext(request))
+    context = { 'menu_manager': True, }
+    context['printers'] = Printer().get_available_printers()
+    return render(request, 'base/manager/printer_add.html', context)
 
 
 @permission_required('base.p1')
 def printer_added(request, name):
     """Save new printer"""
-    data = get_user(request)
     printer = Printer(name=name)
     printer.save()
-    return HttpResponseRedirect('/manager/printers/')
+    return redirect('printer_home')
 
 
 @permission_required('base.p1')
 def printer_view(request, printer_id):
-    data = get_user(request)
-    data['menu_manager'] = True
-    data['printer'] = get_object_or_404(Printer, pk=printer_id)
+    context = { 'menu_manager': True, }
+    context['printer'] = get_object_or_404(Printer, pk=printer_id)
     if request.method == 'POST':
         options = request.POST.get('options', '').strip()
         header = request.POST.get('header', '')
         footer = request.POST.get('footer', '')
-        data['printer'].options = options
-        data['printer'].header = header
-        data['printer'].footer = footer
+        context['printer'].options = options
+        context['printer'].header = header
+        context['printer'].footer = footer
         try:
-            data['printer'].save()
+            context['printer'].save()
         except:
             messages.add_message(request,
                                  messages.ERROR,
                                  "Les informations n'ont pu être enregistrées.")
-    return render_to_response('base/manager/printer_view.html', data,
-                              context_instance=RequestContext(request))
+    return render(request, 'base/manager/printer_view.html', context)
 
 
 @permission_required('base.p1')
 def printer_select_width(request, printer_id):
-    data = get_user(request)
-    data['menu_manager'] = True
-    data['printer'] = get_object_or_404(Printer, pk=printer_id)
-    data['max'] = range(14, 120)
-    return render_to_response('base/manager/printer_select_width.html', data,
-                              context_instance=RequestContext(request))
+    context = { 'menu_manager': True, }
+    context['printer'] = get_object_or_404(Printer, pk=printer_id)
+    context['max'] = range(14, 120)
+    return render(request, 'base/manager/printer_select_width.html', context)
 
 
 @permission_required('base.p1')
 def printer_set_width(request, printer_id, number):
-    data = get_user(request)
     printer = get_object_or_404(Printer, pk=printer_id)
     printer.width = number
     printer.save()
-    return HttpResponseRedirect('/manager/printer/%s/' % printer_id)
+    return redirect('printer_view', printer_id)
 
 
 @permission_required('base.p1')
 def printer_test_print(request, printer_id):
-    data = get_user(request)
     printer = get_object_or_404(Printer, pk=printer_id)
     if printer.print_test():
         messages.add_message(request, messages.SUCCESS, "L'impression a été acceptée.")
     else:
         messages.add_message(request, messages.ERROR, "L'impression de test a achouée.")
-    return HttpResponseRedirect('/manager/printer/%s/' % printer_id)
+    return redirect('printer_view', printer_id)
 
 
 @permission_required('base.p1')
 def printer_change_kitchen(request, printer_id):
-    data = get_user(request)
     printer = get_object_or_404(Printer, pk=printer_id)
     new = not printer.kitchen
     printer.kitchen = new
     printer.save()
-    return HttpResponseRedirect('/manager/printer/%s/' % printer_id)
+    return redirect('printer_view', printer_id)
 
 
 @permission_required('base.p1')
 def printer_change_billing(request, printer_id):
-    data = get_user(request)
     printer = get_object_or_404(Printer, pk=printer_id)
     new = not printer.billing
     printer.billing = new
     printer.save()
-    return HttpResponseRedirect('/manager/printer/%s/' % printer_id)
+    return redirect('printer_view', printer_id)
 
 
 @permission_required('base.p1')
 def printer_change_manager(request, printer_id):
-    data = get_user(request)
     printer = get_object_or_404(Printer, pk=printer_id)
     new = not printer.manager
     printer.manager = new
     printer.save()
-    return HttpResponseRedirect('/manager/printer/%s/' % printer_id)
+    return redirect('printer_view', printer_id)

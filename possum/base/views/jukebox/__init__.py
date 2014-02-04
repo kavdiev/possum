@@ -21,10 +21,7 @@
 import logging
 
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import render_to_response
-from django.template import RequestContext
-
-from possum.base.views import get_user
+from django.shortcuts import render
 
 
 logger = logging.getLogger(__name__)
@@ -32,7 +29,5 @@ logger = logging.getLogger(__name__)
 
 @login_required
 def jukebox(request):
-    data = get_user(request)
-    data['menu_jukebox'] = True
-    return render_to_response('base/jukebox.html', data,
-                              context_instance=RequestContext(request))
+    context = { 'menu_jukebox': True, }
+    return render(request, 'base/jukebox.html', context)
