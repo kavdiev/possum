@@ -71,7 +71,7 @@ def bill_send_kitchen(request, bill_id):
     if not erreur:
         messages.add_message(request, messages.SUCCESS, u"%s envoyée" % 
                              bill.table)
-    return redirect('billi_view', bill.id)
+    return redirect('bill_view', bill.id)
 
 
 @permission_required('base.p3')
