@@ -45,6 +45,6 @@ class Option(models.Model):
     def __cmp__(self, other):
         return cmp(self.name, other.name)
 
-    def __unicode__(self, other):
+    def __unicode__(self):
         return self.name
 
