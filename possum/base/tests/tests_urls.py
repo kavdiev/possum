@@ -119,9 +119,11 @@ class Tests_urls(TestCase):
         ]
         self.assert_http_status(urls, 302)
         self.assert_http_status_after_login(urls, 200)
-        self.assert_http_status(reverse('bill_send_kitchen', args=('5',)), 302)
-        self.assert_http_status_after_login(reverse('bill_send_kitchen',
-                                                    args=('5',)), 302)
+        urls = [
+                reverse('bill_send_kitchen', args=('5',)),
+                ]
+        self.assert_http_status(urls, 302)
+        self.assert_http_status_after_login(urls, 302)
 
     def test_jukebox(self):
         ''' Test that the jukebox urls work. '''
