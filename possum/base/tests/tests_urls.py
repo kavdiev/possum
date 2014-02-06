@@ -115,7 +115,7 @@ class Tests_urls(TestCase):
 #                    args=('42', '73', '51', '7', '13', '1')),
 #            reverse('bill_payment_count', args=('42', '73', '51', '7')),
 #            reverse('bill_print', args=('42',)),
-#            reverse('bill_send_kitchen', args=('5',)),
+            reverse('bill_send_kitchen', args=('5',)),
             reverse('bill_view', args=('7',)),
         ]
         self.assert_http_status(urls, 302)
