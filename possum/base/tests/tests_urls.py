@@ -115,11 +115,13 @@ class Tests_urls(TestCase):
 #                    args=('42', '73', '51', '7', '13', '1')),
 #            reverse('bill_payment_count', args=('42', '73', '51', '7')),
 #            reverse('bill_print', args=('42',)),
-            reverse('bill_send_kitchen', args=('5',)),
             reverse('bill_view', args=('7',)),
         ]
         self.assert_http_status(urls, 302)
         self.assert_http_status_after_login(urls, 200)
+        self.assert_http_status(reverse('bill_send_kitchen', args=('5',)), 302)
+        self.assert_http_status_after_login(reverse('bill_send_kitchen',
+                                                    args=('5',)), 302)
 
     def test_jukebox(self):
         ''' Test that the jukebox urls work. '''
