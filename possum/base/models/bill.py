@@ -164,7 +164,10 @@ class Facture(models.Model):
                         products[subproduct.made_with.id] = []
                     name = subproduct.produit.nom
                     if subproduct.produit.choix_cuisson:
-                        name += ": %s" % subproduct.cuisson.nom_facture
+                        if subproduct.cuisson:
+                            name += ": %s" % subproduct.cuisson.nom_facture
+                        else:
+                            name += ": ?"
                     products[subproduct.made_with.id].append(name)
             else:
                 if product.produit.categorie.made_in_kitchen:

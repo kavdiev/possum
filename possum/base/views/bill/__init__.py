@@ -252,7 +252,7 @@ def subproduct_add(request, bill_id, sold_id, product_id):
     menu = get_object_or_404(ProduitVendu, pk=sold_id)
     menu.contient.add(product_sell)
     if product.choix_cuisson:
-        return redirect('sold_cooking', bill_id, menu.id, product_sell.id)
+        return redirect('sold_cooking', bill_id, product_sell.id)
     category = menu.getFreeCategorie()
     if category:
         return redirect("subproduct_select", bill_id, menu.id, category.id)
