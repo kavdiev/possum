@@ -128,10 +128,11 @@ class Facture(models.Model):
                 dict_produits[str(produit)] = [(produit.id, produit)]
         return dict_produits
 
-    def something_for_the_kitchen(self):
+    def update_kitchen(self):
         """If one, set the first category to prepare in the
         kitchen. Example: Entree if there are Entree and Plat.
         """
+        logger.debug("[%s] update kitchen" % self.id)
         todolist = []
         for product in self.produits.filter(sent=False).iterator():
             if product.est_un_menu():
@@ -241,7 +242,7 @@ class Facture(models.Model):
                     return False
             follow.save()
             self.following.add(follow)
-            self.something_for_the_kitchen()
+            self.update_kitchen()
             return True
 
     def guest_couverts(self):
@@ -286,7 +287,7 @@ class Facture(models.Model):
     def update_surcharge(self):
         self.surcharge = self.is_surcharged()
         self.save()
-        self.compute_total()
+        self.update()
 
     def non_soldees(self):
         """ Return the list of unpaid facture
@@ -300,7 +301,10 @@ class Facture(models.Model):
             liste.append(i)
         return liste
 
-    def compute_total(self):
+    def update(self):
+        """Update prize and kitchen
+        """
+        logger.debug("[%s] update prize" % self.id)
         self.total_ttc = Decimal("0")
         self.restant_a_payer = Decimal("0")
         for v in self.vats.iterator():
@@ -358,12 +362,6 @@ class Facture(models.Model):
         sold.save()
         self.produits.add(sold)
 
-        if self.surcharge == self.is_surcharged():
-            self.add_product_prize(sold)
-        else:
-            self.update_surcharge()
-        self.something_for_the_kitchen()
-
     def del_product(self, sold):
         """On enleve un ProduitVendu à la facture.
         """
@@ -391,7 +389,7 @@ class Facture(models.Model):
                     vatonbill.save()
             else:
                 self.update_surcharge()
-            self.something_for_the_kitchen()
+            self.update_kitchen()
         else:
             logger.warning("[%s] on essaye de supprimer un produit "
                            "qui n'est pas dans la facture" % self)
@@ -402,7 +400,7 @@ class Facture(models.Model):
             self.paiements.remove(payment)
             payment.delete()
             self.save()
-            self.compute_total()
+            self.update()
         else:
             logger.warning("[%s] on essaye de supprimer un paiement "
                            "qui n'est pas dans la facture: %s"

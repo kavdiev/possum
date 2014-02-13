@@ -417,6 +417,10 @@ li.surtaxe {
     width:30px;
     height:30px;
 }
+#numbers li {
+    width:30px;
+    height:20px;
+}
 #perms li {
     width:250px;
     height:80px;

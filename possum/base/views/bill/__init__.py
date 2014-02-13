@@ -45,7 +45,19 @@ def bill_new(request):
     bill = Facture()
     bill.save()
     context['facture'] = bill
-    return render(request, 'base/bill/bill.html', context)
+    return render(request, 'bill/bill.html', context)
+
+
+def set_option(sold_id, option_id):
+    """Enable/Disable an Option on a ProduitVendu
+    """
+    sold = get_object_or_404(ProduitVendu, pk=sold_id)
+    option = get_object_or_404(Option, pk=option_id)
+    if option in sold.options.all():
+        sold.options.remove(option)
+    else:
+        sold.options.add(option)
+    sold.save()
 
 
 @permission_required('base.p3')
@@ -103,7 +115,7 @@ def table_select(request, bill_id):
     context = {'menu_bills': True, }
     context['zones'] = Zone.objects.all()
     context['bill_id'] = bill_id
-    return render(request, 'base/bill/select_a_table.html', context)
+    return render(request, 'bill/select_a_table.html', context)
 
 
 @permission_required('base.p3')
@@ -114,23 +126,40 @@ def table_set(request, bill_id, table_id):
     table = get_object_or_404(Table, pk=table_id)
     bill.set_table(table)
     context['facture'] = bill
-    return render(request, 'base/bill/bill.html', context)
+    return render(request, 'bill/bill.html', context)
 
 
 @permission_required('base.p3')
-def category_select(request, bill_id, category_id=None):
-    """Select a category to add a new product on a bill."""
+def set_number(request, bill_id, count):
+    """Set number of products to add
+    """
+    request.session['count'] = int(count)
+    return redirect('bill_categories', bill_id)
+
+
+@permission_required('base.p3')
+def categories(request, bill_id, cat_id=None):
+    """Select a product to add on a bill.
+    
+    session[count]: default is 1, number of products to add
+    """
+    bill = get_object_or_404(Facture, pk=bill_id)
+    if not set_edition_status(request, bill):
+        return redirect('bill_view', bill.id)
     context = {'menu_bills': True, }
     context['categories'] = Categorie.objects.order_by('priorite', 'nom')
-    context['bill'] = get_object_or_404(Facture, pk=bill_id)
-    category = None
-    if category_id:
-        category = get_object_or_404(Categorie, pk=category_id)
+    context['bill'] = bill
+    context['range'] = range(1, 15)
+    if request.session.get('count', False):
+        context['count'] = request.session['count']
     else:
-        if context['categories']:
-            category = context['categories'][0]
-    context['products'] = Produit.objects.filter(categorie=category, actif=True)
-    return render(request, 'base/bill/categories.html', context)
+        request.session['count'] = 1
+        context['count'] = 1
+    for category in context['categories']:
+        category.products = Produit.objects.filter(categorie=category, actif=True)
+    if cat_id:
+        context['current_cat'] = int(cat_id)
+    return render(request, 'bill/categories.html', context)
 
 
 @permission_required('base.p3')
@@ -139,7 +168,7 @@ def product_select_made_with(request, bill_id, product_id):
     context['bill'] = get_object_or_404(Facture, pk=bill_id)
     context['product'] = get_object_or_404(ProduitVendu, pk=product_id)
     context['categories'] = Categorie.objects.filter(made_in_kitchen=True)
-    return render(request, 'base/bill/product_select_made_with.html', context)
+    return render(request, 'bill/product_select_made_with.html', context)
 
 
 @permission_required('base.p3')
@@ -149,7 +178,7 @@ def product_set_made_with(request, bill_id, product_id, category_id):
     product.made_with = category
     product.save()
     bill = get_object_or_404(Facture, pk=bill_id)
-    bill.something_for_the_kitchen()
+    bill.update_kitchen()
     return redirect('sold_view', bill_id, product.id)
 
 
@@ -168,7 +197,7 @@ def product_select(request, bill_id, category_id):
                              "La TVA à emporter n'est pas définie!")
     context['products'] = Produit.objects.filter(categorie=category, actif=True)
     context['bill_id'] = bill_id
-    return render(request, 'base/bill/products.html', context)
+    return render(request, 'bill/products.html', context)
 
 
 @permission_required('base.p3')
@@ -179,7 +208,7 @@ def subproduct_select(request, bill_id, sold_id, category_id):
     context['products'] = Produit.objects.filter(categorie=category, actif=True)
     context['bill_id'] = bill_id
     context['sold_id'] = sold_id
-    return render(request, 'base/bill/subproducts.html', context)
+    return render(request, 'bill/subproducts.html', context)
 
 
 @permission_required('base.p3')
@@ -195,18 +224,12 @@ def sold_view(request, bill_id, sold_id):
         context['note'] = NoteForm()
     context['notes'] = Note.objects.all()
     context['options'] = Option.objects.all()
-    return render(request, 'base/bill/sold.html', context)
+    return render(request, 'bill/sold.html', context)
 
 
 @permission_required('base.p3')
 def sold_option(request, bill_id, sold_id, option_id):
-    sold = get_object_or_404(ProduitVendu, pk=sold_id)
-    option = get_object_or_404(Option, pk=option_id)
-    if option in sold.options.all():
-        sold.options.remove(option)
-    else:
-        sold.options.add(option)
-    sold.save()
+    set_option(sold_id, option_id)
     return redirect('sold_view', bill_id, sold_id)
 
 
@@ -246,69 +269,120 @@ def subproduct_add(request, bill_id, sold_id, product_id):
     """Add a product to a bill. If this product contains others products,
     we have to add them too."""
     product = get_object_or_404(Produit, pk=product_id)
-    product_sell = ProduitVendu(produit=product)
-    product_sell.made_with = product_sell.produit.categorie
-    product_sell.save()
+    sold = ProduitVendu(produit=product)
+    sold.made_with = sold.produit.categorie
+    sold.save()
     menu = get_object_or_404(ProduitVendu, pk=sold_id)
-    menu.contient.add(product_sell)
-    if product.choix_cuisson:
-        return redirect('sold_cooking', bill_id, product_sell.id)
-    category = menu.getFreeCategorie()
-    if category:
-        return redirect("subproduct_select", bill_id, menu.id, category.id)
-    return redirect('category_select', bill_id, menu.produit.categorie.id)
+    menu.contient.add(sold)
+    request.session['menu_id'] = menu.id
+    return redirect('bill_sold_working', bill_id, sold.id)
+
+
+@permission_required('base.p3')
+def sold_options(request, bill_id, sold_id, option_id=None):
+    """Choix des options à l'ajout d'un produit
+    si sold.produit.options_ok
+
+    On aura accès à la liste complète des options
+    en allant dans 'sold_view'
+    """
+    sold = get_object_or_404(ProduitVendu, pk=sold_id)
+    context = {'menu_bills': True, }
+    context['sold'] = sold
+    context['bill_id'] = bill_id
+    context['options'] = sold.produit.options_ok.all()
+    if option_id:
+        set_option(sold_id, option_id)
+    return render(request, 'bill/options.html', context)
+
+
+@permission_required('base.p3')
+def sold_working(request, bill_id, sold_id):
+    """Va gérer les différents paramètres qui doivent être saisie
+    sur un nouveau produit.
+
+    request.session['menu_id'] : si présent, défini le menu
+
+    TODO: gerer request.session['product_to_add'] et request.session['product_count']
+    """
+    sold = get_object_or_404(ProduitVendu, pk=sold_id)
+    if sold.produit.est_un_menu():
+        category = sold.getFreeCategorie()
+        if category:
+            return redirect('subproduct_select', bill_id, sold.id,
+                            category.id)
+    if sold.produit.choix_cuisson and not sold.cuisson:
+        return redirect('sold_cooking', bill_id, sold.id)
+    if sold.produit.options_ok.count() and not sold.options.count():
+        return redirect('bill_sold_options', bill_id, sold.id)
+    menu_id = request.session.get('menu_id', False)
+    if menu_id:
+        # il y a un menu en attente, est-il complet ?
+        request.session.pop('menu_id')
+        return redirect('bill_sold_working', bill_id, menu_id)
+    # at this point, all is done, so are there others products?
+    if request.session.get('product_to_add', False):
+        product_id = request.session['product_to_add']
+        try:
+            product = Produit.objects.get(id=product_id)
+        except Produit.DoesNotExist:
+            request.session.pop('product_to_add')
+        else:
+            if 'product_count' in request.session.keys():
+                count = int(request.session['product_count']) - 1
+                if count > 1:
+                    request.session['product_count'] = count
+                else:
+                    request.session.pop('product_to_add')
+                    request.session.pop('product_count')
+            return redirect('product_add', bill_id, product_id)
+    return redirect('bill_categories', bill_id, sold.produit.categorie.id)
 
 
 @permission_required('base.p3')
 def product_add(request, bill_id, product_id):
     """Add a product to a bill. If this product contains others products,
-    we have to add them too."""
+    we have to add them too.
+    
+    """
     bill = get_object_or_404(Facture, pk=bill_id)
+    if not set_edition_status(request, bill):
+        return redirect('bill_view', bill.id)
     product = get_object_or_404(Produit, pk=product_id)
-    product_sell = ProduitVendu(produit=product)
-    product_sell.save()
-    bill.add_product(product_sell)
-    if product.est_un_menu():
-        category = product_sell.getFreeCategorie()
-        return redirect('subproduct_select', bill_id, product_sell.id, category.id)
-    if product.choix_cuisson:
-        return redirect('sold_cooking', bill_id, product_sell.id)
-    return redirect('category_select', bill_id, product.categorie.id)
+    
+    # how many products to add
+    count = int(request.session.get('count', 1))
+    if count > 1:
+        request.session['product_to_add'] = product_id
+        request.session['product_count'] = count
+        request.session['count'] = 1
+
+    sold = ProduitVendu(produit=product)
+    sold.save()
+    bill.add_product(sold)
+    request.session["products_added"] = bill_id
+    return redirect('bill_sold_working', bill_id, sold.id)
 
 
 @permission_required('base.p3')
-def sold_cooking(request, bill_id, sold_id, cooking_id=-1, menu_id=-1):
+def sold_cooking(request, bill_id, sold_id, cooking_id=None):
     context = {'menu_bills': True, }
     context['sold'] = get_object_or_404(ProduitVendu, pk=sold_id)
     context['cookings'] = Cuisson.objects.order_by('priorite', 'nom')
     context['bill_id'] = bill_id
-    if menu_id > -1:
-        context['menu_id'] = menu_id
-    if cooking_id > -1:
+    if cooking_id:
         cooking = get_object_or_404(Cuisson, pk=cooking_id)
         old = context['sold'].cuisson
         context['sold'].cuisson = cooking
         context['sold'].save()
         logger.debug("[S%s] cooking saved" % sold_id)
-        if menu_id > -1:
-            # this is a menu
-            logger.debug("[S%s] is a subproduct of %s" % (sold_id, menu_id))
-            menu = get_object_or_404(ProduitVendu, pk=menu_id)
-            category = menu.getFreeCategorie()
-            if category:
-                logger.debug("[S%s] menu is not full" % menu_id)
-                return redirect('subproduct_select', bill_id, menu.id,
-                                category.id)
-            else:
-                logger.debug("[S%s] menu is full" % menu_id)
         if old == None:
             # certainement un nouveau produit donc on veut retourner
             # sur le panneau de saisie des produits
-            return redirect('category_select', bill_id,
-                            context['sold'].produit.categorie.id)
+            return redirect('bill_sold_working', bill_id, context['sold'].id)
         else:
             return redirect('bill_view', bill_id)
-    return render(request, 'base/bill/cooking.html', context)
+    return render(request, 'bill/cooking.html', context)
 
 
 @permission_required('base.p3')
@@ -317,7 +391,7 @@ def couverts_select(request, bill_id):
     context = {'menu_bills': True, }
     context['nb_couverts'] = range(43)
     context['bill_id'] = bill_id
-    return render(request, 'base/bill/couverts.html', context)
+    return render(request, 'bill/couverts.html', context)
 
 
 @permission_required('base.p3')
@@ -327,7 +401,7 @@ def couverts_set(request, bill_id, number):
     bill = get_object_or_404(Facture, pk=bill_id)
     bill.set_couverts(number)
     context['facture'] = bill
-    return render(request, 'base/bill/bill.html', context)
+    return render(request, 'bill/bill.html', context)
 
 
 @permission_required('base.p3')
@@ -336,7 +410,7 @@ def bill_home(request):
     context = {'menu_bills': True, }
     context['need_auto_refresh'] = 30
     context['factures'] = Facture().non_soldees()
-    return render(request, 'base/bill/home.html', context)
+    return render(request, 'bill/home.html', context)
 
 
 @permission_required('base.p3')
@@ -349,7 +423,7 @@ def bill_view(request, bill_id):
         messages.add_message(request, messages.ERROR,
                              "Cette facture a déjà été soldée.")
         return redirect('bill_home')
-    return render(request, 'base/bill/bill.html', context)
+    return render(request, 'bill/bill.html', context)
 
 
 @permission_required('base.p3')
@@ -560,14 +634,36 @@ def init_montant(request, montant):
     request.session['init_montant'] = True
 
 
-@permission_required('base.p3')
-def prepare_payment(request, bill_id):
+def set_edition_status(request, bill):
     """Only one user can add a payment or a products
     on a bill at a time.
 
     We use a key in request.session to update edition status
     for a bill.
 
+    bill: Facture()
+
+    """
+    if not bill:
+        return False
+    if bill.in_use_by:
+        if bill.in_use_by != request.user:
+            messages.add_message(request, messages.ERROR,
+                                 "Facture en cours d'édition par %s"
+                                 % request.user)
+            return False
+    else:
+        if request.session.get('bill_in_use', None):
+            if request.session['bill_in_use'] != bill.id:
+                request = remove_edition(request)
+        request.session['bill_in_use'] = bill.id
+        bill.used_by(request.user)
+    return True
+
+
+@permission_required('base.p3')
+def prepare_payment(request, bill_id):
+    """Page d'accueil pour la gestion des paiements.
     """
     bill = get_object_or_404(Facture, pk=bill_id)
     if bill.est_soldee():
@@ -576,18 +672,8 @@ def prepare_payment(request, bill_id):
     # on nettoie la variable
     if 'is_left' in request.session.keys():
         request.session.pop('is_left')
-    if bill.in_use_by:
-        if bill.in_use_by != request.user:
-            messages.add_message(request, messages.ERROR,
-                                 "Facture en cours d'édition par %s"
-                                 % request.user)
-            return redirect('bill_view', bill.id)
-    else:
-        if request.session.get('bill_in_use', None):
-            if request.session['bill_in_use'] != bill_id:
-                request = remove_edition(request)
-        request.session['bill_in_use'] = bill_id
-        bill.used_by(request.user)
+    if not set_edition_status(request, bill):
+        return redirect('bill_view', bill.id)
     context = { 'menu_bills': True, }
     context['bill_id'] = bill_id
     request.session['bill_id'] = bill_id

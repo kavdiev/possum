@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block titre %}Facture {{facture.id}}{% endblock %}
+{% block content %}
+
+<ul id="back">
+    <li onclick="window.location='{% url "bill_sold_working" bill_id sold.id %}'">Retour</li>
+</ul>
+
+<h1>Options pour {{sold.produit.nom}}</h1>
+{% if sold.produit.est_un_menu %}
+<p>On ne peux pas mettre d'options sur un menu.</p>
+{% else %}
+<p>Les options en vert sont sélectionnées, il faut appuyer dessus pour activer/désactiver.</p>
+<ul id="options">
+    {% for option in options %}
+    <li onclick="window.location='{% url "bill_sold_options" bill_id sold.id option.id %}'"
+        {% if option in sold.options.all %}class="enabled"{% endif %}>
+        {{option.name}}
+    </li>
+    {% empty %}
+    <li>Aucune option</li>
+    {% endfor %}
+</ul>
+
+{% endif %}
+{% endblock %}
+

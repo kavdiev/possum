@@ -2,29 +2,43 @@
 {% block content %}
 
 <ul id="back">
-    <li onclick="window.location='/bill/{{bill.id}}/'">Retour</li>
+    <li onclick="window.location='{% url "bill_view" bill.id %}'">Retour facture</li>
 </ul>
 
 <h1>Ajout de produits</h1>
 <ul id="categories">
     {% for category in categories %}
-    <li onclick="window.location='/bill/{{bill.id}}/category/{{category.id}}/'" style="background:{{category.color}};">
+        <li style="background:{{category.color}}" id="{{category.id}}"
+            href="javascript:void(0)" onclick="javascript:view_category(this.id);">
         {{category.nom}}
-        </li>
+    </li>
     {% empty %}
         <li>Aucune categorie disponible.</li>
     {% endfor %}
 </ul>
 
+<h2><!-- nombre --></h2>
+<ul id="numbers">
+    {% for number in range %}
+    <li onclick="window.location='{% url "bill_set_number" bill.id number %}'"
+        {% if count == number %}class="enabled"{% endif %}>
+        {{number}}
+    </li>
+    {% endfor %}
+</ul>
+
 <h2><!--Sélection du produit--></h2>
 <ul id="products">
-    {% for product in products %}
-        <li 
-            onclick="window.location='/bill/{{bill.id}}/product/add/{{product.id}}/'" 
-            style="background:{{product.categorie.color}};">{{product.nom}}
-        </li>
-    {% empty %}
-        <li>Aucun produit disponible.</li>
+    {% for category in categories %}
+        <div id="cat_{{category.id}}" 
+            {% if current_cat != category.id %}style="display: none"{% endif %}>
+        {% for product in category.products %}
+            <li
+                onclick="window.location='/bill/{{bill.id}}/product/add/{{product.id}}/'"
+                style="background:{{category.color}}">{{product.nom}}
+            </li>
+        {% endfor %}
+        </div>
     {% endfor %}
 </ul>
 

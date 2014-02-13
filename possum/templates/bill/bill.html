@@ -31,7 +31,7 @@
 
 <h2><!--Produits--></h2>
 <ul id="products_sold">
-    <li onclick="window.location='/bill/{{facture.id}}/category/select/'">Ajouter un produit</li>
+    <li onclick="window.location='{% url "bill_categories" facture.id %}'">Ajouter un produit</li>
     {% for type_produit, list_produit in facture.regroup_produits.items %}
     {% if list_produit|length > 1 %}
     <li style="background:{{list_produit.0.1.produit.categorie.color}}" id="{{type_produit}}" href="javascript:void(0)" onclick="javascript:myLinkButtonClick(this.id);">{{list_produit|length}} x {{type_produit}}</li>

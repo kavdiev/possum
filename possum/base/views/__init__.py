@@ -43,13 +43,18 @@ def remove_edition(request):
        This is use to reserve access to a bill.
     """
     if "bill_in_use" in request.session.keys():
-        old_bill_id = request.session['bill_in_use']
+        bill_id = request.session['bill_in_use']
         try:
-            old_bill = Facture.objects.get(pk=old_bill_id)
+            bill = Facture.objects.get(pk=bill_id)
         except Facture.DoesNotExist:
-            logger("[%s] bill is not here!" % old_bill_id)
+            logger("[%s] bill is not here!" % bill_id)
         else:
-            old_bill.used_by()
+            bill.used_by()
+            if "products_added" in request.session.keys():
+                # we update bill only once
+                bill.update()
+                bill.update_kitchen()
+                request.session.pop("products_added")
         request.session.pop("bill_in_use")
     return request
 

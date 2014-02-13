@@ -2,13 +2,13 @@
 {% block content %}
 
 <ul id="back">
-    <li onclick="window.location='/bill/{{bill_id}}/category/{{sold.produit.categorie.id}}/'">Retour</li>
+    <li onclick="window.location='{% url "bill_sold_working" bill_id sold.id %}'">Retour</li>
 </ul>
 
 <h1>Choix de la cuisson pour: {{sold.produit.nom}}</h1>
 <ul id="cookings">
     {% for cooking in cookings %}
-    <li onclick="window.location='/bill/{{bill_id}}/sold/{% if menu_id %}{{menu_id}}/{% endif %}{{sold.id}}/cooking/{{cooking.id}}/'"
+    <li onclick="window.location='{% url "sold_cooking" bill_id sold.id cooking.id %}'"
     style="background:{{cooking.color}};">
         {{cooking}}
         </li>
