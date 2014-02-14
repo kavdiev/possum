@@ -36,13 +36,16 @@ class Tests_Bill(TestCase):
     def test_add_product(self):
         self.assertTrue(self.facture.is_empty())
         self.facture.add_product(self.plat)
+        self.facture.update()
         self.assertTrue(self.plat in self.facture.produits.iterator())
         self.assertEqual(self.plat.prix, self.facture.total_ttc)
         self.assertEqual(self.plat.prix, self.facture.restant_a_payer)
 
     def test_del_product(self):
         self.facture.add_product(self.plat)
+        self.facture.update()
         self.facture.del_product(self.plat)
+        self.facture.update()
         self.assertTrue(self.plat not in self.facture.produits.iterator())
         self.assertEqual(Decimal("0"), self.facture.total_ttc)
         self.assertEqual(Decimal("0"), self.facture.restant_a_payer)
@@ -92,11 +95,13 @@ class Tests_Bill(TestCase):
     def test_rendre_monnaie(self):
         paiement = Paiement.objects.all()[0]
         self.facture.add_product(self.plat)
+        self.facture.update()
         self.facture.rendre_monnaie(paiement)
         self.assertEqual(Decimal("-82.80"), self.facture.paiements.all()[0].montant)
 
     def test_add_payment(self):
         self.facture.add_product(self.plat)
+        self.facture.update()
         self.facture.add_payment(PaiementType.objects.get(nom="CB"), "2")
         self.assertEqual(self.facture.restant_a_payer, Decimal(str(self.plat.prix - 2)))
         self.facture.add_payment(PaiementType.objects.get(nom="Espece"), "10")
