@@ -253,22 +253,26 @@ def sold_note(request, bill_id, sold_id, note_id):
 
 @permission_required('base.p3')
 def sold_delete(request, bill_id, sold_id):
+    """We remove a ProduitVendu on a Facture
+    """
     bill = get_object_or_404(Facture, pk=bill_id)
     sold = get_object_or_404(ProduitVendu, pk=sold_id)
     request.session["products_modified"] = bill_id
     if sold in bill.produits.all():
-        # it is a product
-        bill.del_product(sold)
-        bill.save()
-        return redirect('bill_categories', bill_id)
-    else:
-        # it as a subproduct in a menu
-        menu = bill.produits.filter(contient=sold)[0]
-        menu.contient.remove(sold)
-        menu.save()
-        category = sold.produit.categorie
+        logger.debug("[%s] remove ProduitVendu(%s)" % (bill_id, sold))
+        bill.produits.remove(sold)
         sold.delete()
-        return redirect("bill_sold_working", bill_id, menu.id)
+    else:
+        menus = bill.produits.filter(contient=sold)
+        if menus:
+            logger.debug("[%s] remove ProduitVendu(%s) from a menu" % (
+                         bill_id, sold))
+            menu = menus[0]
+            menu.contient.remove(sold)
+            menu.save()
+            sold.delete()
+            return redirect("bill_sold_working", bill_id, menu.id)
+    return redirect('bill_categories', bill_id)
 
 
 @permission_required('base.p3')

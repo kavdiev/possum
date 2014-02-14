@@ -360,38 +360,6 @@ class Facture(models.Model):
         else:
             logger.warning("[%s] try to add an inactive Produit()" % self.id)
 
-    def del_product(self, sold):
-        """On enleve un ProduitVendu à la facture.
-        """
-        if sold in self.produits.iterator():
-            self.produits.remove(sold)
-            if self.surcharge == self.is_surcharged():
-                self.total_ttc -= sold.prix
-                self.restant_a_payer -= sold.prix
-                self.save()
-                if self.onsite:
-                    vat = sold.produit.categorie.vat_onsite
-                    if self.surcharge:
-                        value = sold.produit.vat_surcharged
-                    else:
-                        value = sold.produit.vat_onsite
-                else:
-                    vat = sold.produit.categorie.vat_takeaway
-                    value = sold.produit.vat_takeaway
-                vatonbill = self.vats.get(vat=vat)
-                if vatonbill.total == value:
-                    self.vats.remove(vatonbill)
-                    vatonbill.delete()
-                else:
-                    vatonbill.total -= value
-                    vatonbill.save()
-            else:
-                self.update_surcharge()
-            self.update_kitchen()
-        else:
-            logger.warning("[%s] on essaye de supprimer un produit "
-                           "qui n'est pas dans la facture" % self)
-
     def del_payment(self, payment):
         """On supprime un paiement"""
         if payment in self.paiements.iterator():

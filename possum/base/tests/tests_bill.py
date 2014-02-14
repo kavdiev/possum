@@ -41,15 +41,6 @@ class Tests_Bill(TestCase):
         self.assertEqual(self.plat.produit.prix, self.facture.total_ttc)
         self.assertEqual(self.plat.produit.prix, self.facture.restant_a_payer)
 
-    def test_del_product(self):
-        self.facture.add_product(self.plat)
-        self.facture.update()
-        self.facture.del_product(self.plat)
-        self.facture.update()
-        self.assertTrue(self.plat not in self.facture.produits.iterator())
-        self.assertEqual(Decimal("0"), self.facture.total_ttc)
-        self.assertEqual(Decimal("0"), self.facture.restant_a_payer)
-
     def test_regroup_produits(self):
         plat2 = ProduitVendu()
         plat2.produit = Produit.objects.get(nom="entrecote")
