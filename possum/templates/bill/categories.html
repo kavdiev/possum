@@ -53,7 +53,7 @@
     <li 
         style="background:{{vendu.produit.categorie.color}}"
         onclick="window.location='{% url "sold_delete" bill.id vendu_id_in_model %}'">
-      {{vendu}} ({{vendu.produit.get_prize}})
+      {{vendu}}
       {% if vendu.cuisson %}({{vendu.cuisson}}){% endif %}
       {{ vendu.get_menu_resume }}
     </li>
@@ -64,7 +64,7 @@
     style="background:{{list_produit.0.1.produit.categorie.color}}"
     id="{{type_produit}}" 
     onclick="window.location='{% url "sold_delete" bill.id list_produit.0.0 %}'">
-    {{list_produit.0.1}} ({{list_produit.0.1.prix}})
+    {{list_produit.0.1}}
     {% if list_produit.0.1.cuisson %}({{list_produit.0.1.cuisson}}){% endif %}
     {{ list_produit.0.1.get_menu_resume }}
   </li> 
