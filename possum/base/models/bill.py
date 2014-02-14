@@ -327,15 +327,11 @@ class Facture(models.Model):
                 logger.info("[%s] product without price_surcharged" % 
                             sold.produit.id)
                 sold.produit.update_vats(keep_clone=False)
-            if sold.prix != sold.produit.price_surcharged:
-                sold.prix = sold.produit.price_surcharged
-                sold.save()
+            sold.set_prize(sold.produit.price_surcharged)
             vat = sold.produit.categorie.vat_onsite
             value = sold.produit.vat_surcharged
         else:
-            if sold.prix != sold.produit.prix:
-                sold.prix = sold.produit.prix
-                sold.save()
+            sold.set_prize(sold.produit.prix)
             if self.onsite:
                 vat = sold.produit.categorie.vat_onsite
                 value = sold.produit.vat_onsite
@@ -355,12 +351,14 @@ class Facture(models.Model):
         Si c'est le premier produit alors on modifie la date de creation
         :param sold: ProduitVendu
         """
-        if self.produits.count() == 0:
-            self.date_creation = datetime.datetime.now()
-
-        sold.made_with = sold.produit.categorie
-        sold.save()
-        self.produits.add(sold)
+        if sold.produit.actif:
+            if self.produits.count() == 0:
+                self.date_creation = datetime.datetime.now()
+            sold.made_with = sold.produit.categorie
+            sold.save()
+            self.produits.add(sold)
+        else:
+            logger.warning("[%s] try to add an inactive Produit()" % self.id)
 
     def del_product(self, sold):
         """On enleve un ProduitVendu à la facture.

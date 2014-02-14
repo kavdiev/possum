@@ -38,8 +38,8 @@ class Tests_Bill(TestCase):
         self.facture.add_product(self.plat)
         self.facture.update()
         self.assertTrue(self.plat in self.facture.produits.iterator())
-        self.assertEqual(self.plat.prix, self.facture.total_ttc)
-        self.assertEqual(self.plat.prix, self.facture.restant_a_payer)
+        self.assertEqual(self.plat.produit.prix, self.facture.total_ttc)
+        self.assertEqual(self.plat.produit.prix, self.facture.restant_a_payer)
 
     def test_del_product(self):
         self.facture.add_product(self.plat)
@@ -81,13 +81,12 @@ class Tests_Bill(TestCase):
         payment.valeur_unitaire = Decimal(valeur_unitaire)
         payment.montant = Decimal(montant)
         self.facture.add_payment(paymentType, montant, valeur_unitaire)
-        print self.facture.paiements
         self.facture.del_payment(payment)
-        print self.facture.paiements
 
     def test_is_valid_payment(self):
         self.assertFalse(self.facture.is_valid_payment(42))
         self.facture.add_product(self.plat)
+        self.facture.update()
         self.assertTrue(self.facture.is_valid_payment(42))
         self.facture.restant_a_payer = Decimal("0")
         self.assertFalse(self.facture.is_valid_payment(42))
@@ -103,11 +102,12 @@ class Tests_Bill(TestCase):
         self.facture.add_product(self.plat)
         self.facture.update()
         self.facture.add_payment(PaiementType.objects.get(nom="CB"), "2")
-        self.assertEqual(self.facture.restant_a_payer, Decimal(str(self.plat.prix - 2)))
+        restant_a_payer = Decimal(str(self.plat.produit.prix - 2))
+        self.assertEqual(self.facture.restant_a_payer, restant_a_payer)
         self.facture.add_payment(PaiementType.objects.get(nom="Espece"), "10")
         self.assertEqual(self.facture.restant_a_payer, Decimal(0))
-        self.assertEqual(Decimal(str(self.plat.prix - 12)),
-                         (self.facture.paiements.all()[2]).montant)
+        montant = Decimal(str(self.plat.produit.prix - 12))
+        self.assertEqual(montant, (self.facture.paiements.all()[2]).montant)
         # TODO This is done just to execute more code
         # An assertion should be verified
         self.facture.send_in_the_kitchen()

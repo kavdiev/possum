@@ -17,7 +17,6 @@
     <li onclick="window.location='/bill/{{bill_id}}/sold/{{sold.id}}/cooking/'" style="background:{{sold.cuisson.color}};">Cuisson:</br>{{sold.cuisson}}</li>
     {% endif %}
     <li>Prix TTC:</br>{{sold.prix}}€</li>
-    <li onclick="window.location='/bill/{{bill_id}}/sold/{{sold.id}}/delete/'" class="critical">Supprimer</li>
 </ul>
 
 {% if sold.produit.est_un_menu %}

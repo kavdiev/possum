@@ -132,3 +132,11 @@ class ProduitVendu(models.Model):
         else:
             produit = ""
         return "P%s_C%s_O%s_N%s" % (produit, cuisson, options, notes)
+
+    def set_prize(self, prize):
+        """Set prize for the product sold
+        """
+        if self.prix != prize:
+            logger.debug("[%s] prize: %s > %s" % (self.id, self.prix, prize))
+            self.prix = prize
+            self.save()

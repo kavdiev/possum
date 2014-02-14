@@ -147,7 +147,6 @@ def categories(request, bill_id, cat_id=None):
     if not set_edition_status(request, bill):
         return redirect('bill_view', bill.id)
     context = {'menu_bills': True, }
-    context['categories'] = Categorie.objects.order_by('priorite', 'nom')
     context['bill'] = bill
     context['range'] = range(1, 15)
     if request.session.get('count', False):
@@ -155,8 +154,15 @@ def categories(request, bill_id, cat_id=None):
     else:
         request.session['count'] = 1
         context['count'] = 1
-    for category in context['categories']:
-        category.products = Produit.objects.filter(categorie=category, actif=True)
+    if not request.session.get('categories', False):
+        logger.debug('update categories in cache')
+        context['categories'] = Categorie.objects.order_by('priorite', 'nom')
+        for category in context['categories']:
+            category.products = Produit.objects.filter(categorie=category, actif=True)
+        request.session['categories'] = context['categories']
+    else:
+        logger.debug('use categories in cache')
+        context['categories'] = request.session['categories']
     if cat_id:
         context['current_cat'] = int(cat_id)
     return render(request, 'bill/categories.html', context)
@@ -253,7 +259,7 @@ def sold_delete(request, bill_id, sold_id):
         # it is a product
         bill.del_product(sold)
         bill.save()
-        return redirect('bill_view', bill_id)
+        return redirect('bill_categories', bill_id)
     else:
         # it as a subproduct in a menu
         menu = bill.produits.filter(contient=sold)[0]
@@ -261,7 +267,7 @@ def sold_delete(request, bill_id, sold_id):
         menu.save()
         category = sold.produit.categorie
         sold.delete()
-        return redirect("subproduct_select", bill_id, menu.id, category.id)
+        return redirect("bill_sold_working", bill_id, menu.id)
 
 
 @permission_required('base.p3')
@@ -360,7 +366,7 @@ def product_add(request, bill_id, product_id):
     sold = ProduitVendu(produit=product)
     sold.save()
     bill.add_product(sold)
-    request.session["products_added"] = bill_id
+    request.session["products_modified"] = bill_id
     return redirect('bill_sold_working', bill_id, sold.id)
 
 

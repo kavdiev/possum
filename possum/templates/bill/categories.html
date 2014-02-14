@@ -43,13 +43,16 @@
 </ul>
 
 <h1>Produits présents sur la commande</h1>
+<p>Vous pouvez supprimer un produit en le sélectionnant.</p>
 <ul id="products_sold">
   {% for type_produit, list_produit in bill.regroup_produits.items %}
   {% if list_produit|length > 1 %}
   <li style="background:{{list_produit.0.1.produit.categorie.color}}" id="{{type_produit}}" href="javascript:void(0)" onclick="javascript:myLinkButtonClick(this.id);">{{list_produit|length}} x {{type_produit}}</li>
   <div id="list_{{type_produit}}" style="display: none">
     {% for vendu_id_in_model, vendu in list_produit %}
-    <li style="background:{{vendu.produit.categorie.color}}" onclick="window.location='/bill/{{bill.id}}/sold/{{vendu_id_in_model}}/view/'">
+    <li 
+        style="background:{{vendu.produit.categorie.color}}"
+        onclick="window.location='{% url "sold_delete" bill.id vendu_id_in_model %}'">
       {{vendu}} ({{vendu.produit.get_prize}})
       {% if vendu.cuisson %}({{vendu.cuisson}}){% endif %}
       {{ vendu.get_menu_resume }}
@@ -57,7 +60,10 @@
     {% endfor %}
   </div>
   {% else %}
-  <li style="background:{{list_produit.0.1.produit.categorie.color}}" id="{{type_produit}}" onclick="window.location='/bill/{{bill.id}}/sold/{{list_produit.0.0}}/view/'">
+  <li 
+    style="background:{{list_produit.0.1.produit.categorie.color}}"
+    id="{{type_produit}}" 
+    onclick="window.location='{% url "sold_delete" bill.id list_produit.0.0 %}'">
     {{list_produit.0.1}} ({{list_produit.0.1.prix}})
     {% if list_produit.0.1.cuisson %}({{list_produit.0.1.cuisson}}){% endif %}
     {{ list_produit.0.1.get_menu_resume }}

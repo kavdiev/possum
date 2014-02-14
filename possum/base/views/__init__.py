@@ -50,11 +50,11 @@ def remove_edition(request):
             logger("[%s] bill is not here!" % bill_id)
         else:
             bill.used_by()
-            if "products_added" in request.session.keys():
+            if "products_modifier" in request.session.keys():
                 # we update bill only once
                 bill.update()
                 bill.update_kitchen()
-                request.session.pop("products_added")
+                request.session.pop("products_modified")
         request.session.pop("bill_in_use")
     return request
 

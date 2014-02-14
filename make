@@ -14,7 +14,7 @@ List of commands:
     deb_install_apache :  install apache on Debian/Ubuntu (*)
     deb_install_nginx  :  install nginx on Debian/Ubuntu (*)
     fastcoverage       :  make only the unit tests and display the coverage in your browser
-    fasttu             :  make only the unit tests
+    utests             :  make only the unit tests
     help               :  this help
     init_demo          :  erase database with data of demonstration
     init_mine          :  run possum/utils/init_mine.py in virtualenv 
@@ -65,8 +65,7 @@ function create_json_demo {
 function install_tests {
     # prerequis: sloccount csslint
     enter_virtualenv
-    pip install --proxy=${http_proxy} django-jenkins pep8 pyflakes clonedigger \
-        flake8 flake8-todo coverage >/dev/null
+    pip -q install --proxy=${http_proxy}  --requirement requirements_tests.txt
 }
 
 function tests {
@@ -76,7 +75,7 @@ function tests {
     then
         mkdir reports
     fi
-    ./manage.py validate_templates
+    ./manage.py validate_templates --settings=possum.settings_tests
     if [ ! $? == 0 ]
     then
         exit $?
@@ -85,15 +84,16 @@ function tests {
     flake8 --exclude=migrations --max-complexity 12 possum > reports/flake8.report
     clonedigger --cpd-output -o reports/clonedigger.xml $(find possum -name "*.py" | fgrep -v '/migrations/' | fgrep -v '/tests/' | xargs echo )
     sloccount --duplicates --wide --details possum | fgrep -v .git | fgrep -v '/migrations/' | fgrep -v '/static/highcharts/' > reports/soccount.sc
-    ./manage.py jenkins
-    ./manage.py test base
+    ./manage.py jenkins --settings=possum.settings_tests
+    utests
     exit $?
 }
 
-function fasttu {
+function utests {
     install_tests
     enter_virtualenv
-    python -Wall manage.py test base --settings=possum.settings_tests --verbosity=2 --traceback
+    ./manage.py test base --settings=possum.settings_tests
+    return $?
 }
 
 function fastcoverage {
@@ -248,8 +248,8 @@ deb_install)
 deb_install_apache)
     deb_install_apache
     ;;
-fasttu)
-    fasttu
+utests)
+    utests
     ;;
 fastcoverage)
     fastcoverage

@@ -1,0 +1,7 @@
+django-jenkins
+pep8
+pyflakes
+clonedigger
+flake8
+flake8-todo
+coverage
