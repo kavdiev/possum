@@ -255,6 +255,7 @@ def sold_note(request, bill_id, sold_id, note_id):
 def sold_delete(request, bill_id, sold_id):
     bill = get_object_or_404(Facture, pk=bill_id)
     sold = get_object_or_404(ProduitVendu, pk=sold_id)
+    request.session["products_modified"] = bill_id
     if sold in bill.produits.all():
         # it is a product
         bill.del_product(sold)
