@@ -388,10 +388,12 @@ def sold_cooking(request, bill_id, sold_id, cooking_id=None):
         context['sold'].save()
         logger.debug("[S%s] cooking saved" % sold_id)
         if old == None:
+            logger.debug("[%s] no cooking present" % bill_id)
             # certainement un nouveau produit donc on veut retourner
             # sur le panneau de saisie des produits
             return redirect('bill_sold_working', bill_id, context['sold'].id)
         else:
+            logger.debug("[%s] cooking replacement" % bill_id)
             return redirect('bill_view', bill_id)
     return render(request, 'bill/cooking.html', context)
 
