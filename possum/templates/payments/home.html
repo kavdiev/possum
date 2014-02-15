@@ -48,5 +48,17 @@
 {% endif %}
 </ul>
 
+<h2>Paiements enregistrés</h2>
+<p>Vous pouvez supprimer un paiement en le sélectionnant.</p>
+<ul id="paiements">
+    {% for payment in payments %}
+        <li onclick="window.location='{% url "bill_payment_delete" bill_id payment.id %}'">
+        {{payment.type.nom}}: {{payment.montant}}€</li>
+    {% empty %}
+        <li>Aucun paiement</li>
+    {% endfor %}
+</ul>
+
+
 {% endblock %}
 

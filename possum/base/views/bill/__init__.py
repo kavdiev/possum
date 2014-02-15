@@ -456,7 +456,7 @@ def bill_payment_delete(request, bill_id, payment_id):
     payment = get_object_or_404(Paiement, pk=payment_id)
     bill = get_object_or_404(Facture, pk=bill_id)
     bill.del_payment(payment)
-    return redirect('bill_view', bill_id)
+    return redirect('prepare_payment', bill_id)
 
 
 @permission_required('base.p3')
@@ -705,4 +705,5 @@ def prepare_payment(request, bill_id):
     context['tickets_count'] = request.session.get('tickets_count', 1)
     context['range'] = range(1, 15)
     context['ticket_value'] = request.session.get('ticket_value', "0.0")
+    context['payments'] = bill.paiements.all()
     return render(request, 'payments/home.html', context)

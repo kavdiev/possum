@@ -56,9 +56,9 @@
 
 <h2><!--Paiements--></h2>
 <ul id="paiements">
-    <li onclick="window.location='/bill/{{facture.id}}/payment/'">Ajouter un paiement</li>
+    <li onclick="window.location='{% url "prepare_payment" facture.id %}'">Ajouter un paiement</li>
     {% for payment in facture.paiements.iterator %}
-        <li onclick="window.location='/bill/{{facture.id}}/payment/view/{{payment.id}}/'">
+    <li onclick="window.location='{% url "bill_payment_view" facture.id payment.id %}'">
         {{payment.type.nom}}: {{payment.montant}}€</li>
     {% endfor %}
 </ul>
