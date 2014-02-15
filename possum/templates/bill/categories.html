@@ -5,7 +5,17 @@
     <li onclick="window.location='{% url "bill_view" bill.id %}'">Retour facture</li>
 </ul>
 
-<h1>Ajout de produits</h1>
+<h2><!-- nombre --></h2>
+<ul id="numbers">
+    {% for number in range %}
+    <li onclick="window.location='{% url "bill_set_number" bill.id number %}'"
+        {% if count == number %}class="enabled"{% endif %}>
+        {{number}}
+    </li>
+    {% endfor %}
+</ul>
+
+<h1><!--Ajout de produits--></h1>
 <ul id="categories">
     {% for category in categories %}
         <li style="background:{{category.color}}" id="{{category.id}}"
@@ -17,16 +27,6 @@
     {% endfor %}
 </ul>
 
-<h2><!-- nombre --></h2>
-<ul id="numbers">
-    {% for number in range %}
-    <li onclick="window.location='{% url "bill_set_number" bill.id number %}'"
-        {% if count == number %}class="enabled"{% endif %}>
-        {{number}}
-    </li>
-    {% endfor %}
-</ul>
-
 <h2><!--Sélection du produit--></h2>
 <ul id="products">
     {% for category in categories %}
@@ -34,7 +34,7 @@
             {% if current_cat != category.id %}style="display: none"{% endif %}>
         {% for product in category.products %}
             <li
-                onclick="window.location='/bill/{{bill.id}}/product/add/{{product.id}}/'"
+            onclick="window.location='{% url "product_add" bill.id product.id %}'"
                 style="background:{{category.color}}">{{product.nom}}
             </li>
         {% endfor %}
