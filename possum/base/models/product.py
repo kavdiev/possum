@@ -207,3 +207,9 @@ class Produit(Nom):
             result.append(" ")
         return result
 
+    def save(self, force_insert=False, using=None):
+        """We overload this method to keep last date carte
+        has changed
+        """
+        Config().set_carte_changed()
+        super(Produit, self).save(force_insert=force_insert, using=using)

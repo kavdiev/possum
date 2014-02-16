@@ -31,6 +31,7 @@ from possum.base.models import Produit, ProduitVendu
 from possum.base.models import PaiementType, Paiement
 from possum.base.views import permission_required, remove_edition
 from possum.base.models import Note
+from possum.base.models import Config
 from possum.base.models import Option
 from possum.base.forms import NoteForm
 
@@ -137,6 +138,22 @@ def set_number(request, bill_id, count):
     return redirect('bill_categories', bill_id)
 
 
+def update_categories(request):
+    """Update categories in request.session
+    """
+    logger.debug('update categories in cache')
+    last_carte_changed = Config().get_carte_changed().value
+    request.session['last_carte_changed'] = last_carte_changed
+    request.session['categories'] = []
+    for category in Categorie.objects.all():
+        products = Produit.objects.filter(categorie=category, actif=True)
+        if products:
+            category.products = products
+            request.session['categories'].append(category)
+        else:
+            logger.debug("[%s] category without products" % category)
+
+
 @permission_required('base.p3')
 def categories(request, bill_id, cat_id=None):
     """Select a product to add on a bill.
@@ -154,20 +171,21 @@ def categories(request, bill_id, cat_id=None):
     else:
         request.session['count'] = 1
         context['count'] = 1
-    if not request.session.get('categories', False):
-        logger.debug('update categories in cache')
-        context['categories'] = []
-        for category in Categorie.objects.all():
-            products = Produit.objects.filter(categorie=category, actif=True)
-            if products:
-                category.products = products
-                context['categories'].append(category)
+    if request.session.get('categories', False):
+        if request.session.get('last_carte_changed', False):
+            last_carte_changed = request.session['last_carte_changed']
+            if Config().is_carte_changed(last_carte_changed):
+                # we need to update
+                update_categories(request)
             else:
-                logger.debug("[%s] category without products" % category)
-        request.session['categories'] = context['categories']
+                logger.debug('use categories in cache')
+        else:
+            logger.debug('Not possible ! last_carte_changed not set ?')
+            update_categories(request)
     else:
-        logger.debug('use categories in cache')
-        context['categories'] = request.session['categories']
+        update_categories(request)
+    context['categories'] = request.session['categories']
+    # we preload a category
     if cat_id:
         context['current_cat'] = int(cat_id)
     return render(request, 'bill/categories.html', context)

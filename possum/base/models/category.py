@@ -19,7 +19,7 @@
 #
 
 from django.db import models
-
+from config import Config
 from generic import Nom, Priorite
 from vat import VAT
 
@@ -51,6 +51,13 @@ class Categorie(Nom, Priorite):
     def set_vat_onsite(self, vat):
         self.vat_onsite = vat
         self.save()
+
+    def save(self, force_insert=False, using=None):
+        """We overload this method to keep last date carte
+        has changed
+        """
+        Config().set_carte_changed()
+        super(Categorie, self).save(force_insert=force_insert, using=using)
 
     class Meta:
         app_label = 'base'
