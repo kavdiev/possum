@@ -156,9 +156,14 @@ def categories(request, bill_id, cat_id=None):
         context['count'] = 1
     if not request.session.get('categories', False):
         logger.debug('update categories in cache')
-        context['categories'] = Categorie.objects.order_by('priorite', 'nom')
-        for category in context['categories']:
-            category.products = Produit.objects.filter(categorie=category, actif=True)
+        context['categories'] = []
+        for category in Categorie.objects.all():
+            products = Produit.objects.filter(categorie=category, actif=True)
+            if products:
+                category.products = products
+                context['categories'].append(category)
+            else:
+                logger.debug("[%s] category without products" % category)
         request.session['categories'] = context['categories']
     else:
         logger.debug('use categories in cache')

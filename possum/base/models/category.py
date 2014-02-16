@@ -54,4 +54,4 @@ class Categorie(Nom, Priorite):
 
     class Meta:
         app_label = 'base'
-        ordering = ['priorite',]
+        ordering = ['priorite', 'nom']
