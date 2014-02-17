@@ -1,4 +1,4 @@
-Django==1.5.5
+Django==1.6.2
 Jinja2==2.7.1
 MarkupSafe==0.18
 Pygments==1.6
@@ -9,7 +9,6 @@ django-chartit==0.1
 django-debug-toolbar==0.9.4
 django-extensions==1.2.0
 docutils==0.11
-gunicorn==18.0
 ipython==1.1.0
 pycups==1.9.63
 pygraphviz==1.2

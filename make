@@ -65,7 +65,7 @@ function create_json_demo {
 function install_tests {
     # prerequis: sloccount csslint
     enter_virtualenv
-    pip -q install --proxy=${http_proxy}  --requirement requirements_tests.txt
+    pip -q install --proxy=${http_proxy}  --requirement requirements_tests.txt --upgrade
 }
 
 function tests {
@@ -149,7 +149,7 @@ function update {
         git pull
     fi
     enter_virtualenv
-    pip -q install --proxy=${http_proxy} --requirement requirements.txt 
+    pip -q install --proxy=${http_proxy} --requirement requirements.txt --upgrade
     if [ "$(python --version 2>&1 | grep -c 'Python 2.6')" == "1" ]
     then
         pip install --proxy=${http_proxy} ordereddict
