@@ -21,45 +21,32 @@
 import os
 import random
 import sys
+import datetime
+
 
 sys.path.append('.')
 os.environ['DJANGO_SETTINGS_MODULE'] = 'possum.settings'
 
+
 from django.contrib.auth.models import User, Permission
 from possum.base.models import Categorie, Cuisson, Option, \
     Facture, Paiement, PaiementType, Produit, ProduitVendu, Follow, Table, \
-    Zone, VAT, Printer, VATOnBill, DailyStat, WeeklyStat, MonthlyStat, Config
+    Zone, VAT, Printer, VATOnBill, Config
+from possum.stats.models import Stat
 
 
-# on efface toutes la base
-VAT.objects.all().delete()
-Printer.objects.all().delete()
-VATOnBill.objects.all().delete()
-Categorie.objects.all().delete()
-Cuisson.objects.all().delete()
-Option.objects.all().delete()
-Produit.objects.all().delete()
-DailyStat.objects.all().delete()
-WeeklyStat.objects.all().delete()
-MonthlyStat.objects.all().delete()
-Follow.objects.all().delete()
-Facture.objects.all().delete()
-Zone.objects.all().delete()
-Table.objects.all().delete()
-User.objects.all().delete()
-PaiementType.objects.all().delete()
-Paiement.objects.all().delete()
-Config.objects.all().delete()
+# ajout des utilisateurs
+for username in ['demo', 'demo1', 'demo2']:
+    if User.objects.filter(username=username).count() == 0:
+        user = User(username=username, first_name=username,
+                    email="%s@possum-software.org" % username)
+        user.set_password(username)
+        user.save()
+        # on ajoute les droits d'admin
+        for i in xrange(1, 10):
+            user.user_permissions.add(Permission.objects.get(codename="p%d" % i))
+        user.save()
 
-# ajout d'un utilisateur
-user = User(username="demo", first_name="first name", last_name="last name",
-            email="demo@possum-software.org")
-user.set_password("demo")
-user.save()
-# on ajoute les droits d'admin
-for i in xrange(1, 10):
-    user.user_permissions.add(Permission.objects.get(codename="p%d" % i))
-user.save()
 
 # Cuisson
 Cuisson(nom='bleu',
@@ -79,6 +66,7 @@ Cuisson(nom='bien cuit',
         color='#B78178',
         priorite='25').save()
 
+
 # Type de paiements
 PaiementType(nom='AMEX', fixed_value=False).save()
 PaiementType(nom='ANCV', fixed_value=True).save()
@@ -87,17 +75,21 @@ PaiementType(nom='Cheque', fixed_value=False).save()
 PaiementType(nom='Espece', fixed_value=False).save()
 PaiementType(nom='Tic. Resto.', fixed_value=True).save()
 
+
 # Type de paiements par défaut pour les remboursements lorsque
 # le paiement dépasse le montant de la facture
 id_type_paiement = PaiementType.objects.get(nom="Espece").id
 Config(key="payment_for_refunds", value=id_type_paiement).save()
 
+
 # Default PaymentType to select by default on the payment page
 id_type_paiement = PaiementType.objects.get(nom="Espece").id
 Config(key="default_type_payment", value=id_type_paiement).save()
 
+
 # Montant de la surtaxe
 Config(key="price_surcharge", value="0.20").save()
+
 
 # Tables
 z = Zone(nom='Bar', surtaxe=False)
@@ -112,6 +104,7 @@ z.save()
 for i in xrange(15, 26):
     Table(nom="T%02d" % i, zone=z).save()
 
+
 # TVA
 vat_alcool = VAT(name="alcool")
 vat_alcool.set_tax("20")
@@ -122,6 +115,7 @@ vat_onsite.save()
 vat_takeaway = VAT(name=u"à emporter")
 vat_takeaway.set_tax("7")
 vat_takeaway.save()
+
 
 # on entre les nouveaux produits, les prix sont TTC
 jus = Categorie(nom="Jus",
@@ -199,6 +193,7 @@ pave = Produit(nom="pave de saumon",
                categorie=plat)
 pave.save()
 
+
 # pour les menu
 menu = Categorie(nom="Menu",
                  priorite=22,
@@ -225,47 +220,48 @@ entree_plat.save()
 for product in Produit.objects.all():
     product.update_vats(keep_clone=False)
 
-# on ajoute des données pour avoir des jolies graphiques de démonstrations
-DailyStat(date="2013-10-01", key="total_ttc", value="234").save()
-for month in xrange(1, 13):
-    MonthlyStat(year=2013, month=month, key='total_ttc',
-                value=100 * month).save()
-    MonthlyStat(year=2013, month=month, key='bar_total_ttc',
-                value=40 * month).save()
-    MonthlyStat(year=2013, month=month, key='guests_total_ttc',
-                value=60 * month).save()
-    MonthlyStat(year=2013, month=month, key='nb_bills',
-                value=random.randint(50, 500)).save()
-    MonthlyStat(year=2013, month=month, key='guests_nb',
-                value=random.randint(50, 500)).save()
-    MonthlyStat(year=2013, month=month, key='guests_average',
-                value=random.randint(50, 500)).save()
-    MonthlyStat(year=2013, month=month, key='bar_nb',
-                value=random.randint(50, 500)).save()
-    MonthlyStat(year=2013, month=month, key='bar_average',
-                value=random.randint(50, 500)).save()
 
-# Création d'une dizaine de facture
-for i in xrange(15):
+def create_bill(finish=True):
+    """Create a bill
+    """
     table = 'T%d' % random.randint(10, 25)
-    f = Facture(table=Table.objects.get(nom=table),
-                couverts=random.randint(1, 15))
-    f.save()
+    bill = Facture(table=Table.objects.get(nom=table),
+                   couverts=random.randint(1, 15))
+    bill.save()
     for produit in [salade, buffet, entrecote, pave, biere]:
-        for j in xrange(3):
-            p = ProduitVendu(produit=produit)
-            p.save()
-            f.add_product(p)
+        for i in xrange(3):
+            sold = ProduitVendu(produit=produit)
+            sold.save()
+            bill.add_product(sold)
     nouveau_menu = ProduitVendu(produit=entree_plat)
     nouveau_menu.save()
     for produit in [salade, pave]:
-        p = ProduitVendu(produit=produit)
-        p.save()
-        nouveau_menu.contient.add(p)
+        sold = ProduitVendu(produit=produit)
+        sold.save()
+        nouveau_menu.contient.add(sold)
     nouveau_menu.save()
-    if i % 2:
-        f.send_in_the_kitchen()
+    bill.update()
+    if finish:
+        type_cb = PaiementType.objects.get(nom='CB')
+        bill.add_payment(type_cb, bill.total_ttc)
+    return bill
 
-# on sold une facture
-type_cb = PaiementType.objects.get(nom='CB')
-f.add_payment(type_cb, f.total_ttc)
+
+# on ajoute des données pour avoir des jolies graphiques de démonstrations
+now = datetime.datetime.now()
+interval = "m"
+for month in xrange(1, 13):
+    for i in xrange(20):
+        day = random.randint(1, 28)
+        bill = create_bill()
+        bill.date_creation = datetime.datetime(now.year, month, day)
+        bill.save()
+
+# Création d'une dizaine de facture
+for i in xrange(15):
+    bill = create_bill(finish=False)
+    if i % 2:
+        bill.update_kitchen()
+        bill.send_in_the_kitchen()
+
+Stat().update()

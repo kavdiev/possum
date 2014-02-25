@@ -27,5 +27,5 @@ import sys
 sys.path.append('.')
 os.environ['DJANGO_SETTINGS_MODULE'] = 'possum.settings'
 
-from possum.base.models import DailyStat
-DailyStat().update()
+from possum.stats.models import Stat
+Stat().update()

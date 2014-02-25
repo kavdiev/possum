@@ -25,13 +25,10 @@ import logging
 from django.conf import settings
 from django.shortcuts import render
 from django.shortcuts import redirect
-from possum.base.models import DailyStat
 from possum.base.forms import DateForm, WeekForm, MonthForm
 from possum.base.models import Printer
-from possum.base.models import MonthlyStat
 from possum.base.utils import get_last_year
 from possum.base.views import permission_required
-from possum.base.models import WeeklyStat
 
 
 logger = logging.getLogger(__name__)
@@ -51,7 +48,7 @@ def search_good_results(data):
 def update_rapports(request):
     """Update statistics
     """
-    if DailyStat().update():
+    if Stat().update():
         messages.add_message(request, messages.SUCCESS,
                              "Les données sont à jour")
     else:

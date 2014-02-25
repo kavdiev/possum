@@ -31,7 +31,7 @@ class VAT(models.Model):
     value = models.DecimalField(max_digits=6, decimal_places=4, default=0)
 
     def __unicode__(self):
-        return self.name
+        return "TVA % 2.2f%%" % self.tax
 
     def __cmp__(self, other):
         return cmp(self.name, other.name)

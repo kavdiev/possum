@@ -28,29 +28,7 @@ from django.conf import settings
 logger = logging.getLogger(__name__)
 
 
-def nb_sorted(a, b):
-    """ Tri sur les categories et les produits pour
-    avoir les plus vendus en premier. """
-    if b.nb < a.nb:
-        return -1
-    elif b.nb > a.nb:
-        return 1
-    else:
-        return 0
-
-
 def create_default_directory():
     ''' Création des répertoires obligatoires '''
     if not os.path.exists(settings.PATH_TICKET):
         os.makedirs(settings.PATH_TICKET)
-
-
-def get_last_year(date):
-    """Retourne le jour de l'année précédente
-    afin de comparer les resultats des 2 journées
-    date doit être au format datetime
-    """
-    try:
-        return date - datetime.timedelta(days=364)
-    except:
-        return date

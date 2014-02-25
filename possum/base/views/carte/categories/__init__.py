@@ -24,7 +24,7 @@ import logging
 from django.conf import settings
 from django.shortcuts import render, redirect, get_object_or_404
 from possum.base.models import Categorie
-from possum.base.models import DailyStat
+from possum.stats.models import Stat
 from possum.base.models import Printer
 from possum.base.models import Produit
 from possum.base.models import VAT
@@ -96,28 +96,13 @@ def categories_delete(request, cat_id):
     cat_report_id = request.POST.get('cat_report', '').strip()
     action = request.POST.get('valide', '').strip()
     if action == "Supprimer":
+        products_list = Produit.objects.filter(categorie__id=cat_id)
         # we have to report stats and products ?
         if cat_report_id:
             try:
                 report = Categorie.objects.get(id=cat_report_id)
-                # we transfer all statistics
-                # TODO: report on WeeklyStat and MonthlyStat
-                for stat in DailyStat.objects.filter(key="%s_category_nb" % cat_id):
-                    category_nb, created = DailyStat.objects.get_or_create(
-                            date=stat.date,
-                            key="%s_category_nb" % report.id)
-                    category_nb.value += stat.value
-                    category_nb.save()
-                    stat.delete()
-                for stat in DailyStat.objects.filter(key="%s_category_value" % cat_id):
-                    category_value, created = DailyStat.objects.get_or_create(
-                            date=stat.date,
-                            key="%s_category_value" % report.id)
-                    category_value.value += stat.value
-                    category_value.save()
-                    stat.delete()
                 # we transfer all products
-                for product in Produit.objects.filter(categorie__id=cat_id):
+                for product in products_list:
                     product.categorie = report
                     product.save()
             except Categorie.DoesNotExist:
@@ -125,18 +110,38 @@ def categories_delete(request, cat_id):
                                request.user.username, cat_report_id))
                 messages.add_message(request, messages.ERROR, "La catégorie "
                                      "n'existe pas.")
-                return redirect('categoriesr_delete', cat_id)
-        # now, we have to delete the categories and remove all products remains
-        for product in Produit.objects.filter(categorie__id=cat_id):
-            DailyStat.objects.filter(key="%s_product_nb" % product.id).delete()
-            DailyStat.objects.filter(key="%s_product_value" % product.id).delete()
-            product.delete()
-        DailyStat.objects.filter(key="%s_category_nb" % cat_id).delete()
-        DailyStat.objects.filter(key="%s_category_value" % cat_id).delete()
-        logger.info("[%s] categorie [%s] deleted" % (request.user.username,
-                                                     context['current_cat'].nom))
-        context['current_cat'].delete()
-        return redirect('categories')
+                return redirect('categories_delete', cat_id)
+            report_info = "from [%s] to [%s]" % (context['current_cat'],
+                                                 report)
+            logger.info("move stats %s" % report_info)
+            for key in ["category_nb", "category_value"]:
+                new_key = "%s_%" % (cat_report_id, key)
+                for s in Stat.objects.filter(key="%s_%s" % (cat_id, key)):
+                    new, created = Stat.objects.get_or_create(key=new_key,
+                                                              year=s.year,
+                                                              month=s.month,
+                                                              week=s.week,
+                                                              day=s.day,
+                                                              interval=s.interval)
+                    new.add_value(s.value)
+                    s.delete()
+            logger.info("copy products %s" % report_info)
+            for product in products_list:
+                new = product._clone_product()
+                new.categorie = report
+                new.update_vats(keep_clone=False)
+                new.save()
+        if products_list.count() == 0:
+            context['current_cat'].delete()
+            logger.info("[%s] categorie [%s] deleted" % (
+                        request.user.username,
+                        context['current_cat'].nom))
+            return redirect('categories')
+        else:
+            messages.add_message(request, messages.ERROR, "La catégorie "
+                                 "ne peux être supprimé, elle contient "
+                                 "des produits")
+
     elif action == "Annuler":
         return redirect('categories')
     return render(request, 'base/categories_delete.html', context)

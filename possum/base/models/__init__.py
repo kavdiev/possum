@@ -21,11 +21,9 @@ from note import Note
 from bill import Facture
 from category import Categorie
 from config import Config
-from daily_stat import DailyStat
 from follow import Follow
 from generic import Nom, NomDouble, Priorite
 from location import Table, Zone
-from monthly_stat import MonthlyStat
 from options import Cuisson, Option
 from payment import Paiement, PaiementType
 from printer import Printer
@@ -33,4 +31,3 @@ from product import Produit
 from product_sold import ProduitVendu
 from vat import VAT
 from vatonbill import VATOnBill
-from weekly_stat import WeeklyStat

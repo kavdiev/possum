@@ -399,7 +399,7 @@ class Facture(models.Model):
         paiement = Paiement()
         paiement.type = type_payment
         paiement.valeur_unitaire = Decimal(valeur_unitaire)
-        logger.debug("Création d'un nouveau paiement : {0}".format(paiement))
+        logger.debug("Nouveau paiement : {0}".format(paiement))
         if type_payment.fixed_value:
             # Dans ce cas le montant est le nombre de ticket
             paiement.nb_tickets = int(montant)

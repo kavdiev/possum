@@ -1,5 +1,5 @@
 from django.conf import settings
-from django.conf.urls import patterns, url
+from django.conf.urls import patterns, url, include
 
 
 # Uncomment the next two lines to enable the admin:
@@ -13,6 +13,8 @@ urlpatterns = patterns('possum.base.views',
                        url(r'^$', 'home', name='home'),
                        url(r'^shutdown/$', 'shutdown', name='shutdown'),
                        )
+
+urlpatterns += patterns('', url(r'^stats/', include('possum.stats.urls')))
 
 urlpatterns += patterns('possum.base.views.carte.categories',
                         url(r'^carte/$', 'categories',
@@ -260,33 +262,6 @@ urlpatterns += patterns('possum.base.views.manager.tables',
     url(r'^manager/tables/(?P<zone_id>\d+)/delete/$', 'tables_zone_delete', name='tables_zone_delete'),
 )
 
-urlpatterns += patterns('possum.base.views.manager.rapports',
-    url(r'^manager/rapports/$', 'rapports_daily', name='rapports_home'),
-    url(r'^manager/rapports/update/$', 'update_rapports', name='update_rapports'),
-    url(r'^manager/rapports/daily/$', 'rapports_daily', name='rapports_daily'),
-    url(r'^manager/rapports/(?P<year>\d{4})/(?P<month>\d+)/(?P<day>\d+)/vats/print/$', 'rapports_daily_vats_print', name='rapports_daily_vats_print'),
-    url(r'^manager/rapports/(?P<year>\d{4})/(?P<month>\d+)/(?P<day>\d+)/vats/send/$', 'rapports_daily_vats_send', name='rapports_daily_vats_send'),
-    url(r'^manager/rapports/(?P<year>\d{4})/(?P<month>\d+)/(?P<day>\d+)/print/$', 'rapports_daily_print', name='rapports_daily_print'),
-    url(r'^manager/rapports/(?P<year>\d{4})/(?P<month>\d+)/(?P<day>\d+)/send/$', 'rapports_daily_send', name='rapports_daily_send'),
-    url(r'^manager/rapports/weekly/$', 'rapports_weekly', name='rapports_weekly'),
-    url(r'^manager/rapports/weekly/(?P<year>\d{4})/(?P<week>\d+)/vats/print/$', 'rapports_weekly_vats_print', name='rapports_weekly_vats_print'),
-    url(r'^manager/rapports/weekly/(?P<year>\d{4})/(?P<week>\d+)/vats/send/$', 'rapports_weekly_vats_send', name='rapports_weekly_vats_send'),
-    url(r'^manager/rapports/weekly/(?P<year>\d{4})/(?P<week>\d+)/print/$', 'rapports_weekly_print', name='rapports_weekly_print'),
-    url(r'^manager/rapports/weekly/(?P<year>\d{4})/(?P<week>\d+)/send/$', 'rapports_weekly_send', name='rapports_weekly_send'),
-    url(r'^manager/rapports/monthly/$', 'rapports_monthly', name='rapports_monthly'),
-    url(r'^manager/rapports/monthly/(?P<year>\d{4})/(?P<month>\d+)/vats/print/$', 'rapports_monthly_vats_print', name='rapports_monthly_vats_print'),
-    url(r'^manager/rapports/monthly/(?P<year>\d{4})/(?P<month>\d+)/vats/send/$', 'rapports_monthly_vats_send', name='rapports_monthly_vats_send'),
-    url(r'^manager/rapports/monthly/(?P<year>\d{4})/(?P<month>\d+)/print/$', 'rapports_monthly_print', name='rapports_monthly_print'),
-    url(r'^manager/rapports/monthly/(?P<year>\d{4})/(?P<month>\d+)/send/$', 'rapports_monthly_send', name='rapports_monthly_send'),
-)
-
-urlpatterns += patterns('possum.base.views.manager.charts',
-                        url(r'^manager/charts/year/$', 'charts_year',
-                            name='charts_year'),
-                        url(r'^manager/charts/year/(?P<choice>[a-zA-Z0-9_-]+)/$',
-                            'charts_year', name='charts_year_with_argument'),
-                        )
-
 urlpatterns += patterns('possum.base.views.notes',
                         url(r'^notes/$', 'home', name='notes_home'),
                         url(r'^notes/add/$', 'view', name='notes_add'),
@@ -301,3 +276,7 @@ if settings.DEBUG:
                                 {'document_root': settings.MEDIA_ROOT},
                                 name="django_serve"),
                             )
+#    import debug_toolbar
+#    urlpatterns += patterns('',
+#        url(r'^__debug__/', include(debug_toolbar.urls)),
+#    )

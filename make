@@ -62,14 +62,7 @@ function create_json_demo {
     ./manage.py dumpdata --format=json --indent=4 --exclude=contenttypes --exclude=auth.Permission > possum/base/fixtures/demo.json
 }
 
-function install_tests {
-    # prerequis: sloccount csslint
-    enter_virtualenv
-    pip -q install --proxy=${http_proxy}  --requirement requirements_tests.txt --upgrade
-}
-
 function tests {
-    install_tests
     enter_virtualenv
     if [ ! -d reports ]
     then
@@ -90,16 +83,14 @@ function tests {
 }
 
 function utests {
-    install_tests
     enter_virtualenv
-    ./manage.py test base --settings=possum.settings_tests
+    ./manage.py test --settings=possum.settings_tests
     return $?
 }
 
 function fastcoverage {
-    install_tests
     enter_virtualenv
-    coverage run --source=possum manage.py test base --settings=possum.settings_tests --verbosity=2 --traceback
+    coverage run --source=possum manage.py test --settings=possum.settings_tests --verbosity=2 --traceback
     coverage html
     x-www-browser htmlcov/index.html
 }
@@ -133,14 +124,14 @@ function update_js {
 }
 
 function update {
-    echo
-    echo "Host must be connected to Internet for this step."
-    echo "And you must have some packages installed:"
-    echo "Debian/Ubuntu> ./make deb_install"
-    echo
     chmod 755 possum/static/
     if [ ! -d .virtualenv ]
     then
+        echo
+        echo "Host must be connected to Internet for this step."
+        echo "And you must have some packages installed:"
+        echo "Debian/Ubuntu> ./make deb_install"
+        echo
         # For the moment, we stay with python2.
         virtualenv --prompt=="POSSUM" --python=python2 .virtualenv
     fi
@@ -173,7 +164,7 @@ Example:
 -------------------------------------------------------
 EOF
     fi
-    ./manage.py migrate base
+    ./manage.py migrate
 }
 
 function deb_install_apache {
@@ -206,8 +197,21 @@ function deb_install_nginx {
 
 function graph_models {
     enter_virtualenv
-    ./manage.py graph_models --output=doc/images/models-base.png -g base
-    echo "[doc/images/models-base.png] updated"
+    for app in stats base
+    do
+        ./manage.py graph_models --output=doc/images/models-${app}.png -g ${app}
+        echo "[doc/images/models-${app}.png] updated"
+    done
+}
+
+function clear_db {
+    enter_virtualenv
+    if [ -e possum.db ]
+    then
+        #./manage.py sqlclear base|sqlite3 possum.db
+        mv possum.db possum.db.$(date +%Y%m%d%H%M)
+    fi
+    ./manage.py syncdb --noinput --migrate
 }
 
 function deb_install {
@@ -228,12 +232,12 @@ create_json_demo)
     ;;
 init_mine)
     enter_virtualenv
+    clear_db
     possum/utils/init_mine.py
     ;;
 init_demo)
     enter_virtualenv
-    rm -f possum.db
-    ./manage.py syncdb --noinput --migrate
+    clear_db
     possum/utils/init_demo.py
     ;;
 load_demo)
@@ -270,8 +274,9 @@ modified_models)
     enter_virtualenv
     ./manage.py syncdb --noinput --migrate
     ./manage.py schemamigration base --auto
-    ./manage.py migrate base
-    possum/utils/init_db.py
+    ./manage.py schemamigration stats --auto
+    ./manage.py migrate
+    clear_db
     possum/utils/init_demo.py
     create_json_demo
     graph_models

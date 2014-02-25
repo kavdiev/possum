@@ -45,6 +45,10 @@ class PaiementType(Nom):
         else:
             return None
 
+    def __unicode__(self):
+        return self.nom
+
+
 class Paiement(models.Model):
     """valeur_unitaire: pour gerer les montants des tickets restos"""
     # facture = models.ForeignKey('Facture', related_name="paiement-facture")
@@ -60,12 +64,11 @@ class Paiement(models.Model):
         get_latest_by = 'date'
 
     def __unicode__(self):
+        tmp = u"%s %.2f€" % (self.type, self.montant)
         if self.type.fixed_value:
-            return u"%-20s % 8.2f €    (%d tickets x %5.2f €)" % (
-                   self.type.nom, self.montant, self.nb_tickets,
-                   self.valeur_unitaire)
-        else:
-            return u"%-20s % 8.2f €" % (self.type.nom, self.montant)
+            tmp += u" (%d tic. x %.2f€)" % (self.nb_tickets,
+                                            self.valeur_unitaire)
+        return tmp
 
     def __cmp__(self, other):
         return cmp(self.date.date, other.date.date)

@@ -3,25 +3,28 @@
 
 {% if date_form %}
 <h1>Rapport du {{date|date:'l d F Y'}}</h1>
-<form method='post' action='/manager/rapports/daily/' name='journalier'>{% csrf_token %}
+<form method='post' action='{% url "stats_daily" %}' name='journalier'>
+{% csrf_token %}
 <ul id="date_form">
     {{ date_form.as_ul }}
     <li><input type='submit' value='Afficher le jour'></li>
 {% elif week_form %}
 <h1>Rapport semaine {{week}}/{{year}}</h1>
-<form method='post' action='/manager/rapports/weekly/' name='hebdomadaire'>{% csrf_token %}
+<form method='post' action='{% url "stats_weekly" %}' name='hebdomadaire'>
+{% csrf_token %}
 <ul id="week_form">
     {{ week_form.as_ul }}
     <li><input type='submit' value='Afficher la semaine'></li>
 {% elif month_form %}
 <h1>Rapport mois {{month}}/{{year}}</h1>
-<form method='post' action='/manager/rapports/monthly/' name='mensuel'>{% csrf_token %}
+<form method='post' action='{% url "stats_monthly" %}' name='mensuel'>
+{% csrf_token %}
 <ul id="month_form">
     {{ month_form.as_ul }}
     <li><input type='submit' value='Afficher le mois'></li>
 {% endif %}
 </form>
-    <li 
+    <li
 {% if date %}
 onclick="window.location='/manager/rapports/{{date.year}}/{{date.month}}/{{date.day}}/send/'"
 {% elif week %}
@@ -30,7 +33,7 @@ onclick="window.location='/manager/rapports/weekly/{{year}}/{{week}}/send/'"
 onclick="window.location='/manager/rapports/monthly/{{year}}/{{month}}/send/'"
 {% endif %}
     >Envoyer par mail</li>
-    <li 
+    <li
 {% if date %}
 onclick="window.location='/manager/rapports/{{date.year}}/{{date.month}}/{{date.day}}/print/'"
 {% elif week %}
@@ -110,11 +113,11 @@ onclick="window.location='/manager/rapports/monthly/{{year}}/{{month}}/print/'"
 <h2>TVA</h2>
 <ul id="rapports">
     {% for vat in vats %}
-    <li>{{vat}}€</li>
+    <li>TTC {{vat}}: {{vat.nb}}€</li>
     {% empty %}
     <li>Aucune TVA</li>
     {% endfor %}
-    <li 
+    <li
 {% if date %}
 onclick="window.location='/manager/rapports/{{date.year}}/{{date.month}}/{{date.day}}/vats/send/'"
 {% elif week %}
@@ -123,7 +126,7 @@ onclick="window.location='/manager/rapports/weekly/{{year}}/{{week}}/vats/send/'
 onclick="window.location='/manager/rapports/monthly/{{year}}/{{month}}/vats/send/'"
 {% endif %}
     >Envoyer par mail</li>
-    <li 
+    <li
 {% if date %}
 onclick="window.location='/manager/rapports/{{date.year}}/{{date.month}}/{{date.day}}/vats/print/'"
 {% elif week %}
@@ -137,7 +140,7 @@ onclick="window.location='/manager/rapports/monthly/{{year}}/{{month}}/vats/prin
 <h2>Paiements</h2>
 <ul id="rapports">
     {% for payment in payments %}
-    <li>{{payment}}€</li>
+    <li>{{payment}}: {{payment.nb}}€</li>
     {% endfor %}
 </ul>
 

@@ -30,17 +30,15 @@ La convention de codage utilisée pour le projet suit le
 Modèles
 =======
 
-Voici le diagramme des classes:
-
-.. image:: images/diagramme_des_classes.png
-   :height: 100
-   :width: 200
-   :scale: 50
-   :alt: Diagramme des classes
-
 Voici le schèma général des différentes classes utilisées.
 
 .. image:: images/models-base.png
+   :height: 100
+   :width: 200
+   :scale: 50
+   :alt: Schéma des classes d'objets
+
+.. image:: images/models-stats.png
    :height: 100
    :width: 200
    :scale: 50
