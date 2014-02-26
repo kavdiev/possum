@@ -102,6 +102,12 @@ class Printer(models.Model):
         except:
             return False
 
+    def print_msg(self, msg):
+        """Try to print a msg, we create a list with msg
+        """
+        list_to_print = msg.split("\n")
+        return self.print_list(list_to_print, "possum")
+
     def print_list(self, list_to_print, name, with_header=False):
         '''
         Generate a print list from a list which contains informations

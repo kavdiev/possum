@@ -85,8 +85,8 @@ class Tests_urls(TestCase):
             reverse('table_set', args=('5', '2')),
             reverse('couverts_select', args=('42',)),
             reverse('couverts_set', args=('4', '7')),
-            reverse('bill_categories', args=('2',)),
-            reverse('bill_categories', args=('2', '3')),
+#            reverse('bill_categories', args=('2',)),
+#            reverse('bill_categories', args=('2', '3')),
 #            reverse('product_add', args=('4', '7')),
 #            reverse('product_select', args=('4', '7')),
 #            reverse('product_select_made_with', args=('42', '73')),
@@ -115,7 +115,7 @@ class Tests_urls(TestCase):
 #                    args=('42', '73', '51', '7', '13', '1')),
 #            reverse('bill_payment_count', args=('42', '73', '51', '7')),
 #            reverse('bill_print', args=('42',)),
-            reverse('bill_view', args=('7',)),
+#            reverse('bill_view', args=('7',)),
         ]
         self.assert_http_status(urls, 302)
         self.assert_http_status_after_login(urls, 200)
@@ -137,7 +137,7 @@ class Tests_urls(TestCase):
         ''' Test that the kitchen urls work. '''
         urls = [
             reverse('kitchen'),
-            reverse('kitchen_for_bill', args=('4',)),
+#            reverse('kitchen_for_bill', args=('4',)),
         ]
         self.assert_http_status(urls, 302)
         self.assert_http_status_after_login(urls, 200)
@@ -226,46 +226,6 @@ class Tests_urls(TestCase):
         ]
         self.assert_http_status(urls, 302)
         self.assert_http_status_after_login(urls, 200)
-
-    def test_reports(self):
-        ''' Test that the reports urls work. '''
-        urls = [
-            reverse('rapports_home'),
-            reverse('rapports_daily'),
-#            reverse('rapports_daily_vats_print', args=('2013', '10', '10')),
-#            reverse('rapports_daily_vats_send', args=('2013', '10', '10')),
-#            reverse('rapports_daily_print', args=('2013', '10', '10')),
-#            reverse('rapports_daily_send', args=('2013', '10', '10')),
-            reverse('rapports_weekly'),
-#            reverse('rapports_weekly_vats_print', args=('4242', '13')),
-#            reverse('rapports_weekly_vats_send', args=('4242', '13')),
-#            reverse('rapports_weekly_print', args=('4242', '13')),
-#            reverse('rapports_weekly_send', args=('4242', '13')),
-            reverse('rapports_monthly'),
-#            reverse('rapports_monthly_vats_print', args=('4242', '73')),
-#            reverse('rapports_monthly_vats_send', args=('4242', '73')),
-#            reverse('rapports_monthly_print', args=('4242', '73')),
-#            reverse('rapports_monthly_send', args=('4242', '73')),
-        ]
-        self.assert_http_status(urls, 302)
-        self.assert_http_status_after_login(urls, 200)
-
-    def test_charts(self):
-        ''' Test that the charts urls work. '''
-        urls = [
-            reverse('charts_year'),
-#            reverse('charts_year_with_argument', args=("2013",)),
-        ]
-        self.assert_http_status(urls, 302)
-        self.assert_http_status_after_login(urls, 200)
-
-#     @mock.patch('model.PagesSearch.filter_by', pages_search_filter_by)
-#     def test_page_oid_exists(self):
-#         ''' Test that the page urls work'''
-#
-#         urls = [reverse('page', args=('5ae1e22d-6ea0073ed6e', ))]
-#         self.assert_http_status(urls, 302)
-#         self.assert_http_status_after_login(urls, 200)
 
     def assert_http_status(self, urls, status, msg='without logging in'):
         for url in urls:

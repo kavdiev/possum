@@ -2,35 +2,29 @@
 {% block content %}
 
 <ul id="back">
-    <li onclick="window.location='/manager/charts/year/ttc/'"
+    <li onclick='window.location="{% url "stats_charts" "ttc" %}"'
         {% if ttc %}class="selected"{% endif %}>TTC</li>
-    <li onclick="window.location='/manager/charts/year/bar/'"
+    <li onclick='window.location="{% url "stats_charts" "bar" %}"'
         {% if bar %}class="selected"{% endif %}>Bar</li>
-    <li onclick="window.location='/manager/charts/year/guests/'"
+    <li onclick='window.location="{% url "stats_charts" "guests" %}"'
         {% if guests %}class="selected"{% endif %}>Restaurant</li>
-    <li onclick="window.location='/manager/charts/year/vats/'"
+    <li onclick='window.location="{% url "stats_charts" "vats" %}"'
         {% if vats %}class="selected"{% endif %}>TVA</li>
-    <li onclick="window.location='/manager/charts/year/payments/'"
+    <li onclick='window.location="{% url "stats_charts" "payments" %}"'
         {% if payments %}class="selected"{% endif %}>Paiements</li>
-    <li onclick="window.location='/manager/charts/year/categories/'"
+    <li onclick='window.location="{% url "stats_charts" "categories" %}"'
         {% if categories %}class="selected"{% endif %}>Catégories</li>
     {% for cat in cat_list %}
-    <li onclick="window.location='/manager/charts/year/{{cat.id}}/'"
+    <li onclick='window.location="{% url "stats_charts" cat.id %}"'
         style="background:{{cat.color}};"
     {% ifequal choice cat.id %}class="selected"{% endifequal %}>{{cat.nom}}</li>
     {% endfor %}
 
-{% if month %}
-{% elif week %}
-
-{% else %}
-<form method='post' action='/manager/charts/year/{{choice}}/' name='year'>{% csrf_token %}
-            {{ year_form.as_ul }}
-                <li><input type='submit' value="Afficher l'année"></li>
-            </form>
-
-{% endif %}
-
+<form method='post' action='{% url "stats_charts" choice %}' name='year'>
+    {% csrf_token %}
+    {{ year_form.as_ul }}
+    <li><input type='submit' value="Afficher l'année"></li>
+</form>
 </ul>
 
 <h1></h1>

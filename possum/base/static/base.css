@@ -270,10 +270,10 @@ li {
     color:#DD1111;
 }
 .errorlist li {
-    width:90%;    
+    width:90%;
     height:80px;
 }
-.enabled { 
+.enabled {
     background-color: #00FF00;
 }
 
@@ -288,19 +288,19 @@ li {
     width:140px;
     height:40px;
 }
-li.critical { 
+li.critical {
     background-color: #FF0000;
 }
-li.disabled { 
+li.disabled {
     background-color: #FF0000;
 }
-li.enabled { 
+li.enabled {
     background-color: #00FF00;
 }
 li.warning {
     background-color: #f8bd30;
 }
-li.selected { 
+li.selected {
 //    background-color: #00FF00;
     border: 1px solid #000;
     padding: 4px;
@@ -434,6 +434,10 @@ li.surtaxe {
     height:40px;
 }
 #date_form li {
+    width:280px;
+    height:30px;
+}
+#stats_output li {
     width:280px;
     height:30px;
 }

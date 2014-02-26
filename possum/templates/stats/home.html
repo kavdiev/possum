@@ -8,6 +8,13 @@
 <ul id="date_form">
     {{ date_form.as_ul }}
     <li><input type='submit' value='Afficher le jour'></li>
+</form>
+<form method='post' action='{% url "stats_daily" %}' name='journalier'>
+{% csrf_token %}
+<input type="hidden" name="date_day" value="{{date.day}}">
+<input type="hidden" name="date_month" value="{{date.month}}">
+<input type="hidden" name="date_year" value="{{date.year}}">
+
 {% elif week_form %}
 <h1>Rapport semaine {{week}}/{{year}}</h1>
 <form method='post' action='{% url "stats_weekly" %}' name='hebdomadaire'>
@@ -15,6 +22,12 @@
 <ul id="week_form">
     {{ week_form.as_ul }}
     <li><input type='submit' value='Afficher la semaine'></li>
+</form>
+<form method='post' action='{% url "stats_weekly" %}' name='hebdomadaire'>
+{% csrf_token %}
+<input type="hidden" name="week" value="{{week}}">
+<input type="hidden" name="year" value="{{year}}">
+
 {% elif month_form %}
 <h1>Rapport mois {{month}}/{{year}}</h1>
 <form method='post' action='{% url "stats_monthly" %}' name='mensuel'>
@@ -22,27 +35,15 @@
 <ul id="month_form">
     {{ month_form.as_ul }}
     <li><input type='submit' value='Afficher le mois'></li>
-{% endif %}
 </form>
-    <li
-{% if date %}
-onclick="window.location='/manager/rapports/{{date.year}}/{{date.month}}/{{date.day}}/send/'"
-{% elif week %}
-onclick="window.location='/manager/rapports/weekly/{{year}}/{{week}}/send/'"
-{% elif month %}
-onclick="window.location='/manager/rapports/monthly/{{year}}/{{month}}/send/'"
+<form method='post' action='{% url "stats_monthly" %}' name='mensuel'>
+{% csrf_token %}
+<input type="hidden" name="month" value="{{month}}">
+<input type="hidden" name="year" value="{{year}}">
 {% endif %}
-    >Envoyer par mail</li>
-    <li
-{% if date %}
-onclick="window.location='/manager/rapports/{{date.year}}/{{date.month}}/{{date.day}}/print/'"
-{% elif week %}
-onclick="window.location='/manager/rapports/weekly/{{year}}/{{week}}/print/'"
-{% elif month %}
-onclick="window.location='/manager/rapports/monthly/{{year}}/{{month}}/print/'"
-{% endif %}
-    >Imprimer</li>
+
 </ul>
+
 <table>
     <tr>
         <td></td>
@@ -110,31 +111,24 @@ onclick="window.location='/manager/rapports/monthly/{{year}}/{{month}}/print/'"
 </table>
 <p>La valeur actuelle apparait en vert lorsqu'elle est supérieure à la moyenne.</p>
 
+<h2>Sorties</h2>
+<ul id="stats_output">
+<li><input type="checkbox" name="full_mail" value="a">rapport complet par mail</li>
+<li><input type="checkbox" name="full_print" value="a">rapport complet imprimé</li>
+<li><input type="checkbox" name="vats_mail" value="a">rapport TVA par mail</li>
+<li><input type="checkbox" name="vats_print" value="a">rapport TVA imprimé</li>
+<li><input type='submit' value='Envoyer'></li>
+</ul>
+</form>
+
 <h2>TVA</h2>
+<p>Les montants de TVA sont exprimés en TTC.</p>
 <ul id="rapports">
     {% for vat in vats %}
     <li>TTC {{vat}}: {{vat.nb}}€</li>
     {% empty %}
     <li>Aucune TVA</li>
     {% endfor %}
-    <li
-{% if date %}
-onclick="window.location='/manager/rapports/{{date.year}}/{{date.month}}/{{date.day}}/vats/send/'"
-{% elif week %}
-onclick="window.location='/manager/rapports/weekly/{{year}}/{{week}}/vats/send/'"
-{% elif month %}
-onclick="window.location='/manager/rapports/monthly/{{year}}/{{month}}/vats/send/'"
-{% endif %}
-    >Envoyer par mail</li>
-    <li
-{% if date %}
-onclick="window.location='/manager/rapports/{{date.year}}/{{date.month}}/{{date.day}}/vats/print/'"
-{% elif week %}
-onclick="window.location='/manager/rapports/weekly/{{year}}/{{week}}/vats/print/'"
-{% elif month %}
-onclick="window.location='/manager/rapports/monthly/{{year}}/{{month}}/vats/print/'"
-{% endif %}
-    >Imprimer</li>
 </ul>
 
 <h2>Paiements</h2>
@@ -163,4 +157,3 @@ onclick="window.location='/manager/rapports/monthly/{{year}}/{{month}}/vats/prin
 </ul>
 
 {% endblock %}
-
