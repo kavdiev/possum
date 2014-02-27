@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-import datetime
+from south.utils import datetime_utils as datetime
 from south.db import db
 from south.v2 import SchemaMigration
 from django.db import models
@@ -8,23 +8,45 @@ from django.db import models
 class Migration(SchemaMigration):
 
     def forwards(self, orm):
-        # Deleting model 'Stat'
-        db.delete_table(u'base_stat')
+        # Deleting model 'DailyStat'
+        db.delete_table(u'base_dailystat')
+
+        # Deleting model 'WeeklyStat'
+        db.delete_table(u'base_weeklystat')
+
+        # Deleting model 'MonthlyStat'
+        db.delete_table(u'base_monthlystat')
 
 
     def backwards(self, orm):
-        # Adding model 'Stat'
-        db.create_table(u'base_stat', (
-            ('week', self.gf('django.db.models.fields.PositiveIntegerField')(default=0)),
-            ('key', self.gf('django.db.models.fields.CharField')(max_length=32)),
-            ('year', self.gf('django.db.models.fields.PositiveIntegerField')(default=0)),
-            ('month', self.gf('django.db.models.fields.PositiveIntegerField')(default=0)),
-            ('interval', self.gf('django.db.models.fields.CharField')(default='d', max_length=1)),
-            ('day', self.gf('django.db.models.fields.PositiveIntegerField')(default=0)),
+        # Adding model 'DailyStat'
+        db.create_table(u'base_dailystat', (
+            ('date', self.gf('django.db.models.fields.DateField')()),
             ('value', self.gf('django.db.models.fields.DecimalField')(default=0, max_digits=9, decimal_places=2)),
             (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
+            ('key', self.gf('django.db.models.fields.CharField')(max_length=32)),
         ))
-        db.send_create_signal('base', ['Stat'])
+        db.send_create_signal('base', ['DailyStat'])
+
+        # Adding model 'WeeklyStat'
+        db.create_table(u'base_weeklystat', (
+            ('week', self.gf('django.db.models.fields.PositiveSmallIntegerField')()),
+            ('value', self.gf('django.db.models.fields.DecimalField')(default=0, max_digits=9, decimal_places=2)),
+            ('key', self.gf('django.db.models.fields.CharField')(max_length=32)),
+            ('year', self.gf('django.db.models.fields.PositiveSmallIntegerField')()),
+            (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
+        ))
+        db.send_create_signal('base', ['WeeklyStat'])
+
+        # Adding model 'MonthlyStat'
+        db.create_table(u'base_monthlystat', (
+            ('value', self.gf('django.db.models.fields.DecimalField')(default=0, max_digits=9, decimal_places=2)),
+            ('month', self.gf('django.db.models.fields.PositiveSmallIntegerField')()),
+            ('key', self.gf('django.db.models.fields.CharField')(max_length=32)),
+            ('year', self.gf('django.db.models.fields.PositiveSmallIntegerField')()),
+            (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
+        ))
+        db.send_create_signal('base', ['MonthlyStat'])
 
 
     models = {

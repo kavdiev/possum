@@ -22,10 +22,12 @@ import os
 import random
 import sys
 import datetime
+import logging
 
 
 sys.path.append('.')
 os.environ['DJANGO_SETTINGS_MODULE'] = 'possum.settings'
+logger = logging.getLogger("possum.base")
 
 
 from django.contrib.auth.models import User, Permission

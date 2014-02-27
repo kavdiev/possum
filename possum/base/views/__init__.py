@@ -33,9 +33,19 @@ from django.conf import settings
 logger = logging.getLogger(__name__)
 
 
-# TODO une création de dossier au millieu de la vue ? 
+# TODO une création de dossier au millieu de la vue ?
 # (Déplacer dans settings common ?)
 create_default_directory()
+
+
+def cleanup_payment(request):
+    """Remove all variables used for a new payment
+    """
+    keys = ['is_left', 'left', 'right', 'type_selected', 'tickets_count',
+            'ticket_value', 'init_montant']
+    for key in keys:
+        if key in request.session.keys():
+            request.session.pop(key)
 
 
 def remove_edition(request):
@@ -56,6 +66,7 @@ def remove_edition(request):
                 bill.update_kitchen()
                 request.session.pop("products_modified")
         request.session.pop("bill_in_use")
+    cleanup_payment(request)
     return request
 
 
@@ -76,7 +87,7 @@ def permission_required(perm, **kwargs):
                 return view_func(request, *args, **kwargs)
             else:
                 messages.add_message(request, messages.ERROR, "Vous n'avez pas"
-                                     " les droits nécessaires (%s)." % 
+                                     " les droits nécessaires (%s)." %
                                      perm.split('.')[1])
                 return redirect('home')
         return wraps(view_func)(_wrapped_view)

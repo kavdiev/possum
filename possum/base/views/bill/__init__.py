@@ -29,7 +29,8 @@ from possum.base.models import Printer
 from possum.base.models import Cuisson
 from possum.base.models import Produit, ProduitVendu
 from possum.base.models import PaiementType, Paiement
-from possum.base.views import permission_required, remove_edition
+from possum.base.views import permission_required, remove_edition, \
+                              cleanup_payment
 from possum.base.models import Note
 from possum.base.models import Config
 from possum.base.models import Option
@@ -82,7 +83,7 @@ def bill_send_kitchen(request, bill_id):
                              messages.ERROR,
                              "Erreur dans l'envoi (imprimante ok?).")
     if not erreur:
-        messages.add_message(request, messages.SUCCESS, u"%s envoyée" % 
+        messages.add_message(request, messages.SUCCESS, u"%s envoyée" %
                              bill.table)
     return redirect('bill_view', bill.id)
 
@@ -157,7 +158,7 @@ def update_categories(request):
 @permission_required('base.p3')
 def categories(request, bill_id, cat_id=None):
     """Select a product to add on a bill.
-    
+
     session[count]: default is 1, number of products to add
     """
     bill = get_object_or_404(Facture, pk=bill_id)
@@ -377,13 +378,13 @@ def sold_working(request, bill_id, sold_id):
 def product_add(request, bill_id, product_id):
     """Add a product to a bill. If this product contains others products,
     we have to add them too.
-    
+
     """
     bill = get_object_or_404(Facture, pk=bill_id)
     if not set_edition_status(request, bill):
         return redirect('bill_view', bill.id)
     product = get_object_or_404(Produit, pk=product_id)
-    
+
     # how many products to add
     count = int(request.session.get('count', 1))
     if count > 1:
@@ -507,7 +508,7 @@ def amount_payment(request):
     context['left'] = request.session.get('left', "0000")
     context['right'] = request.session.get('right', "00")
     return render(request, 'payments/amount.html', context)
-    
+
 
 @permission_required('base.p3')
 def amount_count(request):
@@ -523,7 +524,7 @@ def amount_count(request):
     context['tickets_count'] = request.session.get('tickets_count', 1)
     context['range'] = range(1, 50)
     return render(request, 'payments/count.html', context)
-    
+
 
 def amount_payment_zero(request):
     """Permet d'effacer la partie gauche et droite
@@ -577,7 +578,7 @@ def amount_payment_add(request, number):
         else:
             request.session['right'] = tmp[-2:]
     return redirect("amount_payment")
-    
+
 
 @permission_required('base.p3')
 def type_payment(request, bill_id, type_id):
@@ -595,16 +596,6 @@ def payment_count(request, bill_id, number):
         return redirect('prepare_payment', bill_id)
     else:
         return redirect('prepare_payment', bill_id)
-
-
-def cleanup_payment(request):
-    """Remove all variables used for a new payment
-    """
-    keys = ['is_left', 'left', 'right', 'type_selected', 'tickets_count',
-            'ticket_value', 'init_montant']
-    for key in keys:
-        if key in request.session.keys():
-            request.session.pop(key)
 
 
 @permission_required('base.p3')

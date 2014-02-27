@@ -324,7 +324,7 @@ class Facture(models.Model):
             if not sold.produit.price_surcharged:
                 # TODO: just in case for backwards comtability
                 # in case Produit has no price_surcharged
-                logger.info("[%s] product without price_surcharged" % 
+                logger.info("[%s] product without price_surcharged" %
                             sold.produit.id)
                 sold.produit.update_vats(keep_clone=False)
             sold.set_prize(sold.produit.price_surcharged)
@@ -399,7 +399,6 @@ class Facture(models.Model):
         paiement = Paiement()
         paiement.type = type_payment
         paiement.valeur_unitaire = Decimal(valeur_unitaire)
-        logger.debug("Nouveau paiement : {0}".format(paiement))
         if type_payment.fixed_value:
             # Dans ce cas le montant est le nombre de ticket
             paiement.nb_tickets = int(montant)
@@ -407,6 +406,7 @@ class Facture(models.Model):
         else:
             paiement.montant = Decimal(montant)
         # On enregistre ce paiement
+        logger.debug("Nouveau paiement : {0}".format(paiement))
         paiement.save()
         self.paiements.add(paiement)
         if paiement.montant > self.restant_a_payer:

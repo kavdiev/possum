@@ -262,7 +262,7 @@ def update_day(day):
         if bill.est_soldee():
             count += 1
             data = get_data_on(bill, data)
-            bill.saved_in_stats=True
+            bill.saved_in_stats = True
             bill.save()
     if data:
         record_day(year, month, week, day, data)

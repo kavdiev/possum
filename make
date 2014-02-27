@@ -1,6 +1,7 @@
 #!/bin/bash
 JQUERY="jquery-2.0.3.min.js"
 HIGHCHARTS="Highcharts-3.0.6.zip"
+APPS="base stats"
 
 function my_help {
     cat << 'EOF'
@@ -197,7 +198,7 @@ function deb_install_nginx {
 
 function graph_models {
     enter_virtualenv
-    for app in stats base
+    for app in $APPS
     do
         ./manage.py graph_models --output=doc/images/models-${app}.png -g ${app}
         echo "[doc/images/models-${app}.png] updated"
@@ -209,9 +210,10 @@ function clear_db {
     if [ -e possum.db ]
     then
         #./manage.py sqlclear base|sqlite3 possum.db
-        mv possum.db possum.db.$(date +%Y%m%d%H%M)
+        cp possum.db possum.db.$(date +%Y%m%d%H%M)
     fi
-    ./manage.py syncdb --noinput --migrate
+    ./manage.py flush --noinput
+    #./manage.py syncdb --noinput --migrate
 }
 
 function deb_install {

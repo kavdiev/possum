@@ -32,7 +32,6 @@ class StatTests(TestCase):
     def setUp(self):
         """We create some bills and products to do tests
         """
-        print "OK"
         self.client = Client()
 
     def tearDown(self):
@@ -85,11 +84,13 @@ class StatTests(TestCase):
         bills = Facture.objects.filter(saved_in_stats=True,
                                        date_creation__gt=begin,
                                        date_creation__lt=end)
-        objects = Stat.objects.get(interval="m", year=year, month=4)
+        objects = Stat.objects.filter(interval="m", year=year, month=4)
         stat_nb_bills = objects.filter(key="nb_bills")
-        self.assertEqual(bills.count(), int(stat_nb_bills.value))
+        self.assertEqual(len(stat_nb_bills), 1)
+        self.assertEqual(bills.count(), int(stat_nb_bills[0].value))
         total_ttc = Decimal("0")
         for bill in bills:
             total_ttc += bill.total_ttc
-        stat_total_ttc = objects.filter(key"total_ttc")
-        self.assertEqual(total_ttc, stat_total_ttc.value))
+        stat_total_ttc = objects.filter(key="total_ttc")
+        self.assertEqual(len(stat_total_ttc), 1)
+        self.assertEqual(total_ttc, stat_total_ttc[0].value)
