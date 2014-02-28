@@ -71,6 +71,8 @@ def get_data_on(bill, data):
             data[key] += Decimal(value)
         else:
             data[key] = Decimal(value)
+        logger.debug("%s = %.2f" % (key, data[key]))
+    logger.debug("[B%s] extract stats" % bill.id)
     add_value("nb_bills", 1)
     add_value("total_ttc", bill.total_ttc)
     for sold in bill.produits.iterator():
@@ -93,21 +95,21 @@ def get_data_on(bill, data):
             add_value("%s_product_nb" % p_id, 1)
             c_id = sub.produit.categorie_id
             add_value("%s_category_nb" % c_id, 1)
-        if bill.est_un_repas():
-            # number of guests
-            if bill.couverts == 0:
-                # if not, we try to find a number
-                bill.couverts = bill.guest_couverts()
-                bill.save()
-            add_value("guests_nb", bill.couverts)
-            add_value("guests_total_ttc", bill.total_ttc)
-        else:
-            add_value("bar_nb", 1)
-            add_value("bar_total_ttc", bill.total_ttc)
-        for payment in bill.paiements.iterator():
-            p_id = payment.type_id
-            add_value("%s_payment_nb" % p_id, 1)
-            add_value("%s_payment_value" % p_id, payment.montant)
+    if bill.est_un_repas():
+        # number of guests
+        if bill.couverts == 0:
+            # if not, we try to find a number
+            bill.couverts = bill.guest_couverts()
+            bill.save()
+        add_value("guests_nb", bill.couverts)
+        add_value("guests_total_ttc", bill.total_ttc)
+    else:
+        add_value("bar_nb", 1)
+        add_value("bar_total_ttc", bill.total_ttc)
+    for payment in bill.paiements.iterator():
+        p_id = payment.type_id
+        add_value("%s_payment_nb" % p_id, 1)
+        add_value("%s_payment_value" % p_id, payment.montant)
     return data
 
 
@@ -165,7 +167,7 @@ def record_day(year, month, week, day, data):
     day: 31
     data: {'key1': value1, 'key2': value2, ...}
     """
-    logger.debug("[%d-%d-%d] begin update record" % (year, month, day))
+    logger.debug("[%d-%d-%d] update record" % (year, month, day))
     for key in data.keys():
         stat, created = Stat.objects.get_or_create(year=year,
                                                    month=month,
@@ -187,7 +189,6 @@ def record_day(year, month, week, day, data):
                                                    key=key,
                                                    interval="y")
         stat.add_value(data[key])
-    logger.debug("[%d-%d-%d] end update record" % (year, month, day))
 
 
 def compute_avg(subkey, stats, avg):
@@ -238,15 +239,15 @@ def update_avg(year, month, week, day):
             compute_avg(key, stats, avg)
 
 
-def update_day(day):
+def update_day(date):
     """Update stats with all bills availables on a day.
 
-    day: String, "2014-03-31"
+    date: String, "2014-03-31"
     """
     try:
-        day_begin = datetime.datetime.strptime(day, "%Y-%m-%d")
+        day_begin = datetime.datetime.strptime(date, "%Y-%m-%d")
     except ValueError:
-        logger.warning("[%s] day invalid !" % day)
+        logger.warning("[%s] day invalid !" % date)
         return False
     day_end = day_begin + datetime.timedelta(days=1)
     bills = Facture.objects.filter(date_creation__gte=day_begin,
@@ -258,6 +259,7 @@ def update_day(day):
     week = day_begin.isocalendar()[1]
     data = {}
     count = 0
+    logger.debug("[%s] %d bills to update" % (date, bills.count()))
     for bill in bills:
         if bill.est_soldee():
             count += 1

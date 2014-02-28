@@ -227,31 +227,43 @@ def create_bill(finish=True):
     """Create a bill
     """
     table = 'T%d' % random.randint(10, 25)
-    bill = Facture(table=Table.objects.get(nom=table),
-                   couverts=random.randint(1, 15))
+    bill = Facture(table=Table.objects.get(nom=table))
     bill.save()
-    for produit in [salade, buffet, entrecote, pave, biere]:
-        for i in xrange(3):
-            sold = ProduitVendu(produit=produit)
-            sold.save()
-            bill.add_product(sold)
-    nouveau_menu = ProduitVendu(produit=entree_plat)
-    nouveau_menu.save()
-    for produit in [salade, pave]:
+    produits_bar = [biere, pomme, abricot]
+    produits_guests = [salade, buffet, entrecote, pave]
+    payments = ['CB', 'Espece', 'Cheque']
+    if random.randint(1,2) == 1:
+        # guests part
+        produits = produits_guests
+        bill.couverts = random.randint(1, 15)
+    else:
+        produits = produits_bar
+    nb_produits = random.randint(1, 6)
+    for i in xrange(nb_produits):
+        # random number of products
+        nb_max = len(produits) - 1
+        produit = produits[random.randint(0, nb_max)]
         sold = ProduitVendu(produit=produit)
         sold.save()
-        nouveau_menu.contient.add(sold)
-    nouveau_menu.save()
+        bill.add_product(sold)
+    #nouveau_menu = ProduitVendu(produit=entree_plat)
+    #nouveau_menu.save()
+    #for produit in [salade, pave]:
+        #sold = ProduitVendu(produit=produit)
+        #sold.save()
+        #nouveau_menu.contient.add(sold)
+    #nouveau_menu.save()
     bill.update()
     if finish:
-        type_cb = PaiementType.objects.get(nom='CB')
-        bill.add_payment(type_cb, bill.total_ttc)
+        nb_max = len(payments) - 1
+        name = payments[random.randint(0, nb_max)]
+        type_payment = PaiementType.objects.get(nom=name)
+        bill.add_payment(type_payment, bill.total_ttc)
     return bill
 
 
 # on ajoute des données pour avoir des jolies graphiques de démonstrations
 now = datetime.datetime.now()
-interval = "m"
 for month in xrange(1, 13):
     for i in xrange(20):
         day = random.randint(1, 28)

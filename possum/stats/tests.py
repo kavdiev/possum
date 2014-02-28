@@ -85,12 +85,33 @@ class StatTests(TestCase):
                                        date_creation__gt=begin,
                                        date_creation__lt=end)
         objects = Stat.objects.filter(interval="m", year=year, month=4)
+        # nb_bills
         stat_nb_bills = objects.filter(key="nb_bills")
         self.assertEqual(len(stat_nb_bills), 1)
         self.assertEqual(bills.count(), int(stat_nb_bills[0].value))
+        # total_ttc, guests_total_ttc and bar_total_ttc
         total_ttc = Decimal("0")
+        guests_total_ttc = Decimal("0")
+        bar_total_ttc = Decimal("0")
         for bill in bills:
             total_ttc += bill.total_ttc
+            if bill.est_un_repas():
+                guests_total_ttc += bill.total_ttc
+            else:
+                bar_total_ttc += bill.total_ttc
         stat_total_ttc = objects.filter(key="total_ttc")
         self.assertEqual(len(stat_total_ttc), 1)
+        stat_guests_total_ttc = objects.filter(key="guests_total_ttc")
+        self.assertEqual(len(stat_guests_total_ttc), 1)
+        stat_bar_total_ttc = objects.filter(key="bar_total_ttc")
+        self.assertEqual(len(stat_bar_total_ttc), 1)
         self.assertEqual(total_ttc, stat_total_ttc[0].value)
+        self.assertEqual(guests_total_ttc, stat_guests_total_ttc[0].value)
+        self.assertEqual(bar_total_ttc, stat_bar_total_ttc[0].value)
+        self.assertEqual(total_ttc, guests_total_ttc+bar_total_ttc)
+        # VAT
+        vat_ttc  = Decimal("0")
+        for vat in objects.filter(key__contains="_vat"):
+            vat_ttc += vat.value
+        self.assertEqual(vat_ttc, total_ttc)
+

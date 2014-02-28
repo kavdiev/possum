@@ -218,7 +218,7 @@ LOGGING = {
             'level': 'ERROR',
             'propagate': False,
         },
-        'possum.base': {
+        'possum': {
             'handlers': ['mail_admins', 'syslog', 'mail_bugwatch'],
             'level': 'WARNING',
         }

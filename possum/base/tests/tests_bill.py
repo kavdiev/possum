@@ -22,7 +22,7 @@ class Tests_Bill(TestCase):
         self.facture.save()
         self.plat = ProduitVendu()
         self.plat.produit = Produit.objects.get(nom="entrecote")
-    
+
     def test_is_empty(self):
         self.assertTrue(self.facture.is_empty())
         self.facture.add_product(self.plat)
@@ -83,11 +83,14 @@ class Tests_Bill(TestCase):
         self.assertFalse(self.facture.is_valid_payment(42))
 
     def test_rendre_monnaie(self):
-        paiement = Paiement.objects.all()[0]
+        payment = Paiement()
+        payment.type = PaiementType()
+        payment.montant = Decimal("900")
         self.facture.add_product(self.plat)
         self.facture.update()
-        self.facture.rendre_monnaie(paiement)
-        self.assertEqual(Decimal("-82.80"), self.facture.paiements.all()[0].montant)
+        self.facture.rendre_monnaie(payment)
+        left = self.facture.total_ttc - Decimal("900")
+        self.assertEqual(left, self.facture.paiements.all()[0].montant)
 
     def test_add_payment(self):
         self.facture.add_product(self.plat)

@@ -16,7 +16,7 @@
         {% if facture.surcharge %}class="surtaxe"{% endif %}>
         Table:</br>{{facture.table.nom}}</li>
     <li onclick="window.location='/bill/{{facture.id}}/couverts/select/'">Couverts:</br>{{facture.couverts}}</li>
-    <li onclick="window.location='/bill/{{facture.id}}/onsite/'" 
+    <li onclick="window.location='/bill/{{facture.id}}/onsite/'"
         {% if facture.onsite %}
             class="enabled">sur place
         {% else %}
@@ -39,8 +39,8 @@
       {% for vendu_id_in_model, vendu in list_produit %}
       <li style="background:{{vendu.produit.categorie.color}}" onclick="window.location='/bill/{{facture.id}}/sold/{{vendu_id_in_model}}/view/'">
       {% if vendu.notes.count %}* {%endif%}{{vendu}} ({{vendu.prix}})
-	{% if vendu.cuisson %}({{vendu.cuisson}}){% endif %}
-	{{ vendu.get_menu_resume }}
+    {% if vendu.cuisson %}({{vendu.cuisson}}){% endif %}
+    {{ vendu.get_menu_resume }}
       </li>
       {% endfor %}
     </div>
@@ -49,7 +49,7 @@
       {{list_produit.0.1}} ({{list_produit.0.1.prix}})
       {% if list_produit.0.1.cuisson %}({{list_produit.0.1.cuisson}}){% endif %}
       {{ list_produit.0.1.get_menu_resume }}
-    </li> 
+    </li>
     {% endif %}
     {% endfor %}
 </ul>
@@ -66,7 +66,7 @@
 <h2>Suivi en cuisine</h2>
 <ul id="kitchen">
     {% for follow in facture.following.iterator %}
-    <li onclick="window.location='/kitchen/{{facture.id}}/'" 
+    <li onclick="window.location='/kitchen/{{facture.id}}/'"
             style="background:{{follow.category.color}};">
          {{follow}}
     </li>

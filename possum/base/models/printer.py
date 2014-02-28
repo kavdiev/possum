@@ -126,51 +126,6 @@ class Printer(models.Model):
         os.remove(path)
         return result
 
-    def regroup_list_and_print(self, list_to_print, name, with_header=False):
-        '''
-        Regroup the business objects in a list and reprensent
-        them by String (number and name of object) then generate
-        a print list
-        '''
-        path = "%s/%s-%s.txt" % (settings.PATH_TICKET, self.id, name)
-        fd = open(path, "w")
-        if with_header:
-            fd.write(self.header)
-        old_tmp = ""
-        num_tmp = 0
-        count = 0
-        for line in list_to_print:
-            count += 1
-            tmp = sans_accent(line)
-            if old_tmp != tmp:
-                if old_tmp:
-                    if old_tmp == " " \
-                            or old_tmp.startswith("*") \
-                            or old_tmp.startswith(">") \
-                            or old_tmp.startswith("["):
-                        fd.write("%s\n" % old_tmp)
-                    else:
-                        fd.write("%s x %s\n" % (str(num_tmp), old_tmp))
-                old_tmp = tmp
-                num_tmp = 1
-            else:
-                num_tmp += 1
-            if count == len(list_to_print):
-                if old_tmp:
-                    if old_tmp == " " \
-                            or old_tmp.startswith("*") \
-                            or old_tmp.startswith(">") \
-                            or old_tmp.startswith("["):
-                        fd.write("%s\n" % old_tmp)
-                    else:
-                        fd.write("%s x %s\n" % (str(num_tmp), old_tmp))
-        if with_header:
-            fd.write(self.footer)
-        fd.close()
-        result = self.print_file(path)
-        os.remove(path)
-        return result
-
     def print_test(self):
         list_to_print = []
         list_to_print.append("> POSSUM Printing test !")

@@ -458,7 +458,9 @@ def bill_view(request, bill_id):
     """Get a bill."""
     request = remove_edition(request)
     context = {'menu_bills': True, }
-    context['facture'] = get_object_or_404(Facture, pk=bill_id)
+    bill = get_object_or_404(Facture, pk=bill_id)
+    context['facture'] = bill
+    context['products_sold'] = bill.reduce_sold_list(bill.produits.all())
     if context['facture'].est_soldee():
         messages.add_message(request, messages.ERROR,
                              "Cette facture a déjà été soldée.")
