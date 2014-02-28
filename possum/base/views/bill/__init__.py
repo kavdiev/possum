@@ -145,14 +145,16 @@ def update_categories(request):
     logger.debug('update categories in cache')
     last_carte_changed = Config().get_carte_changed().value
     request.session['last_carte_changed'] = last_carte_changed
-    request.session['categories'] = []
+    categories = []
     for category in Categorie.objects.all():
         products = Produit.objects.filter(categorie=category, actif=True)
         if products:
             category.products = products
-            request.session['categories'].append(category)
+            categories.append(category)
         else:
             logger.debug("[%s] category without products" % category)
+    logger.debug(categories)
+    request.session['categories'] = categories
 
 
 @permission_required('base.p3')
@@ -189,6 +191,7 @@ def categories(request, bill_id, cat_id=None):
     # we preload a category
     if cat_id:
         context['current_cat'] = int(cat_id)
+#    request.session.flush()
     return render(request, 'bill/categories.html', context)
 
 

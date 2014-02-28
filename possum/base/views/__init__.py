@@ -66,7 +66,8 @@ def remove_edition(request):
                 bill.update_kitchen()
                 request.session.pop("products_modified")
         request.session.pop("bill_in_use")
-    cleanup_payment(request)
+#    cleanup_payment(request)
+#    request.session.flush()
     return request
 
 

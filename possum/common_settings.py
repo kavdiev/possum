@@ -157,6 +157,8 @@ INSTALLED_APPS = (
     # 'django.contrib.admindocs',
 )
 
+SESSION_SERIALIZER = "django.contrib.sessions.serializers.PickleSerializer"
+
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': True,
