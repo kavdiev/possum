@@ -45,7 +45,7 @@ def cleanup_payment(request):
             'ticket_value', 'init_montant']
     for key in keys:
         if key in request.session.keys():
-            request.session.pop(key)
+            del request.session[key]
 
 
 def remove_edition(request):
@@ -66,8 +66,7 @@ def remove_edition(request):
                 bill.update_kitchen()
                 request.session.pop("products_modified")
         request.session.pop("bill_in_use")
-#    cleanup_payment(request)
-#    request.session.flush()
+    cleanup_payment(request)
     return request
 
 

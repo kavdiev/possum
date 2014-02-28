@@ -209,8 +209,11 @@ function clear_db {
     enter_virtualenv
     if [ -e possum.db ]
     then
-        #./manage.py sqlclear base|sqlite3 possum.db
-        cp possum.db possum.db.$(date +%Y%m%d%H%M)
+        if [ ! -d backup ]
+        then
+            mkdir backup
+        fi
+        cp possum.db backup/possum.db.$(date +%Y%m%d%H%M)
     fi
     ./manage.py flush --noinput
     #./manage.py syncdb --noinput --migrate

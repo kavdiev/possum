@@ -6,6 +6,7 @@ from django.core.urlresolvers import reverse
 from django.test.client import Client
 #from django.utils.unittest.case import TestCase
 from django.test import TestCase
+from possum.base.models import Facture
 
 
 # import mock
@@ -14,6 +15,7 @@ class Tests_urls(TestCase):
 
     def setUp(self):
         self.client = Client()
+        self.latest_bill = Facture.objects.latest()
 
     def tearDown(self):
         self.logout()
@@ -85,7 +87,7 @@ class Tests_urls(TestCase):
             reverse('table_set', args=('5', '2')),
             reverse('couverts_select', args=('42',)),
             reverse('couverts_set', args=('4', '7')),
-#            reverse('bill_categories', args=('2',)),
+            reverse('bill_categories', args=(self.latest_bill.id,)),
 #            reverse('bill_categories', args=('2', '3')),
 #            reverse('product_add', args=('4', '7')),
 #            reverse('product_select', args=('4', '7')),
@@ -101,6 +103,7 @@ class Tests_urls(TestCase):
 #            reverse('subproduct_add', args=('42', '73', '51')),
 #            reverse('bill_delete', args=('42',)),
 #            reverse('bill_onsite', args=('42',)),
+            reverse('prepare_payment', args=(self.latest_bill.id,)),
 #            reverse('bill_payment', args=('42',)),
 #            reverse('bill_payment_view', args=('42', '73')),
 #            reverse('bill_payment_delete', args=('42', '73')),
@@ -115,7 +118,7 @@ class Tests_urls(TestCase):
 #                    args=('42', '73', '51', '7', '13', '1')),
 #            reverse('bill_payment_count', args=('42', '73', '51', '7')),
 #            reverse('bill_print', args=('42',)),
-#            reverse('bill_view', args=('7',)),
+            reverse('bill_view', args=(self.latest_bill.id,)),
         ]
         self.assert_http_status(urls, 302)
         self.assert_http_status_after_login(urls, 200)
