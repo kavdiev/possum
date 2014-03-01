@@ -233,21 +233,21 @@ class Facture(models.Model):
                 products.sort()
                 for product in products:
                     todolist.append(product)
-            print_list = []
-            for sold in self.reduce_sold_list(todolist):
-                tmp = "%dx %s" % (sold.count, sold.produit.nom)
-                if sold.cuisson:
-                    tmp += " %s" % sold.cuisson
-                for option in sold.options.all():
-                    tmp += " %s" % option.name
-                print_list.add(tmp)
-                for note in sold.notes.all():
-                    print_list("!> %s" % note.message)
-            name = "kitchen-%s-%s" % (self.id, follow.category.id)
-            for printer in Printer.objects.filter(kitchen=True):
-                result = printer.print_list(print_list, name)
-                if not result:
-                    return False
+#            print_list = []
+#            for sold in self.reduce_sold_list(todolist):
+#                tmp = "%dx %s" % (sold.count, sold.produit.nom)
+#                if sold.cuisson:
+#                    tmp += " %s" % sold.cuisson
+#                for option in sold.options.all():
+#                    tmp += " %s" % option.name
+#                print_list.add(tmp)
+#                for note in sold.notes.all():
+#                    print_list("!> %s" % note.message)
+#            name = "kitchen-%s-%s" % (self.id, follow.category.id)
+#            for printer in Printer.objects.filter(kitchen=True):
+#                result = printer.print_list(print_list, name)
+#                if not result:
+#                    return False
             follow.save()
             self.following.add(follow)
             self.update_kitchen()
