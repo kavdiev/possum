@@ -55,7 +55,7 @@ time = ""
 if diff.seconds > 3600:
     # more than a hour
     hour = diff.seconds / 3600
-    mn = diff.seconds % 3600 
+    mn = (diff.seconds % 3600) / 60
     time = "%dh %dm" % (hour, mn)
 else:
     mn = diff.seconds / 60

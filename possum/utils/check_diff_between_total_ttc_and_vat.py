@@ -39,7 +39,7 @@ for stat in Stat.objects.filter(interval="d", key="total_ttc"):
     diff = total_ttc - vat_ttc
     if diff != Decimal("0"):
         date = "%d-%02d-%02d" % (stat.year, stat.month, stat.day)
-        print "%s: %.2f" % (date, diff)
+        print "[%s] diff of %.2f" % (date, diff)
         for bill in Facture.objects.filter(date_creation__gte="%s 00:00" % date,
                                            date_creation__lt="%s 23:59" % date):
             vat = Decimal("0")
