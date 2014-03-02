@@ -312,47 +312,39 @@ class Facture(models.Model):
     def update(self):
         """Update prize and kitchen
         """
-        logger.debug("[%s] update prize" % self.id)
+        logger.debug("[%s] update bill" % self.id)
         self.total_ttc = Decimal("0")
         self.restant_a_payer = Decimal("0")
-        for v in self.vats.iterator():
-            v.total = 0
-            v.save()
-        for product in self.produits.iterator():
-            self.add_product_prize(product)
+        for vatonbill in self.vats.iterator():
+            vatonbill.total = 0
+        for sold in self.produits.iterator():
+            if self.surcharge:
+                if not sold.produit.price_surcharged:
+                    # TODO: just in case for backwards comtability
+                    # in case Produit has no price_surcharged
+                    logger.info("[%s] product without price_surcharged" %
+                                sold.produit.id)
+                    sold.produit.update_vats(keep_clone=False)
+                sold.set_prize(sold.produit.price_surcharged)
+                vat = sold.produit.categorie.vat_onsite
+                value = sold.produit.vat_surcharged
+            else:
+                sold.set_prize(sold.produit.prix)
+                if self.onsite:
+                    vat = sold.produit.categorie.vat_onsite
+                    value = sold.produit.vat_onsite
+                else:
+                    vat = sold.produit.categorie.vat_takeaway
+                    value = sold.produit.vat_takeaway
+            self.total_ttc += sold.prix
+            self.restant_a_payer += sold.prix
+            vatonbill, created = self.vats.get_or_create(vat=vat)
+            vatonbill.total += value
+        for vatonbill in self.vats.iterator():
+            vatonbill.save()
         for payment in self.paiements.iterator():
             self.restant_a_payer -= payment.montant
         self.save()
-
-    def add_product_prize(self, sold):
-        """Ajoute le prix d'un ProduitVendu sur la facture.
-        Le ProduitVendu se trouve deja dans la liste
-        des produits."""
-        if self.surcharge:
-            if not sold.produit.price_surcharged:
-                # TODO: just in case for backwards comtability
-                # in case Produit has no price_surcharged
-                logger.info("[%s] product without price_surcharged" %
-                            sold.produit.id)
-                sold.produit.update_vats(keep_clone=False)
-            sold.set_prize(sold.produit.price_surcharged)
-            vat = sold.produit.categorie.vat_onsite
-            value = sold.produit.vat_surcharged
-        else:
-            sold.set_prize(sold.produit.prix)
-            if self.onsite:
-                vat = sold.produit.categorie.vat_onsite
-                value = sold.produit.vat_onsite
-            else:
-                vat = sold.produit.categorie.vat_takeaway
-                value = sold.produit.vat_takeaway
-        ttc = Decimal(sold.prix)
-        self.total_ttc += ttc
-        self.restant_a_payer += ttc
-        self.save()
-        vatonbill, created = self.vats.get_or_create(vat=vat)
-        vatonbill.total += value
-        vatonbill.save()
 
     def add_product(self, sold):
         """Ajout d'un produit à la facture.

@@ -28,11 +28,6 @@ class Tests_Bill(TestCase):
         self.facture.add_product(self.plat)
         self.assertFalse(self.facture.is_empty())
 
-    def test_add_product_prize(self):
-        self.facture.add_product_prize(self.plat)
-        self.assertEqual(self.plat.prix, self.facture.total_ttc)
-        self.assertEqual(self.plat.prix, self.facture.restant_a_payer)
-
     def test_add_product(self):
         self.assertTrue(self.facture.is_empty())
         self.facture.add_product(self.plat)
