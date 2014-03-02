@@ -31,10 +31,7 @@ from possum.base.models import Facture
 from possum.stats.models import Stat
 
 
-year = 2014
-
-
-for stat in Stat.objects.filter(year=year, interval="d", key="total_ttc"):
+for stat in Stat.objects.filter(interval="d", key="total_ttc"):
     total_ttc = stat.value
     vat_ttc = Decimal("0")
     for vat in Stat.objects.filter(year=stat.year, month=stat.month, day=stat.day, interval="d", key__contains="_vat"):
