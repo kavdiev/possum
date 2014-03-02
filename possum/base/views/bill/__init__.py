@@ -46,8 +46,7 @@ def bill_new(request):
     context = {'menu_bills': True, }
     bill = Facture()
     bill.save()
-    context['facture'] = bill
-    return render(request, 'bill/bill.html', context)
+    return redirect("bill_view", bill.id)
 
 
 def set_option(sold_id, option_id):
@@ -127,8 +126,7 @@ def table_set(request, bill_id, table_id):
     bill = get_object_or_404(Facture, pk=bill_id)
     table = get_object_or_404(Table, pk=table_id)
     bill.set_table(table)
-    context['facture'] = bill
-    return render(request, 'bill/bill.html', context)
+    return redirect("bill_view", bill.id)
 
 
 @permission_required('base.p3')
@@ -188,10 +186,10 @@ def categories(request, bill_id, cat_id=None):
     else:
         update_categories(request)
     context['categories'] = request.session['categories']
+    context['products_sold'] = bill.reduced_sold_list(bill.produits.all())
     # we preload a category
     if cat_id:
         context['current_cat'] = int(cat_id)
-#    request.session.flush()
     return render(request, 'bill/categories.html', context)
 
 
@@ -440,8 +438,7 @@ def couverts_set(request, bill_id, number):
     context = {'menu_bills': True, }
     bill = get_object_or_404(Facture, pk=bill_id)
     bill.set_couverts(number)
-    context['facture'] = bill
-    return render(request, 'bill/bill.html', context)
+    return redirect("bill_view", bill_id)
 
 
 @permission_required('base.p3')
@@ -460,7 +457,7 @@ def bill_view(request, bill_id):
     context = {'menu_bills': True, }
     bill = get_object_or_404(Facture, pk=bill_id)
     context['facture'] = bill
-    context['products_sold'] = bill.reduce_sold_list(bill.produits.all())
+    context['products_sold'] = bill.reduced_sold_list(bill.produits.all())
     if context['facture'].est_soldee():
         messages.add_message(request, messages.ERROR,
                              "Cette facture a déjà été soldée.")

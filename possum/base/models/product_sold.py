@@ -53,11 +53,35 @@ class ProduitVendu(models.Model):
         ordering = ['produit', ]
 
     def __unicode__(self):
-        return u"%s" % self.produit.nom
+        """Affichage différent si menu ou pas
+        """
+        if self.notes.count():
+            tmp = "* "
+        else:
+            tmp = ""
+        tmp += self.produit.nom
+        if self.prix:
+            tmp += " (%.2f)" % self.prix
+        if self.produit.categories_ok.count():
+            # cas du menu
+            #self.contient.order_by("produit__categorie__priorite").iterator():
+            products = []
+            for sold in self.contient.iterator():
+                name = sold.produit.nom[:6]
+                if sold.cuisson:
+                    name += sold.cuisson.nom_facture
+                products.append(name)
+            tmp += " "
+            tmp += "/".join(products)
+        else:
+            # cas d'un Produit simple
+            if self.cuisson:
+                tmp += " " % self.cuisson
+        return tmp
 
     def isFull(self):
         """
-        True si tous les élèments sous présents (les sous produits pour 
+        True si tous les élèments sous présents (les sous produits pour
         les formules) et False sinon. """
         nb_produits = self.contient.count()
         nb_categories = self.produit.categories_ok.count()
@@ -82,23 +106,6 @@ class ProduitVendu(models.Model):
             return True
         else:
             return False
-
-    def get_menu_products(self):
-        products = []
-        for product in self.contient.order_by("produit__categorie__priorite").iterator():
-            products.append(product)
-        return products
-
-    def get_menu_resume(self):
-        """Return a short string with product in menu
-        """
-        products = []
-        for product in self.get_menu_products():
-            tmp = product.produit.nom[:6]
-            if product.cuisson:
-                tmp += product.cuisson.nom_facture
-            products.append(tmp)
-        return "/".join(products)
 
     def getFreeCategorie(self):
         """Retourne la premiere categorie dans la liste categories_ok

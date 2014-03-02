@@ -5,61 +5,54 @@
 <li onclick="window.location='/manager/archives/'">Retour archives</li>
 </ul>
 
-<h1>Commande [{{facture}}]</h1>
+<h1>Commande [{{bill}}]</h1>
 <ul id="bill_info">
-    <li>Table:</br>{{facture.table.nom}}</li>
-    <li>Couverts:</br>{{facture.couverts}}</li>
+    <li>Table:</br>{{bill.table.nom}}</li>
+    <li>Couverts:</br>{{bill.couverts}}</li>
     <li
-        {% if facture.onsite %}
+        {% if bill.onsite %}
             class="enabled">sur place
         {% else %}
             class="disabled">à emporter
         {% endif %}
     </li>
-    <!--li onclick="window.location='/bill/{{facture.id}}/print/'">Imprimer le ticket</li-->
-    <li>Total TTC:</br>{{facture.total_ttc}}€</li>
-    <li>Restant à payer:</br>{{facture.restant_a_payer}}€</li>
-    <!--li onclick="window.location='/bill/{{facture.id}}/delete/'" class="critical">Supprimer</li-->
+    <li>Total TTC:</br>{{bill.total_ttc}}€</li>
+    <li>Restant à payer:</br>{{bill.restant_a_payer}}€</li>
 </ul>
 
 <h2>Produits</h2>
-
 <ul id="products_sold">
-    {% for vendu in facture.produits.iterator %}
-    <li style="background:{{vendu.produit.categorie.color}};">
-    {{vendu}} ({{vendu.produit.get_prize}})</br>
-        {% if vendu.cuisson %}({{vendu.cuisson}}){% endif %}
-        {{ vendu.get_menu_resume }}
-        </li>
-    {% empty %}
-    <li>Aucun produit ?</li>
+    {% for sold in products_sold %}
+        {% if sold.count > 1 %}
+    <li style="background:{{sold.produit.categorie.color}}"
+        id="{{sold.id}}" href="javascript:void(0)"
+        onclick="javascript:myLinkButtonClick(this.id);">
+        {{sold.count}}x {{sold.produit.nom}}</li>
+    <div id="list_{{sold.id}}" style="display: none">
+    {% for member in sold.members %}
+    <li style="background:{{sold.produit.categorie.color}}">
+        {{member}}
+    </li>
+    {% endfor %}
+    </div>
+    {% else %}
+    <li style="background:{{sold.produit.categorie.color}}">
+      {{sold}}
+    </li>
+    {% endif %}
     {% endfor %}
 </ul>
 
-{% for vendu in facture.produits.iterator %}
-    {% if vendu.est_un_menu %}
-    <h3>{{vendu}}</h3>
-    <ul id="products_sold">
-        {% for sub in vendu.get_menu_products %}
-        <li style="background:{{sub.produit.categorie.color}};">
-        {{sub}}</br>
-        {% if sub.cuisson %}({{sub.cuisson}}){% endif %}
-        </li>
-        {% endfor %}
-    </ul>
-    {% endif %}
-{% endfor %}
-
 <h2>Paiements</h2>
 <ul id="paiements">
-    {% for payment in facture.paiements.iterator %}
+    {% for payment in bill.paiements.iterator %}
         <li>{{payment.type.nom}} {{payment.montant}}</li>
     {% endfor %}
 </ul>
 
 <h2>TVA</h2>
 <ul id="vats">
-    {% for vat in facture.vats.iterator %}
+    {% for vat in bill.vats.iterator %}
     <li>{{vat}}</li>
     {% empty %}
     <li>Aucune TVA</li>
@@ -68,7 +61,7 @@
 
 <h2>Suivi en cuisine</h2>
 <ul id="kitchen">
-    {% for follow in facture.following.iterator %}
+    {% for follow in bill.following.iterator %}
     <li
             style="background:{{follow.category.color}};">
          {{follow}}

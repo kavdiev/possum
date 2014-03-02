@@ -54,9 +54,11 @@ def archives(request):
 @permission_required('base.p1')
 def archives_bill(request, bill_id):
     context = { 'menu_manager': True, }
-    context['facture'] = get_object_or_404(Facture, pk=bill_id)
-    if not context['facture'].est_soldee():
+    bill = get_object_or_404(Facture, pk=bill_id)
+    if not bill.est_soldee():
         messages.add_message(request, messages.ERROR,
                              "Cette facture n'est pas encore soldée.")
         return redirect('archives')
+    context['bill'] = bill
+    context['products_sold'] = bill.reduced_sold_list(bill.produits.all())
     return render(request, 'base/manager/archives/invoice.html', context)

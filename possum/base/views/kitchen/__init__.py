@@ -40,10 +40,14 @@ def kitchen(request):
         if bill.following.count():
             bill.follow = bill.following.latest()
             if not bill.follow.done:
+                # on enlève les ProduitVendu de type menu
+                todo = bill.follow.produits.\
+                            filter(produit__categories_ok__isnull=True)
+                bill.todo = bill.reduced_sold_list(todo, full=True)
                 if bill.category_to_follow:
                     category_to_follow = bill.category_to_follow
                     after = bill.get_products_for_category(category_to_follow)
-                    bill.after = bill.reduce_sold_list(after)
+                    bill.after = bill.reduced_sold_list(after, full=True)
                 liste.append(bill)
     context['factures'] = liste
     context['need_auto_refresh'] = 60

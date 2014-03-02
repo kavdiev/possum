@@ -19,7 +19,7 @@
         <td width="5em">{{facture.couverts}}</td>
         <td style="background:{{facture.follow.category.color}};">
             {{facture.follow.category}}</td>
-            {% for product in facture.get_sold_list_on_last_follow %}
+            {% for product in facture.todo %}
             {% if not forloop.first %}
                 <tr><td colspan="4"></td>
             {% endif %}

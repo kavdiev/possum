@@ -17,12 +17,6 @@
 #    You should have received a copy of the GNU General Public License
 #    along with POSSUM.  If not, see <http://www.gnu.org/licenses/>.
 #
-try:
-    from collections import OrderedDict
-except:
-    #  Needed if you use a python older than 2.7
-    from ordereddict import OrderedDict
-
 import datetime
 from decimal import Decimal
 from django.db import models
@@ -118,15 +112,6 @@ class Facture(models.Model):
         if user != self.in_use_by:
             self.in_use_by = user
             self.save()
-
-    def regroup_produits(self):
-        dict_produits = OrderedDict()
-        for produit in self.produits.iterator():
-            if str(produit) in dict_produits:
-                dict_produits[str(produit)].append((produit.id, produit))
-            else:
-                dict_produits[str(produit)] = [(produit.id, produit)]
-        return dict_produits
 
     def update_kitchen(self):
         """If one, set the first category to prepare in the
@@ -487,6 +472,8 @@ class Facture(models.Model):
         return bills.exclude(produits__isnull=True)
 
     def print_ticket(self):
+        """Print this bill
+        """
         try:
             printer = Printer.objects.filter(billing=True)[0]
         except:
@@ -498,29 +485,20 @@ class Facture(models.Model):
                                                        self.couverts))
         separateur = '-' * printer.width
         ticket.append(separateur)
-        dict_vendu = OrderedDict()
-        for vendu in self.produits.order_by("produit__categorie__priorite"):
-            if vendu.produit.nom in dict_vendu:
-                dict_vendu[vendu.produit.nom].append(vendu.prix)
-            else:
-                dict_vendu[vendu.produit.nom] = [vendu.prix]
-        for nom, prix in dict_vendu.items():
-            name = nom[:25]
-            prize = "% 3.2f" % prix[0]
+        products = self.reduced_sold_list(self.produits.all())
+        for sold in products:
+            price = "% 3.2f" % prix[0]
             # la largeur disponible correspond à la largeur du ticket
             # sans la 1er partie (" 1 ") et sans la largeur du prix
             # " 1 largeur_dispo PRIX"
             largeur_dispo = printer.width - 4 - len(prize)
-            if len(nom) < largeur_dispo:
-                name = nom
+            if len(sold.produit.nom) < largeur_dispo:
+                name = sold.produit.nom
             else:
                 longueur_max = largeur_dispo - 2
-                name = nom[:longueur_max]
-            remplissage = " " * (largeur_dispo - len(name))
-            ticket.append("%s x %s%s%s" % (len(prix),
-                                           name,
-                                           remplissage,
-                                           prize))
+                name = sold.produit.nom[:longueur_max]
+            padding = " " * (largeur_dispo - len(name))
+            ticket.append("%dx %s%s%s" % (sold.count, name, padding, price))
         ticket.append(separateur)
         ticket.append("  Total: % 8.2f Eur." % self.total_ttc)
         for vatonbill in self.vats.iterator():
@@ -530,39 +508,25 @@ class Facture(models.Model):
         return printer.print_list(ticket, "invoice-%s" % self.id,
                                   with_header=True)
 
-    def get_working_day(self):
-        """Retourne la journee de travail officiel
-            (qui fini a 5h du matin)
-            date de type datetime.datetime.now()
-        """
-        if self.date_creation.hour < 5:
-            # jour de travail precedent
-            return self.date_creation - datetime.timedelta(days=1)
-        else:
-            return self.date_creation
-
-    def reduce_sold_list(self, sold_list):
+    def reduced_sold_list(self, sold_list, full=False):
         """les élèments ProduitVendu de sold_list
-        sont regroupés par 'élèment identique en fonction
-        de leur Produit d'origine, de leurs options et de leurs
-        notes
+        sont regroupés par 'élèment identique en fonction soit:
+        - du Produit() (full=False)
+        - du Produit(), des options et des notes (full=True)
         """
         sold_dict = {}
         for sold in sold_list:
-            if not sold.est_un_menu():
+            if full:
                 key = sold.get_identifier()
-                if key in sold_dict:
-                    logger.debug("[%s] increment count for this key" % key)
-                    sold_dict[key].count += 1
-                else:
-                    logger.debug("[%s] new key" % key)
-                    sold_dict[key] = sold
-                    sold_dict[key].count = 1
-        return sold_dict.values()
-
-    def get_sold_list_on_last_follow(self):
-        if self.following.count():
-            follow = self.following.latest()
-            return self.reduce_sold_list(follow.produits.all())
-        else:
-            return []
+            else:
+                key = "%s" % sold.produit_id
+            if key in sold_dict:
+                logger.debug("[%s] increment count for this key" % key)
+                sold_dict[key].count += 1
+                sold_dict[key].members.append(sold)
+            else:
+                logger.debug("[%s] new key" % key)
+                sold_dict[key] = sold
+                sold_dict[key].count = 1
+                sold_dict[key].members = [sold, ]
+        return sorted(sold_dict.values())

@@ -142,10 +142,6 @@ function update {
     fi
     enter_virtualenv
     pip -q install --proxy=${http_proxy} --requirement requirements.txt --upgrade
-    if [ "$(python --version 2>&1 | grep -c 'Python 2.6')" == "1" ]
-    then
-        pip install --proxy=${http_proxy} ordereddict
-    fi
     update_js
     if [ ! -e possum/settings.py ]
     then
@@ -216,7 +212,6 @@ function clear_db {
         cp possum.db backup/possum.db.$(date +%Y%m%d%H%M)
     fi
     ./manage.py flush --noinput
-    #./manage.py syncdb --noinput --migrate
 }
 
 function deb_install {

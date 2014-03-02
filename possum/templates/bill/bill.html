@@ -31,24 +31,26 @@
 
 <h2><!--Produits--></h2>
 <ul id="products_sold">
-    <li onclick="window.location='{% url "bill_categories" facture.id %}'">Ajouter un produit</li>
-    {% for type_produit, list_produit in facture.regroup_produits.items %}
-    {% if list_produit|length > 1 %}
-    <li style="background:{{list_produit.0.1.produit.categorie.color}}" id="{{type_produit}}" href="javascript:void(0)" onclick="javascript:myLinkButtonClick(this.id);">{{list_produit|length}} x {{type_produit}}</li>
-    <div id="list_{{type_produit}}" style="display: none">
-      {% for vendu_id_in_model, vendu in list_produit %}
-      <li style="background:{{vendu.produit.categorie.color}}" onclick="window.location='/bill/{{facture.id}}/sold/{{vendu_id_in_model}}/view/'">
-      {% if vendu.notes.count %}* {%endif%}{{vendu}} ({{vendu.prix}})
-    {% if vendu.cuisson %}({{vendu.cuisson}}){% endif %}
-    {{ vendu.get_menu_resume }}
-      </li>
-      {% endfor %}
+    <li onclick="window.location='{% url "bill_categories" facture.id %}'">
+        Ajouter un produit</li>
+    {% for sold in products_sold %}
+        {% if sold.count > 1 %}
+    <li style="background:{{sold.produit.categorie.color}}"
+        id="{{sold.id}}" href="javascript:void(0)"
+        onclick="javascript:myLinkButtonClick(this.id);">
+        {{sold.count}}x {{sold.produit.nom}}</li>
+    <div id="list_{{sold.id}}" style="display: none">
+    {% for member in sold.members %}
+    <li style="background:{{sold.produit.categorie.color}}"
+        onclick="window.location='{% url "sold_view" facture.id member.id %}'">
+        {{member}}
+    </li>
+    {% endfor %}
     </div>
     {% else %}
-    <li style="background:{{list_produit.0.1.produit.categorie.color}}" id="{{type_produit}}" onclick="window.location='/bill/{{facture.id}}/sold/{{list_produit.0.0}}/view/'">
-      {{list_produit.0.1}} ({{list_produit.0.1.prix}})
-      {% if list_produit.0.1.cuisson %}({{list_produit.0.1.cuisson}}){% endif %}
-      {{ list_produit.0.1.get_menu_resume }}
+    <li style="background:{{sold.produit.categorie.color}}"
+        onclick="window.location='{% url "sold_view" facture.id sold.id %}'">
+      {{sold}}
     </li>
     {% endif %}
     {% endfor %}
