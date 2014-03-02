@@ -36,17 +36,17 @@ year = 2013
 
 
 before = datetime.datetime.now()
-# delete stats before update
+print "delete stats before update"
 Stat.objects.filter(year=year).delete()
 
-# change status for bills
+print "change status for bills"
 bills = Facture.objects.filter(date_creation__gte="%d-01-01 00:00:00" % year,
                                date_creation__lt="%d-12-31 23:59:59" % year)
 for bill in bills.iterator():
     bill.saved_in_stats = False
     bill.save()
 
-# compute stats
+print "compute stats"
 Stat().update()
 
 after = datetime.datetime.now()
