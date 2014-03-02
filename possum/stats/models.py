@@ -269,7 +269,6 @@ def update_day(date):
     if data:
         record_day(year, month, week, day, data)
         update_avg(year, month, week, day)
-        compute_all_time()
     else:
         logger.debug("nothing to do")
     logging.info("updated record with %d bills" % count)
@@ -352,7 +351,8 @@ class Stat(models.Model):
                                         .strftime("%Y-%m-%d"))
             for day, bills_this_day in grouped:
                 update_day(day)
-
+            if grouped:
+                compute_all_time()
             logger.debug("release lock for stats")
             os.remove(settings.LOCK_STATS)
             return True
