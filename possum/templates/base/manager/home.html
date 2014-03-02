@@ -23,7 +23,8 @@ opération peut prendre du temps (voir plusieurs minutes).</p>
 <ul id="manager"><li>Travail en cours...</li></ul>
 {% else %}
 {% if bills_to_update %}
-<p>Il y a actuellement {{bills_to_update}} facture(s) soldée(s) en attente.</p>
+<p>Il y a actuellement {{bills_to_update}} facture{{bills_to_update|pluralize}} 
+soldée(s) en attente.</p>
 <ul id="manager">
     <li onclick='window.location="{% url 'stats_update' %}"'>Mettre à jour</li>
 </ul>
