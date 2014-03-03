@@ -491,7 +491,7 @@ class Facture(models.Model):
             # la largeur disponible correspond à la largeur du ticket
             # sans la 1er partie (" 1 ") et sans la largeur du prix
             # " 1 largeur_dispo PRIX"
-            largeur_dispo = printer.width - 4 - len(prize)
+            largeur_dispo = printer.width - 4 - len(price)
             if len(sold.produit.nom) < largeur_dispo:
                 name = sold.produit.nom
             else:
