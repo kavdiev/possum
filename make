@@ -74,7 +74,7 @@ function tests {
     then
         exit $?
     fi
-    csslint possum/base/static/ --format=lint-xml --exclude-list=possum/base/static/jquery.min.js,possum/base/static/highcharts > reports/csslint.report
+    csslint possum/static/ --format=lint-xml --exclude-list=possum/static/jquery.min.js,possum/static/highcharts > reports/csslint.report
     flake8 --exclude=migrations --max-complexity 12 possum > reports/flake8.report
     clonedigger --cpd-output -o reports/clonedigger.xml $(find possum -name "*.py" | fgrep -v '/migrations/' | fgrep -v '/tests/' | xargs echo )
     sloccount --duplicates --wide --details possum | fgrep -v .git | fgrep -v '/migrations/' | fgrep -v '/static/highcharts/' > reports/soccount.sc
@@ -98,25 +98,25 @@ function fastcoverage {
 
 function update_js {
     # update javascript part
-    if [ ! -e possum/base/static/jquery.min.js ]
+    if [ ! -e possum/static/jquery.min.js ]
     then
         echo "Download and install JQuery..."
-        wget http://code.jquery.com/${JQUERY} -O possum/base/static/jquery.min.js
+        wget http://code.jquery.com/${JQUERY} -O possum/static/jquery.min.js
     fi
 
-    if [ ! -d possum/base/static/highcharts ]
+    if [ ! -d possum/static/highcharts ]
     then
-        mkdir -v possum/base/static/highcharts
+        mkdir -v possum/static/highcharts
     fi
-    if [ ! -e possum/base/static/highcharts/${HIGHCHARTS} ]
+    if [ ! -e possum/static/highcharts/${HIGHCHARTS} ]
     then
         echo "Download HighCharts..."
-        wget http://code.highcharts.com/zips/${HIGHCHARTS} -O possum/base/static/highcharts/${HIGHCHARTS}
+        wget http://code.highcharts.com/zips/${HIGHCHARTS} -O possum/static/highcharts/${HIGHCHARTS}
     fi
-    if [ ! -e possum/base/static/highcharts/js/highcharts.js ]
+    if [ ! -e possum/static/highcharts/js/highcharts.js ]
     then
         echo "Unzip HighCharts..."
-        pushd possum/base/static/highcharts/ >/dev/null
+        pushd possum/static/highcharts/ >/dev/null
         unzip Highcharts-3.0.6.zip
         popd >/dev/null
     fi
@@ -125,7 +125,7 @@ function update_js {
 }
 
 function update {
-    chmod 755 possum/static/
+#    chmod 755 possum/static/
     if [ ! -d .virtualenv ]
     then
         echo
