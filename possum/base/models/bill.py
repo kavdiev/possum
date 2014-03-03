@@ -487,7 +487,7 @@ class Facture(models.Model):
         ticket.append(separateur)
         products = self.reduced_sold_list(self.produits.all())
         for sold in products:
-            price = "% 3.2f" % prix[0]
+            price = "% 3.2f" % sold.prix
             # la largeur disponible correspond à la largeur du ticket
             # sans la 1er partie (" 1 ") et sans la largeur du prix
             # " 1 largeur_dispo PRIX"
