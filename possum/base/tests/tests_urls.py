@@ -84,9 +84,7 @@ class Tests_urls(TestCase):
             reverse('bill_home'),
 #            reverse('bill_new'),
             reverse('table_select', args=('4',)),
-            reverse('table_set', args=('5', '2')),
             reverse('couverts_select', args=('42',)),
-            reverse('couverts_set', args=('4', '7')),
             reverse('bill_categories', args=(self.latest_bill.id,)),
 #            reverse('bill_categories', args=('2', '3')),
 #            reverse('product_add', args=('4', '7')),
@@ -123,6 +121,8 @@ class Tests_urls(TestCase):
         self.assert_http_status(urls, 302)
         self.assert_http_status_after_login(urls, 200)
         urls = [
+                reverse('table_set', args=('5', '2')),
+                reverse('couverts_set', args=('4', '7')),
                 reverse('bill_send_kitchen', args=('5',)),
                 ]
         self.assert_http_status(urls, 302)
