@@ -6,7 +6,7 @@
     <link rel="shortcut icon" type="image/x-icon" href="{% static "images/favicon.png" %}" />
     <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
     <meta name=author content="S. Bonnegent">
-    <script type="text/javascript" src="{% static "base.js" %}"></script>
+    <script type="text/javascript" src="{% static "possum/base.js" %}"></script>
     {% if chart1 or chart2 %}
     <script type="text/javascript" src="{% static "jquery.min.js" %}"></script>
     <script type="text/javascript" src="{% static "highcharts/js/highcharts.js" %}"></script>
@@ -17,7 +17,7 @@
             {{ chart2|load_charts:"chart_view_1,chart_view_2" }}
         {% endif %}
     {% endif %}
-    <link rel="stylesheet" href="{% static "base.css" %}"/>
+    <link rel="stylesheet" href="{% static "possum/base.css" %}"/>
     <link rel="stylesheet" href="{% static "categories.css" %}"/>
     <title>POSSUM</title>
     {% if need_auto_refresh %}
