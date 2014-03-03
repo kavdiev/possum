@@ -25,17 +25,11 @@ import logging
 import os
 from django.contrib.auth.decorators import login_required
 from django.utils.functional import wraps
-from possum.base.utils import create_default_directory
 from possum.base.models import Config, Facture
 from django.conf import settings
 
 
 logger = logging.getLogger(__name__)
-
-
-# TODO une création de dossier au millieu de la vue ?
-# (Déplacer dans settings common ?)
-create_default_directory()
 
 
 def cleanup_payment(request):

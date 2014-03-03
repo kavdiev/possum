@@ -21,8 +21,8 @@ LOGIN_URL = '/users/login/'
 LOGIN_REDIRECT_URL = '/bills'
 # tmp est en memoire (tmpfs)
 PATH_TICKET = normpath(join(DJANGO_ROOT, 'tickets'))
-if not os.path.isdir(PATH_TICKET):
-    os.mkdir(PATH_TICKET)
+if not os.path.exists(PATH_TICKET):
+    os.makedirs(PATH_TICKET)
 # list of authorized permissions codename
 PERMS = ['p1', 'p2', 'p3', 'p4', 'p5', 'p6', 'p7', 'p8', 'p9']
 ########## END POSSUM CONFIGURATION
