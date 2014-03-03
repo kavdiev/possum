@@ -18,27 +18,27 @@
 <h1><!--Ajout de produits--></h1>
 <ul id="categories">
     {% for category in categories %}
-        <li style="background:{{category.color}}" id="{{category.id}}"
-            href="javascript:void(0)" onclick="javascript:view_category(this.id);">
+    <li class="cat_{{category.id}}" id="{{category.id}}"
+        href="javascript:void(0)" onclick="javascript:view_category(this.id);">
         {{category.nom}}
     </li>
     {% empty %}
-        <li>Aucune categorie disponible.</li>
+    <li>Aucune categorie disponible.</li>
     {% endfor %}
 </ul>
 
 <h2><!--Sélection du produit--></h2>
 <ul id="products">
     {% for category in categories %}
-        <div id="cat_{{category.id}}"
-            {% if current_cat != category.id %}style="display: none"{% endif %}>
+    <div id="cat_{{category.id}}"
+        {% if current_cat != category.id %}style="display: none"{% endif %}>
         {% for product in category.products %}
-            <li
+        <li
             onclick="window.location='{% url "product_add" bill.id product.id %}'"
-                style="background:{{category.color}}">{{product.nom}}
-            </li>
+            class="cat_{{category.id}}">{{product.nom}}
+        </li>
         {% endfor %}
-        </div>
+    </div>
     {% endfor %}
 </ul>
 
@@ -47,20 +47,20 @@
 <ul id="products_sold">
     {% for sold in products_sold %}
         {% if sold.count > 1 %}
-    <li style="background:{{sold.produit.categorie.color}}"
+    <li class="cat_{{sold.produit.categorie_id}}"
         id="{{sold.id}}" href="javascript:void(0)"
         onclick="javascript:myLinkButtonClick(this.id);">
         {{sold.count}}x {{sold.produit.nom}}</li>
     <div id="list_{{sold.id}}" style="display: none">
             {% for member in sold.members %}
-    <li style="background:{{sold.produit.categorie.color}}"
-        onclick="window.location='{% url "sold_delete" bill.id member.id %}'">
-        {{member}}
-    </li>
+        <li class="cat_{{sold.produit.categorie_id}}"
+            onclick="window.location='{% url "sold_delete" bill.id member.id %}'">
+            {{member}}
+        </li>
             {% endfor %}
     </div>
         {% else %}
-    <li style="background:{{sold.produit.categorie.color}}"
+    <li class="cat_{{sold.produit.categorie_id}}"
         onclick="window.location='{% url "sold_delete" bill.id sold.id %}'">
         {{sold}}
     </li>

@@ -6,9 +6,7 @@ import sys
 
 ########## PATH CONFIGURATION
 # Absolute filesystem path to this Django project directory.
-DJANGO_ROOT = dirname(dirname(abspath(__file__)))
-# Site name.
-# SITE_NAME = basename(DJANGO_ROOT)
+DJANGO_ROOT = os.path.dirname(os.path.dirname(__file__))
 SITE_NAME = "possum"
 # Absolute filesystem path to the top-level project folder.
 SITE_ROOT = dirname(DJANGO_ROOT)
@@ -16,7 +14,6 @@ SITE_ROOT = dirname(DJANGO_ROOT)
 # python import statements.
 sys.path.append(SITE_ROOT)
 sys.path.append(normpath(join(DJANGO_ROOT, SITE_NAME, 'base')))
-# sys.path.append(normpath(join(DJANGO_ROOT, 'possum.libs')))
 ########## END PATH CONFIGURATION
 
 ########## Configuration de POSSUM
@@ -139,6 +136,8 @@ TEMPLATE_DIRS = (
 )
 
 LOCK_STATS = '/tmp/possum-stats.lock'
+# CSS for colors on categories (auto update)
+CAT_CSS = normpath(join(DJANGO_ROOT, SITE_NAME, 'static', 'categories.css'))
 
 INSTALLED_APPS = (
     'south',

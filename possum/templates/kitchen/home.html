@@ -17,7 +17,7 @@
         <td width="5em">{{facture.following.latest.time}}</td>
         <td width="5em">{{facture.table}}</td>
         <td width="5em">{{facture.couverts}}</td>
-        <td style="background:{{facture.follow.category.color}};">
+        <td class="cat_{{facture.follow.category_id}}">
             {{facture.follow.category}}</td>
             {% for product in facture.todo %}
             {% if not forloop.first %}
@@ -40,7 +40,7 @@
             <!-- There are a category to follow -->
             {% if facture.after %}
             <tr><td colspan="3" align="center">A suivre ...</td>
-                <td style="background:{{facture.category_to_follow.color}};">
+                <td class="cat_id{{facture.category_to_follow_id}}">
                     {{facture.category_to_follow}}</td>
                 {% for product in facture.after %}
                 {% if not forloop.first %}

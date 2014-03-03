@@ -13,7 +13,7 @@
         Nom:</br>
         {{product.nom}}</li>
         <li onclick='window.location="{% url 'products_category' product.id %}"' 
-        style="background:{{product.categorie.color}};">
+            class="cat_{{product.categorie_id}}">
         Catégorie:</br>{{product.categorie}}</li>
         <li onclick='window.location="{% url 'products_enable' product.id %}"'
         {% if product.actif %}
@@ -83,7 +83,7 @@ d'abord activer des catégories de produits ici avant de pouvoir activer des pro
         Activer une catégorie</li>
     {% for category in product.categories_ok.iterator %}
     <li onclick='window.location="{% url 'products_del_categories_ok' product.id category.id %}"' 
-        style="background:{{category.color}};">
+        class="cat_{{category.id}}">
         {{category.nom}}
         </li>
     {% endfor %}
@@ -96,10 +96,10 @@ d'abord activer des catégories de produits ici avant de pouvoir activer des pro
         Activer un produit</li>
     {% for sub in product.produits_ok.iterator %}
         {% if sub.actif %}
-            <li 
-            onclick='window.location="{% url 'products_del_produits_ok' product.id sub.id %}"' 
-                style="background:{{sub.categorie.color}};">{{sub.nom}}
-            </li>
+    <li 
+        onclick='window.location="{% url 'products_del_produits_ok' product.id sub.id %}"' 
+        class="cat_{{sub.categorie_id}}">{{sub.nom}}
+    </li>
         {% endif %}
     {% endfor %}
 </ul>

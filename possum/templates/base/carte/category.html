@@ -25,7 +25,7 @@
 <h2>Paramètres</h2>
 <ul id="category_info">
     <li onclick="window.location='/carte/categories/{{category.id}}/color/'" 
-        style="background:{{category.color}};">
+        class="cat_{{category.id}}">
         Couleur:</br>{{category.color}}</li>
     <li onclick="window.location='/carte/categories/{{category.id}}/name/'">
         Changement de nom</li>
@@ -73,7 +73,7 @@
     {% for product in products_enable %}
         <li 
             onclick="window.location='/carte/products/{{product.id}}/'" 
-            style="background:{{category.color}};">{{product.nom}}
+            class="cat_{{category.id}}">{{product.nom}}
         </li>
     {% endfor %}
 </ul>
@@ -83,7 +83,7 @@
     {% for product in products_disable %}
         <li 
             onclick="window.location='/carte/products/{{product.id}}/'" 
-            style="background:{{category.color}};">{{product.nom}}
+            class="cat_{{category.id}}">{{product.nom}}
         </li>
     {% empty %}
         <li>Aucun produit disponible.</li>

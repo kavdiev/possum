@@ -19,7 +19,7 @@
 {% for follow in facture.following.iterator %}
     <tr>
         <td width="5em">{{follow.time}}</td>
-        <td style="background:{{follow.category.color}};">{{follow.category}}</td>
+        <td class="cat_{{follow.category_id}}">{{follow.category}}</td>
         {% for product in follow.produits.all %}
                 {% if first %}
         </tr>

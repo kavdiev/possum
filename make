@@ -161,6 +161,7 @@ Example:
 -------------------------------------------------------
 EOF
     fi
+    possum/utils/update_categories_css.py
     ./manage.py migrate
 }
 

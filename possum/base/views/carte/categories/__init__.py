@@ -277,6 +277,23 @@ def categories_vat_onsite(request, cat_id):
     return render(request, 'base/carte/categories/select_vat.html', context)
 
 
+def update_colors():
+    """Create/update a css file with all categories color
+    """
+    try:
+        fd = open(settings.CAT_CSS, "w")
+    except:
+        messages.add_message(request, messages.ERROR, u"Le fichier %s ne peut "
+                             u"être créé" % settings.CAT_CSS)
+    else:
+        fd.write("/* Auto generate file, do not update by hand */\n")
+        for cat in Categorie.objects.iterator():
+            if cat.color:
+                fd.write(".cat_%s {background:%s;}\n" % (cat.id, cat.color))
+        fd.close()
+        logger.info("CSS for categories colors updated")
+
+
 @permission_required('base.p2')
 def categories_set_color(request, cat_id):
     color = request.POST.get('color', '').strip()
@@ -290,6 +307,8 @@ def categories_set_color(request, cat_id):
         except:
             messages.add_message(request, messages.ERROR, "Les modifications "
                                  "n'ont pu être enregistrées.")
+        else:
+            update_colors()
     return redirect('categories_view', cat_id)
 
 

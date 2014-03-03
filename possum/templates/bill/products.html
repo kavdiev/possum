@@ -10,7 +10,7 @@
 <ul id="products">
     {% for product in products %}
         <li onclick="window.location='{% url "product_add" bill_id product.id %}'" 
-            style="background:{{product.categorie.color}}">{{product.nom}}
+            class="cat_{{product.categorie_id}}">{{product.nom}}
         </li>
     {% empty %}
         <li>Aucun produit disponible.</li>

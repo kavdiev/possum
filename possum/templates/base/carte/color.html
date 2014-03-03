@@ -12,7 +12,7 @@
 
 <ul id="categories">
     {% for category in categories %}
-        <li style="background:{{category.color}};">{{category.nom}}</li>
+        <li class="cat_{{category.id}}">{{category.nom}}</li>
     {% empty %}
         <li>Aucune categorie disponible.</li>
     {% endfor %}

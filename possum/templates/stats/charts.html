@@ -16,7 +16,7 @@
         {% if categories %}class="selected"{% endif %}>Catégories</li>
     {% for cat in cat_list %}
     <li onclick='window.location="{% url "stats_charts" cat.id %}"'
-        style="background:{{cat.color}};"
+        class="cat_{{cat.id}}"
     {% ifequal choice cat.id %}class="selected"{% endifequal %}>{{cat.nom}}</li>
     {% endfor %}
 

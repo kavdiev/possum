@@ -6,7 +6,7 @@
 <ul id="products">
     {% for product in products %}
     <li onclick="window.location='{% url "subproduct_add" bill_id sold_id product.id %}'"
-        style="background:{{product.categorie.color}};">
+        class="cat_{{product.categorie_id}}">
     {{product.nom}}
         </li>
     {% empty %}

@@ -64,7 +64,6 @@ class ProduitVendu(models.Model):
             tmp += " (%.2f)" % self.prix
         if self.produit.categories_ok.count():
             # cas du menu
-            #self.contient.order_by("produit__categorie__priorite").iterator():
             products = []
             for sold in self.contient.iterator():
                 name = sold.produit.nom[:6]
@@ -76,7 +75,7 @@ class ProduitVendu(models.Model):
         else:
             # cas d'un Produit simple
             if self.cuisson:
-                tmp += " " % self.cuisson
+                tmp += " %s" % self.cuisson.nom_facture
         return tmp
 
     def isFull(self):

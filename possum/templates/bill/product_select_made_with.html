@@ -8,7 +8,8 @@
 <h1>Ce produit est à envoyer en cuisine avec:</h1>
 <ul id="categories">
     {% for category in categories %}
-    <li onclick="window.location='/bill/{{bill.id}}/product/{{product.id}}/made_with/{{category.id}}/'" style="background:{{category.color}};">
+    <li onclick="window.location='/bill/{{bill.id}}/product/{{product.id}}/made_with/{{category.id}}/'"
+        class="cat_{{category.id}}">
         {{category.nom}}
         </li>
     {% empty %}

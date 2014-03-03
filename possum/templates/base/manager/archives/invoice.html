@@ -24,19 +24,19 @@
 <ul id="products_sold">
     {% for sold in products_sold %}
         {% if sold.count > 1 %}
-    <li style="background:{{sold.produit.categorie.color}}"
+    <li class="cat_{{sold.produit.categorie_id}}"
         id="{{sold.id}}" href="javascript:void(0)"
         onclick="javascript:myLinkButtonClick(this.id);">
         {{sold.count}}x {{sold.produit.nom}}</li>
     <div id="list_{{sold.id}}" style="display: none">
     {% for member in sold.members %}
-    <li style="background:{{sold.produit.categorie.color}}">
+    <li class="cat_{{sold.produit.categorie_id}}">
         {{member}}
     </li>
     {% endfor %}
     </div>
     {% else %}
-    <li style="background:{{sold.produit.categorie.color}}">
+    <li class="cat_{{sold.produit.categorie_id}}">
       {{sold}}
     </li>
     {% endif %}
@@ -62,10 +62,7 @@
 <h2>Suivi en cuisine</h2>
 <ul id="kitchen">
     {% for follow in bill.following.iterator %}
-    <li
-            style="background:{{follow.category.color}};">
-         {{follow}}
-    </li>
+    <li class="cat_{{follow.category_id}}">{{follow}}</li>
     {% empty %}
     <li>Aucun suivi.</li>
     {% endfor %}

@@ -10,7 +10,8 @@
 <ul id="categories">
     <li onclick="window.location='/carte/categories/add/'">Ajouter</li>
     {% for category in categories %}
-    <li onclick="window.location='/carte/categories/{{category.id}}/'" style="background:{{category.color}};">
+    <li onclick="window.location='/carte/categories/{{category.id}}/'"
+        class="cat_{{category.id}}">
         [{{category.priorite}}] {{category.nom}}
         </li>
     {% endfor %}

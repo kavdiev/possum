@@ -10,11 +10,12 @@
 <ul id="sold_info">
     {% if sold.produit.categorie.made_in_kitchen %}
     <li onclick="window.location='/bill/{{bill_id}}/product/{{sold.id}}/made_with/'"
-        style="background:{{sold.made_with.color}};">
+        class="cat_{{sold.made_with_id}}">
     À envoyer avec:</br>{{sold.made_with}}</li>
     {% endif %}
     {% if sold.produit.choix_cuisson %}
-    <li onclick="window.location='/bill/{{bill_id}}/sold/{{sold.id}}/cooking/'" style="background:{{sold.cuisson.color}};">Cuisson:</br>{{sold.cuisson}}</li>
+    <li onclick="window.location='/bill/{{bill_id}}/sold/{{sold.id}}/cooking/'"
+        style="background:{{sold.cuisson.color}};">Cuisson:</br>{{sold.cuisson}}</li>
     {% endif %}
     <li>Prix TTC:</br>{{sold.prix}}€</li>
 </ul>
@@ -24,8 +25,9 @@
 
 <ul id="products_sold">
     {% for product in sold.contient.all %}
-    <li style="background:{{product.produit.categorie.color}};" onclick="window.location='/bill/{{bill_id}}/sold/{{product.id}}/view/'">{% if product.notes.count %}* {%endif%}{{product.produit.nom}}</br>
-    {% if product.cuisson %}({{product.cuisson}}){% endif %}
+    <li class="cat_{{product.produit.categorie_id}}"
+        onclick="window.location='/bill/{{bill_id}}/sold/{{product.id}}/view/'">
+        {{product}}
     </li>
     {% endfor %}
 </ul>

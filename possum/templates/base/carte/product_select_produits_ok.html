@@ -5,7 +5,8 @@
 
 <ul id="products">
     {% for sub in products %}
-    <li onclick="window.location='/carte/products/{{product.id}}/produits_ok/{{sub.id}}/add/'" style="background:{{sub.categorie.color}};">
+    <li onclick="window.location='/carte/products/{{product.id}}/produits_ok/{{sub.id}}/add/'"
+        class="cat_{{sub.categorie_id}}">
         {{sub.nom}}
         </li>
     {% empty %}

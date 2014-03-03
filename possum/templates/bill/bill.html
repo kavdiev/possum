@@ -5,8 +5,8 @@
 <h1>Commande [{{facture}}]</h1>
 <ul id="bill_info">
     {% if facture.category_to_follow %}
-        <li onclick="window.location='/bill/{{facture.id}}/kitchen/'"
-        style="background:{{facture.category_to_follow.color}};"
+    <li onclick="window.location='/bill/{{facture.id}}/kitchen/'"
+        class="cat_{{facture.category_to_follow_id}}"
         >Cuisine:</br>Envoyé {{facture.category_to_follow.nom}} ?
     {% else %}
         <li>Cuisine:</br>Rien à envoyer
@@ -35,20 +35,20 @@
         Ajouter un produit</li>
     {% for sold in products_sold %}
         {% if sold.count > 1 %}
-    <li style="background:{{sold.produit.categorie.color}}"
+    <li class="cat_{{sold.produit.categorie_id}}"
         id="{{sold.id}}" href="javascript:void(0)"
         onclick="javascript:myLinkButtonClick(this.id);">
         {{sold.count}}x {{sold.produit.nom}}</li>
     <div id="list_{{sold.id}}" style="display: none">
     {% for member in sold.members %}
-    <li style="background:{{sold.produit.categorie.color}}"
+    <li class="cat_{{sold.produit.categorie_id}}"
         onclick="window.location='{% url "sold_view" facture.id member.id %}'">
         {{member}}
     </li>
     {% endfor %}
     </div>
     {% else %}
-    <li style="background:{{sold.produit.categorie.color}}"
+    <li class="cat_{{sold.produit.categorie_id}}"
         onclick="window.location='{% url "sold_view" facture.id sold.id %}'">
       {{sold}}
     </li>
@@ -69,7 +69,7 @@
 <ul id="kitchen">
     {% for follow in facture.following.iterator %}
     <li onclick="window.location='/kitchen/{{facture.id}}/'"
-            style="background:{{follow.category.color}};">
+        class="cat_{{follow.category_id}}">
          {{follow}}
     </li>
     {% empty %}

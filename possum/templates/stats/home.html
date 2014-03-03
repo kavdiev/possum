@@ -141,7 +141,7 @@
 <h2>Categories</h2>
 <ul id="rapports">
     {% for category in categories %}
-    <li style="background:{{category.color}};">{{category.nom}} : {{category.nb}}</li>
+    <li class="cat_{{category.id}}">{{category.nom}} : {{category.nb}}</li>
     {% empty %}
     <li>Rien à afficher</li>
     {% endfor %}
@@ -150,7 +150,7 @@
 <h2>Produits</h2>
 <ul id="rapports">
     {% for product in products %}
-    <li style="background:{{product.categorie.color}};">{{product.nom}} : {{product.nb}}</li>
+    <li class="cat_{{product.categorie_id}}">{{product.nom}} : {{product.nb}}</li>
     {% empty %}
     <li>Rien à afficher</li>
     {% endfor %}
