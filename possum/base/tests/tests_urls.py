@@ -82,7 +82,7 @@ class Tests_urls(TestCase):
         ''' Test that the bill urls work. '''
         urls = [
             reverse('bill_home'),
-            reverse('bill_new'),
+#            reverse('bill_new'),
             reverse('table_select', args=('4',)),
             reverse('table_set', args=('5', '2')),
             reverse('couverts_select', args=('42',)),
