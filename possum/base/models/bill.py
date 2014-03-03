@@ -50,16 +50,12 @@ class Facture(models.Model):
                               related_name="facture-table")
     couverts = models.PositiveIntegerField("nombre de couverts", default=0)
     produits = models.ManyToManyField(ProduitVendu,
-                                      related_name="les produits vendus",
-                                      limit_choices_to={
-                                      'date__gt': datetime.datetime.today()})
+                                      related_name="les produits vendus")
     total_ttc = models.DecimalField(max_digits=9,
                                     decimal_places=2,
                                     default=0)
     paiements = models.ManyToManyField('Paiement',
-                                       related_name="les paiements",
-                                       limit_choices_to={
-                                       'date__gt': datetime.datetime.today()})
+                                       related_name="les paiements")
     vats = models.ManyToManyField('VATOnBill',
                                   related_name="vat total for each vat on "
                                   "a bill")
@@ -285,7 +281,6 @@ class Facture(models.Model):
     def non_soldees(self):
         """ Return the list of unpaid facture
         :return: A list of Facture
-        TODO: est ce encore utile ?
         """
         liste = []
         for i in Facture.objects.exclude(restant_a_payer=0).iterator():
@@ -305,7 +300,7 @@ class Facture(models.Model):
         for sold in self.produits.iterator():
             if self.surcharge:
                 if not sold.produit.price_surcharged:
-                    # TODO: just in case for backwards comtability
+                    # just in case for backwards comtability
                     # in case Produit has no price_surcharged
                     logger.info("[%s] product without price_surcharged" %
                                 sold.produit.id)
