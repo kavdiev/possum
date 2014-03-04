@@ -92,6 +92,7 @@ def get_value(context, key):
     else:
         return "0.00\n"
 
+
 def prepare_full_output(context):
     """Prepare full output
     """
@@ -146,6 +147,7 @@ def get_subject(request):
     """Get subject for email
     """
     week = request.POST.get('week')
+    month = request.POST.get('month')
     year = request.POST.get('year')
     date = request.POST.get('date')
     if week:
