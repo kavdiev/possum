@@ -136,10 +136,6 @@ function update {
         # For the moment, we stay with python2.
         virtualenv --prompt=="POSSUM" --python=python2 .virtualenv
     fi
-    if [ -d .git ]
-    then
-        git pull
-    fi
     enter_virtualenv
     pip -q install --proxy=${http_proxy} --requirement requirements.txt --upgrade
     update_js
