@@ -2,31 +2,31 @@
 {% block content %}
 
 <ul id="back">
-    <li onclick="window.location='/manager/printers/'">Retour imprimantes</li>
+    <li onclick="window.location='{% url "printer_home" %}'">Retour imprimantes</li>
 </ul>
 
 <h1>Imprimante: {{printer.name}}</h1>
 <ul id="printer">
-    <li onclick="window.location='/manager/printer/{{printer.id}}/kitchen/'"
+    <li onclick="window.location='{% url "printer_change_kitchen" printer.id %}'"
         {% if printer.kitchen %}class="enabled"
         {% else %}class="disabled"
         {% endif %}>Cuisine</li>
-    <li onclick="window.location='/manager/printer/{{printer.id}}/billing/'"
+    <li onclick="window.location='{% url "printer_change_billing" printer.id %}'"
         {% if printer.billing %}class="enabled"
         {% else %}class="disabled"
         {% endif %}>Facturation</li>
-    <li onclick="window.location='/manager/printer/{{printer.id}}/manager/'"
+    <li onclick="window.location='{% url "printer_change_manager" printer.id %}'"
         {% if printer.manager %}class="enabled"
         {% else %}class="disabled"
         {% endif %}>Manager</li>
-    <li onclick="window.location='/manager/printer/{{printer.id}}/width/'">
+    <li onclick="window.location='{% url "printer_select_width" printer.id %}'">
         Largeur du ticket:</br>{{printer.width}}</li>
-    <li onclick="window.location='/manager/printer/{{printer.id}}/test/'">
+    <li onclick="window.location='{% url "printer_test_print" printer.id %}'">
         Test d'impression</li>
 </ul>
 
 <h2>Options</h2>
-<form method='post' action='/manager/printer/{{printer.id}}/'>{% csrf_token %}
+<form method='post' action='{% url "printer_view" printer.id %}'>{% csrf_token %}
 <table>
 <!--tr>
     <td><b>options d'impressions</b></td>
@@ -34,11 +34,13 @@
 </tr-->
 <tr>
     <td><b>entête du ticket (sans accent)</b></td>
-    <td><textarea name="header" rows="10" cols="{{printer.width}}">{{printer.header}}</textarea></td>
+    <td><textarea name="header" rows="10" cols="{{printer.width}}">
+            {{printer.header}}</textarea></td>
 </tr>
 <tr>
     <td><b>fin du ticket (sans accent)</b></td>
-    <td><textarea name="footer" rows="10" cols="{{printer.width}}">{{printer.footer}}</textarea></td>
+    <td><textarea name="footer" rows="10" cols="{{printer.width}}">
+            {{printer.footer}}</textarea></td>
 </tr>
 <tr>
     <td colspan=2><input type='submit' value='Enregistrer'></td>

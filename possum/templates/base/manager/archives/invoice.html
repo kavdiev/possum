@@ -2,7 +2,7 @@
 {% block content %}
 
 <ul id="back">
-<li onclick="window.location='/manager/archives/'">Retour archives</li>
+    <li onclick="window.location='{% url "archives" %}'">Retour archives</li>
 </ul>
 
 <h1>Commande [{{bill}}]</h1>

@@ -2,15 +2,15 @@
 {% block content %}
 
 <ul id="manager">
-    <li onclick="window.location='/manager/archives/'">Archives</li>
-    <li onclick="window.location='/carte/categories/'">Carte</li>
-    <li onclick="window.location='/manager/credits/'">Crédits</li>
-    <li onclick="window.location='/editions/'">Éditions</li>
-    <li onclick="window.location='/manager/printers/'">Imprimantes</li>
-    <li onclick="window.location='/notes/'">Notes</li>
-    <li onclick="window.location='/manager/tables/'">Tables</li>
-    <li onclick="window.location='/manager/vats/'">TVA</li>
-    <li onclick="window.location='/manager/users/'">Utilisateurs</li>
+    <li onclick='window.location="{% url "archives" %}"'>Archives</li>
+    <li onclick='window.location="{% url "categories" %}"'>Carte</li>
+    <li onclick='window.location="{% url "credits" %}"'>Crédits</li>
+    <li onclick='window.location="{% url "editions_home" %}"'>Éditions</li>
+    <li onclick='window.location="{% url "printer_home" %}"'>Imprimantes</li>
+    <li onclick='window.location="{% url "notes_home" %}"'>Notes</li>
+    <li onclick='window.location="{% url "tables" %}"'>Tables</li>
+    <li onclick='window.location="{% url "vats" %}"'>TVA</li>
+    <li onclick='window.location="{% url "users" %}"'>Utilisateurs</li>
 </ul>
 
 <h2>Chiffres & Résultats</h2>

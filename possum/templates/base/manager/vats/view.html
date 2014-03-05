@@ -2,13 +2,13 @@
 {% block content %}
 
 <ul id="back">
-    <li onclick="window.location='/manager/vats/'">Retour TVA</li>
+    <li onclick="window.location='{% url "vats" %}'">Retour TVA</li>
 </ul>
 
 <h1>TVA: {{vat.name}}</h1>
 
 <ul id="vats">
-    <li onclick="window.location='/manager/vats/{{vat.id}}/change/'">
+    <li onclick="window.location='{% url "vats_change" vat.id %}'">
         {{vat.name}}</br>
         {{vat.tax}}
         </li>

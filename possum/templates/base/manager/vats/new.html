@@ -2,12 +2,12 @@
 {% block content %}
 
 <ul id="back">
-    <li onclick="window.location='/manager/vats/'">Retour TVA</li>
+    <li onclick="window.location='{% url "vats" %}'">Retour TVA</li>
 </ul>
 
 <h1>Nouvelle TVA</h1>
 
-<form method='post' action='/manager/vats/new/'>{% csrf_token %}
+<form method='post' action='{% url "vat_new" %}'>{% csrf_token %}
 <table>
 <tr>
     <td><b>Nom</b></td>
@@ -26,7 +26,7 @@
 <h2>TVA existantes</h2>
 <ul id="vats">
     {% for vat in vats %}
-    <li onclick="window.location='/manager/vats/{{vat.id}}/'">
+    <li onclick="window.location='{% url "vats_view" vat.id %}'">
         {{vat.name}}</br>
         {{vat.tax}}
         </li>

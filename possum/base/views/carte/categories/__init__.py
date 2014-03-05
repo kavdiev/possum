@@ -240,31 +240,9 @@ def categories_vat_takeaway(request, cat_id):
     context = {'menu_manager': True, }
     context['category'] = get_object_or_404(Categorie, pk=cat_id)
     context['type_vat'] = 'TVA à emporter'
-    context['url_vat'] = 'vat_takeaway'
+    request.session['vat'] = 'vat_takeaway'
     context['vats'] = VAT.objects.order_by('name')
     return render(request, 'base/carte/categories/select_vat.html', context)
-
-
-@permission_required('base.p2')
-def categories_set_vat_takeaway(request, cat_id, vat_id):
-    category = get_object_or_404(Categorie, pk=cat_id)
-    vat = get_object_or_404(VAT, pk=vat_id)
-    category.set_vat_takeaway(vat)
-    for product in Produit.objects.filter(categorie=category,
-                                          actif=True).iterator():
-        product.update_vats()
-    return redirect('categories_view', cat_id)
-
-
-@permission_required('base.p2')
-def categories_set_vat_onsite(request, cat_id, vat_id):
-    category = get_object_or_404(Categorie, pk=cat_id)
-    vat = get_object_or_404(VAT, pk=vat_id)
-    category.set_vat_onsite(vat)
-    for product in Produit.objects.filter(categorie=category,
-                                          actif=True).iterator():
-        product.update_vats()
-    return redirect('categories_view', cat_id)
 
 
 @permission_required('base.p2')
@@ -272,9 +250,30 @@ def categories_vat_onsite(request, cat_id):
     context = {'menu_manager': True, }
     context['category'] = get_object_or_404(Categorie, pk=cat_id)
     context['type_vat'] = 'TVA sur place'
-    context['url_vat'] = 'vat_onsite'
+    request.session['vat'] = 'vat_onsite'
     context['vats'] = VAT.objects.order_by('name')
     return render(request, 'base/carte/categories/select_vat.html', context)
+
+
+@permission_required('base.p2')
+def categories_set_vat(request, cat_id, vat_id):
+    category = get_object_or_404(Categorie, pk=cat_id)
+    vat = get_object_or_404(VAT, pk=vat_id)
+    type_vat = request.session.get('vat', "")
+    if type_vat:
+        if type_vat == 'vat_onsite':
+            logger.debug("[%s] new vat onsite" % category)
+            category.set_vat_onsite(vat)
+        else:
+            logger.debug("[%s] new vat takeaway" % category)
+            category.set_vat_takeaway(vat)
+        del request.session['vat']
+        for product in Produit.objects.filter(categorie=category,
+                                              actif=True).iterator():
+            product.update_vats()
+    else:
+        messages.add_message(request, messages.ERROR, "Type de TVA non defini")
+    return redirect('categories_view', cat_id)
 
 
 def update_colors():

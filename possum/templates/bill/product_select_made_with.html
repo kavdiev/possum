@@ -2,13 +2,13 @@
 {% block content %}
 
 <ul id="back">
-    <li onclick="window.location='/bill/{{bill.id}}/sold/{{product.id}}/view/'">Retour produit</li>
+    <li onclick='window.location="{% url "sold_view" bill.id product.id %}"'>Retour produit</li>
 </ul>
 
 <h1>Ce produit est à envoyer en cuisine avec:</h1>
 <ul id="categories">
     {% for category in categories %}
-    <li onclick="window.location='/bill/{{bill.id}}/product/{{product.id}}/made_with/{{category.id}}/'"
+    <li onclick='window.location="{% url "product_set_made_with" bill.id product.id category.id %}"'
         class="cat_{{category.id}}">
         {{category.nom}}
         </li>

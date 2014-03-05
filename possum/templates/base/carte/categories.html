@@ -2,15 +2,15 @@
 {% block content %}
 
 <ul id="carte_options">
-    <li onclick="window.location='/carte/send/'">Envoyer par mail</li>
-    <li onclick="window.location='/carte/print/'">Imprimer</li>
+    <li onclick="window.location='{% url "categories_send" %}'">Envoyer par mail</li>
+    <li onclick="window.location='{% url "categories_print" %}'">Imprimer</li>
 </ul>
 
 <h2>Catégories</h2>
 <ul id="categories">
-    <li onclick="window.location='/carte/categories/add/'">Ajouter</li>
+    <li onclick="window.location='{% url "categories_add" %}'">Ajouter</li>
     {% for category in categories %}
-    <li onclick="window.location='/carte/categories/{{category.id}}/'"
+    <li onclick="window.location='{% url "categories_view" category.id %}'"
         class="cat_{{category.id}}">
         [{{category.priorite}}] {{category.nom}}
         </li>

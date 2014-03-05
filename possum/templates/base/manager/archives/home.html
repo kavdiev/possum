@@ -3,7 +3,7 @@
 
 <h1>Archives du {{date|date:'d F Y'}}</h1>
 
-<form method='post' action='/manager/archives/' name='archives'>{% csrf_token %}
+<form method='post' action='{% url "archives" %}' name='archives'>{% csrf_token %}
 <ul id="date_form">
     {{ date_form.as_ul }}
     <li><input type='submit' value='Changer'></li>
@@ -13,7 +13,7 @@
 <h2>Factures</h2>
 <ul id="bills">
         {% for facture in factures %}
-        <li onclick="window.location='/manager/archives/bill/{{facture.id}}/'">
+        <li onclick="window.location='{% url "archives_bill" facture.id %}'">
         {{facture}}</br>
         Couverts: {{facture.couverts}}</br>
         Table: {% if facture.table %}{{facture.table}}{% endif %}</br>

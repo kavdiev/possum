@@ -2,77 +2,77 @@
 {% block content %}
 
 <ul id="back">
-    <li onclick="window.location='/carte/'">Retour carte</li>
+    <li onclick="window.location='{% url "home_categories" %}'">Retour carte</li>
 </ul>
 
 <h1>Catégorie: {{category.nom}}</h1>
 <h2>Priorité d'affichage</h2>
 <ul id="category_info">
-    <li onclick="window.location='/carte/categories/{{category.id}}/less-10/'">
+    <li onclick="window.location='{% url "categories_less_priority_10" category.id %}'">
         <<</br>
         Priorité - 10</li>
-    <li onclick="window.location='/carte/categories/{{category.id}}/less/'">
+    <li onclick="window.location='{% url "categories_less_priority" category.id %}'">
         <</br>
         Priorité - 1</li>
     <li>Priorité:</br>{{category.priorite}}</li>
-    <li onclick="window.location='/carte/categories/{{category.id}}/more/'">
+    <li onclick="window.location='{% url "categories_more_priority" category.id %}'">
         ></br>
         Priorité + 1</li>
-    <li onclick="window.location='/carte/categories/{{category.id}}/more-10/'">
+    <li onclick="window.location='{% url "categories_more_priority_10" category.id %}'">
         >></br>
         Priorité + 10</li>
 </ul>
 <h2>Paramètres</h2>
 <ul id="category_info">
-    <li onclick="window.location='/carte/categories/{{category.id}}/color/'" 
+    <li onclick="window.location='{% url "categories_color" category.id %}'" 
         class="cat_{{category.id}}">
         Couleur:</br>{{category.color}}</li>
-    <li onclick="window.location='/carte/categories/{{category.id}}/name/'">
+    <li onclick="window.location='{% url "categories_name" category.id %}'">
         Changement de nom</li>
-    <li onclick="window.location='/carte/categories/{{category.id}}/surtaxable/'"
+    <li onclick="window.location='{% url "categories_surtaxable" category.id %}'"
         {% if category.surtaxable %}
             class="enabled"> Est surtaxable
         {% else %}
             class="disabled"> N'est pas surtaxable
         {% endif %}
     </li>
-    <li onclick="window.location='/carte/categories/{{category.id}}/disable_surtaxe/'"
+    <li onclick="window.location='{% url "categories_disable_surtaxe" category.id %}'"
         {% if category.disable_surtaxe %}
             class="enabled"> Peux annuler la surtaxe
         {% else %}
             class="disabled"> Ne peux annuler la surtaxe
         {% endif %}
     </li>
-    <li onclick="window.location='/carte/categories/{{category.id}}/vat_onsite/'"
+    <li onclick="window.location='{% url "categories_vat_onsite" category.id %}'"
         {% if category.vat_onsite %}
             >TVA sur place:</br>{{category.vat_onsite.name}}
         {% else %}
             class="disabled">TVA sur place:</br>non défini
         {% endif %}
     </li>
-    <li onclick="window.location='/carte/categories/{{category.id}}/vat_takeaway/'"
+    <li onclick="window.location='{% url "categories_vat_takeaway" category.id %}'"
         {% if category.vat_takeaway %}
             >TVA à emporter:</br>{{category.vat_takeaway.name}}
         {% else %}
             class="disabled">TVA à emporter:</br>non défini
         {% endif %}
     </li>
-    <li onclick="window.location='/carte/categories/{{category.id}}/kitchen/'"
+    <li onclick="window.location='{% url "categories_set_kitchen" category.id %}'"
         {% if category.made_in_kitchen %}
             class="enabled">Est préparé dans la cuisine
         {% else %}
             class="disabled">N'est pas préparé dans la cuisine
         {% endif %}
     </li>
-    <li onclick="window.location='/carte/categories/{{category.id}}/delete/'" class="critical">Supprimer</li>
+    <li onclick="window.location='{% url "categories_delete" category.id %}'"
+        class="critical">Supprimer</li>
 </ul>
 
 <h2>Produits actifs</h2>
 <ul id="products">
-    <li onclick="window.location='/carte/categories/{{category.id}}/product/new/'">Ajouter</li>
+    <li onclick="window.location='{% url "products_new" category.id %}'">Ajouter</li>
     {% for product in products_enable %}
-        <li 
-            onclick="window.location='/carte/products/{{product.id}}/'" 
+        <li onclick="window.location='{% url "products_view" product.id %}'" 
             class="cat_{{category.id}}">{{product.nom}}
         </li>
     {% endfor %}
@@ -81,8 +81,7 @@
 <h2>Anciens produits</h2>
 <ul id="products">
     {% for product in products_disable %}
-        <li 
-            onclick="window.location='/carte/products/{{product.id}}/'" 
+        <li onclick="window.location='{% url "products_view" product.id %}'" 
             class="cat_{{category.id}}">{{product.nom}}
         </li>
     {% empty %}

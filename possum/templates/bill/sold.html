@@ -3,18 +3,18 @@
 {% block content %}
 
 <ul id="back">
-    <li onclick="window.location='/bill/{{bill_id}}/'">Retour facture</li>
+    <li onclick="window.location='{% url "bill_view" bill_id %}'">Retour facture</li>
 </ul>
 
 <h1>{{sold.produit.nom}}</h1>
 <ul id="sold_info">
     {% if sold.produit.categorie.made_in_kitchen %}
-    <li onclick="window.location='/bill/{{bill_id}}/product/{{sold.id}}/made_with/'"
+    <li onclick="window.location='{% url "product_select_made_with" bill_id sold.id %}'"
         class="cat_{{sold.made_with_id}}">
     À envoyer avec:</br>{{sold.made_with}}</li>
     {% endif %}
     {% if sold.produit.choix_cuisson %}
-    <li onclick="window.location='/bill/{{bill_id}}/sold/{{sold.id}}/cooking/'"
+    <li onclick="window.location='{% url "sold_cooking" bill_id sold.id %}'"
         style="background:{{sold.cuisson.color}};">Cuisson:</br>{{sold.cuisson}}</li>
     {% endif %}
     <li>Prix TTC:</br>{{sold.prix}}€</li>
@@ -26,7 +26,7 @@
 <ul id="products_sold">
     {% for product in sold.contient.all %}
     <li class="cat_{{product.produit.categorie_id}}"
-        onclick="window.location='/bill/{{bill_id}}/sold/{{product.id}}/view/'">
+        onclick="window.location='{% url "sold_view" bill_id product.id %}'">
         {{product}}
     </li>
     {% endfor %}
@@ -37,7 +37,8 @@
 <p>Les options en vert sont sélectionnées, il faut appuyer dessus pour activer/désactiver.</p>
 <ul id="options">
     {% for option in options %}
-    <li onclick="window.location='/bill/{{bill_id}}/sold/{{sold.id}}/option/{{option.id}}/'" {% if option in sold.options.all %}class="enabled"{% endif %}>
+    <li onclick="window.location='{% url "sold_options" bill_id sold.id option.id %}'"
+        {% if option in sold.options.all %}class="enabled"{% endif %}>
         {{option.name}}
     </li>
     {% empty %}
@@ -49,7 +50,8 @@
 <p>Les notes en vert sont sélectionnées pour le produit.</p>
 <ul id="notes">
     {% for note in notes %}
-    <li onclick="window.location='/bill/{{bill_id}}/sold/{{sold.id}}/note/{{note.id}}/'" {% if note in sold.notes.all %}class="enabled"{% endif %}>
+    <li onclick="window.location='{% url "sold_note" bill_id sold.id note.id %}'"
+        {% if note in sold.notes.all %}class="enabled"{% endif %}>
         {{note.message}}
     </li>
     {% empty %}
@@ -58,7 +60,7 @@
 </ul>
 
 <h2>Nouvelle note</h2>
-<form action="/bill/{{bill_id}}/sold/{{sold.id}}/view/" method="post">
+<form action="{% url "sold_view" bill_id sold.id %}" method="post">
     {{ note.non_field_errors }}
     {% csrf_token %}
     <table>

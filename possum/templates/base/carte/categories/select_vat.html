@@ -4,11 +4,11 @@
 <h1>{{type_vat}} pour: {{category.nom}}</h1>
 
 <ul id="vats">
-    <li onclick="window.location='/manager/vats/new/'">
+    <li onclick="window.location='{% url "vat_new" %}'">
         Ajouter
     </li>
     {% for vat in vats %}
-    <li onclick="window.location='/carte/categories/{{category.id}}/{{url_vat}}/set/{{vat.id}}/'">
+    <li onclick="window.location='{% url "categories_set_vat" category.id vat.id %}'">
         {{vat.name}}</br>
         {{vat.tax}}
         </li>

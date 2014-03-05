@@ -2,13 +2,13 @@
 {% block content %}
 
 <ul id="back">
-    <li onclick="window.location='/manager/printers/'">Retour imprimantes</li>
+    <li onclick="window.location='{% url "printer_home" %}'">Retour imprimantes</li>
 </ul>
 
 <h1>Ajout d'une imprimante</h1>
 <ul id="printers">
     {% for printer in printers %}
-    <li onclick="window.location='/manager/printer/add/{{printer}}/'">
+    <li onclick="window.location='{% url "printer_added" printer %}'">
         {{printer}}
         </li>
     {% empty %}

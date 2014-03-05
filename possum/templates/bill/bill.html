@@ -5,28 +5,31 @@
 <h1>Commande [{{facture}}]</h1>
 <ul id="bill_info">
     {% if facture.category_to_follow %}
-    <li onclick="window.location='/bill/{{facture.id}}/kitchen/'"
+    <li onclick='window.location="{% url "bill_send_kitchen" facture.id %}"'
         class="cat_{{facture.category_to_follow_id}}"
         >Cuisine:</br>Envoyé {{facture.category_to_follow.nom}} ?
     {% else %}
         <li>Cuisine:</br>Rien à envoyer
     {% endif %}
     </li>
-    <li onclick="window.location='/bill/{{facture.id}}/table/select/'"
+    <li onclick='window.location="{% url "table_select" facture.id %}"'
         {% if facture.surcharge %}class="surtaxe"{% endif %}>
         Table:</br>{{facture.table.nom}}</li>
-    <li onclick="window.location='/bill/{{facture.id}}/couverts/select/'">Couverts:</br>{{facture.couverts}}</li>
-    <li onclick="window.location='/bill/{{facture.id}}/onsite/'"
+    <li onclick='window.location="{% url "couverts_select" facture.id %}"'>
+        Couverts:</br>{{facture.couverts}}</li>
+    <li onclick='window.location="{% url "bill_onsite" facture.id %}"'
         {% if facture.onsite %}
             class="enabled">sur place
         {% else %}
             class="disabled">à emporter
         {% endif %}
     </li>
-    <li onclick="window.location='/bill/{{facture.id}}/print/'">Imprimer le ticket</li>
+    <li onclick='window.location="{% url "bill_print" facture.id %}"'>
+        Imprimer le ticket</li>
     <li>Total TTC:</br>{{facture.total_ttc}}€</li>
     <li>Restant à payer:</br>{{facture.restant_a_payer}}€</li>
-    <li onclick="window.location='/bill/{{facture.id}}/delete/'" class="critical">Supprimer</li>
+    <li onclick='window.location="{% url "bill_delete" facture.id %}"'
+        class="critical">Supprimer</li>
 </ul>
 
 <h2><!--Produits--></h2>
@@ -58,7 +61,8 @@
 
 <h2><!--Paiements--></h2>
 <ul id="paiements">
-    <li onclick="window.location='{% url "prepare_payment" facture.id %}'">Ajouter un paiement</li>
+    <li onclick="window.location='{% url "prepare_payment" facture.id %}'">
+        Ajouter un paiement</li>
     {% for payment in facture.paiements.iterator %}
     <li onclick="window.location='{% url "bill_payment_view" facture.id payment.id %}'">
         {{payment.type.nom}}: {{payment.montant}}€</li>
@@ -68,7 +72,7 @@
 <h2>Suivi en cuisine</h2>
 <ul id="kitchen">
     {% for follow in facture.following.iterator %}
-    <li onclick="window.location='/kitchen/{{facture.id}}/'"
+    <li onclick="window.location='{% url "kitchen_for_bill" facture.id %}'"
         class="cat_{{follow.category_id}}">
          {{follow}}
     </li>

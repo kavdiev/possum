@@ -5,10 +5,8 @@
 
 <ul id="categories">
     {% for category in categories %}
-    <li onclick="window.location='/carte/products/{{product.id}}/categories_ok/{{category.id}}/add/'"
-        class="cat_{{category.id}}">
-        {{category.nom}}
-        </li>
+    <li onclick="window.location='{% url "products_add_categories_ok" product.id category.id %}'"
+        class="cat_{{category.id}}">{{category.nom}}</li>
     {% empty %}
         <li>Aucune categorie disponible.</li>
     {% endfor %}

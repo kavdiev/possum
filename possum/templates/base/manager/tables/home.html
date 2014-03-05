@@ -4,7 +4,7 @@
 <h1>Gestion des tables</h1>
 
 <ul id="zones">
-    <li onclick="window.location='/manager/tables/new/'">Ajouter une zone</li>
+    <li onclick="window.location='{% url "tables_zone_new" %}'">Ajouter une zone</li>
 </ul>
 
 {% for zone in zones %}
@@ -14,13 +14,14 @@
     {% endif %}
 
 <ul id="zones">
-    <li onclick="window.location='/manager/tables/{{zone.id}}/'">Modifier</li>
-    <li onclick="window.location='/manager/tables/{{zone.id}}/delete/'" class="critical">Supprimer</li>
+    <li onclick="window.location='{% url "tables_zone" zone.id %}'">Modifier</li>
+    <li onclick="window.location='{% url "tables_zone_delete" zone.id %}'"
+        class="critical">Supprimer</li>
 </ul>
     <ul id="tables">
-        <li onclick="window.location='/manager/tables/{{zone.id}}/new/'">+</li>
+        <li onclick="window.location='{% url "tables_table_new" zone.id %}'">+</li>
         {% for table in zone.tables %}
-        <li onclick="window.location='/manager/tables/{{zone.id}}/{{table.id}}/'"
+        <li onclick="window.location='{% url "tables_table" zone.id table.id %}'"
             {% if zone.surtaxe %}class="surtaxe"{% endif %}>
             {{table.nom}}
             </li>

@@ -2,10 +2,10 @@
 {% block content %}
 <p>Cette page est automatiquement rechargée toutes les {{need_auto_refresh}} secondes.</p>
 <ul id="bills">
-    <li onclick="window.location='/bill/new/'">Nouvelle commande</li>
+    <li onclick="window.location='{% url "bill_new" %}'">Nouvelle commande</li>
     {% if factures %}
         {% for facture in factures %}
-        <li onclick="window.location='/bill/{{facture.id}}/'">
+        <li onclick="window.location='{% url "bill_view" facture.id %}'">
         {{facture}}</br>
         Table: {% if facture.table %}{{facture.table}}{%else%}T--{% endif %}</br>
         Couverts: {{facture.couverts}}</br>

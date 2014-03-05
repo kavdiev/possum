@@ -8,7 +8,7 @@
 
     <ul id="tables">
         {% for table in zone.tables %}
-            <li onclick="window.location='/bill/{{bill_id}}/table/set/{{table.id}}/'"
+        <li onclick="window.location='{% url "table_set" bill_id table.id %}'"
             {% if table.zone.surtaxe %}class="surtaxe"{% endif %}>
             {{table.nom}}
             </li>

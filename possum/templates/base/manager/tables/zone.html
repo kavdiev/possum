@@ -2,7 +2,7 @@
 {% block content %}
 
 <ul id="back">
-<li onclick="window.location='/manager/tables/'">Retour tables</li>
+    <li onclick="window.location='{% url "tables" %}'">Retour tables</li>
 </ul>
 
 <h1>
@@ -10,7 +10,7 @@
     {% else %}Nouveau nom:{%endif%}
 </h1>
 
-<form method='post' action='/manager/tables/{{zone.id}}/'>{% csrf_token %}
+<form method='post' action='{% url "tables_zone" zone.id %}'>{% csrf_token %}
     <input name="name" value="{{ zone.nom }}">
     <input type='submit' value='Modifier'>
 </form>

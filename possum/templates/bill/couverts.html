@@ -5,7 +5,7 @@
 
 <ul id="couverts">
     {% for number in nb_couverts %}
-        <li onclick="window.location='/bill/{{bill_id}}/couverts/set/{{number}}/'">
+    <li onclick="window.location='{% url "couverts_set" bill_id number %}'">
         {{number}}
         </li>
     {% empty %}

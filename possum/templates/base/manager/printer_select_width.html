@@ -1,13 +1,13 @@
 {% extends "base.html" %}
 {% block content %}
 <ul id="back">
-    <li onclick="window.location='/manager/printer/{{printer.id}}/'">Retour imprimante</li>
+    <li onclick='window.location="{% url "printer_view" printer.id %}"'>Retour imprimante</li>
 </ul>
 
 <h1>Sélection de la largeur d'impression pour: {{printer.name}}</h1>
 <ul id="printer_width">
     {% for number in max %}
-        <li onclick="window.location='/manager/printer/{{printer.id}}/width/set/{{number}}/'">
+    <li onclick='window.location="{% url "printer_set_width" printer.id number %}"'>
         {{number}}
         </li>
     {% endfor %}
