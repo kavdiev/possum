@@ -296,7 +296,8 @@ class Facture(models.Model):
         self.total_ttc = Decimal("0")
         self.restant_a_payer = Decimal("0")
         for vatonbill in self.vats.iterator():
-            vatonbill.total = 0
+            vatonbill.total = Decimal("0")
+            vatonbill.save()
         for sold in self.produits.iterator():
             if self.surcharge:
                 if not sold.produit.price_surcharged:
@@ -317,11 +318,13 @@ class Facture(models.Model):
                     vat = sold.produit.categorie.vat_takeaway
                     value = sold.produit.vat_takeaway
             self.total_ttc += sold.prix
-            self.restant_a_payer += sold.prix
             vatonbill, created = self.vats.get_or_create(vat=vat)
+            if created:
+                logger.debug("[%s] new vat_on_bill" % self)
             vatonbill.total += value
-        for vatonbill in self.vats.iterator():
             vatonbill.save()
+            logger.debug(vatonbill)
+        self.restant_a_payer = self.total_ttc
         for payment in self.paiements.iterator():
             self.restant_a_payer -= payment.montant
         self.save()
@@ -497,8 +500,9 @@ class Facture(models.Model):
         ticket.append(separateur)
         ticket.append("  Total: % 8.2f Eur." % self.total_ttc)
         for vatonbill in self.vats.iterator():
-            ticket.append("  TVA % 5.2f%%: % 6.2f Eur." % (vatonbill.vat.tax,
-                                                           vatonbill.total))
+            if vatonbill.total != Decimal('0'):
+                ticket.append("  TVA % 5.2f%%: % 6.2f Eur." % (
+                              vatonbill.vat.tax, vatonbill.total))
         ticket.append(separateur)
         return printer.print_list(ticket, "invoice-%s" % self.id,
                                   with_header=True)
