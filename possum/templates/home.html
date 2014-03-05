@@ -1,17 +1,17 @@
 {% extends "base.html" %}
 {% block content %}
-
+{% load staticfiles %}
 <ul id="bigmenu">
     <li onclick='window.location="{% url 'bill_home' %}"'>Commandes</br>
-        <img src="/static/images/order.png" alt="Commandes"/></li>
+        <img src="{% static "images/order.png" %}" alt="Commandes"/></li>
     <li onclick='window.location="{% url 'kitchen' %}"'>Cuisine</br>
-        <img src="/static/images/kitchen.png" alt="Cuisine"/></li>
+        <img src="{% static "images/kitchen.png" %}" alt="Cuisine"/></li>
     <li onclick='window.location="{% url 'manager' %}"'>Manager</br>
-        <img src="/static/images/manager.png" alt="Manager"/></li>
+        <img src="{% static "images/manager.png" %}" alt="Manager"/></li>
     <li onclick='window.location="{% url 'logout' %}"'>Déconnexion</br>
-        <img src="/static/images/logout.png" alt="Déconnexion"/></li>
+        <img src="{% static "images/logout.png" %}" alt="Déconnexion"/></li>
     <li onclick='window.location="{% url 'shutdown' %}"'>Eteindre le serveur</br>
-        <img src="/static/images/shutdown.png" alt="Shutdown"/></li>
+        <img src="{% static "images/shutdown.png" %}" alt="Shutdown"/></li>
 <ul>
 
 {% endblock %}

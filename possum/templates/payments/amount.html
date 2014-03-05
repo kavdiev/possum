@@ -1,14 +1,14 @@
 {% extends "base.html" %}
 {% block content %}
-
+{% load staticfiles %}
 <h1>Sélection d'un montant</h1>
 <ul id="lcd">
     {% for i in left %}
-    <li><img src="/static/images/numbers/orange/digit_{{i}}.png"></li>
+    <li><img src="{% static "images/numbers/orange/digit_{{i}}.png" %}"></li>
     {% endfor %}
-    <li><img src="/static/images/numbers/orange/dot.png"></li>
+    <li><img src="{% static "images/numbers/orange/dot.png" %}"></li>
     {% for i in right %}
-    <li><img src="/static/images/numbers/orange/digit_{{i}}.png"></li>
+    <li><img src="{% static "images/numbers/orange/digit_{{i}}.png" %}"></li>
     {% endfor %}
 </ul>
 <ul id="lcd_save">
