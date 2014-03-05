@@ -157,8 +157,8 @@ Example:
 -------------------------------------------------------
 EOF
     fi
-    possum/utils/update_categories_css.py
     ./manage.py migrate
+    possum/utils/update_categories_css.py
 }
 
 function deb_install_apache {
