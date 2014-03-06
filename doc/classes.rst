@@ -1,12 +1,3 @@
-Accompagnement
--------------------
- 
-.. inheritance-diagram:: possum.base.models.Accompagnement
-   :parts: 1
- 
-.. autoclass:: possum.base.models.Accompagnement
-   :members:
- 
 Categorie
 -------------------
  
@@ -34,15 +25,6 @@ Cuisson
 .. autoclass:: possum.base.models.Cuisson
    :members:
  
-DailyStat
--------------------
- 
-.. inheritance-diagram:: possum.base.models.DailyStat
-   :parts: 1
- 
-.. autoclass:: possum.base.models.DailyStat
-   :members:
- 
 Facture
 -------------------
  
@@ -61,15 +43,6 @@ Follow
 .. autoclass:: possum.base.models.Follow
    :members:
  
-MonthlyStat
--------------------
- 
-.. inheritance-diagram:: possum.base.models.MonthlyStat
-   :parts: 1
- 
-.. autoclass:: possum.base.models.MonthlyStat
-   :members:
- 
 Nom
 -------------------
  
@@ -86,6 +59,15 @@ NomDouble
    :parts: 1
  
 .. autoclass:: possum.base.models.NomDouble
+   :members:
+ 
+Option
+-------------------
+ 
+.. inheritance-diagram:: possum.base.models.Option
+   :parts: 1
+ 
+.. autoclass:: possum.base.models.Option
    :members:
  
 Paiement
@@ -142,13 +124,13 @@ ProduitVendu
 .. autoclass:: possum.base.models.ProduitVendu
    :members:
  
-Sauce
+Stat
 -------------------
  
-.. inheritance-diagram:: possum.base.models.Sauce
+.. inheritance-diagram:: possum.stats.models.Stat
    :parts: 1
  
-.. autoclass:: possum.base.models.Sauce
+.. autoclass:: possum.stats.models.Stat
    :members:
  
 Table
@@ -176,15 +158,6 @@ VATOnBill
    :parts: 1
  
 .. autoclass:: possum.base.models.VATOnBill
-   :members:
- 
-WeeklyStat
--------------------
- 
-.. inheritance-diagram:: possum.base.models.WeeklyStat
-   :parts: 1
- 
-.. autoclass:: possum.base.models.WeeklyStat
    :members:
  
 Zone
