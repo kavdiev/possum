@@ -21,9 +21,18 @@
 from datetime import datetime
 import os
 import unicodedata
-import cups
 from django.conf import settings
 from django.db import models
+import logging
+
+
+logger = logging.getLogger(__name__)
+
+
+try:
+    import cups
+except:
+    logger.critical("cups can't be loaded, printer doesn't work !")
 
 
 def sans_accent(message):
