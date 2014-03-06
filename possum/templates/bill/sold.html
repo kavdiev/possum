@@ -37,7 +37,7 @@
 <p>Les options en vert sont sélectionnées, il faut appuyer dessus pour activer/désactiver.</p>
 <ul id="options">
     {% for option in options %}
-    <li onclick="window.location='{% url "sold_options" bill_id sold.id option.id %}'"
+    <li onclick="window.location='{% url "bill_sold_options" bill_id sold.id option.id %}'"
         {% if option in sold.options.all %}class="enabled"{% endif %}>
         {{option.name}}
     </li>
