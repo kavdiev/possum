@@ -251,7 +251,6 @@ class Facture(models.Model):
     def set_couverts(self, nb):
         """Change le nombre de couvert"""
         self.couverts = nb
-        self.save()
 
     def set_table(self, table):
         """Change la table de la facture
@@ -262,20 +261,17 @@ class Facture(models.Model):
         différents.
         """
         self.table = table
-        self.save()
         if self.is_surcharged() != self.surcharge:
             self.update_surcharge()
 
     def set_onsite(self, onsite):
         """onsite: Boolean"""
         self.onsite = onsite
-        self.save()
         if self.is_surcharged() != self.surcharge:
             self.update_surcharge()
 
     def update_surcharge(self):
         self.surcharge = self.is_surcharged()
-        self.save()
         self.update()
 
     def non_soldees(self):
@@ -298,6 +294,7 @@ class Facture(models.Model):
         for vatonbill in self.vats.iterator():
             vatonbill.total = Decimal("0")
             vatonbill.save()
+        self.update_surcharge()
         for sold in self.produits.iterator():
             if self.surcharge:
                 if not sold.produit.price_surcharged:
@@ -444,12 +441,14 @@ class Facture(models.Model):
         Table is surtaxed et il n'y a pas de nourriture.
         """
         if self.onsite:
-            for vendu in self.produits.iterator():
-                logger.debug("test with produit: %s and categorie id: %d" % (
-                             vendu.produit.nom, vendu.produit.categorie.id))
-                if vendu.produit.categorie.disable_surtaxe:
-                    logger.debug("pas de surtaxe")
-                    return False
+            if self.produits.filter(produit__categorie__disable_surtaxe=True
+                                    ).count() > 0:
+#            for vendu in self.produits.iterator():
+#                logger.debug("test with produit: %s and categorie id: %d" % (
+#                             vendu.produit.nom, vendu.produit.categorie.id))
+#                if vendu.produit.categorie.disable_surtaxe:
+                logger.debug("pas de surtaxe")
+                return False
             if self.table:
                 return self.table.is_surcharged()
             else:

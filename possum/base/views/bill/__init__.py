@@ -126,6 +126,7 @@ def table_set(request, bill_id, table_id):
     bill = get_object_or_404(Facture, pk=bill_id)
     table = get_object_or_404(Table, pk=table_id)
     bill.set_table(table)
+    bill.save()
     return redirect("bill_view", bill.id)
 
 
@@ -438,6 +439,7 @@ def couverts_set(request, bill_id, number):
     context = {'menu_bills': True, }
     bill = get_object_or_404(Facture, pk=bill_id)
     bill.set_couverts(number)
+    bill.save()
     return redirect("bill_view", bill_id)
 
 
@@ -476,6 +478,7 @@ def bill_delete(request, bill_id):
 def bill_onsite(request, bill_id):
     order = get_object_or_404(Facture, pk=bill_id)
     order.set_onsite(not order.onsite)
+    order.save()
     return redirect('bill_view', bill_id)
 
 

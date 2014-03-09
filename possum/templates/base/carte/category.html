@@ -22,9 +22,12 @@
         >></br>
         Priorité + 10</li>
 </ul>
+<h2><!-- explications --></h2>
+<p>Les priorités bases sont affichées en premier.</p>
+
 <h2>Paramètres</h2>
 <ul id="category_info">
-    <li onclick="window.location='{% url "categories_color" category.id %}'" 
+    <li onclick="window.location='{% url "categories_color" category.id %}'"
         class="cat_{{category.id}}">
         Couleur:</br>{{category.color}}</li>
     <li onclick="window.location='{% url "categories_name" category.id %}'">
@@ -67,12 +70,19 @@
     <li onclick="window.location='{% url "categories_delete" category.id %}'"
         class="critical">Supprimer</li>
 </ul>
+<h2><!-- explications --></h2>
+<p>Une surtaxe peut être définie au niveau d'un ensemble de tables (appelé
+<b>Zone</b>). Cette surtaxe va s'ajouter au prix de chaque produit se trouvant
+dans les catégories <b>surtaxable</b> lorsque la table d'une zone surtaxée
+est sélectionnée.</p>
+<p>Cette surtaxe est désactivé si au moins un produit d'une catégorie
+<b>qui peut annuler la surtaxe</b> est ajouté à la facture.</p>
 
 <h2>Produits actifs</h2>
 <ul id="products">
     <li onclick="window.location='{% url "products_new" category.id %}'">Ajouter</li>
     {% for product in products_enable %}
-        <li onclick="window.location='{% url "products_view" product.id %}'" 
+        <li onclick="window.location='{% url "products_view" product.id %}'"
             class="cat_{{category.id}}">{{product.nom}}
         </li>
     {% endfor %}
@@ -81,7 +91,7 @@
 <h2>Anciens produits</h2>
 <ul id="products">
     {% for product in products_disable %}
-        <li onclick="window.location='{% url "products_view" product.id %}'" 
+        <li onclick="window.location='{% url "products_view" product.id %}'"
             class="cat_{{category.id}}">{{product.nom}}
         </li>
     {% empty %}
