@@ -294,7 +294,7 @@ class Facture(models.Model):
         for vatonbill in self.vats.iterator():
             vatonbill.total = Decimal("0")
             vatonbill.save()
-        self.update_surcharge()
+        self.surcharge = self.is_surcharged()
         for sold in self.produits.iterator():
             if self.surcharge:
                 if not sold.produit.price_surcharged:
