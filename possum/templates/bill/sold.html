@@ -15,7 +15,7 @@
     {% endif %}
     {% if sold.produit.choix_cuisson %}
     <li onclick="window.location='{% url "sold_cooking" bill_id sold.id %}'"
-        style="background:{{sold.cuisson.color}};">Cuisson:</br>{{sold.cuisson}}</li>
+        class="cooking_{{sold.cuisson_id}}">Cuisson:</br>{{sold.cuisson}}</li>
     {% endif %}
     <li>Prix TTC:</br>{{sold.prix}}€</li>
 </ul>

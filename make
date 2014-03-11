@@ -18,10 +18,10 @@ List of commands:
     utests             :  make only the unit tests
     help               :  this help
     init_demo          :  erase database with data of demonstration
-    init_mine          :  run possum/utils/init_mine.py in virtualenv 
+    init_mine          :  run possum/utils/init_mine.py in virtualenv
     load_demo          :  load database with data of demonstration
     model              :  generate doc/images/models-base.png
-    modified_models    :  prepare files after modified models
+    models_changed     :  prepare files after modified models
     sh                 :  run ./manage.py shell_plus in virtualenv
     run                :  run ./manage.py runserver_plus in virtualenv
     tests              :  make tests and coverage
@@ -167,7 +167,7 @@ function deb_install_apache {
     a2dismod authn_file deflate setenvif reqtimeout negotiation
     a2dismod authz_groupfile authz_user authz_default
     a2enmod wsgi ssl
-    echo 
+    echo
     echo "Config example for https in: possum/utils/apache2.conf"
     echo "To use one:"
     echo "  cp possum/utils/apache2.conf /etc/apache2/sites-available/possum.conf"
@@ -178,7 +178,7 @@ function deb_install_apache {
 
 function deb_install_nginx {
     sudo apt-get install nginx-light supervisor
-    echo 
+    echo
     echo "Config example for Supervisor: possum/utils/supervisor.conf"
     echo "  cp possum/utils/supervisor.conf /etc/supervisor/conf.d/possum.conf"
     echo "  /etc/init.d/supervisor restart"
@@ -206,9 +206,10 @@ function clear_db {
         then
             mkdir backup
         fi
-        cp possum.db backup/possum.db.$(date +%Y%m%d%H%M)
+        mv possum.db backup/possum.db.$(date +%Y%m%d%H%M)
     fi
-    ./manage.py flush --noinput
+    ./manage.py syncdb --noinput --migrate
+#    ./manage.py flush --noinput
 }
 
 function deb_install {
@@ -267,7 +268,7 @@ model)
 update)
     update
     ;;
-modified_models)
+models_changed)
     enter_virtualenv
     ./manage.py syncdb --noinput --migrate
     ./manage.py schemamigration base --auto

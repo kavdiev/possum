@@ -1,0 +1,24 @@
+- model: base.cuisson
+  pk: 1
+  fields:
+    nom_facture: B
+    nom: bleu
+    priorite: 10
+- model: base.cuisson
+  pk: 2
+  fields:
+    nom_facture: S
+    nom: saignant
+    priorite: 15
+- model: base.cuisson
+  pk: 3
+  fields:
+      nom_facture: AP
+      nom: à point
+      priorite: 20
+- model: base.cuisson
+  pk: 4
+  fields:
+    nom_facture: BC
+    nom: bien cuit
+    priorite: 25

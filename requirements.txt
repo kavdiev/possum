@@ -1,6 +1,7 @@
 Django==1.6.2
 Jinja2==2.7.2
 MarkupSafe==0.18
+PyYAML==3.10
 Pygments==1.6
 South==0.8.4
 Sphinx==1.2.1

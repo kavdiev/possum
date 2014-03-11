@@ -2,14 +2,15 @@
 {% block content %}
 
 <ul id="back">
-    <li onclick="window.location='{% url "bill_sold_working" bill_id sold.id %}'">Retour</li>
+    <li onclick="window.location='{% url "bill_sold_working" bill_id sold.id %}'">
+        Retour</li>
 </ul>
 
 <h1>Choix de la cuisson pour: {{sold.produit.nom}}</h1>
 <ul id="cookings">
     {% for cooking in cookings %}
     <li onclick="window.location='{% url "sold_cooking" bill_id sold.id cooking.id %}'"
-    style="background:{{cooking.color}};">
+        class="cooking_{{cooking.id}}">
         {{cooking}}
         </li>
     {% empty %}
