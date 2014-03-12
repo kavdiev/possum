@@ -470,8 +470,13 @@ def bill_view(request, bill_id):
 @permission_required('base.p3')
 def bill_delete(request, bill_id):
     order = get_object_or_404(Facture, pk=bill_id)
-    order.delete()
-    return redirect('bill_home')
+    if order.paiements.count() > 0:
+        messages.add_message(request, messages.ERROR, "La facture contient "
+                             "des paiements")
+        return redirect('bill_view', bill_id)
+    else:
+        order.delete()
+        return redirect('bill_home')
 
 
 @permission_required('base.p3')
