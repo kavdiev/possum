@@ -39,7 +39,9 @@ os.environ['DJANGO_SETTINGS_MODULE'] = 'possum.settings'
 # coming with Sphinx (named 'sphinx.ext.*') or your custom ones.
 # extensions = ['sphinx.ext.autodoc', 'sphinx.ext.doctest', 'sphinx.ext.todo', 'sphinx.ext.coverage', 'sphinx.ext.inheritance_diagram', 'sphinx.ext.viewcode']
 # avant modif DEVS extensions = ['sphinx.ext.autodoc', 'sphinx.ext.doctest', 'sphinx.ext.inheritance_diagram']
-extensions = ['sphinx.ext.autodoc', 'sphinx.ext.doctest', 'sphinx.ext.inheritance_diagram', 'sphinx.ext.todo', 'sphinx.ext.coverage']
+extensions = ['sphinx.ext.autodoc', 'sphinx.ext.doctest',
+              'sphinx.ext.inheritance_diagram', 'sphinx.ext.todo',
+              'sphinx.ext.coverage']
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']

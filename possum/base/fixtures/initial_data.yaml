@@ -14,7 +14,7 @@
   pk: 3
   fields:
       nom_facture: AP
-      nom: à point
+      nom: a point
       priorite: 20
 - model: base.cuisson
   pk: 4
