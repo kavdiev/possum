@@ -71,6 +71,6 @@ class Tests_Bill(TestCase):
         self.assertEqual(montant, (self.facture.paiements.all()[2]).montant)
         # TODO This is done just to execute more code
         # An assertion should be verified
-        self.facture.send_in_the_kitchen()
+        self.facture.print_ticket_kitchen()
         self.facture.est_un_repas()
         self.facture.print_ticket()

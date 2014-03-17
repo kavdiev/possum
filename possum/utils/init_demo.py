@@ -259,6 +259,6 @@ for i in xrange(15):
     bill = create_bill(finish=False)
     if i % 2:
         bill.update_kitchen()
-        bill.send_in_the_kitchen()
+        bill.print_ticket_kitchen()
 
 Stat().update()

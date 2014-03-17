@@ -131,45 +131,6 @@ class Facture(models.Model):
             self.category_to_follow = None
         self.save()
 
-    def get_first_todolist_for_kitchen(self):
-        """Prepare la liste des produits a envoyer en cuisine
-        """
-        categories = []
-        products = {}
-        for product in self.produits.iterator():
-            if product.est_un_menu():
-                for subproduct in product.contient.filter(produit__categorie__made_in_kitchen=True).iterator():
-                    # cas des menus
-                    if subproduct.made_with not in categories:
-                        categories.append(subproduct.made_with)
-                    if subproduct.made_with.id not in products:
-                        products[subproduct.made_with.id] = []
-                    name = subproduct.produit.nom
-                    if subproduct.produit.choix_cuisson:
-                        if subproduct.cuisson:
-                            name += ": %s" % subproduct.cuisson.nom_facture
-                        else:
-                            name += ": ?"
-                    products[subproduct.made_with.id].append(name)
-            else:
-                if product.produit.categorie.made_in_kitchen:
-                    if product.made_with not in categories:
-                        categories.append(product.made_with)
-                    if product.made_with.id not in products:
-                        products[product.made_with.id] = []
-                    name = product.produit.nom
-                    if product.produit.choix_cuisson:
-                        name += ": %s" % product.cuisson
-                    products[product.made_with.id].append(name)
-        categories.sort()
-        todolist = []
-        for category in categories:
-            todolist.append("***> %s" % category.nom)
-            for product in products[category.id]:
-                todolist.append(product)
-            todolist.append(" ")
-        return todolist
-
     def get_products_for_category(self, category):
         """Return ProduitVendu list for this category
         """
@@ -184,55 +145,60 @@ class Facture(models.Model):
                     products_list.append(product)
         return products_list
 
-    def send_in_the_kitchen(self):
-        """We send the first category available to the kitchen.
+    def prepare_products(self, products):
+        """Prepare a list to create a print ticket for kitchen
+        products: list of ProduitVendu()
+        return: list of ""
         """
+        output = []
+        for product in self.reduced_sold_list(products, full=True):
+            tmp = "%dx %s " % (product.count, product.produit.nom)
+            if product.cuisson:
+                tmp += "%s " % product.cuisson
+            tmp += ",".join([option.name for option in product.options.all()])
+            output.append(tmp)
+            for note in product.notes.all():
+                output.append("!> %s" % note.message)
+        return output
+
+    def print_ticket_kitchen(self):
+        """Prepare and send ticket to printers in kitchen.
+        """
+        output = True
         if self.category_to_follow:
             follow = Follow(category=self.category_to_follow)
             follow.save()
             todolist = []
-            heure = follow.date.strftime("%H:%M")
-            # heure = datetime.datetime.now().strftime("%H:%M")
-            todolist.append("[%s] Table %s (%s couv.)" % (heure, self.table,
+            # header
+            time = follow.date.strftime("%H:%M")
+            todolist.append("[%s] Table %s (%s couv.)" % (time, self.table,
                                                           self.couverts))
-            todolist.append(">>> envoye %s" % follow.category.nom)
+            todolist.append(">>> faire: %s" % follow.category.nom)
             todolist.append(" ")
-            nb_products_sent = self.produits.filter(sent=True).count()
-            # liste des produits qui doivent etre envoyés en cuisine
+            # list of products to prepare (without Menu)
             products = self.get_products_for_category(follow.category)
+            todolist += self.prepare_products(products)
+            follow.produits = products
+            follow.save()
+            self.following.add(follow)
+            # save send status
             for product in products:
                 product.sent = True
                 product.save()
-            follow.produits = products
-            if nb_products_sent == 0:
-                # on crée le ticket avec la liste des produits et
-                # des suites
-                products = self.get_first_todolist_for_kitchen()
-                if products:
-                    todolist += products
-            else:
-                products.sort()
-                for product in products:
-                    todolist.append(product)
-#            print_list = []
-#            for sold in self.reduce_sold_list(todolist):
-#                tmp = "%dx %s" % (sold.count, sold.produit.nom)
-#                if sold.cuisson:
-#                    tmp += " %s" % sold.cuisson
-#                for option in sold.options.all():
-#                    tmp += " %s" % option.name
-#                print_list.add(tmp)
-#                for note in sold.notes.all():
-#                    print_list("!> %s" % note.message)
-#            name = "kitchen-%s-%s" % (self.id, follow.category.id)
-#            for printer in Printer.objects.filter(kitchen=True):
-#                result = printer.print_list(print_list, name)
-#                if not result:
-#                    return False
-            follow.save()
-            self.following.add(follow)
             self.update_kitchen()
-            return True
+            # if another category following, we send it too to inform kitchen
+            if self.category_to_follow:
+                todolist.append(" ")
+                category = self.category_to_follow
+                todolist.append("Ensuite, pour info: %s" % category)
+                products = self.get_products_for_category(category)
+                todolist += self.prepare_products(products)
+            # we print for each printers in kitchen
+            name = "kitchen-%s-%s" % (self.id, follow.category_id)
+            for printer in Printer.objects.filter(kitchen=True):
+                if not printer.print_list(todolist, name):
+                    output = False
+        return output
 
     def guest_couverts(self):
         """Essaye de deviner le nombre de couverts"""
@@ -438,15 +404,12 @@ class Facture(models.Model):
 
     def is_surcharged(self):
         """
-        Table is surtaxed et il n'y a pas de nourriture.
+        Table is surtaxed if there are no Produit() in a Categorie() with
+        disable_surtaxe = True
         """
         if self.onsite:
             if self.produits.filter(produit__categorie__disable_surtaxe=True
                                     ).count() > 0:
-#            for vendu in self.produits.iterator():
-#                logger.debug("test with produit: %s and categorie id: %d" % (
-#                             vendu.produit.nom, vendu.produit.categorie.id))
-#                if vendu.produit.categorie.disable_surtaxe:
                 logger.debug("pas de surtaxe")
                 return False
             if self.table:
@@ -511,6 +474,10 @@ class Facture(models.Model):
         sont regroupés par 'élèment identique en fonction soit:
         - du Produit() (full=False)
         - du Produit(), des options et des notes (full=True)
+
+        On ajoute sur chaque élèment:
+        - count: le nombre total
+        - members: la liste des instances
         """
         sold_dict = {}
         for sold in sold_list:

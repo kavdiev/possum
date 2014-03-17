@@ -76,7 +76,7 @@ def bill_send_kitchen(request, bill_id):
         messages.add_message(request,
                              messages.ERROR,
                              "Vous devez indiquer le nombre de couverts.")
-    if not erreur and not bill.send_in_the_kitchen():
+    if not erreur and not bill.print_ticket_kitchen():
         erreur = True
         messages.add_message(request,
                              messages.ERROR,
