@@ -1,7 +1,7 @@
 POSSUM
 ======
 
-.. image:: https://www.possum-software.org/jenkins/buildStatus/icon?job=possum-dev
+.. image:: https://www.possum-software.org/jenkins/job/possum-dev/badge/icon
     :target: https://www.possum-software.org/jenkins/job/possum-dev/
     :alt: Build Status
 
