@@ -53,9 +53,12 @@ function enter_virtualenv {
 
 function doc {
     enter_virtualenv
-    cd doc
-    make html
-    echo "Documentation is in: doc/_build/html/"
+    for translation in en fr
+    do
+        pushd docs/$translation
+        make html
+        popd
+    done
 }
 
 function create_json_demo {
@@ -193,8 +196,8 @@ function graph_models {
     enter_virtualenv
     for app in $APPS
     do
-        ./manage.py graph_models --output=doc/images/models-${app}.png -g ${app}
-        echo "[doc/images/models-${app}.png] updated"
+        ./manage.py graph_models --output=docs/images/models-${app}.png -g ${app}
+        echo "[docs/images/models-${app}.png] updated"
     done
 }
 

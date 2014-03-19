@@ -1,6 +1,16 @@
 FAQ
 ===
 
+Vous avez trouvé un bug ?
+-------------------------
+
+Lorsque vous avez trouvé un bug, vous pouvez vérifier en tout premier si ce bug est déjà connu.
+Pour cela, il suffit de consulter la page suivante: 
+`GitHub <https://github.com/possum-software/possum/issues>`_.
+
+Si votre bug est inconnu, alors nous vous serons reconnaissant de décrire ce bug
+et si possible les conditions pour le recréer à la même adresse que ci-dessus.
+
 Comment se connecter à distance à l'interface graphique ?
 ---------------------------------------------------------
 
