@@ -4,35 +4,30 @@ import os
 import sys
 
 # if needed, create possum/settings.py
-CONF = os.path.join("..", "possum", "settings.py")
+POSSUM = os.path.join("..", "..")
+CONF = os.path.join("..", "..", "possum", "settings.py")
 CONF_TEMPLATE = os.path.join("..", "possum", "settings_production.py")
 if not os.path.isfile(CONF):
     import shutil
     shutil.copyfile(CONF_TEMPLATE, CONF)
 
-sys.path.append('..')
+sys.path.append(POSSUM)
 os.environ['DJANGO_SETTINGS_MODULE'] = 'possum.settings'
 
 extensions = ['sphinx.ext.autodoc', 'sphinx.ext.doctest',
               'sphinx.ext.inheritance_diagram', 'sphinx.ext.todo',
               'sphinx.ext.coverage']
 
-templates_path = ['_templates']
+templates_path = [os.path.join('..', '_templates')]
 source_suffix = '.rst'
 source_encoding = 'utf-8'
 master_doc = 'index'
 project = u'Possum'
 copyright = u'2008-%d, Bonnegent Sébastien' % datetime.now().year
 
-# The version info for the project you're documenting, acts as replacement for
-# |version| and |release|, also used in various other places throughout the
-# built documents.
-#
-# The short X.Y version.
-# version = '0.4'
-# The full version, including alpha/beta/rc tags.
-# release = '0.4'
-release = '0.5'
+version = '0.5'
+#release = "%s.1" % version
+release =  "%s-rc1" % version
 
 language = 'fr'
 today_fmt = '%B %d, %Y'
@@ -42,68 +37,13 @@ exclude_trees = ['_build']
 # default_role = None
 default_role = 'obj'
 
-# If true, '()' will be appended to :func: etc. cross-reference text.
-# add_function_parentheses = True
-
-# If true, the current module name will be prepended to all description
-# unit titles (such as .. function::).
-# add_module_names = True
-
-# If true, sectionauthor and moduleauthor directives will be shown in the
-# output. They are ignored by default.
-# show_authors = False
-
-# The name of the Pygments (syntax highlighting) style to use.
 pygments_style = 'sphinx'
-
-# A list of ignored prefixes for module index sorting.
-# modindex_common_prefix = []
-
-
-# -- Options for HTML output ---------------------------------------------------
-
-# The theme to use for HTML and HTML Help pages.  Major themes that come with
-# Sphinx are currently 'default' and 'sphinxdoc'.
 html_theme = 'default'
-
-# Theme options are theme-specific and customize the look and feel of a theme
-# further.  For a list of options available for each theme, see the
-# documentation.
 html_theme_options = {}
-# html_theme_options = {
-#    "stickysidebar": "true",
-# }
-
-# Add any paths that contain custom themes here, relative to this directory.
-# html_theme_path = []
-
-# The name for this set of Sphinx documents.  If None, it defaults to
-# "<project> v<release> documentation".
-# html_title = None
-# html_title = "Possum"
-# html_title = "Documentation"
 html_title = "%s %s" % (project, release)
-
-# A shorter title for the navigation bar.  Default is the same as html_title.
-# html_short_title = None
-
-# The name of an image file (relative to this directory) to place at the top
-# of the sidebar.
-# html_logo = None
-html_logo = "../possum/base/static/images/bandeau-192.png"
-
-# The name of an image file (within the static path) to use as favicon of the
-# docs.  This file should be a Windows icon file (.ico) being 16x16 or 32x32
-# pixels large.
-# html_favicon = None
-# html_favicon = "../possum/images/favicon.ico"
-# html_favicon = "../possum/static/images/favicon.png"
-html_favicon = "../possum/base/static/images/favicon.ico"
-
-# Add any paths that contain custom static files (such as style sheets) here,
-# relative to this directory. They are copied after the builtin static files,
-# so a file named "default.css" will overwrite the builtin "default.css".
-html_static_path = ['_static']
+html_logo = os.path.join("..", "_static", "bandeau-192.png")
+html_favicon = os.path.join("..", "_static", "favicon.ico")
+html_static_path = [os.path.join('..', '_static')]
 
 # If not '', a 'Last updated on:' timestamp is inserted at every page bottom,
 # using the given strftime format.
