@@ -41,7 +41,7 @@ pygments_style = 'sphinx'
 html_theme = 'default'
 html_theme_options = {}
 html_title = "%s %s" % (project, release)
-html_logo = os.path.join("..", "_static", "bandeau-192.png")
+html_logo = os.path.join("..", "images", "bandeau-192.png")
 html_favicon = os.path.join("..", "_static", "favicon.ico")
 html_static_path = [os.path.join('..', '_static')]
 

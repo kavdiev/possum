@@ -5,7 +5,7 @@ Cette documentation est écrite pour Debian, et devrait fonctionner avec toutes 
 
 Voici le schéma général des différentes briques logiciels:
 
-.. image:: images/overview_apache.png
+.. image:: ../images/overview_apache.png
     :scale: 50
     :alt: Overview
 
