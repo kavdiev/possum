@@ -24,30 +24,21 @@ Le maître mot: essayer de rester simple pour l'utilisateur.
 Historique
 ==========
 
-Un besoin pour l'ouverture du Bar/Brasserie de mon frère. Un rapide état de l'art m'a 
-montré quelques solutions intéressantes mais très lourdes et/ou compliqués à mettre en place.
-Je cherchais quelque chose de simple sur lequel j'avais la maitrise. Je me suis donc 
-lancé dans un développement de 15 jours pour la première version en Python/Qt3/Sqlite3.
-Aujourd'hui, le nombre d'heures a bien grandi :)
-Cette première version a fonctionné pendant presque 1 an sans modification avec un écran 
-tactile, un pc mini-itx sur processeur VIA et une imprimante à ticket.
+Tout d'abord, il y avait un besoin de mon frère pour l'ouverture de sa 
+brasserie. Un rapide état de l'art m'a montré quelques solutions intéressantes 
+mais souvent lourdes et/ou compliqués à mettre en place.
 
-Le nom actuel est venu que 1 an plus tard avec l'aide précieuse d'Yvon Benoist, à l'époque
-enseignant d'anglais dans l'éducation supérieure.
+Je cherchais quelque chose de simple sur lequel j'avais la maitrise. Je me
+suis donc lancé dans un développement court (environ 15j) pour une première
+version en Python/Qt3/Sqlite3. Aujourd'hui, le nombre d'heures a bien grandi :)
+Cette première version a fonctionné pendant presque 1 an sans modification
+avec un écran tactile, un pc mini-ITX sur processeur VIA et une imprimante
+à ticket.
 
-La 1er facture sortie par POSSUM date du 01/05/2008 à 19:28 au bar / brasserie le Saint Saens à Rouen.
+Le nom actuel du logiciel est venu qu'un an plus tard avec l'aide précieuse
+d'Yvon Benoist, à l'époque enseignant d'anglais dans l'éducation supérieure.
 
-Dons
-====
-
-Le projet est encore assez jeune, Vous pouvez aider le projet de multiples manières:
-développement, tests, traductions, matériels ...
-
-Nous espérons que si vous utilisez le logiciel et qu'il vous satisfait,
-vous pourrez faire un don afin de nous aider à maintenir une infrastructure
-libre et communautaire.
-
-Vous pouvez également faire une sorte de mini don en cliquant sur une des publicités
-de `mon blog <http://bonnegent.blogspot.fr/>`_.
+La première facture sortie par POSSUM date du 01/05/2008 à 19:28 à la brasserie
+**le Saint Saëns** à Rouen, Normandie, France.
 
 

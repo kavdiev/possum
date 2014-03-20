@@ -1,59 +1,50 @@
-=============
-Développement
-=============
+===========
+development
+===========
 
-Le projet est ouvert à toutes contributions, le plus simple est de commmencer par forker
-le projet sur `Github <https://github.com/possum-software/possum/>`_ et de consulter
-la liste des tâches: `Issues <https://github.com/possum-software/possum/issues>`_.
 
-Numéro de version
-=================
+The project is open to all contributions, the easiest way is to start by forking
+the project on `Github <https://github.com/possum-software/possum/>`_ and consult
+tasks list: `Issues <https://github.com/possum-software/possum/issues>`_.
 
-Voici le cycle de développement adopté pour la sortie des versions:
+Version number
+==============
+
+Here the development cycle adopted for the release version:
 
 .. image:: ../images/cycle_de_developpement.png
-   :alt: Cycle de développement du projet
+   :alt: Development cycle
 
-Voici un exemple pour la version 1.0:
+An example for version 1.0:
 
-* 1.0.alpha: début du développement, typiquement la version précédente
-  vient de sortir. Il y a des ajouts de fonctionnalités.
-* 1.0.beta: le développement de la version touche à sa fin, cependant
-  des ajouts de fonctionnalités sont toujours possibles.
-* 1.0.rc?: à partir des versions RC, les ajouts de fonctionnalités sont bloqués. Il y
-  aura seulement des corrections de bugs.
-* 1.0: les versions officiellements stables.
-* 1.0.1: les corrections de bugs de la version stable.
+* 1.0.beta: development in progress
+* 1.0.rc?: additions of features are blocked, only bug fixes
+* 1.0: stable version
+* 1.0.1: only bug fixes on stable version
 
-Convention de codage
-====================
+Coding convention
+=================
 
-La convention de codage utilisée pour le projet suit le 
+The coding convention used for the project following the 
 `Style Guide for Python Code (PEP 8) <http://www.python.org/dev/peps/pep-0008/>`_.
 
-Qualité
-=======
+Compliance with agreements is verified by Jenkins,
+the results are available here:
+`Jenkins <https://www.possum-software.org/jenkins>`_.
 
-La qualité générale de Possum est auditée grâce à Jenkins.
-Les résultats sont consultables ici:  `Jenkins <https://www.possum-software.org/jenkins>`_.
+Change in class
+===============
 
-Changement dans une classe
-==========================
-
-Après toute modification dans les modèles, il faudrat utiliser South pour les appliquer:
-
-::
-
-  ./manage.py schemamigration base --auto
-  ./manage.py migrate base
-
-
-On peut également se créer un jeu de données avec:
+After any change in the definitions of models, it will
+update patterns with South and demo data. This command
+will do it for us:
 
 ::
 
-  ./manage.py dumpdata --indent=2 --format=json base > possum/base/fixtures/demo1.json
+  ./make models_changed
 
+
+Remenber to add new migration file on git.
 
 Base
 ====

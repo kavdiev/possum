@@ -1,60 +1,58 @@
 FAQ
 ===
 
-Vous avez trouvé un bug ?
--------------------------
+You have found a bug ?
+----------------------
 
-Lorsque vous avez trouvé un bug, vous pouvez vérifier en tout premier si ce bug est déjà connu.
-Pour cela, il suffit de consulter la page suivante: 
+When you find a bug, you can check first if the bug is already known.
+To do this, simply visit the following page:
 `GitHub <https://github.com/possum-software/possum/issues>`_.
 
-Si votre bug est inconnu, alors nous vous serons reconnaissant de décrire ce bug
-et si possible les conditions pour le recréer à la même adresse que ci-dessus.
+If your bug is unknown, then we will be grateful to you describe this bug
+and if possible to recreate the conditions at the same address as above.
 
-Comment se connecter à distance à l'interface graphique ?
----------------------------------------------------------
+How to remotely connect to the GUI ?
+------------------------------------
 
-Pour cela, nous allons utiliser ''x11vnc'' sur le serveur:
+
+To do this, we will use ''x11vnc'' on the server:
 
 ::
 
   sudo apt-get install x11vnc
 
+For this technique to work, you must have an SSH access to your server
 
-Pour que cette technique fonctionne, vous devez avoir un accès en SSH à
-votre serveur. 
-
-Sur notre poste, nous aurons besoin de ''gvncviewer'':
+Our position, we need ''gvncviewer'':
 
 ::
 
   sudo apt-get install gvncviewer
 
-Toujours sur notre poste, nous allons maintenant relier l'interface graphique
-distante à notre poste. Dans cet exemple, l'utilisateur utilisant l'interface
-graphique est l'utilisateur ''pos'':
+Always on our PC, we now connect the GUI
+our remote office. In this example, the user interface using the
+graphic is the user ''pos'':
 
 ::
 
-  ssh -t -L 5900:localhost:5900 pos@ADRESSE_DE_VOTRE_SERVEUR 'x11vnc -localhost -display :0'
+  ssh -t -L 5900:localhost:5900 pos@SERVER_ADDRESS 'x11vnc -localhost -display :0'
 
-Ensuite, nous allons utiliser cette connexion pour avoir l'affichage:
+Then we will use this connection for display:
 
 ::
 
   gvncviewer localhost:0
 
-Comment avoir un navigateur web en plein écran pour seulement utiliser Possum ?
--------------------------------------------------------------------------------
+How to have a web browser in full screen only use Possum ?
+----------------------------------------------------------
 
-Le plus simple est d'utiliser ''Firefox'' en mode kiosque, c'est à dire: en plein écran avec
-tous les raccourcis et autres menus désactivés. Il suffira de lancer automatiquement
-au lancement de votre gestionnaire de fenêtre (par exemple: ''Fluxbox'').
+The easiest way is to use ''Firefox'' kiosk mode, ie: full screen with
+all the shortcuts and other menus disabled. Suffice it to start automatically
+launch your window manager (eg ''Fluxbox'').
 
-Pour activer le mode kiosque, je vous conseille l'extension ''R-kiosk''.
+To activate the kiosk mode, I recommend the extension ''R-kiosk''.
 
+How to get a virtual keyboard ?
+-------------------------------
 
-Comment avoir un clavier virtuel ?
-----------------------------------
-
-Je vous conseille de directement utiliser une extension disponible pour ''Firefox'': FxKeyboard
+We advise you to directly use an extension available for ''Firefox'': FxKeyboard

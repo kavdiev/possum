@@ -2,73 +2,39 @@
 Introduction
 ============
 
-Possum est un logiciel destiné au point de vente (POS / Point Of Sales)
-de type restaurant / bar / brasserie. 
+Possum is a software for point of sales type restaurant / bar / brewery.
 
-Il est conseillé d'utiliser Possum avec une imprimante à ticket et un écran tactile.
+We recommend using Possum with a ticket printer and touch screen.
 
-Possum peut servir à servir à la facturation et présente différentes statistiques
-(chiffre d'affaire, montant de TVA, totaux des réglements par type de paiement,
-nombre de couverts, ticket moyen par table, ...). Ces statistiques sont calculés 
-par jour et par mois et aidera le gérant du commerce à connaître la tendance
-des ventes.
+Possum used for invoicing and generates various statistics
+(turnover, amount of VAT regulations totals by payment type,
+number of covers, average ticket per table, ...). These statistics are calculated
+per day, per week and per month and help manage trade to know the trend
+sales.
 
-Il est également possible de gérer des listes de lecture, ceci vous permettra d'utiliser
-Possum comme un jukebox pour diffuser de la musique dans l'établissement.
+It is also possible to manage playlists, you can use Possum as a jukebox
+to play music.
 
-Tout le code source est sous GPLv3 et la documentation sous FDL. Possum utilise
-le framework Django.
+All source code of Possum is under GPLv3 and documentation under FDL.
 
-Le maître mot: essayer de rester simple pour l'utilisateur.
+The key word: keep it simple for users.
 
 Historique
 ==========
 
-Un besoin pour l'ouverture du Bar/Brasserie de mon frère. Un rapide état de l'art m'a montré quelques solutions intéressantes mais très lourdes et/ou compliqués à mettre en place.
-Je cherchais quelque chose de simple sur lequel j'avais la maitrise. Je me suis donc lancé dans un développement de 15 jours pour la première version en Python/Qt3/Sqlite3.
-Cette première version a fonctionné pendant presque 1 an sans modification avec un écran tactile, un pc mini-itx sur processeur VIA et une imprimante de ticket.
+Firstly, there was a need my brother to open his
+brewery. A brief state of the art showed me some interesting solutions
+but often heavy and / or complicated to implement.
 
-Le nom actuel est venu que 1 an plus tard avec l'aide précieuse d'Yvon Benoist, enseignant d'anglais à l'INSA de Rouen.
+I was looking for something simple that I had the mastery. I
+am engaged in a short development (approximately 15j) for a first
+Python/Qt3/Sqlite3 version. Today, the number of hours has grown :)
+This first version has been running for almost one year without change
+with a touch screen, a PC mini-ITX VIA processor and printer
+to ticket.
 
-La 1er facture sortie par POSSUM date du 01/05/2008 à 19:28 au bar / brasserie le Saint Saens à Rouen.
+The current name of the software came a year later with the invaluable assistance
+Yvon Benoist at the time English teacher in higher education.
 
-Dons
-====
-
-Vous pouvez aider au développement du projet en participant ou en faisant un don :)
-
-Nous espérons que si vous utilisez le logiciel et qu'il vous satisfait,
-vous pourrez faire un don afin de nous aider à maintenir une infrastructure
-libre et communautaire.
-
-Vous pouvez également faire un mini don en cliquant sur la pub se trouvant sur le site de
-`Possum <http://www.possum-software.org/>`_ (tout en bas).
-
-Les développeurs
-================
-
-Le projet est ouvert à toutes contributions, le plus simple est de nous contacter sur la liste
-de diffusion et de jeter un coup d'oeil au travail qu'il reste à faire: `Github <https://github.com/possum-software/possum/issues>`_.
-
-- Créateur, développeur principal et dictateur: Bonnegent Sébastien
-- Conception graphique du logo et des icônes: Romon Hélène
-
-
-Special thanks à Benoist Yvon pour le nom du projet.
-
-Les utilisateurs
-================
-
-- Bar / Brasserie ``Le Saint Saëns`` à Rouen
-
-Autres produits du même type
-============================
-
-- `Lemon POS <http://lemonpos.org/>`_
-- `nTPV <http://www.ntpv.org/>`_
-- `OpenERP <https://www.openerp.com/>`_
-- `Openbravo <http://www.openbravo.com/>`_
-- `Pasteque <http://www.pasteque-logiciel.fr/>`_
-- `Projet-POS <http://www.projetpos.fr/>`_
-- `TuxShop <http://tuxshop.sourceforge.net/>`_
-
+The first invoice output POSSUM dated 01/05/2008 at 19:28 at the brewery
+**le Saint Saëns** in Rouen, Normandy, France.
