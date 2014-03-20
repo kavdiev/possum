@@ -3,7 +3,7 @@ Configuration du serveur Web NGinx
 
 Voici le schéma général des différentes briques logiciels:
 
-.. image:: images/overview_nginx.png
+.. image:: ../images/overview_nginx.png
     :scale: 50
     :alt: Overview
 

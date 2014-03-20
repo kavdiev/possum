@@ -11,7 +11,7 @@ Numéro de version
 
 Voici le cycle de développement adopté pour la sortie des versions:
 
-.. image:: images/cycle_de_developpement.png
+.. image:: ../images/cycle_de_developpement.png
    :alt: Cycle de développement du projet
 
 Voici un exemple pour la version 1.0:
@@ -36,13 +36,13 @@ Modèles
 
 Voici le schèma général des différentes classes utilisées.
 
-.. image:: images/models-base.png
+.. image:: ../images/models-base.png
    :height: 100
    :width: 200
    :scale: 50
    :alt: Schéma des classes d'objets
 
-.. image:: images/models-stats.png
+.. image:: ../images/models-stats.png
    :height: 100
    :width: 200
    :scale: 50
@@ -65,10 +65,11 @@ On peut également se créer un jeu de données avec:
   ./manage.py dumpdata --indent=2 --format=json base > possum/base/fixtures/demo1.json
 
 
-Classes
-=======
+.. toctree::
+   :numbered:
 
-.. include:: classes.rst
+   devs/base.rst
+   devs/stats.rst
 
 
 Qualité
@@ -76,30 +77,5 @@ Qualité
 
 La qualité générale de Possum est auditée grâce à Jenkins.
 Les résultats sont consultables ici:  `Jenkins <https://www.possum-software.org/jenkins>`_.
-
-
-Les bugs
-========
-
-Nouveau bug
------------
-
-Lorsque vous avez trouvé un bug, vous pouvez vérifier en tout premier si ce bug est déjà connu. 
-Pour cela, il suffit de consulter la page suivante: `GitHub <https://github.com/possum-software/possum/issues>`_.
-
-Si votre bug est inconnu, alors nous vous serons reconnaissant de décrire ce bug et si possible les conditions
-pour le recréer à la même adresse que ci-dessus.
-
-Correction d'un bug
--------------------
-
-Cette section concerne surtout les développeurs.
-
-Si vous avez corriger un bug qui est référencé dans le gestionnaire de bug, alors vous pouvez le fermer
-automatiquement avec l'opération de commit en utilisant son numéro d'identifiant. Par exemple pour fermer
-le bug numéro 42, il vous suffira d'ajouter dans le commentaire du commit: ''Closes #42''.
-
-Si votre commit est en relation avec un bug mais ne le ferme pas, alors il suffit d'indiquer le numéro
-du bug dans le commentaire du commit. Par exemple: ''Prépare la correction de #42.''.
 
 

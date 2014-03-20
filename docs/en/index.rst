@@ -1,8 +1,6 @@
-========
-Sommaire
-========
-
-`For english speakers <en/index.html>`_
+=======
+Summary
+=======
 
 .. toctree::
    :numbered:
@@ -11,12 +9,12 @@ Sommaire
    about
    install
    update
-   utilisation
+   using
    devs
-   materiels
+   hardware
    screenshots
    releases
    licence
-   credits
+   thanks
    faq
 
