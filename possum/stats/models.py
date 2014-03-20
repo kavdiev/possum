@@ -278,28 +278,28 @@ def update_day(date):
 
 class Stat(models.Model):
     """Statistics, full list of keys:
-    # Common
+    Common:
     nb_bills      : number of invoices
     total_ttc        : total TTC
     ID_vat           : total TTC for vat ID
 
-    # Products
+    Products:
     ID_product_nb    : how many product
     ID_product_value : total TTC for product ID
     ID_category_nb   : how many product sold in category ID
     ID_category_value: total TTC for category ID
 
-    # Restaurant
+    Restaurant:
     guests_nb        : how many people
     guests_average   : average TTC by guest
     guests_total_ttc : total TTC for guests
 
-    # Bar
+    Bar:
     bar_total_ttc    : total TTC for bar activity
     bar_nb           : how many invoices
     bar_average      : average TTC by invoice
 
-    # Payments
+    Payments:
     ID_payment_nb    : number of payment ID
     ID_payment_value : total for payment ID
 
@@ -359,8 +359,9 @@ class Stat(models.Model):
             return True
 
     def add_value(self, value):
-        """Add a value to the stat
-        """
+        """Add a value to the stat.
+
+        value -- a float or string with a number"""
         try:
             self.value += Decimal(value)
         except:

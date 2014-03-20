@@ -6,6 +6,22 @@ Le projet est ouvert à toutes contributions, le plus simple est de commmencer p
 le projet sur `Github <https://github.com/possum-software/possum/>`_ et de consulter
 la liste des tâches: `Issues <https://github.com/possum-software/possum/issues>`_.
 
+Voici le schèma général des différentes classes utilisées.
+
+.. image:: ../images/models-base.png
+   :height: 100
+   :width: 200
+   :scale: 50
+   :alt: Schéma des classes d'objets
+
+.. image:: ../images/models-stats.png
+   :height: 100
+   :width: 200
+   :scale: 50
+   :alt: Schéma des classes d'objets
+
+La classe centrale, et donc la plus importante, est la classe Facture_.
+
 Numéro de version
 =================
 
@@ -31,24 +47,14 @@ Convention de codage
 La convention de codage utilisée pour le projet suit le 
 `Style Guide for Python Code (PEP 8) <http://www.python.org/dev/peps/pep-0008/>`_.
 
-Modèles
+Qualité
 =======
 
-Voici le schèma général des différentes classes utilisées.
+La qualité générale de Possum est auditée grâce à Jenkins.
+Les résultats sont consultables ici:  `Jenkins <https://www.possum-software.org/jenkins>`_.
 
-.. image:: ../images/models-base.png
-   :height: 100
-   :width: 200
-   :scale: 50
-   :alt: Schéma des classes d'objets
-
-.. image:: ../images/models-stats.png
-   :height: 100
-   :width: 200
-   :scale: 50
-   :alt: Schéma des classes d'objets
-
-La classe centrale, et donc la plus importante, est la classe Facture_.
+Changement dans une classe
+==========================
 
 Après toute modification dans les modèles, il faudrat utiliser South pour les appliquer:
 
@@ -65,17 +71,16 @@ On peut également se créer un jeu de données avec:
   ./manage.py dumpdata --indent=2 --format=json base > possum/base/fixtures/demo1.json
 
 
-.. toctree::
-   :numbered:
+Stats
+=====
 
-   devs/base.rst
-   devs/stats.rst
+.. inheritance-diagram:: possum.stats.models.Stat
+   :parts: 1
 
+.. autoclass:: possum.stats.models.Stat
+   :members:
 
-Qualité
-=======
+Base
+====
 
-La qualité générale de Possum est auditée grâce à Jenkins.
-Les résultats sont consultables ici:  `Jenkins <https://www.possum-software.org/jenkins>`_.
-
-
+Todo

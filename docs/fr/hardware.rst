@@ -23,19 +23,12 @@ démonstration et la commande ''Apache Benchmark'' sur 3 essais consécutifs.
   ab -t 30 -c 5 https://127.0.0.1/bills/ | grep 'Requests per second:'
 
 
-======================= ========= ========== ========== =================== ================
-Matériel                essai 1   essai 2    essai 3    OS                  logiciels
-======================= ========= ========== ========== =================== ================
-Raspberry 512Mo type B   1.35      1.88       1.83      raspbian            nginx
-Mini-ITX VIA M6000G
-Shuttle SD11G5          13.31     13.83      13.80      ubuntu 13.10 32bits nginx
-======================= ========= ========== ========== =================== ================
-
+.. include:: ../common/hardware_benchmark.rst
 
 Écrans tactiles
 ---------------
 
-* ELo Touch 1515L
+.. include:: ../common/hardware_screens.rst
 
 À noter que le support de la part de EloTouch est plutôt
 moyen. Je vous conseille ce site: `EloTouchScreen
@@ -45,5 +38,4 @@ moyen. Je vous conseille ce site: `EloTouchScreen
 Imprimantes à tickets
 ---------------------
 
-* Epson MT M88 iv
-
+.. include:: ../common/hardware_printers.rst
