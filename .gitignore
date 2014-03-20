@@ -2,6 +2,7 @@
 *.log
 *~
 .virtualenv
+env
 .project
 .pydevproject
 .settings

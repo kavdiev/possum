@@ -37,11 +37,11 @@ EOF
 }
 
 function enter_virtualenv {
-    if [ ! -d .virtualenv ]
+    if [ ! -d env ]
     then
         update
     fi
-    source .virtualenv/bin/activate 2>/dev/null
+    source env/bin/activate 2>/dev/null
     if [ ! $? -eq 0 ]
     then
         echo
@@ -129,7 +129,7 @@ function update_js {
 
 function update {
 #    chmod 755 possum/static/
-    if [ ! -d .virtualenv ]
+    if [ ! -d env ]
     then
         echo
         echo "Host must be connected to Internet for this step."
@@ -137,7 +137,7 @@ function update {
         echo "Debian/Ubuntu> ./make deb_install"
         echo
         # For the moment, we stay with python2.
-        virtualenv --prompt=="POSSUM" --python=python2 .virtualenv
+        virtualenv --python=python2 env
     fi
     enter_virtualenv
     pip -q install --proxy=${http_proxy} --requirement requirements.txt --upgrade
