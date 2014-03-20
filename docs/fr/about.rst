@@ -10,7 +10,7 @@ Il est conseillé d'utiliser Possum avec une imprimante à ticket et un écran t
 Possum peut servir à servir à la facturation et présente différentes statistiques
 (chiffre d'affaire, montant de TVA, totaux des réglements par type de paiement,
 nombre de couverts, ticket moyen par table, ...). Ces statistiques sont calculés 
-par jour et par mois et aidera le gérant du commerce à connaître la tendance
+par jour, par semaine et par mois et aidera le gérant du commerce à connaître la tendance
 des ventes.
 
 Il est également possible de gérer des listes de lecture, ceci vous permettra d'utiliser
@@ -24,51 +24,30 @@ Le maître mot: essayer de rester simple pour l'utilisateur.
 Historique
 ==========
 
-Un besoin pour l'ouverture du Bar/Brasserie de mon frère. Un rapide état de l'art m'a montré quelques solutions intéressantes mais très lourdes et/ou compliqués à mettre en place.
-Je cherchais quelque chose de simple sur lequel j'avais la maitrise. Je me suis donc lancé dans un développement de 15 jours pour la première version en Python/Qt3/Sqlite3.
-Cette première version a fonctionné pendant presque 1 an sans modification avec un écran tactile, un pc mini-itx sur processeur VIA et une imprimante de ticket.
+Un besoin pour l'ouverture du Bar/Brasserie de mon frère. Un rapide état de l'art m'a 
+montré quelques solutions intéressantes mais très lourdes et/ou compliqués à mettre en place.
+Je cherchais quelque chose de simple sur lequel j'avais la maitrise. Je me suis donc 
+lancé dans un développement de 15 jours pour la première version en Python/Qt3/Sqlite3.
+Aujourd'hui, le nombre d'heures a bien grandi :)
+Cette première version a fonctionné pendant presque 1 an sans modification avec un écran 
+tactile, un pc mini-itx sur processeur VIA et une imprimante à ticket.
 
-Le nom actuel est venu que 1 an plus tard avec l'aide précieuse d'Yvon Benoist, enseignant d'anglais à l'INSA de Rouen.
+Le nom actuel est venu que 1 an plus tard avec l'aide précieuse d'Yvon Benoist, à l'époque
+enseignant d'anglais dans l'éducation supérieure.
 
 La 1er facture sortie par POSSUM date du 01/05/2008 à 19:28 au bar / brasserie le Saint Saens à Rouen.
 
 Dons
 ====
 
-Vous pouvez aider au développement du projet en participant ou en faisant un don :)
+Le projet est encore assez jeune, Vous pouvez aider le projet de multiples manières:
+développement, tests, traductions, matériels ...
 
 Nous espérons que si vous utilisez le logiciel et qu'il vous satisfait,
 vous pourrez faire un don afin de nous aider à maintenir une infrastructure
 libre et communautaire.
 
-Vous pouvez également faire un mini don en cliquant sur la pub se trouvant sur le site de
-`Possum <http://www.possum-software.org/>`_ (tout en bas).
+Vous pouvez également faire une sorte de mini don en cliquant sur une des publicités
+de `mon blog <http://bonnegent.blogspot.fr/>`_.
 
-Les développeurs
-================
-
-Le projet est ouvert à toutes contributions, le plus simple est de nous contacter sur la liste
-de diffusion et de jeter un coup d'oeil au travail qu'il reste à faire: `Github <https://github.com/possum-software/possum/issues>`_.
-
-- Créateur, développeur principal et dictateur: Bonnegent Sébastien
-- Conception graphique du logo et des icônes: Romon Hélène
-
-
-Special thanks à Benoist Yvon pour le nom du projet.
-
-Les utilisateurs
-================
-
-- Bar / Brasserie ``Le Saint Saëns`` à Rouen
-
-Autres produits du même type
-============================
-
-- `Lemon POS <http://lemonpos.org/>`_
-- `nTPV <http://www.ntpv.org/>`_
-- `OpenERP <https://www.openerp.com/>`_
-- `Openbravo <http://www.openbravo.com/>`_
-- `Pasteque <http://www.pasteque-logiciel.fr/>`_
-- `Projet-POS <http://www.projetpos.fr/>`_
-- `TuxShop <http://tuxshop.sourceforge.net/>`_
 

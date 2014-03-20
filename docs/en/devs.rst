@@ -2,6 +2,10 @@
 Développement
 =============
 
+Le projet est ouvert à toutes contributions, le plus simple est de commmencer par forker
+le projet sur `Github <https://github.com/possum-software/possum/>`_ et de consulter
+la liste des tâches: `Issues <https://github.com/possum-software/possum/issues>`_.
+
 Numéro de version
 =================
 

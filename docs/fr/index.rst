@@ -9,12 +9,12 @@ Sommaire
    about
    install
    update
-   utilisation
+   using
    devs
-   materiels
+   hardware
    screenshots
    releases
    licence
-   credits
+   thanks
    faq
 
