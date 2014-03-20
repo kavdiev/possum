@@ -17,6 +17,7 @@
 * `Pygraphviz <http://pygraphviz.github.io>`_
 * `Python <http://www.python.org/>`_
 * `Python Memcached <http://www.tummy.com/Community/software/python-memcached/>`_
+* `Read The Docs <http://www.readthedocs.org/>`_
 * `Simplejson <http://github.com/simplejson/simplejson>`_
 * `Six <http://pypi.python.org/pypi/six/>`_
 * `South <http://south.aeracode.org/>`_

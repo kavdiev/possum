@@ -6,22 +6,6 @@ Le projet est ouvert à toutes contributions, le plus simple est de commmencer p
 le projet sur `Github <https://github.com/possum-software/possum/>`_ et de consulter
 la liste des tâches: `Issues <https://github.com/possum-software/possum/issues>`_.
 
-Voici le schèma général des différentes classes utilisées.
-
-.. image:: ../images/models-base.png
-   :height: 100
-   :width: 200
-   :scale: 50
-   :alt: Schéma des classes d'objets
-
-.. image:: ../images/models-stats.png
-   :height: 100
-   :width: 200
-   :scale: 50
-   :alt: Schéma des classes d'objets
-
-La classe centrale, et donc la plus importante, est la classe Facture_.
-
 Numéro de version
 =================
 
@@ -71,16 +55,32 @@ On peut également se créer un jeu de données avec:
   ./manage.py dumpdata --indent=2 --format=json base > possum/base/fixtures/demo1.json
 
 
-Stats
-=====
-
-.. inheritance-diagram:: possum.stats.models.Stat
-   :parts: 1
-
-.. autoclass:: possum.stats.models.Stat
-   :members:
-
 Base
 ====
 
-Todo
+Main class in this part is Facture_.
+
+.. image:: ../images/models-base.png
+   :height: 100
+   :width: 200
+   :scale: 50
+   :alt: Schéma des classes d'objets
+
+Facture
+-------
+
+.. automodule:: possum.base.models.bill
+   :members:
+
+Stats
+=====
+
+.. image:: ../images/models-stats.png
+   :height: 100
+   :width: 200
+   :scale: 50
+   :alt: Schéma des classes d'objets
+
+.. automodule:: possum.stats.models
+   :members:
+

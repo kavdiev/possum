@@ -25,7 +25,7 @@ All source code are under GPLv3 and documentation in FDL. GUI use EFL and all th
 The key word: try to keep it simple for the final user.
 
 
-* Documentation:     http://www.possum-software.org
+* Documentation:     http://possum.readthedocs.org
 * Freecode:          http://freecode.com/projects/possum
 * Ohloh:             https://www.ohloh.net/p/possum-software
 

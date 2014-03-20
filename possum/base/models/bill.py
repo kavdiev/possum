@@ -34,14 +34,22 @@ logger = logging.getLogger(__name__)
 
 
 class Facture(models.Model):
-    """
-    surcharge: surtaxe à ajouter par produits par exemple
-        dans le cas d'une terrasse pour laquelle le service
-        est surtaxé
-    following: liste des envois en cuisine
-    next: si présent, la prochaine catégorie a envoyée en
-        cuisine
-    in_use_by: 1 seule personne peut éditer une facture en cours
+    """Main class of POSSUM
+
+    :param DateTime date_creation: Creation of bill
+    :param Table table: Table where are guests, default None
+    :param PositiveInteger couverts: Number of guests, default 0
+    :param ProduitVendu produits: List of products sold
+    :param Decimal total_ttc: Amount TTC
+    :param Paiement paiements: List of payments
+    :param VATOnBill vats: Amount of VAT HT by VAT
+    :param Decimal restant_a_payer: Amount TTC not yet record
+    :param Boolean saved_in_stats: Bill is saved in Stat() ? default False
+    :param User in_use_by: Someone is editing ?
+    :param Boolean onsite: Is it on site or take away ? default True
+    :param Boolean surcharge: Is it surtaxed ? default False
+    :param Follow following:
+    :param Categorie category_to_follow: Next category to send in kitchen
     """
     date_creation = models.DateTimeField('creer le', auto_now_add=True)
     table = models.ForeignKey('Table',
@@ -95,14 +103,11 @@ class Facture(models.Model):
         return u"%s" % date
 
     def __cmp__(self, other):
-        """
-            Les factures sont triees par date_creation.
-            D'abord les plus récentes, puis les plus vieilles.
-        """
+        """We sort Facture() by date, first new Facture first and older after"""
         return cmp(self.date_creation, other.date_creation)
 
     def used_by(self, user=None):
-        """mark bill as 'in edition by user', only one
+        """Mark bill as 'in edition by user', only one
             person can edit a bill at a time
         """
         if user != self.in_use_by:
@@ -133,6 +138,8 @@ class Facture(models.Model):
 
     def get_products_for_category(self, category):
         """Return ProduitVendu list for this category
+
+        :returni: list of ProduitVendu
         """
         products_list = []
         for product in self.produits.iterator():
@@ -201,7 +208,7 @@ class Facture(models.Model):
         return output
 
     def guest_couverts(self):
-        """Essaye de deviner le nombre de couverts"""
+        """Try to find number of guests"""
         nb = {}
         # categories = Categorie.objects.filter(made_in_kitchen=True)
         for categorie in Categorie.objects.filter(made_in_kitchen=True):
@@ -334,12 +341,12 @@ class Facture(models.Model):
         return True
 
     def add_payment(self, type_payment, montant, valeur_unitaire="1.0"):
-        """
-        :param type_payment: Un TypePaiement
-        :param montant: String convertissable en décimal
-        :param valeur_unitaire : String convertissable en décimal
-        :return: Boolean
-        """
+        """Add a payment to Facture().
+
+        :param type_payment: TypePaiement()
+        :param montant: String (will be use with Decimal())
+        :param valeur_unitaire: String (will be use with Decimal())
+        :return: Boolean"""
         if not self.is_valid_payment(montant):
             return False
         paiement = Paiement()
