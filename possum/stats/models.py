@@ -39,8 +39,8 @@ COMMON = ["total_ttc", "nb_bills", "guests_total_ttc", "guests_nb",
 
 
 def nb_sorted(a, b):
-    """ Tri sur les categories et les produits pour
-    avoir les plus vendus en premier. """
+    """We sort objects a and b (Categorie(), Produit(), ...)
+    to have, for example, best selling first."""
     if b.nb < a.nb:
         return -1
     elif b.nb > a.nb:
@@ -50,9 +50,10 @@ def nb_sorted(a, b):
 
 
 def get_last_year(date):
-    """Retourne le jour de l'année précédente
-    afin de comparer les resultats des 2 journées
-    date doit être au format datetime
+    """Get last year day for a date, this is meanly used to
+    compare 2 stats over time.
+
+    date: datetime
     """
     try:
         return date - datetime.timedelta(days=364)
