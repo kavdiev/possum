@@ -1,22 +1,19 @@
-Matériels
-=========
+Hardware
+========
 
-Il y a ici une liste de matériels afin de vous donnez une idée
-des options possibles. Cette liste n'est pas exaustive, n'hésitez
-pas à nous contacter pour la complèter.
+There is here a list of hardware to give you an idea
+possible options. This list is not exaustive, do not hesitate
+to contact us to complete it.
 
-Serveurs
---------
+Servers
+-------
 
-Les performances du serveur sont importantes pour Possum, cela aura un impact
-direct sur la réactivité de la prise de commande.
+Server performance is important for Possum, this will impact
+live on the reactivity of the order is taken.
 
-De plus, si vous utilisez également ce serveur pour faire de la saisie, il
-faudra également le prévoir au niveau des performances.
-
-Afin de classer les différentes solutions, on utilise la base de
-démonstration et la commande ''Apache Benchmark'' sur 3 essais consécutifs.
-Évidemment, on désactive l'authentification le temps de faire le test.
+To classify the different solutions, based on use
+demonstration and Apache Benchmark command on 3 consecutive trials.
+Obviously, it disables the authentication time to the test.
 
 ::
 
@@ -26,18 +23,17 @@ démonstration et la commande ''Apache Benchmark'' sur 3 essais consécutifs.
 .. include:: ../common/hardware_benchmark.rst
 
 
-Écrans tactiles
----------------
+Touchscreens
+------------
 
 .. include:: ../common/hardware_screens.rst
 
-À noter que le support de la part de EloTouch est plutôt
-moyen. Je vous conseille ce site: `EloTouchScreen
+Note that the support from EloTouch rather
+means. I recommend this site: `EloTouchScreen
 <https://help.ubuntu.com/community/EloTouchScreen>`_
 
-
-Imprimantes à tickets
----------------------
+Printers tickets
+----------------
 
 .. include:: ../common/hardware_printers.rst
 

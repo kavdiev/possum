@@ -19,15 +19,15 @@ All source code of Possum is under GPLv3 and documentation under FDL.
 
 The key word: keep it simple for users.
 
-Historique
-==========
+History
+=======
 
 Firstly, there was a need my brother to open his
 brewery. A brief state of the art showed me some interesting solutions
 but often heavy and / or complicated to implement.
 
 I was looking for something simple that I had the mastery. I
-am engaged in a short development (approximately 15j) for a first
+am engaged in a short development (approximately 15 days) for a first
 Python/Qt3/Sqlite3 version. Today, the number of hours has grown :)
 This first version has been running for almost one year without change
 with a touch screen, a PC mini-ITX VIA processor and printer
