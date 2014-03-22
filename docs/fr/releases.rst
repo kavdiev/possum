@@ -1,10 +1,10 @@
 Notes de versions
 =================
 
-version 0.5
------------
+0.5
+---
 
-Date de sortie: à venir
+Date de sortie: 31/03/2014
 
 * tests et audits automatiques sur le code `Jenkins <https://www.possum-software.org/jenkins/>`
 * client lourd abandonné au profit d'une interface web
@@ -16,8 +16,8 @@ Date de sortie: à venir
 * installation ''facile'' grâce à VirtuelEnv et PIP
 * utilisation de memcached pour améliorer la réactivité
 
-version 0.4
------------
+0.4
+---
 
 Date de sortie: 2012
 
@@ -26,8 +26,8 @@ Date de sortie: 2012
 * ouverture du projet sur `GitHub <http://github.com>` et `Freecode <http://freecode.com>`
 * début de documentation avec Sphinx
 
-version 0.3
------------
+0.3
+---
 
 Date de sortie: 2010
 
@@ -36,8 +36,8 @@ Date de sortie: 2010
 * rendu graphique de qualité
 * refactoring de la gestion de la TVA
 
-version 0.2
------------
+0.2
+---
 
 Date de sortie: 2009
 
@@ -45,8 +45,8 @@ Date de sortie: 2009
 * gestion d'un cache interne
 * ajout d'un jukebox (client `MPD <http://www.musicpd.org/>`)
 
-version 0.1
------------
+0.1
+---
 
 Date de sortie: 01/05/2008
 

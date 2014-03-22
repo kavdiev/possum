@@ -1,9 +1,10 @@
 Installation
 ============
 
-Cette documentation est écrite pour Debian, et devrait fonctionner avec toutes les distributions (Ubuntu, Gentoo, ...).
+This documentation is written for Debian, and should work with 
+all distributions (Ubuntu, Gentoo, ...).
 
-Voici le schéma général des différentes briques logiciels:
+Here is the general pattern of different software bricks:
 
 .. image:: ../images/overview_apache.png
     :scale: 50
@@ -12,54 +13,52 @@ Voici le schéma général des différentes briques logiciels:
 Possum
 ------
 
-Vous avez ici 2 possibilités, dans tous les cas, il faudra se positionner dans un répertoire.
-Prenons le répertoire **/opt**:
+You have 2 options here, in all cases, it will be positioned in a directory.
+Consider the **/opt** directory:
 
 ::
 
   cd /opt
 
-Soit télécharger la dernière version
-stable de POSSUM ici: `GitHub <https://github.com/possum-software/possum/archives/master>`_
+Either download the latest stable version of POSSUM here:
+`GitHub <https://github.com/possum-software/possum/archives/master>`_
 
 ::
 
   tar xzf possum-software-possum-*.tar.gz
 
-Soit utiliser la version en développement:
+Either use the development version:
 
 ::
 
   git clone https://github.com/possum-software/possum.git possum-software
 
 
-Remarque: il est recommandé d'utiliser la dernière version stable.
+**Note:** It is recommended to use the latest stable version.
 
 
-Prérequis
----------
+Prerequisites
+-------------
 
-Possum nécessite l'installation de quelques paquets, pour simplifier l'installation
-il suffit d'utiliser la commande **./make** dans le répertoire de Possum:
+Possum requires the installation of some packages. To simplify installation 
+just use **./make** in the directory of Possum.
 
 ::
 
-  # il faut les droits root pour cette commande
+  # Must have root privileges for this command
   ./make deb_install
 
-Ensuite pour l'installation ou les mises à jours, nous allons encore utiliser la
-commande **./make**:
+Then for installation or updates, we will still use **./make**:
 
 ::
 
   ./make update
 
-Cette opération va installer et configurer tout l'environnement virtuel nécessaire
-à Possum.
+This will install and configure any virtual environment for Possum.
 
-Il nous reste maintenant à initialiser les données, pour cela il est recommandé
-de copier le fichier d'initialisation **possum/utils/init_db.py**. Pour un exemple
-plus complet, vous pouvez vous inspirer du fichier **possum/utils/init_demo.py**:
+Now we need to initialize the data, why it is recommended to copy the script
+**possum/utils/init_db.py**. For a more complete example, you can inspire 
+**possum/utils/init_demo.py** file: 
 
 ::
 
@@ -67,86 +66,83 @@ plus complet, vous pouvez vous inspirer du fichier **possum/utils/init_demo.py**
   # adapt file possum/utils/init_mine.py and run it:
   ./make init_mine
 
-Impression
+Printing
 ----------
 
-Possum peut imprimer sur plusieurs imprimantes. Afin de pouvoir les utiliser, il faut avoir
-un serveur cups configurer sur le serveur. Vous pouvez vérifier que les imprimantes sont bien
-disponibles avec la commande:
+Possum can print to multiple printers. In order to use them, you need 
+a server cups set on the server. You can verify that the printers are 
+available with the command:
 
 ::
 
   lpstat -v
 
-Vous pouvez configurer le serveur d'impression via une interface web, en général à l'adresse
-suivante: `Cups <http://localhost:631>`_
+You can configure the print server via a web interface, usually at the
+following address: `Cups <http://localhost:631>`_
 
-D'autre part, l'impression des tickets nécessite la création et la suppression de nombreux
-fichiers. Je vous recommande donc d'utiliser un système de fichier virtuel type tmpfs pour
-le répertoire **tickets** qui se trouve par défaut dans le répertoire **possum-software**.
+On the other hand, ticket printing requires the creation and deletion 
+of many files. I recommend you to use a tmpfs virtual file types for 
+**tickets** directory. Default place is in **possum-software**
+directory.
 
-Par exemple, si le chemin absolu vers votre répertoire **tickets** est 
-**/opt/possum-software/tickets/**, il faudra ajouter la ligne suivante dans votre 
-fichier **/etc/fstab**:
+For example, if the absolute path to your **tickets** directory is
+**/opt/possum-software/tickets/**, you must add the following line 
+in your **/etc/fstab**:
 
 ::
 
   tmpfs /opt/possum-software/tickets/ tmpfs defaults,nodev,nosuid 0 0
 
-
-Cela peut être fait avec les commandes suivantes (en étant root):
+This can be done with the following commands (as root):
 
 ::
 
   echo "tmpfs /opt/possum-software/tickets/ tmpfs defaults,nodev,nosuid 0 0" >> /etc/fstab
   mount /opt/possum-software/tickets/
 
-Le dernière commande donne les droits sur le répertoire au serveur web Apache.
-
 Documentation
 -------------
 
-Vous pouvez générer la documentation en html avec la commande suivante:
+You can generate documentation in HTML with the following command:
 
 ::
 
-  ./make doc
+  source env/bin/activate
+  cd docs/en
+  make html
+  deactivate
 
-Elle sera disponible ici: **/opt/possum-software/doc/_build/html/**.
+It will be available here: **/opt/possum-software/docs/en/_build/html/**.
+Otherwise it is also available on the official website: 
+`Documentation <http://possum.readthedocs.org>`_.
 
-Sinon elle est également disponible sur le site officiel: `Documentation <http://www.possum-software.org>`_.
+Web server configuration
+------------------------
 
-Configuration du serveur Web
-----------------------------
+We now need a web server. There are several possibilities,
+it is based on the web server `Apache <http://httpd.apache.org/>`_.
 
-Nous avons besoin maintenant d'un serveur web. Il y a plusieurs possibilités,
-celle-ci se base sur le serveur web `Apache <http://httpd.apache.org/>`_.
+In short, the module `mod_wsgi <http://code.google.com/p/modwsgi/>`_
+used to run Possum.
 
-Si vous préférez `NGinx <http://nginx.org/>`_, il y a un document d'installation dédié ici:
-
-.. install_nginx
-
-
-En bref, le module `mod_wsgi <http://code.google.com/p/modwsgi/>`_ servira à exécuter Possum.
-
-Commençons par installer les paquets nécessaires:
+Begin by installing the required packages:
 
 ::
 
   ./make deb_install_apache
 
 
-Il reste la configuration à faire. Pour cela, il y a des configurations type dans 
-le répertoire **possum/utils/**.
+It remains to do the configuration. For this, there are typical
+configurations in the **possum/utils/** directory.
 
-Par exemple, pour une configuration standard et sécurisée:
+For example, a standard and secure configuration:
 
 ::
 
   cp possum/utils/apache2.conf /etc/apache2/sites-available/possum.conf
 
-Il faudra modifier le fichier **/etc/apache2/sites-available/possum.conf**
-pour l'adapter à votre installation, puis:
+It will modify the **/etc/apache2/sites-available/possum.conf**
+to suit your installation, then:
 
 ::
 
@@ -155,115 +151,112 @@ pour l'adapter à votre installation, puis:
   /etc/init.d/apache2 restart
 
 
-La configuration conseillée utilise du **https** afin
-de sécuriser les échanges entre les clients et le serveur. Pour utiliser 
-cette configuration, le 
-fichier **/etc/hosts** doit être correctement configuré. 
+The recommended configuration uses **https** to secure exchanges
+between clients (android, ...) and server. To use this configuration
+file, **/etc/hosts** should be configured correctly.
 
-Exemple:
+Example:
 
 ::
 
   # hostname
   possum
 
-Ici, le serveur s'appelle **possum**.
+Here, the server is called **possum**.
 
 ::
 
-  # on donne les droits nécessaires au serveur web sur le répertoire
-  # possum-software
+  # Give the necessary rights to the web server directory
   chown -R www-data /opt/possum-software
-  # création des certificats SSL
+  # Create SSL certificates
   make-ssl-cert generate-default-snakeoil --force-overwrite
 
 
-Rapports & statistiques
------------------------
+Reports & Statistics
+--------------------
 
-Afin de construire les différents rapports et d'afficher les graphiques
-un certain nombre de statistiques doivent être calculés sur les factures
-qui sont soldées. Ces calculs peuvent être couteux en temps, cela est
-visible lorsque l'on accède à la partie **Manager/rapports**.
+To build various reports and display graphics a number of statistics 
+should be calculated on the bills that resulted. These calculations 
+can be costly in time, it is visible when you enter the party
+**Manager/rapports**.
 
-Pour palier à ce problème, il est recommandé de mettre à jour ces informations
-tout au long de la journée en utilisant la crontab GNU/Linux.
+To overcome this problem, it is recommended to update this information
+throughout the day using the GNU/Linux crontab.
 
-Pour cela, il faudra adapter le fichier **possum/utils/update_stats.sh** dans 
-lequel vous devrez modifier la ligne suivante en indiquant votre répertoire
-d'installation:
+To do this, it will adapt the **possum/utils/update_stats.sh** file 
+you need to edit the following line indicating your installation
+directory:
 
 ::
 
   pushd /opt/possum-software >/dev/null
 
 
-Ensuite, il suffit d'enregistrer l'exécution automatique de cette commande
-à l'aide de la commande **crontab -e** (pour plus d'informations: **man crontab**).
+Then just save the automatic execution of this command using the 
+**crontab -e** (for more information: **man crontab**).
 
-Voici un exemple:
+Here is an example:
 
 ::
 
-  # à 11h20 tous les jours
+  # At 11h20 every day
   20 11 * * * /opt/possum-software/possum/utils/update_stats.sh
-  # après le service du midi, à 14h30 tous les jours
+  # After the lunch service at 14:30 every day
   30 14 * * * /opt/possum-software/possum/utils/update_stats.sh
-  # avant le service du soir, à 18h30 tous les jours
+  # Before the evening service at 18:30 every day
   30 18 * * * /opt/possum-software/possum/utils/update_stats.sh
 
 
 Mail
 ----
 
-Il est préférable d'avoir un serveur de mail configurer sur le poste. En
-effet, POSSUM peut envoyé des messages s'il y a des tentatives d'accès
-au panneau d'administration ou des bugs.
+It is better to have a mail server configured on the job. Indeed, 
+POSSUM can sent messages if there are any attempts to access the 
+administration panel or bugs.
 
 ::
 
   sudo apt-get install postfix bsd-mailx
 
-  Configuration type du serveur de messagerie: Site Internet
-  Nom de courrier : possum (ou le nom que vous voulez)
+  Typical configuration of the mail server: Website
+  Name mail: possum (or whatever name you want) 
 
-Il est conseillé de définir un alias pour l'utilisateur root dans le fichier 
-**/etc/aliases**. Dans ce cas, vous aurez une ligne du type:
+It is advisable to define an alias for the root user in 
+**/etc/aliases**.  In this case, you have a line like:
 
 ::
 
-  root: votre_adresse@possum-software.org
+  root: your_address@possum-software.org
 
-Cet alias vous permettra de recevoir les éventuelles alertes du système d'exploitation.
-Après chaque modification de ce fichier, il faut lancer la commande:
+This alias will allow you to receive alerts any operating system.
+After changing this file, you must run the command:
 
 ::
 
   sudo newaliases
 
-Si tout est bien configurer, vous devriez recevoir un mail avec comme
-sujet **test** et dans le message la date d'envoie en utilisant la
-commande suivante:
+If everything is set up, you should receive an email with as a
+**test** subject and the message sends the date using the following
+command:
 
 ::
 
   date | mail -s test root
 
+The installation is almost complete, you must now configure the 
+automatic backup of the database. This part depends on the type of 
+database you have chosen. The simplest being based sqlite, his backup 
+is limited to copying a file.
 
-L'installation est presque terminée, vous devez maintenant configurer
-la sauvegarde automatique de la base de données. Cette partie dépend du
-type de base que vous avez choisi. La plus simple étant la base sqlite,
-sa sauvegarde se limite à la copie d'un fichier.
+To access POSSUM, simply launch a web browser.
 
-Pour accéder à POSSUM, il suffit de lancer un navigateur web.
+Stopping the server
+-------------------
 
-Arrêt du serveur
-----------------
-
-Afin d'arrêter proprement le serveur, on peut configurer une commande **sudo**
-qui permettra au serveur Apache de lancer l'arrêt du serveur (à condition qu'il
-n'y ai pas de calcul des statistiques en cours). Avec la commande **visudo**,
-vous pouvez ajouter la ligne suivante:
+To shutdown the server, you can configure **sudo** to allow the Apache 
+server to start the server shutdown (provided that there have not 
+calculating current statistics). With the **visudo** command,
+you can add the following line:
 
 ::
 

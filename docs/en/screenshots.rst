@@ -1,14 +1,13 @@
 Screenshots
 ===========
 
-À partir de la version 0.5, toute l'interface est utilisable directement
-dans un navigateur. Vous pouvez donc tester Possum facilement en utilisant
-le login ''demo'' et le mot de passe ''demo'' sur le 
-`site de démonstration <http://demo.possum-software.org/>`_.
+From version 0.5, the entire interface is used directly in a browser.
+You can test Possum easily using the login **demo** and password
+**demo** on the `demo site <http://demo.possum-software.org/>`_.
 
-Le site de démonstration est réinitialisé toutes les nuits.
+The demo site is reset every night.
 
-Des captures des différentes parties pour les anciennes versions.
+Catch different parts for older versions.
 
 version 0.4
 -----------

@@ -1,10 +1,10 @@
-Mise à jour
-===========
+Updated
+=======
 
-À partir du dépôt git
----------------------
+From the git repository 
+-----------------------
 
-On considére que le répertoire **possum-software** se trouve dans **/opt**:
+It is considered that the **possum-software** directory is located in **/opt**:
 
 ::
 

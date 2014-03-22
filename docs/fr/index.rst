@@ -1,7 +1,3 @@
-========
-Sommaire
-========
-
 .. toctree::
    :numbered:
    :maxdepth: 2

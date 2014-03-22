@@ -101,8 +101,6 @@ Cela peut être fait avec les commandes suivantes (en étant root):
   echo "tmpfs /opt/possum-software/tickets/ tmpfs defaults,nodev,nosuid 0 0" >> /etc/fstab
   mount /opt/possum-software/tickets/
 
-Le dernière commande donne les droits sur le répertoire au serveur web Apache.
-
 Documentation
 -------------
 
@@ -110,11 +108,15 @@ Vous pouvez générer la documentation en html avec la commande suivante:
 
 ::
 
-  ./make doc
+  source env/bin/activate
+  cd docs/fr
+  make html
+  deactivate
 
-Elle sera disponible ici: **/opt/possum-software/doc/_build/html/**.
+Elle sera disponible ici: **/opt/possum-software/docs/fr/_build/html/**.
 
-Sinon elle est également disponible sur le site officiel: `Documentation <http://www.possum-software.org>`_.
+Sinon elle est également disponible sur le site officiel:
+`Documentation <http://possum.readthedocs.org>`_.
 
 Configuration du serveur Web
 ----------------------------
@@ -122,12 +124,8 @@ Configuration du serveur Web
 Nous avons besoin maintenant d'un serveur web. Il y a plusieurs possibilités,
 celle-ci se base sur le serveur web `Apache <http://httpd.apache.org/>`_.
 
-Si vous préférez `NGinx <http://nginx.org/>`_, il y a un document d'installation dédié ici:
-
-.. install_nginx
-
-
-En bref, le module `mod_wsgi <http://code.google.com/p/modwsgi/>`_ servira à exécuter Possum.
+En bref, le module `mod_wsgi <http://code.google.com/p/modwsgi/>`_ servira
+à exécuter Possum.
 
 Commençons par installer les paquets nécessaires:
 
