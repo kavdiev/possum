@@ -1,5 +1,5 @@
 ===========
-development
+Development
 ===========
 
 
@@ -25,7 +25,7 @@ An example for version 1.0:
 Coding convention
 =================
 
-The coding convention used for the project following the 
+The coding convention used for the project following the
 `Style Guide for Python Code (PEP 8) <http://www.python.org/dev/peps/pep-0008/>`_.
 
 Compliance with agreements is verified by Jenkins,
@@ -57,10 +57,69 @@ Main class in this part is Facture_.
    :scale: 50
    :alt: Schéma des classes d'objets
 
+Categorie
+---------
+.. automodule:: possum.base.models.category
+   :members:
+
+Config
+------
+.. automodule:: possum.base.models.config
+   :members:
+
 Facture
 -------
-
 .. automodule:: possum.base.models.bill
+   :members:
+
+Follow
+------
+.. automodule:: possum.base.models.follow
+   :members:
+
+Generic
+-------
+.. automodule:: possum.base.models.generic
+   :members:
+
+Location
+--------
+.. automodule:: possum.base.models.location
+   :members:
+
+Options
+-------
+.. automodule:: possum.base.models.options
+   :members:
+
+Payment
+--------
+.. automodule:: possum.base.models.payment
+   :members:
+
+Printer
+-------
+.. automodule:: possum.base.models.printer
+   :members:
+
+Produit
+-------
+.. automodule:: possum.base.models.product
+   :members:
+
+ProduitVendu
+------------
+.. automodule:: possum.base.models.product_sold
+   :members:
+
+VAT
+---
+.. automodule:: possum.base.models.vat
+   :members:
+
+VATOnBill
+---------
+.. automodule:: possum.base.models.vatonbill
    :members:
 
 Stats

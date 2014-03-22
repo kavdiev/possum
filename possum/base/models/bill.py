@@ -48,7 +48,7 @@ class Facture(models.Model):
     :param User in_use_by: Someone is editing ?
     :param Boolean onsite: Is it on site or take away ? default True
     :param Boolean surcharge: Is it surtaxed ? default False
-    :param Follow following:
+    :param Follow following: list of Follow sent to kitchen
     :param Categorie category_to_follow: Next category to send in kitchen
     """
     date_creation = models.DateTimeField('creer le', auto_now_add=True)
@@ -103,12 +103,18 @@ class Facture(models.Model):
         return u"%s" % date
 
     def __cmp__(self, other):
-        """We sort Facture() by date, first new Facture first and older after"""
+        """We sort Facture() by date, new Facture first and older after
+
+        :param Facture self:
+        :param Facture other:
+        """
         return cmp(self.date_creation, other.date_creation)
 
     def used_by(self, user=None):
         """Mark bill as 'in edition by user', only one
             person can edit a bill at a time
+
+        :param User user: who editing it
         """
         if user != self.in_use_by:
             self.in_use_by = user
@@ -116,7 +122,9 @@ class Facture(models.Model):
 
     def update_kitchen(self):
         """If one, set the first category to prepare in the
-        kitchen. Example: Entree if there are Entree and Plat.
+        kitchen.
+        Example: we have appetizer, entree and dessert, we want send first
+        appetizer in kitchen.
         """
         logger.debug("[%s] update kitchen" % self.id)
         todolist = []
@@ -137,9 +145,10 @@ class Facture(models.Model):
         self.save()
 
     def get_products_for_category(self, category):
-        """Return ProduitVendu list for this category
+        """Use to prepare followings.
 
-        :returni: list of ProduitVendu
+        :param Categorie category: we want ProduitVendu() for this one
+        :return: list of ProduitVendu
         """
         products_list = []
         for product in self.produits.iterator():
@@ -154,8 +163,9 @@ class Facture(models.Model):
 
     def prepare_products(self, products):
         """Prepare a list to create a print ticket for kitchen
-        products: list of ProduitVendu()
-        return: list of ""
+
+        :param ProduitVendu products: list of ProduitVendu()
+        :return: list of strings
         """
         output = []
         for product in self.reduced_sold_list(products, full=True):
@@ -169,8 +179,7 @@ class Facture(models.Model):
         return output
 
     def print_ticket_kitchen(self):
-        """Prepare and send ticket to printers in kitchen.
-        """
+        """Prepare and send ticket to printers in kitchen."""
         output = True
         if self.category_to_follow:
             follow = Follow(category=self.category_to_follow)
@@ -222,34 +231,35 @@ class Facture(models.Model):
         return max(nb.values())
 
     def set_couverts(self, nb):
-        """Change le nombre de couvert"""
+        """Set number of guests
+
+        :param Int nb: number of guests"""
         self.couverts = nb
 
     def set_table(self, table):
-        """Change la table de la facture
-        On prend en compte le changement de tarification si changement
-        de zone.
+        """Set table name, and check if we must update surtaxe.
 
-        On ne traite pas le cas ou les 2 tables sont surtaxées à des montants
-        différents.
+        :param Table table: new table
         """
         self.table = table
-        if self.is_surcharged() != self.surcharge:
-            self.update_surcharge()
+        self.update_surcharge()
 
     def set_onsite(self, onsite):
-        """onsite: Boolean"""
+        """Set Facture on site, or walk away
+
+        :param Boolean onsite: """
         self.onsite = onsite
-        if self.is_surcharged() != self.surcharge:
-            self.update_surcharge()
+        self.update_surcharge()
 
     def update_surcharge(self):
-        self.surcharge = self.is_surcharged()
-        self.update()
+        """Surtaxe state change, we update prices"""
+        if self.is_surcharged() != self.surcharge:
+            self.surcharge = self.is_surcharged()
+            self.update()
 
     def non_soldees(self):
-        """ Return the list of unpaid facture
-        :return: A list of Facture
+        """
+        :return: A list of unpaid Facture
         """
         liste = []
         for i in Facture.objects.exclude(restant_a_payer=0).iterator():
@@ -300,9 +310,10 @@ class Facture(models.Model):
         self.save()
 
     def add_product(self, sold):
-        """Ajout d'un produit à la facture.
-        Si c'est le premier produit alors on modifie la date de creation
-        :param sold: ProduitVendu
+        """Add a product to the bill. If it is the first product, we update
+        creation date.
+
+        :param ProduitVendu sold: product to add
         """
         if sold.produit.actif:
             if self.produits.count() == 0:
@@ -314,7 +325,9 @@ class Facture(models.Model):
             logger.warning("[%s] try to add an inactive Produit()" % self.id)
 
     def del_payment(self, payment):
-        """On supprime un paiement"""
+        """Delete a payment
+
+        :param Paiement payment:"""
         if payment in self.paiements.iterator():
             self.paiements.remove(payment)
             payment.delete()
@@ -326,7 +339,11 @@ class Facture(models.Model):
                            % (self, payment))
 
     def is_valid_payment(self, montant):
-        ''' Vérifie un paiement avant add_payment '''
+        """Check payment amount before to add it
+
+        :param Decimal montant: amount
+        :return: True if it is ok
+        """
         if self.restant_a_payer <= Decimal("0"):
             logger.info("[%s] nouveau paiement ignore car restant"
                         " a payer <= 0 (%5.2f)" % (self,
@@ -343,10 +360,11 @@ class Facture(models.Model):
     def add_payment(self, type_payment, montant, valeur_unitaire="1.0"):
         """Add a payment to Facture().
 
-        :param type_payment: TypePaiement()
-        :param montant: String (will be use with Decimal())
-        :param valeur_unitaire: String (will be use with Decimal())
-        :return: Boolean"""
+        :param TypePaiement type_payment:
+        :param String montant: will be use with Decimal()
+        :param String valeur_unitaire: will be use with Decimal()
+        :return: True if payment added
+        :rtype: Boolean"""
         if not self.is_valid_payment(montant):
             return False
         paiement = Paiement()
@@ -371,8 +389,10 @@ class Facture(models.Model):
         return True
 
     def rendre_monnaie(self, paiement):
-        '''Régularisation si le montant payé est superieur au montant
-        de la facture'''
+        """Adjustment if the amount paid is greater than the amount invoice
+
+        :param Paiement paiement: payment bigger than bill
+        """
         monnaie = Paiement()
         payment_for_refunds = Config.objects.get(key="payment_for_refunds"
                                                  ).value
@@ -383,16 +403,20 @@ class Facture(models.Model):
         self.restant_a_payer -= monnaie.montant
 
     def est_soldee(self):
-        """La facture a été utilisée et soldée"""
+        """Invoice was used and resulted
+
+        :return: True if bill closed"""
         if self.restant_a_payer == 0 and self.produits.count() > 0:
             return True
         else:
             return False
 
     def est_un_repas(self):
-        """Est ce que la facture contient un element qui est
-        fabriqué en cuisine, dans ce cas on considère que
-        c'est de la restauration.
+        """Is that the bill contains an element which is
+         manufactured by cooking, in this case it is considered that
+         this is the restoration.
+
+        :return: True if restoration
         """
         for sold in self.produits.iterator():
             if sold.produit.categorie.made_in_kitchen:
@@ -403,7 +427,7 @@ class Facture(models.Model):
         return False
 
     def is_empty(self):
-        """La facture est vierge"""
+        """:return: True if bill is empty"""
         if self.restant_a_payer == 0 and self.produits.count() == 0:
             return True
         else:
