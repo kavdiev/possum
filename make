@@ -160,6 +160,10 @@ Example:
 -------------------------------------------------------
 EOF
     fi
+    if [ ! -e possum.db ]
+    then
+        ./manage.py syncdb --noinput --migrate
+    fi
     ./manage.py migrate
     possum/utils/update_categories_css.py
 }
@@ -243,7 +247,7 @@ init_demo)
     ;;
 load_demo)
     enter_virtualenv
-    rm -f possum.db
+    clear_db
     ./manage.py syncdb --noinput --migrate
     ./manage.py loaddata demo
     ;;
