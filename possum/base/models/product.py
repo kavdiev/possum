@@ -69,13 +69,14 @@ class Produit(Nom):
     class Meta:
         app_label = 'base'
         ordering = ['categorie', 'nom']
-#        ordering = ['-actif', 'nom']
 
     def __unicode__(self):
-#        return u"[%s] %s (%.2f€)" % (self.categorie.nom, self.nom, self.prix)
         return u"%s" % self.nom
 
     def est_un_menu(self):
+        """
+        :return: True Product can contains other products
+        """
         if self.categories_ok.count():
             return True
         else:
@@ -88,8 +89,14 @@ class Produit(Nom):
         """Clone a product to keep old one for stats and reports.
         It is use with a modification of prize.
 
-        New product is returned, and old one is disabled.
+        New product is returned, and old one is disabled except if
+        self not used.
         """
+        from possum.stats.models import Stat
+        if Stat.objects.filter(key="%d_product_nb" % self.id).count() == 0:
+            # if not needed, we don't clone the knight
+            logger.info("product doesn't need clone")
+            return self
         product = Produit()
         product.actif = self.actif
         self.actif = False
