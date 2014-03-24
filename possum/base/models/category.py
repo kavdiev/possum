@@ -25,6 +25,15 @@ from vat import VAT
 
 
 class Categorie(Nom, Priorite):
+    """Category of products
+
+    :param Boolean surtaxable: there are a surtaxe on this category
+    :param Boolean disable_surtaxe: 
+    :param Boolean made_in_kitchen: must be cooked in kitchen
+    :param String color:
+    :param VAT vat_onsite:
+    :param VAT vat_takeaway:
+    """
     surtaxable = models.BooleanField("majoration terrasse", default=False)
     disable_surtaxe = models.BooleanField("peut enlever la surtaxe presente",
                                           default=False)
@@ -36,7 +45,7 @@ class Categorie(Nom, Priorite):
                                      related_name="categorie-vat-takeaway")
 
     def __cmp__(self, other):
-        """ Classement par priorite_facture (plus la valeur est petite,
+        """Classement par priorite_facture (plus la valeur est petite,
         plus elle est prioritaire), puis par nom_ihm en cas d'égalité. """
         if self.priorite == other.priorite:
             return cmp(self.nom, other.nom)
