@@ -58,5 +58,5 @@ JENKINS_TASKS = (
 #    'django_jenkins.tasks.run_pyflakes',
 )
 
-# COVERAGE_EXCLUDES = ['django_extensions', 'django', '*migrations*', '.virtualenv']
-COVERAGE_EXCLUDES_FOLDERS = ['possum/base/migrations/*', '.virtualenv/*']
+# COVERAGE_EXCLUDES = ['django_extensions', 'django', '*migrations*', 'env']
+COVERAGE_EXCLUDES_FOLDERS = ['possum/base/migrations/*', 'env/*']
