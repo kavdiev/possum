@@ -148,7 +148,7 @@ def products_add_produits_ok(request, product_id, sub_id):
     product = get_object_or_404(Produit, pk=sub_id)
     menu.produits_ok.add(product)
     menu.save()
-    return redirect('products_view' % product_id)
+    return redirect('products_view', product_id)
 
 
 @permission_required('base.p2')
@@ -157,7 +157,7 @@ def products_del_categories_ok(request, product_id, cat_id):
     category = get_object_or_404(Categorie, pk=cat_id)
     product.categories_ok.remove(category)
     product.save()
-    return redirect('products_view' % product_id)
+    return redirect('products_view', product_id)
 
 
 @permission_required('base.p2')
@@ -166,7 +166,7 @@ def products_add_categories_ok(request, product_id, cat_id):
     category = get_object_or_404(Categorie, pk=cat_id)
     product.categories_ok.add(category)
     product.save()
-    return redirect('products_view' % product_id)
+    return redirect('products_view', product_id)
 
 
 @permission_required('base.p2')
@@ -188,7 +188,7 @@ def products_cooking(request, product_id):
     new = not product.choix_cuisson
     product.choix_cuisson = new
     product.save()
-    return redirect('products_view' % product_id)
+    return redirect('products_view', product_id)
 
 
 @permission_required('base.p2')
@@ -202,7 +202,7 @@ def products_enable(request, product_id):
         # sur la TVA, ...
         new_product = product.update_vats()
         product = new_product
-    return redirect('products_view' % product_id)
+    return redirect('products_view', product.id)
 
 
 @permission_required('base.p2')
