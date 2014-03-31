@@ -1,8 +1,8 @@
 Release notes
 =============
 
-0.5
----
+v0.5.0
+------
 
 Release date: 31/03/2014
 
@@ -17,8 +17,8 @@ Release date: 31/03/2014
 * using memcached to improve responsiveness
 * many many many changes
 
-0.4
----
+v0.4.0
+------
 
 Release date: 2012
 
@@ -27,8 +27,8 @@ Release date: 2012
 * opening the project on `GitHub <http://github.com>` and `Freecode <http://freecode.com>`
 * early documentation with Sphinx
 
-0.3
----
+v0.3.0
+------
 
 Release date: 2010
 
@@ -37,8 +37,8 @@ Release date: 2010
 * graphic quality made
 * refactoring of the VAT management
 
-0.2
----
+v0.2.0
+------
 
 Release date: 2009
 
@@ -46,8 +46,8 @@ Release date: 2009
 * management of an internal cache
 * adding a jukebox (`MPD <http://www.musicpd.org/>` client)
 
-0.1
----
+v0.1.0
+------
 
 Release date: 01/05/2008
 
