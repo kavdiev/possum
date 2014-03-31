@@ -15,6 +15,7 @@ Release date: 31/03/2014
 * comparison of results based on the previous year and the best results
 * ''easy'' installation with VirtuelEnv and PIP
 * using memcached to improve responsiveness
+* many many many changes
 
 0.4
 ---
