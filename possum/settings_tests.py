@@ -58,4 +58,5 @@ JENKINS_TASKS = (
 )
 
 # COVERAGE_EXCLUDES = ['django_extensions', 'django', '*migrations*', 'env']
-COVERAGE_EXCLUDES_FOLDERS = ['possum/base/migrations/*', 'env/*']
+COVERAGE_EXCLUDES_FOLDERS = ['possum/base/migrations/*',
+                             'possum/stats/migrations/*', 'env/*']
