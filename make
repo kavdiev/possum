@@ -11,7 +11,6 @@ Usage: ./make [a command]
 List of commands:
     create_json_demo   :  create JSON fixtures in possum/base/fixtures/demo.json
     doc                :  make the documentation in html
-    deb_install        :  install required packages on Debian/Ubuntu (*)
     deb_install_apache :  install apache on Debian/Ubuntu (*)
     deb_install_nginx  :  install nginx on Debian/Ubuntu (*)
     fastcoverage       :  make only the unit tests and display the coverage in your browser
@@ -134,7 +133,7 @@ function update {
         echo
         echo "Host must be connected to Internet for this step."
         echo "And you must have some packages installed:"
-        echo "Debian/Ubuntu> ./make deb_install"
+        echo "You must read documentation :)"
         echo
         # For the moment, we stay with python2.
         virtualenv --python=python2 env
@@ -219,13 +218,6 @@ function clear_db {
 #    ./manage.py flush --noinput
 }
 
-function deb_install {
-    sudo apt-get install graphviz-dev graphviz libcups2-dev memcached \
-        python-virtualenv unzip \
-        pkg-config python-dev cups-client cups
-#    deb_install_apache
-}
-
 if [ ! $# -eq 1 ]
 then
     my_help
@@ -250,9 +242,6 @@ load_demo)
     clear_db
     ./manage.py syncdb --noinput --migrate
     ./manage.py loaddata demo
-    ;;
-deb_install)
-    deb_install
     ;;
 deb_install_apache)
     deb_install_apache

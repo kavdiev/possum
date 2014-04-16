@@ -40,12 +40,12 @@ Prérequis
 ---------
 
 Possum nécessite l'installation de quelques paquets, pour simplifier l'installation
-il suffit d'utiliser la commande **./make** dans le répertoire de Possum:
+il suffit d'utiliser la commande **./make** dans le répertoire de Possum.
 
-::
+Voici un exemple pour un système Debian/Ubuntu:
 
-  # il faut les droits root pour cette commande
-  ./make deb_install
+.. include:: ../common/install_deb.rst
+
 
 Ensuite pour l'installation ou les mises à jours, nous allons encore utiliser la
 commande **./make**:

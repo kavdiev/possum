@@ -43,10 +43,10 @@ Prerequisites
 Possum requires the installation of some packages. To simplify installation 
 just use **./make** in the directory of Possum.
 
-::
+This is an example for Debian/Ubuntu:
 
-  # Must have root privileges for this command
-  ./make deb_install
+.. include:: ../common/install_deb.rst
+
 
 Then for installation or updates, we will still use **./make**:
 
