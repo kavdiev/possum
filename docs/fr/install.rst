@@ -39,10 +39,9 @@ Remarque: il est recommandé d'utiliser la dernière version stable.
 Prérequis
 ---------
 
-Possum nécessite l'installation de quelques paquets, pour simplifier l'installation
-il suffit d'utiliser la commande **./make** dans le répertoire de Possum.
+Possum nécessite l'installation de quelques paquets.
 
-Voici un exemple pour un système Debian/Ubuntu:
+Pour un système Debian/Ubuntu:
 
 .. include:: ../common/install_deb.rst
 

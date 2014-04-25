@@ -40,15 +40,14 @@ Either use the development version:
 Prerequisites
 -------------
 
-Possum requires the installation of some packages. To simplify installation 
-just use **./make** in the directory of Possum.
+Possum requires the installation of some packages.
 
-This is an example for Debian/Ubuntu:
+For Debian/Ubuntu:
 
 .. include:: ../common/install_deb.rst
 
 
-Then for installation or updates, we will still use **./make**:
+Then for installation or updates, we will use **./make**:
 
 ::
 
