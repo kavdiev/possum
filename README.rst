@@ -1,10 +1,6 @@
 POSSUM
 ======
 
-.. image:: https://www.possum-software.org/jenkins/job/possum-dev/badge/icon
-    :target: https://www.possum-software.org/jenkins/job/possum-dev/
-    :alt: Build Status
-
 .. image:: http://www.ohloh.net/p/711589/widgets/project_thin_badge.gif
     :target: https://www.ohloh.net/p/possum-software
     :alt: Users
