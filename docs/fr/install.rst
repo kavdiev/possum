@@ -126,10 +126,7 @@ En bref, le module `mod_wsgi <http://code.google.com/p/modwsgi/>`_ servira
 
 Commençons par installer les paquets nécessaires:
 
-::
-
-  ./make deb_install_apache
-
+.. include:: ../common/install_apache_deb.rst
 
 Il reste la configuration à faire. Pour cela, il y a des configurations type dans 
 le répertoire **possum/utils/**.
@@ -138,16 +135,16 @@ Par exemple, pour une configuration standard et sécurisée:
 
 ::
 
-  cp possum/utils/apache2.conf /etc/apache2/sites-available/possum.conf
+  sudo cp possum/utils/apache2.conf /etc/apache2/sites-available/possum.conf
 
 Il faudra modifier le fichier **/etc/apache2/sites-available/possum.conf**
 pour l'adapter à votre installation, puis:
 
 ::
 
-  a2dissite 000-default.conf
-  a2ensite possum
-  /etc/init.d/apache2 restart
+  sudo a2dissite 000-default.conf
+  sudo a2ensite possum
+  sudo service apache2 restart
 
 
 La configuration conseillée utilise du **https** afin

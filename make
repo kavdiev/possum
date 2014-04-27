@@ -11,7 +11,6 @@ Usage: ./make [a command]
 List of commands:
     create_json_demo   :  create JSON fixtures in possum/base/fixtures/demo.json
     doc                :  make the documentation in html
-    deb_install_apache :  install apache on Debian/Ubuntu (*)
     deb_install_nginx  :  install nginx on Debian/Ubuntu (*)
     fastcoverage       :  make only the unit tests and display the coverage in your browser
     utests             :  make only the unit tests
@@ -167,21 +166,6 @@ EOF
     possum/utils/update_categories_css.py
 }
 
-function deb_install_apache {
-    sudo apt-get install apache2-mpm-worker libapache2-mod-wsgi
-    a2dismod status cgid autoindex auth_basic cgi dir env
-    a2dismod authn_file deflate setenvif reqtimeout negotiation
-    a2dismod authz_groupfile authz_user authz_default
-    a2enmod wsgi ssl
-    echo
-    echo "Config example for https in: possum/utils/apache2.conf"
-    echo "To use one:"
-    echo "  cp possum/utils/apache2.conf /etc/apache2/sites-available/possum.conf"
-    echo "  a2dissite 000-default.conf"
-    echo "  a2ensite possum"
-    echo
-}
-
 function deb_install_nginx {
     sudo apt-get install nginx-light supervisor
     echo
@@ -242,9 +226,6 @@ load_demo)
     clear_db
     ./manage.py syncdb --noinput --migrate
     ./manage.py loaddata demo
-    ;;
-deb_install_apache)
-    deb_install_apache
     ;;
 utests)
     utests

@@ -120,9 +120,7 @@ used to run Possum.
 
 Begin by installing the required packages:
 
-::
-
-  ./make deb_install_apache
+.. include:: ../common/install_apache_deb.rst
 
 
 It remains to do the configuration. For this, there are typical
@@ -139,9 +137,9 @@ to suit your installation, then:
 
 ::
 
-  a2dissite 000-default.conf
-  a2ensite possum
-  /etc/init.d/apache2 restart
+  sudo a2dissite 000-default.conf
+  sudo a2ensite possum
+  sudo service apache2 restart
 
 
 The recommended configuration uses **https** to secure exchanges
