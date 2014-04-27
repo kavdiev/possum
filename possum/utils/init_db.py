@@ -71,12 +71,6 @@ user.save()
 user.user_permissions.add(Permission.objects.get(codename="p3"))
 user.save()
 
-# Cuisson
-Cuisson(nom='bleu', nom_facture='B', color='#8CC6D7', priorite='10').save()
-Cuisson(nom='saignant', nom_facture='S', color='#DB0B32', priorite='15').save()
-Cuisson(nom=u'à point', nom_facture='AP', color='#C44C51', priorite='20').save()
-Cuisson(nom='bien cuit', nom_facture='BC', color='#B78178', priorite='25').save()
-
 # Type de paiements
 PaiementType(nom='AMEX', fixed_value=False).save()
 PaiementType(nom='ANCV', fixed_value=True).save()
