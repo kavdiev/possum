@@ -57,9 +57,9 @@ Now we need to initialize the data, why it is recommended to copy the script
 
 ::
 
-  cp possum/utils/init_db.py possum/utils/init_mine.py
+  sudo cp possum/utils/init_db.py possum/utils/init_mine.py
   # adapt file possum/utils/init_mine.py and run it:
-  ./make init_mine
+  sudo ./make init_mine
 
 Printing
 ----------
