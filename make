@@ -138,8 +138,7 @@ function update {
         virtualenv --python=python2 env
     fi
     enter_virtualenv
-    pip -q install --proxy=${http_proxy} --requirement requirements.txt --upgrade
-    update_js
+    pip install --proxy=${http_proxy} --requirement requirements.txt --upgrade
     if [ ! -e possum/settings.py ]
     then
         # default conf is production
@@ -164,6 +163,7 @@ EOF
     fi
     ./manage.py migrate
     possum/utils/update_categories_css.py
+    update_js
 }
 
 function deb_install_nginx {
