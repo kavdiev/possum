@@ -24,6 +24,7 @@ Either use the last up to date version:
 
 ::
 
+  sudo apt-get install git
   sudo git clone https://github.com/possum-software/possum.git possum-software
 
 Either download the latest stable version of POSSUM here:
