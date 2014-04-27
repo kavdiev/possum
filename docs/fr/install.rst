@@ -50,7 +50,8 @@ commande **./make**:
 
 ::
 
-  ./make update
+  cd /opt/possum-software
+  sudo ./make update
 
 Cette opération va installer et configurer tout l'environnement virtuel nécessaire
 à Possum.

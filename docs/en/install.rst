@@ -46,7 +46,8 @@ Then for installation or updates, we will use **./make**:
 
 ::
 
-  ./make update
+  cd /opt/possum-software
+  sudo ./make update
 
 This will install and configure any virtual environment for Possum.
 
