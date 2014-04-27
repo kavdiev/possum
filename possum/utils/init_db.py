@@ -25,8 +25,8 @@ sys.path.append('.')
 os.environ['DJANGO_SETTINGS_MODULE'] = 'possum.settings'
 
 from django.contrib.auth.models import User, Permission
-from possum.base.models import Categorie, Cuisson, \
-    Facture, Paiement, PaiementType, Produit, ProduitVendu, Follow, Table, Zone, VAT, \
+from possum.base.models import Categorie, Cuisson, Paiement, PaiementType, \
+    Facture, Produit, ProduitVendu, Follow, Table, Zone, VAT, \
     Printer, VATOnBill, Config
 from possum.stats.models import Stat
 
@@ -35,7 +35,6 @@ VAT.objects.all().delete()
 Printer.objects.all().delete()
 VATOnBill.objects.all().delete()
 Categorie.objects.all().delete()
-Cuisson.objects.all().delete()
 Produit.objects.all().delete()
 Stat.objects.all().delete()
 Follow.objects.all().delete()
@@ -60,14 +59,13 @@ for i in xrange(1, 10):
 user.save()
 
 # ajout d'un utilisateur pour la saisie des commandes
-# ajout du manager
 user = User(username="pos",
         first_name="",
         last_name="",
         email="")
 user.set_password("pos")
 user.save()
-# on ajoute les droits d'admin
+# on ajoute les droits pour la partie commande
 user.user_permissions.add(Permission.objects.get(codename="p3"))
 user.save()
 
@@ -85,8 +83,9 @@ id_type_paiement = PaiementType.objects.get(nom="Espece").id
 Config(key="payment_for_refunds", value=id_type_paiement).save()
 
 # Default PaymentType to select by default on the payment page
-id_type_paiement = PaiementType.objects.get(nom="Espece").id
-Config(key="default_type_payment", value=id_type_paiement).save()
+# Comment out this 2 lines if you want it
+#id_type_paiement = PaiementType.objects.get(nom="Espece").id
+#Config(key="default_type_payment", value=id_type_paiement).save()
 
-# Le montant de surtaxe
+# Le montant de surtaxe, si utilisé
 Config(key="price_surcharge", value="0.20").save()

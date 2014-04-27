@@ -63,7 +63,9 @@ plus complet, vous pouvez vous inspirer du fichier **possum/utils/init_demo.py**
 ::
 
   sudo cp possum/utils/init_db.py possum/utils/init_mine.py
-  # adapt file possum/utils/init_mine.py and run it:
+  # adapt file possum/utils/init_mine.py
+  sudo gedit possum/utils/init_mine.py
+  # and run it:
   sudo ./make init_mine
 
 Impression

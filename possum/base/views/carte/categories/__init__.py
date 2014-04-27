@@ -282,7 +282,7 @@ def update_colors():
     try:
         fd = open(settings.CAT_CSS, "w")
     except:
-        logger.critical("Can't open file: %s" % settings.CAT_CSS)
+        logger.warning("Can't open file: %s" % settings.CAT_CSS)
     else:
         fd.write("/* Auto generate file, do not update by hand */\n")
         for cat in Categorie.objects.iterator():
