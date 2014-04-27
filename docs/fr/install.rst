@@ -19,22 +19,20 @@ Prenons le répertoire **/opt**:
 
   cd /opt
 
-Soit télécharger la dernière version
-stable de POSSUM ici: `GitHub <https://github.com/possum-software/possum/archives/master>`_
-
-::
-
-  tar xzf possum-software-possum-*.tar.gz
-
-Soit utiliser la version en développement:
+Soit on utilise la dernière version à jour:
 
 ::
 
   git clone https://github.com/possum-software/possum.git possum-software
 
+Soit on télécharge la dernière version
+stable de POSSUM ici: `GitHub <https://github.com/possum-software/possum/releases`_
 
-Remarque: il est recommandé d'utiliser la dernière version stable.
+::
 
+  tar xzf possum-software-possum-*.tar.gz
+
+Nous allons prendre la première option.
 
 Prérequis
 ---------

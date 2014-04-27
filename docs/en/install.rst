@@ -20,22 +20,16 @@ Consider the **/opt** directory:
 
   cd /opt
 
+Either use the last up to date version:
+
+::
+
+  sudo git clone https://github.com/possum-software/possum.git possum-software
+
 Either download the latest stable version of POSSUM here:
-`GitHub <https://github.com/possum-software/possum/archives/master>`_
+`GitHub <https://github.com/possum-software/possum/releases`_
 
-::
-
-  tar xzf possum-software-possum-*.tar.gz
-
-Either use the development version:
-
-::
-
-  git clone https://github.com/possum-software/possum.git possum-software
-
-
-**Note:** It is recommended to use the latest stable version.
-
+We will use the git version.
 
 Prerequisites
 -------------
