@@ -109,10 +109,7 @@ Vous pouvez générer la documentation en html avec la commande suivante:
 
 ::
 
-  source env/bin/activate
-  cd docs/fr
-  make html
-  deactivate
+  sudo ./make doc
 
 Elle sera disponible ici: **/opt/possum-software/docs/fr/_build/html/**.
 
@@ -169,9 +166,9 @@ Ici, le serveur s'appelle **possum**.
 
   # on donne les droits nécessaires au serveur web sur le répertoire
   # possum-software
-  chown -R www-data /opt/possum-software
+  sudo chown -R www-data /opt/possum-software
   # création des certificats SSL
-  make-ssl-cert generate-default-snakeoil --force-overwrite
+  sudo make-ssl-cert generate-default-snakeoil --force-overwrite
 
 
 Rapports & statistiques
@@ -195,7 +192,11 @@ d'installation:
 
 
 Ensuite, il suffit d'enregistrer l'exécution automatique de cette commande
-à l'aide de la commande **crontab -e** (pour plus d'informations: **man crontab**).
+à l'aide de la commande **crontab** (pour plus d'informations: **man crontab**).
+
+::
+
+  sudo crontab -e
 
 Voici un exemple:
 
@@ -249,7 +250,8 @@ commande suivante:
 L'installation est presque terminée, vous devez maintenant configurer
 la sauvegarde automatique de la base de données. Cette partie dépend du
 type de base que vous avez choisi. La plus simple étant la base sqlite,
-sa sauvegarde se limite à la copie d'un fichier.
+sa sauvegarde se limite à la copie d'un fichier (par défaut 
+**/opt/possum-software/possum.db**).
 
 Pour accéder à POSSUM, il suffit de lancer un navigateur web.
 
@@ -258,7 +260,7 @@ Arrêt du serveur
 
 Afin d'arrêter proprement le serveur, on peut configurer une commande **sudo**
 qui permettra au serveur Apache de lancer l'arrêt du serveur (à condition qu'il
-n'y ai pas de calcul des statistiques en cours). Avec la commande **visudo**,
+n'y ai pas de calcul des statistiques en cours). Avec la commande **sudo visudo**,
 vous pouvez ajouter la ligne suivante:
 
 ::

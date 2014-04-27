@@ -104,10 +104,7 @@ You can generate documentation in HTML with the following command:
 
 ::
 
-  source env/bin/activate
-  cd docs/en
-  make html
-  deactivate
+  sudo ./make doc
 
 It will be available here: **/opt/possum-software/docs/en/_build/html/**.
 Otherwise it is also available on the official website: 
@@ -134,7 +131,7 @@ For example, a standard and secure configuration:
 
 ::
 
-  cp possum/utils/apache2.conf /etc/apache2/sites-available/possum.conf
+  sudo cp possum/utils/apache2.conf /etc/apache2/sites-available/possum.conf
 
 It will modify the **/etc/apache2/sites-available/possum.conf**
 to suit your installation, then:
@@ -162,9 +159,9 @@ Here, the server is called **possum**.
 ::
 
   # Give the necessary rights to the web server directory
-  chown -R www-data /opt/possum-software
+  sudo chown -R www-data /opt/possum-software
   # Create SSL certificates
-  make-ssl-cert generate-default-snakeoil --force-overwrite
+  sudo make-ssl-cert generate-default-snakeoil --force-overwrite
 
 
 Reports & Statistics
@@ -188,7 +185,11 @@ directory:
 
 
 Then just save the automatic execution of this command using the 
-**crontab -e** (for more information: **man crontab**).
+**crontab** (for more information: **man crontab**).
+
+::
+
+  sudo crontab -e
 
 Here is an example:
 
@@ -241,7 +242,7 @@ command:
 The installation is almost complete, you must now configure the 
 automatic backup of the database. This part depends on the type of 
 database you have chosen. The simplest being based sqlite, his backup 
-is limited to copying a file.
+is limited to copying a file (default: **/opt/possum-software/possum.db**).
 
 To access POSSUM, simply launch a web browser.
 
@@ -250,7 +251,7 @@ Stopping the server
 
 To shutdown the server, you can configure **sudo** to allow the Apache 
 server to start the server shutdown (provided that there have not 
-calculating current statistics). With the **visudo** command,
+calculating current statistics). With the **sudo visudo** command,
 you can add the following line:
 
 ::
