@@ -93,7 +93,9 @@ class Produit(Nom):
         self not used.
         """
         from possum.stats.models import Stat
-        if Stat.objects.filter(key="%d_product_nb" % self.id).count() == 0:
+        # if not a new product or any product sold
+        if not self.id or \
+                Stat.objects.filter(key="%d_product_nb" % self.id).count()==0:
             # if not needed, we don't clone the knight
             logger.info("product doesn't need clone")
             return self
