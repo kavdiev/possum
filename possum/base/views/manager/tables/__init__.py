@@ -20,7 +20,7 @@
 
 from django.contrib import messages
 import logging
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, redirect, get_object_or_404
 from possum.base.models import Zone, Table
 from possum.base.views import permission_required
 
