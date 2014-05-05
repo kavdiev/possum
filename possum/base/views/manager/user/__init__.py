@@ -17,7 +17,6 @@
 #    You should have received a copy of the GNU General Public License
 #    along with POSSUM.  If not, see <http://www.gnu.org/licenses/>.
 #
-
 from django.contrib import messages
 from django.contrib.auth.models import User, UserManager, Permission
 import logging
@@ -39,20 +38,22 @@ def profile(request):
     new1 = request.POST.get('new1', '').strip()
     new2 = request.POST.get('new2', '').strip()
     if old:
-        if context['user'].check_password(old):
+        if request.user.check_password(old):
             if new1 and new1 == new2:
-                context['user'].set_password(new1)
-                context['user'].save()
-                context['success'] = "Le mot de passe a été changé."
-                logger.info('[%s] password changed' % context['user'].username)
+                request.user.set_password(new1)
+                request.user.save()
+                messages.add_message(request, messages.SUCCESS, "Le mot de "
+                                     "passe a été changé")
+                logger.info('[%s] password changed' % request.user.username)
             else:
-                context['error'] = "Le nouveau mot de passe n'est pas valide."
+                messages.add_message(request, messages.ERROR, "Le nouveau mot "
+                                     "de passe n'est pas valide.")
                 logger.warning('[%s] new password is not correct' %
-                               context['user'].username)
+                               request.user.username)
         else:
-            context['error'] = "Le mot de passe fourni n'est pas bon."
-            logger.warning('[%s] check password failed' %
-                           context['user'].username)
+            messages.add_message(request, messages.ERROR, "Le mot de passe "
+                                 "fourni n'est pas bon.")
+            logger.warning('[%s] chk password failed' % request.user.username)
     return render(request, 'base/profile.html', context)
 
 
@@ -174,7 +175,7 @@ def users_change_perm(request, user_id, codename):
                 # we must have at least one person with this permission
                 logger.info("[%s] user [%s] perm [%s]: at least should have "
                             "one person" % (request.user.username,
-                                            user.username, 
+                                            user.username,
                                             codename))
                 messages.add_message(request, messages.ERROR,
                                      "Il doit rester au moins 1 compte avec "
