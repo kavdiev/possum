@@ -24,7 +24,7 @@ The key word: try to keep it simple for the final user.
 * Documentation:     http://possum.readthedocs.org
 * Freecode:          http://freecode.com/projects/possum
 * Ohloh:             https://www.ohloh.net/p/possum-software
-* Videos:            https://www.youtube.com/channel/UCsJxTNRkKsd_bCAfPNf1dZg
+* Videos:            https://www.youtube.com/channel/UCsJxTNRkKsd_bCAfPNf1dZg/playlists
 
 Community
 ---------
@@ -49,7 +49,4 @@ RSS
 ---
 
 * `Releases <http://freecode.com/projects/possum/releases.atom>`_
-
-
-
 
