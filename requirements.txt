@@ -16,7 +16,6 @@ django-jenkins==0.15.0
 docutils==0.11
 flake8==2.1.0
 flake8-todo==0.3
-gunicorn==18.0
 ipython==1.2.1
 logilab-common==0.61.0
 mccabe==0.2.1
