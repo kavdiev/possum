@@ -1,6 +1,16 @@
 Release notes
 =============
 
+v0.6.0
+------
+
+Release date: unknown
+
+* internationalization
+* MPD Client
+* optimization on bills workflow
+* manage options
+
 v0.5.0
 ------
 
