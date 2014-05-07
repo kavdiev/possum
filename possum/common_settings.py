@@ -139,6 +139,9 @@ TEMPLATE_DIRS = (
 LOCK_STATS = '/tmp/possum-stats.lock'
 # CSS for colors on categories (auto update)
 CAT_CSS = normpath(join(DJANGO_ROOT, SITE_NAME, 'static', 'categories.css'))
+if not os.path.isfile(CAT_CSS):
+    # create an empty one
+    open(CAT_CSS, "w")
 
 INSTALLED_APPS = (
     'south',
