@@ -1,24 +1,22 @@
 {% extends "base.html" %}
 
-{% block menu %}<!-- Connectez-vous pour accéder à Possum. -->{% endblock %}
+{% block menu %}<!-- You have to login -->{% endblock %}
 
 {% block page %}
 {% load staticfiles %}
+{% load i18n %}
+
 <div id="login">
-    <form method='post' action='/users/login/' name='login'>{% csrf_token %}
-        <table>
-    	    <tr>
-                <td colspan=2 align="center">
-                    <img src="{% static "images/bandeau-128.png" %}" alt="logo"/>
-                </td>
-            </tr>
-	    {{ form.as_table }}
-            <tr>
-                <td colspan=2>
-                    <input type="submit" value="Connexion"  class="" />
-                </td>
-            </tr>
-        </table>
-    </form>
+<form method='post' action='/users/login/' name='login'>{% csrf_token %}
+    <table>
+        <tr><td colspan=2 align="center">
+                <img src="{% static "images/bandeau-128.png" %}" alt="logo"/>
+        </td></tr>
+        {{ form.as_table }}
+        <tr><td colspan=2>
+                <input type="submit" value='{% trans "Login" %}'  class="" />
+        </td></tr>
+    </table>
+</form>
 </div>
 {% endblock %}

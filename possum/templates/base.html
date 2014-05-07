@@ -3,6 +3,7 @@
 <head>
     <meta charset="utf-8" />
     {% load staticfiles %}
+    {% load i18n %}
     <link rel="shortcut icon" type="image/x-icon" href="{% static "images/favicon.png" %}" />
     <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
     <meta name=author content="S. Bonnegent">
@@ -27,39 +28,40 @@
 <body>
     {% block menu %}
     <ul id="menu">
-        <li 
+        <li
         {% if menu_home %}
             class="menuSelected"
         {% endif %}
             onclick='window.location="{% url 'home' %}"'>
-            Accueil
+            {% trans "Home" %}
         </li>
         {% if menu_bills %}
-            <li class="menuSelected" 
+            <li class="menuSelected"
                 onclick='window.location="{% url 'bill_home' %}"'>
-                Commandes
+                {% trans "Orders" %}
             </li>
         {% endif %}
         {% if menu_kitchen %}
             <li class="menuSelected"
                 onclick='window.location="{% url 'kitchen' %}"'>
-                Cuisine
+                {% trans "Kitchen" %}
             </li>
         {% endif %}
         {% if menu_manager %}
             <li class="menuSelected"
                 onclick='window.location="{% url 'manager' %}"'>
-                Manager
+                {% trans "Manager" %}
             </li>
         {% endif %}
         <li>
             <div id="myclock">
-                <script type="text/javascript">window.onload = date_heure('myclock');</script>
+                <script type="text/javascript">
+                    window.onload = date_heure('myclock');</script>
             </div>
         </li>
         {% if user.is_authenticated %}
             <li class="{% if menu_profile %}menuSelected{% endif %}"
-            onclick='window.location="{% url 'profile' %}"'>
+                onclick='window.location="{% url 'profile' %}"'>
                 {{user.username}}
             </li>
         {% endif %}
@@ -70,12 +72,13 @@
         {% if messages %}
         <ul id="messages">
             {% for message in messages %}
-            <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+            <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>
+                {{ message }}</li>
             {% endfor %}
         </ul>
         {% endif %}
         {% block content %}
-            <p>Il y a un problème dans le template, le contenu de la page vide.</p>
+        <p>{% trans "Template error, page is empty" %}</p>
         {% endblock %}
     </div>
     {% endblock %}

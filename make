@@ -22,6 +22,7 @@ List of commands:
     models_changed     :  prepare files after modified models
     sh                 :  run ./manage.py shell_plus in virtualenv
     run                :  run ./manage.py runserver_plus in virtualenv
+    translation        :  create/update translations
     tests              :  make tests and coverage
     update             :  install/update Possum environnement
 
@@ -273,6 +274,11 @@ sh)
 run)
     enter_virtualenv
     ./manage.py runserver
+    ;;
+translation)
+    enter_virtualenv
+    ./manage.py makemessages -i env --no-obsolete -l fr -l en -l ru
+    ./manage.py compilemessages
     ;;
 *)
     my_help

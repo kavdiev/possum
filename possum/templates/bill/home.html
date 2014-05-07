@@ -1,15 +1,18 @@
 {% extends "base.html" %}
 {% block content %}
-<p>Cette page est automatiquement rechargée toutes les {{need_auto_refresh}} secondes.</p>
+{% load i18n %}
+<p>{% blocktrans %}This page will automatically refresh every
+    {{need_auto_refresh}} seconds{% endblocktrans %}</p>
 <ul id="bills">
-    <li onclick="window.location='{% url "bill_new" %}'">Nouvelle commande</li>
+    <li onclick="window.location='{% url "bill_new" %}'">
+        {% trans "New order" %}</li>
     {% if factures %}
         {% for facture in factures %}
         <li onclick="window.location='{% url "bill_view" facture.id %}'">
         {{facture}}</br>
-        Table: {% if facture.table %}{{facture.table}}{%else%}T--{% endif %}</br>
-        Couverts: {{facture.couverts}}</br>
-        Montant: {{facture.total_ttc}}€</br>
+        {% trans "Table" %}: {% if facture.table %}{{facture.table}}{%else%}T--{% endif %}</br>
+        {% trans "Guests" %}: {{facture.couverts}}</br>
+        {% trans "Amount" %}: {{facture.total_ttc}}{% trans "$" %}</br>
         </li>
         {% endfor %}
     {% endif %}

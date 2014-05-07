@@ -6,7 +6,7 @@ v0.6.0
 
 Release date: unknown
 
-* internationalization
+* `internationalization <https://docs.djangoproject.com/en/1.6/topics/i18n/translation/>`
 * MPD Client
 * optimization on bills workflow
 * manage options

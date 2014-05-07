@@ -2,6 +2,8 @@ import os
 from os.path import abspath, dirname, join, normpath
 import random
 import sys
+#from django.utils.translation import ugettext as _
+from django.utils.translation import ugettext_lazy as _
 
 
 ########## PATH CONFIGURATION
@@ -18,7 +20,7 @@ sys.path.append(normpath(join(DJANGO_ROOT, SITE_NAME, 'base')))
 
 ########## Configuration de POSSUM
 LOGIN_URL = '/users/login/'
-LOGIN_REDIRECT_URL = '/bills'
+LOGIN_REDIRECT_URL = '/bills/'
 # tmp est en memoire (tmpfs)
 PATH_TICKET = normpath(join(DJANGO_ROOT, 'tickets'))
 if not os.path.exists(PATH_TICKET):
@@ -55,6 +57,7 @@ try:
 except IOError as exc:
         raise Exception('Cannot open file `%s` for writing. (%s)'
                         % (SECRET_FILE, exc))
+
 ########## END KEY CONFIGURATION
 
 ADMINS = (
@@ -63,6 +66,14 @@ ADMINS = (
 MANAGERS = ADMINS
 
 SITE_ID = 1
+
+# Supported languages
+LANGUAGES = (
+    ('fr', _('French')),
+    ('en', _('English')),
+    ('ru', _('Russian')),
+)
+LOCALE_PATHS = (normpath(join(DJANGO_ROOT, 'locale')), )
 
 # If you set this to False, Django will make some optimizations so as not
 # to load the internationalization machinery.

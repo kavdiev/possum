@@ -10,7 +10,7 @@ INSTALLED_APPS += (
 )
 
 TIME_ZONE = 'Europe/Paris'
-LANGUAGE_CODE = 'fr-fr'
+LANGUAGE_CODE = 'fr'
 
 # IPs allowed to see django-debug-toolbar output.
 INTERNAL_IPS = ('127.0.0.1',)

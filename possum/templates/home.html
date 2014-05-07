@@ -1,17 +1,18 @@
 {% extends "base.html" %}
 {% block content %}
 {% load staticfiles %}
+{% load i18n %}
 <ul id="bigmenu">
-    <li onclick='window.location="{% url 'bill_home' %}"'>Commandes</br>
-        <img src="{% static "images/order.png" %}" alt="Commandes"/></li>
-    <li onclick='window.location="{% url 'kitchen' %}"'>Cuisine</br>
-        <img src="{% static "images/kitchen.png" %}" alt="Cuisine"/></li>
-    <li onclick='window.location="{% url 'manager' %}"'>Manager</br>
-        <img src="{% static "images/manager.png" %}" alt="Manager"/></li>
-    <li onclick='window.location="{% url 'logout' %}"'>Déconnexion</br>
-        <img src="{% static "images/logout.png" %}" alt="Déconnexion"/></li>
-    <li onclick='window.location="{% url 'shutdown' %}"'>Eteindre le serveur</br>
-        <img src="{% static "images/shutdown.png" %}" alt="Shutdown"/></li>
+<li onclick='window.location="{% url 'bill_home' %}"'>{% trans "Orders" %}</br>
+    <img src="{% static "images/order.png" %}" alt="{% trans "Orders" %}"/></li>
+<li onclick='window.location="{% url 'kitchen' %}"'>{% trans 'Kitchen' %}</br>
+    <img src="{% static "images/kitchen.png" %}" alt="{% trans 'Kitchen' %}"/></li>
+<li onclick='window.location="{% url 'manager' %}"'>{% trans 'Manager' %}</br>
+    <img src="{% static "images/manager.png" %}" alt="{% trans 'Manager' %}"/></li>
+<li onclick='window.location="{% url 'logout' %}"'>{% trans 'Logout' %}</br>
+    <img src="{% static "images/logout.png" %}" alt="{% trans 'Logout' %}"/></li>
+<li onclick='window.location="{% url 'shutdown' %}"'>{% trans 'Shutdown server' %}</br>
+    <img src="{% static "images/shutdown.png" %}" alt="{% trans 'Shutdown server' %}"/></li>
 <ul>
 
 {% endblock %}
