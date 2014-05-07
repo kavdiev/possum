@@ -151,7 +151,7 @@ TEMPLATE_DIRS = (
 
 LOCK_STATS = '/tmp/possum-stats.lock'
 # CSS for colors on categories (auto update)
-CAT_CSS = normpath(STATIC_ROOT, 'categories.css'))
+CAT_CSS = normpath(STATIC_ROOT, 'categories.css')
 if not os.path.isfile(CAT_CSS):
     # create an empty one
     open(CAT_CSS, "w")
