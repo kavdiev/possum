@@ -101,6 +101,8 @@ MEDIA_URL = '/media/'
 # Example: "/var/www/example.com/static/"
 STATIC_ROOT = normpath(join(DJANGO_ROOT, SITE_NAME, 'static'))
 #STATIC_ROOT = ''
+if not os.path.isdir(STATIC_ROOT):
+    os.mkdir(STATIC_ROOT)
 
 # URL prefix for static files.
 # Example: "http://example.com/static/", "http://static.example.com/"
@@ -149,7 +151,7 @@ TEMPLATE_DIRS = (
 
 LOCK_STATS = '/tmp/possum-stats.lock'
 # CSS for colors on categories (auto update)
-CAT_CSS = normpath(join(DJANGO_ROOT, SITE_NAME, 'static', 'categories.css'))
+CAT_CSS = normpath(STATIC_ROOT, 'categories.css'))
 if not os.path.isfile(CAT_CSS):
     # create an empty one
     open(CAT_CSS, "w")
