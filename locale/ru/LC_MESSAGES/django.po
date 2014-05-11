@@ -1,7 +1,7 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# FIRST AUTHOR <avdievkaren@gmail.com>, 2014.
 #
 #, fuzzy
 msgid ""
@@ -21,50 +21,50 @@ msgstr ""
 
 #: possum/common_settings.py:72
 msgid "French"
-msgstr ""
+msgstr "Французский"
 
 #: possum/common_settings.py:73
 msgid "English"
-msgstr ""
+msgstr "Английский"
 
 #: possum/common_settings.py:74
 msgid "Russian"
-msgstr ""
+msgstr "Русский"
 
 #: possum/templates/base.html:36
 msgid "Home"
-msgstr ""
+msgstr "Домой"
 
 #: possum/templates/base.html:41 possum/templates/home.html:6
 #: possum/templates/home.html.py:7
 msgid "Orders"
-msgstr ""
+msgstr "Заказы"
 
 #: possum/templates/base.html:47 possum/templates/home.html:8
 #: possum/templates/home.html.py:9
 msgid "Kitchen"
-msgstr ""
+msgstr "Кухня"
 
 #: possum/templates/base.html:53 possum/templates/home.html:10
 #: possum/templates/home.html.py:11
 msgid "Manager"
-msgstr ""
+msgstr "Менеджер"
 
 #: possum/templates/base.html:81
 msgid "Template error, page is empty"
-msgstr ""
+msgstr "Ошибка шаблона, пустая страница"
 
 #: possum/templates/home.html:12 possum/templates/home.html.py:13
 msgid "Logout"
-msgstr ""
+msgstr "Выход"
 
 #: possum/templates/home.html:14 possum/templates/home.html.py:15
 msgid "Shutdown server"
-msgstr ""
+msgstr "Выключить сервер"
 
 #: possum/templates/login.html:17
 msgid "Login"
-msgstr ""
+msgstr "Войти"
 
 #: possum/templates/bill/home.html:4
 #, python-format
@@ -75,20 +75,20 @@ msgstr ""
 
 #: possum/templates/bill/home.html:10
 msgid "New order"
-msgstr ""
+msgstr "Новый заказ"
 
 #: possum/templates/bill/home.html:15
 msgid "Table"
-msgstr ""
+msgstr "Стол"
 
 #: possum/templates/bill/home.html:16
 msgid "Guests"
-msgstr ""
+msgstr "Гостей"
 
 #: possum/templates/bill/home.html:17
 msgid "Amount"
-msgstr ""
+msgstr "Всего"
 
 #: possum/templates/bill/home.html:17
 msgid "$"
-msgstr ""
+msgstr "Руб"
